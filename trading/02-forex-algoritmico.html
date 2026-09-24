@@ -1,0 +1,1350 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Forex algorítmico</title>
+<meta name="description" content="Cómo funciona el mercado de divisas por dentro, qué lo hace distinto para un algoritmo, qué estrategias tienen evidencia y cuánto cuestan de verdad, con calculadoras.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..800;1,6..96,400..800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap">
+<style>
+/* ============================================================
+   Máquinas y mercados · sistema visual común
+   Billete: papel neutro, tinta de grabado, un color por documento
+   ============================================================ */
+:root{
+  --paper:#F4F5F2; --surface:#FCFCFB; --surface-2:#EEF0EC;
+  --ink:#121614; --ink-2:#48504B; --muted:#646C67;
+  --rule:#DCE1DC; --rule-strong:#C3CAC4; --grid:#E6E9E5; --deemph:#B4BBB6;
+  --good:#006300; --good-mark:#0ca30c;
+  --warn:#8a5a00; --warn-mark:#fab219;
+  --crit:#b42e2e; --crit-mark:#d03b3b;
+  --c1:#2a78d6; --c2:#eb6834; --c3:#1baf7a; --c4:#4a3aa7;
+  --pos:#2a78d6; --neg:#e34948;
+  --o1:#a39ef9; --o2:#8b85de; --o3:#736dc3; --o4:#5d55a9; --o5:#483e90;
+  --accent:var(--c1); --accent-ink:#1c5cab;
+  --wash:color-mix(in oklab, var(--accent) 8%, var(--surface));
+  --f-display:"Bodoni Moda","Bodoni 72",Didot,"Bodoni MT",Georgia,serif;
+  --f-sans:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  --radius:10px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --paper:#0F1211; --surface:#161A18; --surface-2:#1D2220;
+    --ink:#EDF1EE; --ink-2:#B7BFBA; --muted:#8E9791;
+    --rule:#262D29; --rule-strong:#37403B; --grid:#222826; --deemph:#4B544F;
+    --good:#0ca30c; --good-mark:#0ca30c;
+    --warn:#fab219; --warn-mark:#fab219;
+    --crit:#e66767; --crit-mark:#e66767;
+    --c1:#3987e5; --c2:#d95926; --c3:#199e70; --c4:#9085e9;
+    --pos:#3987e5; --neg:#e66767;
+    --o1:#5d57a4; --o2:#726dbc; --o3:#8884d5; --o4:#9e9bee; --o5:#b6b3ff;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --paper:#0F1211; --surface:#161A18; --surface-2:#1D2220;
+  --ink:#EDF1EE; --ink-2:#B7BFBA; --muted:#8E9791;
+  --rule:#262D29; --rule-strong:#37403B; --grid:#222826; --deemph:#4B544F;
+  --good:#0ca30c; --good-mark:#0ca30c;
+  --warn:#fab219; --warn-mark:#fab219;
+  --crit:#e66767; --crit-mark:#e66767;
+  --c1:#3987e5; --c2:#d95926; --c3:#199e70; --c4:#9085e9;
+  --pos:#3987e5; --neg:#e66767;
+  --o1:#5d57a4; --o2:#726dbc; --o3:#8884d5; --o4:#9e9bee; --o5:#b6b3ff;
+}
+
+/* ---------- base ---------- */
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%;scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--f-sans);font-size:17px;line-height:1.62;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+@media (max-width:600px){body{font-size:16px}}
+h1,h2,h3,h4{margin:0;text-wrap:balance}
+p{margin:0}
+figure{margin:0}
+a{color:var(--accent-ink);text-decoration-line:underline;text-decoration-thickness:1px;text-underline-offset:3px}
+a:hover{text-decoration-thickness:2px}
+:focus-visible{outline:2px solid var(--accent-ink);outline-offset:2px;border-radius:3px}
+::selection{background:color-mix(in oklab,var(--accent) 28%,transparent)}
+strong,b{font-weight:600}
+abbr[title]{text-decoration:underline dotted;text-underline-offset:3px}
+.num{font-variant-numeric:tabular-nums}
+.wrap{max-width:1180px;margin-inline:auto;padding-inline:clamp(16px,4vw,44px)}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+
+/* ---------- barra de la serie ---------- */
+.series{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 24px;padding-block:16px 14px;border-bottom:1px solid var(--rule)}
+.series .brand{font:500 11.5px/1.2 var(--f-mono);letter-spacing:.18em;text-transform:uppercase;color:var(--ink-2)}
+.series-nav{display:flex;flex-wrap:wrap;gap:4px 6px;margin:0;padding:0;list-style:none}
+.series-nav a,.series-nav span.soon{display:inline-flex;align-items:center;gap:8px;font:500 13px/1 var(--f-sans);color:var(--ink-2);text-decoration:none;padding:8px 11px;border-radius:999px;border:1px solid transparent}
+.series-nav .dot{width:8px;height:8px;border-radius:1.5px;transform:rotate(45deg);background:var(--c);flex:none}
+.series-nav a:hover{border-color:var(--rule-strong);color:var(--ink)}
+.series-nav a[aria-current="page"]{border-color:var(--rule-strong);background:var(--surface);color:var(--ink)}
+.series-nav span.soon{opacity:.6}
+
+/* ---------- portada ---------- */
+.hero{display:grid;gap:28px;align-items:center;padding-block:clamp(36px,6vw,76px) clamp(26px,4vw,44px)}
+@media (min-width:880px){.hero{grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:48px}}
+.eyebrow{display:flex;flex-wrap:wrap;gap:6px 16px;font:500 12px/1.3 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.eyebrow b{color:var(--accent-ink);font-weight:500}
+.hero h1{font-family:var(--f-display);font-weight:600;font-size:clamp(46px,7.4vw,100px);line-height:.95;letter-spacing:-.015em;margin-top:18px}
+.hero h1 em{font-style:italic;font-weight:500;color:var(--accent-ink)}
+.dek{font-size:clamp(18px,1.7vw,21px);line-height:1.5;color:var(--ink-2);max-width:42ch;margin-top:22px}
+.meta{margin-top:18px;font:13px/1.5 var(--f-mono);color:var(--muted)}
+.emblem{position:relative;width:min(100%,390px);aspect-ratio:1;justify-self:end;container-type:inline-size}
+@media (max-width:879px){.emblem{width:min(62vw,250px);justify-self:start;order:-1}}
+.emblem canvas{position:absolute;inset:0;width:100%;height:100%}
+.emblem .numeral{position:absolute;inset:0;display:grid;place-items:center;font-family:var(--f-display);font-weight:500;font-style:italic;font-size:30cqw;line-height:1;color:var(--accent-ink);padding-bottom:3cqw}
+.emblem .serial{position:absolute;left:0;right:0;top:calc(100% + 10px);text-align:center;font:500 11px/1 var(--f-mono);letter-spacing:.3em;color:var(--muted)}
+.microprint{font:500 6.5px/1 var(--f-mono);letter-spacing:.24em;color:var(--muted);white-space:nowrap;overflow:hidden;padding-block:4px;border-block:1px solid var(--rule);user-select:none}
+
+/* ---------- en corto ---------- */
+.tldr{background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);padding:22px clamp(18px,3vw,30px) 24px;margin-top:28px}
+.tldr h2{font:500 12px/1 var(--f-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.tldr ul{list-style:none;margin:16px 0 0;padding:0;display:grid;gap:14px 28px;grid-template-columns:repeat(auto-fit,minmax(250px,1fr))}
+.tldr li{position:relative;padding-left:20px;font-size:16px;line-height:1.5}
+.tldr li::before{content:"";position:absolute;left:1px;top:.5em;width:7px;height:7px;background:var(--accent);transform:rotate(45deg)}
+
+/* ---------- documento ---------- */
+.doc{display:grid;gap:36px;padding-block:44px 88px}
+@media (min-width:1080px){.doc{grid-template-columns:200px minmax(0,1fr);gap:60px}}
+.toc{font-size:14px}
+.toc details{border:1px solid var(--rule);border-radius:var(--radius);background:var(--surface);padding:2px 12px}
+.toc summary{cursor:pointer;font:500 12px/1 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2);padding:14px 2px}
+.toc ol{list-style:none;margin:0 0 10px;padding:0;display:grid;gap:2px;counter-reset:toc}
+.toc a{display:grid;grid-template-columns:24px 1fr;gap:4px;padding:6px 8px;border-radius:6px;color:var(--ink-2);text-decoration:none;line-height:1.35}
+.toc a::before{counter-increment:toc;content:counter(toc,decimal-leading-zero);font:500 11px/1.75 var(--f-mono);color:var(--muted)}
+.toc a:hover{background:var(--surface-2);color:var(--ink)}
+.toc a[aria-current="true"]{color:var(--ink);background:var(--surface-2)}
+.toc a[aria-current="true"]::before{color:var(--accent-ink)}
+@media (min-width:1080px){
+  .toc{position:sticky;top:calc(env(safe-area-inset-top,0px) + 24px);align-self:start;max-height:calc(100vh - 48px);overflow:auto}
+  .toc details{border:0;background:none;padding:0}
+  .toc summary{display:none}
+  .toc a:hover,.toc a[aria-current="true"]{background:var(--surface)}
+}
+.content{min-width:0;counter-reset:sec}
+.sec{counter-increment:sec;scroll-margin-top:24px}
+.sec + .sec{margin-top:84px}
+.sec > * + *{margin-top:18px}
+.sec > .kicker + h2{margin-top:12px}
+.sec > h2 + *{margin-top:22px}
+.sec > .fig,.sec > .cards,.sec > .stats,.sec > .tbl-wrap,.sec > .callout,.sec > .steps,.sec > .codeblock,.sec > .matrix,.sec > .tiers,.sec > .timeline,.sec > .split,.sec > .limits,.sec > .diagram{margin-top:30px}
+.sec > h3{margin-top:40px}
+.sec p,.sec > ul,.sec > ol{max-width:68ch}
+.sec > ul,.sec > ol{padding-left:1.25em}
+.sec > ul li + li,.sec > ol li + li{margin-top:8px}
+.kicker{display:flex;align-items:center;gap:10px;font:500 12px/1 var(--f-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.kicker::before{content:counter(sec,decimal-leading-zero);color:var(--accent-ink)}
+.sec h2{font-family:var(--f-display);font-weight:500;font-size:clamp(31px,3.7vw,46px);line-height:1.05;letter-spacing:-.01em}
+.sec h3{font-size:20px;line-height:1.3;font-weight:600}
+.lead{font-size:clamp(18px,1.5vw,19.5px);line-height:1.58;color:var(--ink-2)}
+.pull{font-family:var(--f-display);font-style:italic;font-weight:500;font-size:clamp(23px,2.4vw,29px);line-height:1.3;color:var(--ink);max-width:34ch;padding-block:6px}
+.pull b{color:var(--accent-ink);font-weight:600}
+
+/* ---------- tarjetas ---------- */
+.cards{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+.cards.two{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+.cards.quad{grid-template-columns:1fr}
+@media (min-width:560px){.cards.quad{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.card{background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);padding:18px 18px 16px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.card > .tag{font:500 11px/1.2 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--accent-ink)}
+.card > .ct{font:600 17px/1.3 var(--f-sans);margin:0;color:var(--ink)}
+.card > p{font-size:15px;line-height:1.55;color:var(--ink-2);margin:0;max-width:none}
+.card > .ex{margin-top:auto;padding-top:10px;font-size:13.5px;line-height:1.45;color:var(--muted);border-top:1px solid var(--rule)}
+.card > ul{margin:0;padding-left:1.1em;font-size:15px;line-height:1.5;color:var(--ink-2)}
+.card > ul li + li{margin-top:4px}
+.card.big > .ct{font:500 24px/1.15 var(--f-display)}
+
+/* ---------- cifras ---------- */
+.stats{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.stats.quad{grid-template-columns:repeat(2,minmax(0,1fr))}
+@media (max-width:479px){.stats.quad{grid-template-columns:1fr}}
+@media (min-width:1180px){.stats.quad{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.stat{background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);padding:16px 18px 14px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.stat .v{font:600 clamp(27px,2.8vw,34px)/1.05 var(--f-sans);letter-spacing:-.015em;color:var(--ink)}
+.stat .v small{font-size:.5em;font-weight:500;letter-spacing:0;color:var(--ink-2);margin-left:4px}
+.stat .l{font-size:14.5px;line-height:1.45;color:var(--ink-2)}
+.stat .s{font:11.5px/1.45 var(--f-mono);color:var(--muted);margin-top:auto;padding-top:4px}
+.stat.is-good .v{color:var(--good)} .stat.is-bad .v{color:var(--crit)}
+.stat .badge{display:inline-flex;align-items:center;gap:6px;font:500 12px/1 var(--f-sans);padding:4px 8px;border-radius:999px;border:1px solid var(--rule-strong);color:var(--ink-2);align-self:flex-start}
+.stat .badge svg{width:12px;height:12px}
+.stat.is-good .badge{color:var(--good);border-color:color-mix(in oklab,var(--good-mark) 45%,var(--rule))}
+.stat.is-bad .badge{color:var(--crit);border-color:color-mix(in oklab,var(--crit-mark) 45%,var(--rule))}
+
+/* ---------- avisos ---------- */
+.callout{display:grid;grid-template-columns:22px minmax(0,1fr);gap:12px;align-items:start;padding:16px 18px;border-radius:var(--radius);border:1px solid var(--rule);background:var(--surface)}
+.callout > svg{width:20px;height:20px;margin-top:2px;color:var(--accent-ink)}
+.callout .ct{font-weight:600;display:block;margin-bottom:2px}
+.callout p{font-size:15.5px;line-height:1.55;color:var(--ink-2);max-width:none}
+.callout p + p{margin-top:8px}
+.callout.warn{border-color:color-mix(in oklab,var(--warn-mark) 50%,var(--rule));background:color-mix(in oklab,var(--warn-mark) 7%,var(--surface))}
+.callout.warn > svg{color:var(--warn)}
+.callout.crit{border-color:color-mix(in oklab,var(--crit-mark) 45%,var(--rule));background:color-mix(in oklab,var(--crit-mark) 6%,var(--surface))}
+.callout.crit > svg{color:var(--crit)}
+.callout.good{border-color:color-mix(in oklab,var(--good-mark) 40%,var(--rule));background:color-mix(in oklab,var(--good-mark) 6%,var(--surface))}
+.callout.good > svg{color:var(--good)}
+
+/* ---------- tablas ---------- */
+.tbl-wrap{overflow-x:auto;border:1px solid var(--rule);border-radius:var(--radius);background:var(--surface)}
+.tbl-wrap table{min-width:640px}
+table{border-collapse:collapse;width:100%;font-size:14.5px;line-height:1.45}
+caption{caption-side:top;text-align:left;padding:14px 14px 4px;font-weight:600;font-size:15px}
+th{font:500 11.5px/1.3 var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);text-align:left;padding:12px 14px;border-bottom:1px solid var(--rule-strong);vertical-align:bottom}
+td{padding:11px 14px;border-bottom:1px solid var(--rule);vertical-align:top;color:var(--ink-2)}
+tbody tr:last-child td{border-bottom:0}
+td:first-child{color:var(--ink);font-weight:600}
+th.num,td.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+td .sub{display:block;font-weight:400;font-size:13px;color:var(--muted)}
+
+/* ---------- pasos ---------- */
+.steps{list-style:none;margin:0;padding:0;counter-reset:st}
+.sec > ol.steps,.sec > ol.timeline{padding-left:0;max-width:none}
+.steps > li{display:grid;grid-template-columns:52px minmax(0,1fr);gap:14px;padding:16px 0;border-top:1px solid var(--rule);max-width:none}
+.steps > li:last-child{border-bottom:1px solid var(--rule)}
+.steps > li::before{counter-increment:st;content:counter(st);font:500 32px/1 var(--f-display);color:var(--accent-ink);padding-top:2px}
+.steps b{display:block;font-weight:600;color:var(--ink)}
+.steps span{display:block;color:var(--ink-2);font-size:15.5px;line-height:1.55;margin-top:2px}
+
+/* ---------- figuras y gráficos ---------- */
+.fig{background:var(--surface);border:1px solid var(--rule);border-radius:12px;padding:20px clamp(14px,2.4vw,24px) 16px;margin-inline:0;min-width:0}
+.fig-title{font:600 17px/1.35 var(--f-sans);color:var(--ink)}
+.fig-sub{font-size:14.5px;line-height:1.5;color:var(--ink-2);margin-top:4px;max-width:72ch}
+.chart{position:relative;margin-top:16px;min-height:60px}
+.chart svg{display:block;overflow:visible}
+.legend{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13.5px;color:var(--ink-2);margin-top:14px}
+.legend span{display:inline-flex;align-items:center;gap:7px}
+.legend i{display:inline-block;width:16px;height:2px;border-radius:1px;background:var(--k)}
+.legend i.box{width:10px;height:10px;border-radius:2px}
+.fig-note{font-size:13px;line-height:1.55;color:var(--muted);margin-top:12px;max-width:none}
+.fig details.data{margin-top:12px;border-top:1px solid var(--rule);padding-top:10px}
+.fig details.data summary{cursor:pointer;font:500 12.5px/1.4 var(--f-mono);color:var(--ink-2);width:max-content;max-width:100%}
+.fig details.data .tbl-wrap{margin-top:10px}
+.fig details.data table{min-width:0}
+.viz text{font-family:var(--f-sans);font-size:12px;fill:var(--muted)}
+.viz .grid{stroke:var(--grid);stroke-width:1;shape-rendering:crispEdges}
+.viz .base{stroke:var(--rule-strong);stroke-width:1;shape-rendering:crispEdges}
+.viz .lbl{fill:var(--ink-2);font-size:12.5px}
+.viz .lbl-strong{fill:var(--ink);font-size:13px;font-weight:600}
+.viz .val{fill:var(--ink);font-size:12.5px;font-variant-numeric:tabular-nums}
+.viz .hit{fill:transparent;cursor:default}
+.viz .hit:focus{outline:none}
+.viz .hit:focus-visible{stroke:var(--accent-ink);stroke-width:2px}
+.viz .cross{stroke:var(--ink-2);stroke-width:1;shape-rendering:crispEdges}
+.viz .mark{transition:opacity .15s}
+.viz g.row:hover .mark,.viz g.row:focus-within .mark{opacity:.8}
+.viz .ref{stroke:var(--ink);stroke-width:1.5}
+.viz .band{fill:var(--wash)}
+
+.viz-tip{position:fixed;z-index:50;pointer-events:none;min-width:130px;max-width:290px;background:var(--ink);color:var(--paper);border-radius:8px;padding:9px 11px 10px;font:13px/1.4 var(--f-sans);box-shadow:0 12px 30px -12px rgba(0,0,0,.45);opacity:0;transform:translateY(4px);transition:opacity .12s,transform .12s;left:0;top:0}
+.viz-tip.on{opacity:1;transform:none}
+.viz-tip .t{font:500 11px/1.3 var(--f-mono);letter-spacing:.05em;opacity:.72;margin-bottom:5px}
+.viz-tip .r{display:flex;align-items:baseline;gap:8px}
+.viz-tip .r + .r{margin-top:2px}
+.viz-tip .r i{flex:none;width:12px;height:2px;border-radius:1px;align-self:center}
+.viz-tip .r b{font-weight:600;font-variant-numeric:tabular-nums}
+.viz-tip .r span{opacity:.78}
+.viz-tip .n{margin-top:6px;opacity:.78;font-size:12px}
+
+/* ---------- controles ---------- */
+.controls{display:grid;gap:14px 22px;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));margin-top:18px}
+.controls.four{grid-template-columns:repeat(auto-fit,minmax(170px,1fr))}
+.ctl{display:flex;flex-direction:column;gap:6px;min-width:0}
+.ctl label{display:flex;justify-content:space-between;gap:10px;font-size:13.5px;color:var(--ink-2)}
+.ctl output{font:500 13px var(--f-mono);color:var(--ink);white-space:nowrap}
+.ctl input[type="range"]{width:100%;accent-color:var(--accent-ink)}
+.ctl input[type="number"],.ctl select{font:15px var(--f-sans);color:var(--ink);background:var(--paper);border:1px solid var(--rule-strong);border-radius:8px;padding:8px 10px;width:100%}
+.ctl .hint{font-size:12px;color:var(--muted)}
+.btns{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.btn{font:500 14px/1 var(--f-sans);color:var(--ink);background:var(--surface);border:1px solid var(--rule-strong);border-radius:999px;padding:9px 14px;cursor:pointer}
+.btn:hover{border-color:var(--ink-2)}
+.btn[aria-pressed="true"]{background:var(--accent-ink);border-color:var(--accent-ink);color:var(--surface)}
+.btn.ghost{border-style:dashed}
+.readout{margin-top:16px;padding:14px 16px;border-radius:8px;background:var(--wash);font-size:15.5px;line-height:1.55;color:var(--ink)}
+.meter{height:10px;border-radius:999px;background:color-mix(in oklab,var(--accent) 16%,var(--surface));overflow:hidden;margin-top:8px}
+.meter > i{display:block;height:100%;border-radius:999px;background:var(--accent);transition:width .25s}
+.meter.warn > i{background:var(--warn-mark)} .meter.crit > i{background:var(--crit-mark)}
+.meter.warn{background:color-mix(in oklab,var(--warn-mark) 18%,var(--surface))} .meter.crit{background:color-mix(in oklab,var(--crit-mark) 16%,var(--surface))}
+
+/* ---------- código ---------- */
+.codeblock{position:relative}
+pre.code{margin:0;overflow-x:auto;background:var(--surface-2);border:1px solid var(--rule);border-radius:var(--radius);padding:18px 18px 16px;font:13.5px/1.6 var(--f-mono);color:var(--ink);tab-size:4}
+pre.code code{font:inherit}
+.codeblock .copy{position:absolute;top:8px;right:8px;font:500 12px/1 var(--f-mono);color:var(--ink-2);background:var(--surface);border:1px solid var(--rule-strong);border-radius:6px;padding:6px 9px;cursor:pointer}
+.codeblock .copy:hover{color:var(--ink);border-color:var(--ink-2)}
+.codeblock .lang{position:absolute;top:10px;left:18px;font:500 10.5px/1 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.codeblock .lang + pre.code{padding-top:34px}
+.c-com{color:var(--muted);font-style:italic}
+.c-str{color:var(--accent-ink)}
+.c-kw{font-weight:600}
+.c-num{color:var(--accent-ink)}
+code:not(pre code){font:.88em var(--f-mono);background:var(--surface-2);border:1px solid var(--rule);border-radius:4px;padding:.05em .35em}
+.prompt{background:var(--surface);border:1px dashed var(--rule-strong);border-radius:var(--radius);padding:16px 18px;font-size:15px;line-height:1.6;color:var(--ink)}
+.prompt .who{font:500 11px/1 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:8px}
+
+/* ---------- diagramas ---------- */
+.diagram{background:var(--surface);border:1px solid var(--rule);border-radius:12px;padding:18px clamp(12px,2.4vw,22px)}
+.diagram .scroll{overflow-x:auto}
+.scroll-hint{display:none;font:12px/1.4 var(--f-mono);color:var(--muted);margin-bottom:8px}
+@media (max-width:800px){.scroll-hint{display:block}}
+.diagram svg text{font-family:var(--f-sans)}
+.flowchart{margin-top:6px}
+.fnode rect{fill:var(--surface);stroke:var(--rule-strong)}
+.fnode.hl rect{fill:var(--wash);stroke:var(--accent)}
+.fnode .ft{fill:var(--ink);font-size:14px;font-weight:600}
+.fnode .fd{fill:var(--ink-2);font-size:12px}
+.fedge{stroke:var(--ink-2);stroke-width:1.25;fill:none}
+.fhead{fill:var(--ink-2)}
+.flabel{fill:var(--muted);font:11px var(--f-mono)}
+
+/* ---------- lista de límites ---------- */
+.limits{display:grid;gap:0;counter-reset:lim;border-top:1px solid var(--rule)}
+.limit{display:grid;grid-template-columns:44px minmax(0,1fr);gap:16px;padding:20px 0;border-bottom:1px solid var(--rule)}
+.limit::before{counter-increment:lim;content:counter(lim);font:500 30px/1 var(--f-display);color:var(--accent-ink);padding-top:2px}
+.limit h3{font-size:18px;line-height:1.3;font-weight:600}
+.limit p{margin-top:6px;color:var(--ink-2);font-size:16px;max-width:66ch}
+.limit .datum{margin-top:10px;font:12.5px/1.5 var(--f-mono);color:var(--ink);background:var(--surface);border:1px solid var(--rule);border-radius:6px;padding:8px 10px;max-width:66ch}
+.limit > div > .fig{margin-top:18px}
+@media (max-width:600px){.limit{grid-template-columns:1fr;gap:4px}.limit::before{font-size:24px}}
+
+/* ---------- dos columnas sí/no ---------- */
+.split{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+.split > div{background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);padding:18px 20px}
+.split h3{display:flex;align-items:center;gap:8px;font-size:17px}
+.split h3 svg{width:18px;height:18px}
+.split .yes h3{color:var(--good)} .split .no h3{color:var(--crit)}
+.split ul{margin:10px 0 0;padding-left:1.1em;color:var(--ink-2);font-size:15.5px;line-height:1.55}
+.split li + li{margin-top:6px}
+
+/* ---------- cronología ---------- */
+.timeline{list-style:none;margin:0;padding:0;border-left:1px solid var(--rule-strong);margin-left:6px}
+.timeline li{position:relative;padding:0 0 20px 22px;max-width:none}
+.timeline li::before{content:"";position:absolute;left:-5px;top:.45em;width:9px;height:9px;background:var(--accent);transform:rotate(45deg)}
+.timeline time{display:block;font:500 12px/1.4 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--accent-ink)}
+.timeline b{display:block;margin-top:2px}
+.timeline span{display:block;color:var(--ink-2);font-size:15.5px;line-height:1.55;max-width:66ch;margin-top:2px}
+
+/* ---------- fuentes y pie ---------- */
+.refs{font-size:14px;line-height:1.55;color:var(--ink-2);padding-left:1.3em}
+.refs li + li{margin-top:7px}
+.foot{border-top:1px solid var(--rule);padding-block:28px 40px;display:grid;gap:18px}
+.foot p{font-size:13.5px;color:var(--muted);max-width:80ch}
+.foot .series-nav{justify-content:flex-start}
+
+@media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
+.fig .stats{margin-top:16px}
+
+/* página */
+:root{--accent:var(--c2);--accent-ink:#AE4A1D}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--accent-ink:#F29A6B}}
+:root[data-theme="dark"]{--accent-ink:#F29A6B}
+.tiers{display:grid;background:var(--surface);border:1px solid var(--rule);border-radius:12px;padding:18px clamp(14px,2.4vw,22px)}
+.tier{border:1px solid var(--rule-strong);border-radius:8px;padding:12px 14px;background:var(--surface)}
+.tier .tl{display:block;font:500 11px/1.2 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--accent-ink);margin-bottom:4px}
+.tier p{font-size:15px;line-height:1.5;color:var(--ink-2);max-width:none}
+.tier.you{background:var(--wash);border-color:var(--accent)}
+.tier .two{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));margin-top:8px}
+.tier .two > div{border:1px dashed var(--rule-strong);border-radius:6px;padding:10px 12px}
+.tier .two b{display:block;font-size:15px;color:var(--ink)}
+.tlink{position:relative;height:44px;margin-left:28px;border-left:1.5px solid var(--ink-2)}
+.tlink::before,.tlink::after{content:"";position:absolute;left:-5.75px;border:5px solid transparent}
+.tlink::before{top:-1px;border-bottom:7px solid var(--ink-2);border-top:0}
+.tlink::after{bottom:-1px;border-top:7px solid var(--ink-2);border-bottom:0}
+.tlink span{position:absolute;left:14px;top:50%;transform:translateY(-50%);font:11.5px/1.2 var(--f-mono);color:var(--muted);white-space:nowrap}
+.calc{display:grid;gap:18px}
+.checklist{list-style:none;padding:0!important;display:grid;gap:10px}
+.checklist li{position:relative;padding-left:26px}
+.checklist li::before{content:"";position:absolute;left:2px;top:.35em;width:13px;height:13px;border:1.5px solid var(--accent-ink);border-radius:3px}
+.checklist li::after{content:"";position:absolute;left:6px;top:.52em;width:5px;height:8px;border:solid var(--accent-ink);border-width:0 1.8px 1.8px 0;transform:rotate(45deg)}
+</style>
+</head>
+<body>
+<header class="series wrap" id="top"><span class="brand">Máquinas y mercados</span><nav aria-label="Documentos de la serie"><ul class="series-nav"><li><a href="01-trading-algoritmico.html"><span class="dot" style="--c:var(--c1)"></span>1 · Trading algorítmico</a></li><li><a href="#top" aria-current="page"><span class="dot" style="--c:var(--c2)"></span>2 · Forex algorítmico</a></li><li><a href="03-agentes-claude-trading.html"><span class="dot" style="--c:var(--c3)"></span>3 · Agentes Claude</a></li><li><a href="04-verdad-cuentas-fondeo.html"><span class="dot" style="--c:var(--c4)"></span>4 · Cuentas de fondeo</a></li></ul></nav></header>
+<section class="hero wrap">
+  <div class="hero-text">
+    <p class="eyebrow"><span>Máquinas y mercados</span><b>Documento 2 de 4</b></p>
+    <h1>Forex <em>algorítmico</em></h1>
+    <p class="dek">Cómo funciona por dentro el mayor mercado del mundo, qué lo hace distinto para un algoritmo y qué estrategias tienen evidencia detrás. Con calculadoras de costes y de tamaño de posición.</p>
+    <p class="meta">Septiembre de 2026 · 18 minutos de lectura</p>
+  </div>
+  <div class="emblem" aria-hidden="true"><canvas></canvas><span class="numeral">2</span><span class="serial">MM · 02 · 2026</span></div>
+</section>
+<div class="wrap"><div class="microprint" aria-hidden="true" data-text="FOREX ALGORÍTMICO · EUR/USD · USD/JPY · GBP/USD"></div>
+  <div class="tldr">
+    <h2>En corto</h2>
+    <ul>
+      <li>Se negocian 9,6 billones de dólares al día (BIS, abril de 2025). Es un mercado descentralizado, sin un precio ni un volumen únicos.</li>
+      <li>Los enemigos de un particular son los costes, el apalancamiento y los eventos extremos, mucho más que la falta de un buen indicador.</li>
+      <li>Las estrategias con evidencia (carry, momentum, value) son de medio plazo y se reparten entre muchas divisas. El scalping y la martingala juegan en terreno hostil.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="doc wrap">
+  <aside class="toc" aria-label="Índice"></aside>
+  <main class="content">
+
+    <section class="sec" id="mercado">
+      <p class="kicker">Tamaño</p>
+      <h2 data-short="El mercado en cifras">El mercado más grande del mundo</h2>
+      <p class="lead">Cada tres años, los bancos centrales miden el mercado de divisas en la encuesta trienal del Banco de Pagos Internacionales (BIS). La última, de abril de 2025, dejó estas cifras.</p>
+      <div class="stats quad">
+        <div class="stat"><span class="v">9,6<small>billones de $</small></span><span class="l">negociados cada día, un 28&nbsp;% más que en 2022.</span><span class="s">BIS, encuesta trienal 2025</span></div>
+        <div class="stat"><span class="v">3<small>billones de $</small></span><span class="l">al día en contado (spot), el 31&nbsp;% del total. Las permutas de divisas suman 4 billones.</span><span class="s">BIS, 2025</span></div>
+        <div class="stat"><span class="v">89&nbsp;%</span><span class="l">de las operaciones tienen el dólar en uno de sus lados.</span><span class="s">BIS, 2025</span></div>
+        <div class="stat"><span class="v">38&nbsp;%</span><span class="l">del volumen se negocia desde Reino Unido. Con EE.&nbsp;UU., Singapur y Hong Kong, el 75&nbsp;%.</span><span class="s">BIS, 2025</span></div>
+      </div>
+      <p class="fig-note">En español, un billón es un millón de millones (10<sup>12</sup>). En inglés sería <i>trillion</i>.</p>
+      <figure class="fig" id="fig-ccy">
+        <p class="fig-title">Presencia de cada divisa en las operaciones</p>
+        <p class="fig-sub">Porcentaje de operaciones en las que aparece cada divisa. Suma 200&nbsp;% porque cada operación tiene dos.</p>
+        <div class="chart" id="ccy"></div>
+        <p class="fig-note">Fuente: BIS, encuesta trienal de abril de 2025.</p>
+      </figure>
+      <p>El 46&nbsp;% del volumen se cruza entre grandes intermediarios, y otro 50&nbsp;% entre intermediarios y otras instituciones financieras, como fondos, bancos pequeños y creadores de mercado no bancarios. El particular llega a este mercado a través de su bróker y representa una parte pequeña del total.</p>
+    </section>
+
+    <section class="sec" id="estructura">
+      <p class="kicker">Estructura</p>
+      <h2 data-short="Quién está al otro lado">Quién está al otro lado de tu orden</h2>
+      <p class="lead">En forex no hay una bolsa central. Es una red de intermediarios que se cotizan precios entre sí, y tu orden recorre varias capas antes de encontrar contrapartida, o se queda en tu bróker.</p>
+      <figure class="tiers" aria-label="Capas del mercado de divisas, de los proveedores de liquidez al trader particular">
+        <div class="tier"><span class="tl">Proveedores de liquidez</span><p>Grandes bancos y creadores de mercado no bancarios como XTX, Citadel Securities, Jump o HC Tech. Cotizan precios a todo el mercado.</p></div>
+        <div class="tlink"><span>cotizaciones y órdenes</span></div>
+        <div class="tier"><span class="tl">Plataformas</span><p>Interbancarias (EBS, LSEG Matching) y redes electrónicas o ECN (Cboe FX, Currenex, LMAX). Casan órdenes de muchos participantes.</p></div>
+        <div class="tlink"><span>acceso con crédito</span></div>
+        <div class="tier"><span class="tl">Prime brokers y agregadores</span><p>Dan crédito a los intermediarios pequeños y combinan precios de varios proveedores en un solo flujo.</p></div>
+        <div class="tlink"><span>precios agregados</span></div>
+        <div class="tier"><span class="tl">Tu bróker</span>
+          <div class="two">
+            <div><b>A-book</b><p>Envía tu orden al mercado y cobra una comisión o parte del diferencial.</p></div>
+            <div><b>B-book</b><p>Se queda con el otro lado de tu operación. Gana lo que tú pierdes.</p></div>
+          </div></div>
+        <div class="tlink"><span>MT5, cTrader o API</span></div>
+        <div class="tier you"><span class="tl">Tú</span><p>Tu algoritmo, en tu ordenador o en un servidor cercano al del bróker.</p></div>
+      </figure>
+      <p>Muchos proveedores aplican <i>last look</i>: tras recibir tu orden, disponen de unos milisegundos para aceptarla o rechazarla si el precio se ha movido. El Código Global de Divisas (principio 17) les exige explicarlo. Para una estrategia rápida significa rechazos justo cuando más importa.</p>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Modelo de bróker</th><th>Cómo gana</th><th>Qué implica para tu algoritmo</th></tr></thead>
+          <tbody>
+            <tr><td>Creador de mercado (B-book)</td><td>Con el diferencial y con lo que pierden sus clientes</td><td>Puede limitar el scalping, recotizar o retrasar órdenes en noticias. Vigila si las condiciones cambian cuando empiezas a ganar.</td></tr>
+            <tr><td>STP o ECN (A-book)</td><td>Con una comisión por lote o un margen sobre el diferencial</td><td>Precios más cercanos al mercado real, con diferenciales variables que se abren en las noticias.</td></tr>
+            <tr><td>Híbrido</td><td>Clasifica a los clientes: A-book para los que ganan, B-book para el resto</td><td>Muy extendido entre los brókeres minoristas. Tus ejecuciones pueden empeorar si pasas de un libro a otro.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="sec" id="reloj">
+      <p class="kicker">Horario</p>
+      <h2 data-short="El reloj del forex">El reloj del forex</h2>
+      <p class="lead">El mercado abre el domingo por la noche y cierra el viernes por la noche, pero la liquidez cambia mucho según la hora del día.</p>
+      <figure class="fig" id="fig-ses">
+        <p class="fig-title">Sesiones en hora de la España peninsular</p>
+        <p class="fig-sub">Horas aproximadas de invierno. Pasa el cursor por cada sesión.</p>
+        <div class="chart" id="ses"></div>
+        <p class="fig-note">Londres abre siempre a las 9:00 en España y Nueva York a las 14:00, salvo unas semanas de marzo y noviembre en que EE.&nbsp;UU. y Europa cambian la hora en fechas distintas. Tokio y Sídney se desplazan una hora según la época del año.</p>
+      </figure>
+      <p>Tres citas marcan el día de un algoritmo: los datos macro de EE.&nbsp;UU. (empleo, inflación) salen a las 14:30; el BCE anuncia sus tipos a las 14:15; la Reserva Federal, a las 20:00. A las 23:00 llega el cambio de día (<i>rollover</i>), con diferenciales más anchos y el cobro o pago de los intereses de las posiciones abiertas.</p>
+    </section>
+
+    <section class="sec" id="diferente">
+      <p class="kicker">Particularidades</p>
+      <h2 data-short="Lo que cambia">Lo que cambia para un algoritmo</h2>
+      <p class="lead">Un sistema que funciona en acciones no se traslada tal cual al forex. Estas ocho diferencias son las que más backtests rompen.</p>
+      <div class="cards two">
+        <article class="card"><h3 class="ct">Sin precio ni volumen únicos</h3><p>Cada bróker tiene su propio flujo de precios. El volumen de MetaTrader cuenta cambios de precio (ticks) en tu bróker, no contratos negociados en el mercado.</p></article>
+        <article class="card"><h3 class="ct">Diferenciales que respiran</h3><p>Se abren en el cambio de día, con las noticias y en las horas de poca liquidez. Un backtest con diferencial fijo te está mintiendo.</p></article>
+        <article class="card"><h3 class="ct">Intereses cada noche</h3><p>Mantener una posición al cierre cobra o paga la diferencia de tipos de interés (swap). El miércoles se aplica triple para cubrir el fin de semana.</p></article>
+        <article class="card"><h3 class="ct">Huecos de fin de semana</h3><p>El mercado cierra el viernes a las 23:00 y reabre el domingo por la noche. Un stop no te protege si el precio abre más allá.</p></article>
+        <article class="card"><h3 class="ct">Bancos centrales</h3><p>Las decisiones de tipos y las intervenciones mueven más que cualquier indicador. Japón intervino para sostener el yen en 2022 y en 2024.</p></article>
+        <article class="card"><h3 class="ct">Apalancamiento regulado</h3><p>En la UE, un cliente minorista puede apalancarse como máximo 30 veces en los pares principales y 20 veces en el resto.</p></article>
+        <article class="card"><h3 class="ct">Rechazos por last look</h3><p>Algunos proveedores pueden rechazar tu orden unos milisegundos después de recibirla. Las estrategias rápidas lo sufren más.</p></article>
+        <article class="card"><h3 class="ct">Correlación escondida</h3><p>Comprar EUR/USD, GBP/USD y AUD/USD a la vez es, en la práctica, una sola apuesta grande contra el dólar.</p></article>
+      </div>
+      <h3>Cuando el mercado se rompe</h3>
+      <ol class="timeline">
+        <li><time>2014–2015</time><b>El escándalo de los fixings</b><span>Los reguladores de Reino Unido, EE.&nbsp;UU. y Suiza multaron a grandes bancos con más de 10.000 millones de dólares por manipular las fijaciones de referencia del mercado de divisas.</span></li>
+        <li><time>15 de enero de 2015</time><b>Suiza abandona el suelo del franco</b><span>El EUR/CHF cayó de 1,20 a cerca de 0,85 en minutos. FXCM necesitó un préstamo de rescate de 300 millones de dólares y Alpari UK quebró.</span></li>
+        <li><time>7 de octubre de 2016</time><b>Desplome relámpago de la libra</b><span>La libra cayó en torno a un 9&nbsp;% frente al dólar en segundos, durante la madrugada asiática, y recuperó buena parte después (BIS).</span></li>
+        <li><time>3 de enero de 2019</time><b>Desplome relámpago del yen</b><span>El yen se apreció un 3&nbsp;% frente al dólar en unos 30 segundos y el AUD/JPY cayó un 7&nbsp;% en minutos (Banco de la Reserva de Australia).</span></li>
+        <li><time>5 de agosto de 2024</time><b>Cierre masivo del carry con el yen</b><span>Tras la subida de tipos en Japón y un mal dato de empleo en EE.&nbsp;UU., la salida en bloque de las posiciones de carry contribuyó a que el Nikkei cayera un 12&nbsp;% en una sesión.</span></li>
+      </ol>
+    </section>
+
+    <section class="sec" id="estrategias">
+      <p class="kicker">Estrategias</p>
+      <h2 data-short="Estrategias">Qué funciona en forex y qué no</h2>
+      <p class="lead">Las estrategias de divisas con respaldo académico son pocas, de medio plazo, y funcionan mejor repartidas entre muchos pares.</p>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Estrategia</th><th>Idea</th><th>Evidencia</th><th>Riesgo principal</th></tr></thead>
+          <tbody>
+            <tr><td>Carry</td><td>Comprar divisas con tipos de interés altos y vender las de tipos bajos</td><td>Prima documentada durante décadas (Lustig, Roussanov y Verdelhan, 2011; Menkhoff y otros, 2012)</td><td>Caídas bruscas en las crisis (Brunnermeier, Nagel y Pedersen, 2008)</td></tr>
+            <tr><td>Momentum y tendencia</td><td>Seguir a las divisas que más han subido en los últimos meses</td><td>Rentable en estudios amplios (Menkhoff y otros, 2012; Moskowitz, Ooi y Pedersen, 2012)</td><td>Mercados laterales, giros y costes altos en divisas poco líquidas</td></tr>
+            <tr><td>Value</td><td>Comprar divisas baratas según su poder adquisitivo (PPA)</td><td>Funciona en horizontes de años (Asness, Moskowitz y Pedersen, 2013)</td><td>Puede tardar años en converger</td></tr>
+            <tr><td>Reversión en cruces</td><td>Operar pares que suelen moverse en un rango, como AUD/NZD</td><td>Depende mucho del par y del periodo</td><td>Rupturas de régimen, como el franco suizo en 2015</td></tr>
+            <tr><td>Noticias</td><td>Reaccionar a datos macro y a los bancos centrales</td><td>Ventaja reservada a los más rápidos</td><td>Diferenciales, deslizamiento y rechazos justo en el momento clave</td></tr>
+            <tr><td>Rupturas de sesión</td><td>Operar la salida del rango asiático en la apertura de Londres</td><td>Resultados mixtos y muy sensibles a los costes</td><td>Falsas rupturas</td></tr>
+            <tr><td>Martingala y rejilla</td><td>Doblar la posición tras cada pérdida o promediar a intervalos fijos</td><td>Ninguna. No crean ventaja</td><td>Una ruina ocasional que borra meses de ganancias</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Neely, Weller y Ulrich (2009) mostraron que las reglas técnicas sencillas que ganaban dinero en divisas en los años setenta y ochenta dejaron de hacerlo después, a medida que el mercado aprendía. Es la ventaja que se agota del <a href="01-trading-algoritmico.html">documento 1</a>, aplicada al forex.</p>
+      <figure class="fig" id="fig-mart">
+        <p class="fig-title">La martingala en una imagen</p>
+        <p class="fig-sub">Dos cuentas de 10.000&nbsp;$ juegan exactamente las mismas 700 operaciones a cara o cruz, con 10 pips de objetivo y de stop. El eje horizontal cuenta operaciones. Una dobla la posición tras cada pérdida; la otra arriesga siempre el 1&nbsp;%.</p>
+        <div class="chart" id="mart"></div>
+        <div class="legend"><span><i style="--k:var(--c1)"></i>Riesgo fijo del 1&nbsp;%</span><span><i style="--k:var(--c2)"></i>Martingala</span></div>
+        <p class="fig-note">Simulación ilustrativa, sin costes ni límites de margen. Con los límites europeos de apalancamiento la martingala se cortaría antes, pero las pérdidas llegarían igual.</p>
+      </figure>
+    </section>
+
+    <section class="sec" id="calculadoras">
+      <p class="kicker">Números</p>
+      <h2 data-short="Calculadoras">Costes y tamaño de posición</h2>
+      <p class="lead">Dos cálculos que conviene hacer antes de programar una sola línea: cuánto se comen los costes y cuánto arriesgas de verdad en cada operación.</p>
+      <figure class="fig" id="fig-cost">
+        <p class="fig-title">¿Cuánto se comen los costes?</p>
+        <p class="fig-sub">Para EUR/USD y pares cotizados en dólares, donde un pip vale 10&nbsp;$ por lote estándar. Los valores iniciales son un ejemplo.</p>
+        <div class="controls four">
+          <div class="ctl"><label for="c-n">Operaciones al mes <output id="c-n-out" for="c-n">80</output></label><input id="c-n" type="range" min="5" max="400" step="5" value="80"></div>
+          <div class="ctl"><label for="c-cost">Coste por operación (pips)</label><input id="c-cost" type="number" min="0" max="20" step="0.1" value="1.2"><span class="hint">Diferencial más comisión, ida y vuelta</span></div>
+          <div class="ctl"><label for="c-edge">Ventaja bruta media por operación (pips)</label><input id="c-edge" type="number" min="0.1" max="100" step="0.1" value="2"><span class="hint">Lo que ganarías de media sin costes</span></div>
+          <div class="ctl"><label for="c-lots">Tamaño (lotes)</label><input id="c-lots" type="number" min="0.01" max="100" step="0.01" value="1"></div>
+        </div>
+        <div class="stats">
+          <div class="stat"><span class="v" id="c-costs">–</span><span class="l">pagas en costes al mes</span></div>
+          <div class="stat"><span class="v" id="c-gross">–</span><span class="l">de ganancia bruta esperada al mes</span></div>
+          <div class="stat" id="c-net-card"><span class="v" id="c-net">–</span><span class="l">de resultado neto esperado al mes</span><span class="badge" id="c-badge"></span></div>
+        </div>
+        <div class="readout" id="c-read" aria-live="polite"></div>
+        <div class="meter" id="c-meter" role="img" aria-label="Parte de la ventaja que se comen los costes"><i id="c-meter-i"></i></div>
+      </figure>
+      <figure class="fig" id="fig-size">
+        <p class="fig-title">Tamaño de posición por riesgo</p>
+        <p class="fig-sub">Lotes = (capital × riesgo por operación) ÷ (stop en pips × valor del pip). Ejemplo con una cuenta en dólares operando EUR/USD.</p>
+        <div class="controls four">
+          <div class="ctl"><label for="s-cap">Capital ($)</label><input id="s-cap" type="number" min="100" step="100" value="10000"></div>
+          <div class="ctl"><label for="s-risk">Riesgo por operación <output id="s-risk-out" for="s-risk">1 %</output></label><input id="s-risk" type="range" min="0.25" max="5" step="0.25" value="1"></div>
+          <div class="ctl"><label for="s-stop">Stop (pips)</label><input id="s-stop" type="number" min="1" max="1000" step="1" value="25"></div>
+          <div class="ctl"><label for="s-px">Precio EUR/USD (ejemplo)</label><input id="s-px" type="number" min="0.5" max="2" step="0.0001" value="1.1000"></div>
+        </div>
+        <div class="stats quad">
+          <div class="stat"><span class="v" id="s-lots">–</span><span class="l">lotes estándar</span></div>
+          <div class="stat"><span class="v" id="s-money">–</span><span class="l">en riesgo si salta el stop</span></div>
+          <div class="stat"><span class="v" id="s-nom">–</span><span class="l">de tamaño nominal</span></div>
+          <div class="stat"><span class="v" id="s-lev">–</span><span class="l">de apalancamiento efectivo</span><span class="s" id="s-margin"></span></div>
+        </div>
+        <div class="meter" id="s-meter" role="img" aria-label="Apalancamiento efectivo frente al máximo europeo de 30 veces"><i id="s-meter-i"></i></div>
+        <p class="fig-note">La barra compara tu apalancamiento efectivo con el máximo de 30 veces que permite la UE a un minorista en pares principales. Que la regla lo permita no significa que sea prudente.</p>
+      </figure>
+    </section>
+
+    <section class="sec" id="backtest">
+      <p class="kicker">Método</p>
+      <h2 data-short="Datos y tecnología">Datos, backtest y tecnología</h2>
+      <h3>Un backtest de forex honesto</h3>
+      <ul class="checklist">
+        <li>Datos tick con el diferencial real. Dukascopy ofrece históricos gratuitos; mejor aún, los de tu propio bróker.</li>
+        <li>Diferencial variable, comisión, deslizamiento y swaps, incluido el triple del miércoles.</li>
+        <li>Huecos de fin de semana y días festivos.</li>
+        <li>Zona horaria del servidor. Muchos brókeres usan GMT+2 o GMT+3 para que la vela diaria cierre a las 17:00 de Nueva York y haya cinco velas diarias por semana.</li>
+        <li>En el probador de MetaTrader 5, el modo «cada tick basado en ticks reales».</li>
+        <li>Walk-forward y Monte Carlo: reordena las operaciones y empeora los costes para ver si la estrategia sobrevive.</li>
+        <li>Cuidado con el optimizador. Miles de combinaciones garantizan un resultado brillante por azar, como muestra el laboratorio del <a href="01-trading-algoritmico.html">documento 1</a>.</li>
+      </ul>
+      <h3>La pila tecnológica</h3>
+      <figure class="diagram">
+        <div class="flowchart" id="stack"></div>
+        <figcaption class="fig-note">La capa de riesgo va en código propio, separada de la estrategia, y puede cerrar todo aunque la estrategia falle.</figcaption>
+      </figure>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Plataforma</th><th>Lenguaje</th><th>Para qué</th></tr></thead>
+          <tbody>
+            <tr><td>MetaTrader 5</td><td>MQL5, y Python en Windows</td><td>La más extendida en brókeres minoristas y firmas de fondeo, con probador integrado</td></tr>
+            <tr><td>MetaTrader 4</td><td>MQL4</td><td>Veterana y en retirada en favor de MetaTrader 5</td></tr>
+            <tr><td>cTrader</td><td>C# (cTrader Algo)</td><td>Alternativa moderna a MetaTrader</td></tr>
+            <tr><td>NinjaTrader</td><td>C#</td><td>Futuros de divisas en el CME</td></tr>
+            <tr><td>APIs REST y FIX</td><td>Python o cualquier lenguaje</td><td>OANDA, Interactive Brokers y redes ECN, con el máximo control</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Si tu estrategia opera en horizontes de minutos o más, la latencia importa poco. Si es más rápida, un servidor virtual en el mismo centro de datos que tu bróker (Equinix LD4 en Londres, NY4 en Nueva York o TY3 en Tokio) baja la latencia de decenas de milisegundos a uno o dos.</p>
+    </section>
+
+    <section class="sec" id="regulacion">
+      <p class="kicker">Reglas</p>
+      <h2 data-short="Regulación">Regulación en España y la UE</h2>
+      <p class="lead">Desde 2018, ESMA limita el apalancamiento de los CFD que se venden a minoristas, incluido el forex al contado con apalancamiento que ofrecen los brókeres.</p>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Subyacente</th><th class="num">Apalancamiento máximo</th><th class="num">Garantía mínima</th></tr></thead>
+          <tbody>
+            <tr><td>Pares de divisas principales<span class="sub">Combinaciones de USD, EUR, JPY, GBP, CAD y CHF</span></td><td class="num">30 : 1</td><td class="num">3,33&nbsp;%</td></tr>
+            <tr><td>Otros pares, oro e índices principales</td><td class="num">20 : 1</td><td class="num">5&nbsp;%</td></tr>
+            <tr><td>Materias primas salvo el oro e índices no principales</td><td class="num">10 : 1</td><td class="num">10&nbsp;%</td></tr>
+            <tr><td>Acciones individuales y otros</td><td class="num">5 : 1</td><td class="num">20&nbsp;%</td></tr>
+            <tr><td>Criptoactivos</td><td class="num">2 : 1</td><td class="num">50&nbsp;%</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <ul>
+        <li>El bróker cierra tus posiciones cuando tu margen cae al 50&nbsp;% del mínimo exigido.</li>
+        <li>Protección de saldo negativo: no puedes perder más de lo que has depositado.</li>
+        <li>Advertencia estandarizada con el porcentaje de cuentas que pierden. ESMA observó entre el 74&nbsp;% y el 89&nbsp;%.</li>
+        <li>En España, una resolución de la CNMV de 11 de julio de 2023 prohíbe la publicidad de CFD dirigida a minoristas y limita el apalancamiento de otros productos, como futuros y opciones.</li>
+        <li>Comprueba que tu bróker está autorizado en los registros de la CNMV o de su supervisor europeo y que no aparece en la lista de advertencias.</li>
+        <li>Si quiebra un bróker español, el FOGAIN cubre hasta 100.000 euros por inversor. Los de otros países de la UE tienen su propio fondo, con un mínimo europeo de 20.000 euros.</li>
+      </ul>
+    </section>
+
+    <section class="sec" id="sistema">
+      <p class="kicker">Plantilla</p>
+      <h2 data-short="Sistema de ejemplo">Un sistema sensato para empezar</h2>
+      <p class="lead">Este esqueleto combina dos de las primas con más evidencia, reparte el riesgo y opera poco. Sirve para aprender el proceso completo antes de buscar nada más ambicioso.</p>
+      <div class="cards">
+        <article class="card"><span class="tag">Universo</span><p>Entre 7 y 9 pares frente al dólar: EUR, GBP, JPY, CHF, AUD, CAD, NZD…</p></article>
+        <article class="card"><span class="tag">Señales</span><p>Tendencia de 12 meses sin el último, y carry según el diferencial de tipos.</p></article>
+        <article class="card"><span class="tag">Tamaño</span><p>Cada par aporta un riesgo parecido, con una volatilidad objetivo del 8&nbsp;% al 10&nbsp;% anual.</p></article>
+        <article class="card"><span class="tag">Frecuencia</span><p>Revisión semanal. Pocas operaciones y pocos costes.</p></article>
+        <article class="card"><span class="tag">Límites</span><p>Pérdida máxima diaria y total escritas en el código, y parada de emergencia.</p></article>
+        <article class="card"><span class="tag">Validación</span><p>Walk-forward, costes pesimistas y cuenta demo antes del dinero real.</p></article>
+      </div>
+      <div class="codeblock" data-lang="python"><span class="lang">Python · educativo</span><pre class="code"><code>import numpy as np
+import pandas as pd
+
+
+def backtest_fx(precios, tipos, vol_objetivo=0.10, coste_pb=1.5):
+    """Tendencia + carry en pares frente al dólar, con datos diarios.
+
+    precios:  cierres diarios en dólares por unidad de cada divisa
+              (invierte USDJPY, USDCHF y USDCAD para que todo apunte igual).
+    tipos:    tipo a corto de cada divisa menos el del dólar, en % anual.
+    coste_pb: coste por operación, en puntos básicos del nominal negociado.
+    """
+    rets = precios.pct_change()
+
+    # Señal 1: tendencia de 12 meses, saltándose el último mes
+    tendencia = np.sign(precios.shift(21) / precios.shift(252) - 1)
+    # Señal 2: carry, comprar si la divisa paga más interés que el dólar
+    carry = np.sign(tipos)
+    senal = (tendencia + carry) / 2   # -1, -0.5, 0, 0.5 o 1
+
+    # Cada par aporta un riesgo parecido (aproximación: ignora correlaciones)
+    vol = rets.rolling(63).std() * np.sqrt(252)
+    peso = senal * vol_objetivo / (vol * np.sqrt(precios.shape[1]))
+
+    # Rebalanceo semanal y ejecución al día siguiente: nunca mira el futuro
+    peso = peso.resample("W-FRI").last().reindex(precios.index).ffill().shift(1)
+
+    precio_mov = (peso * rets).sum(axis=1)
+    intereses = (peso * tipos.shift(1) / 100 / 252).sum(axis=1)
+    costes = peso.diff().abs().sum(axis=1) * coste_pb / 10_000
+    valido = peso.notna().any(axis=1)
+    neto = (precio_mov + intereses - costes)[valido]
+
+    anual = neto.mean() * 252
+    vol_real = neto.std() * np.sqrt(252)
+    curva = (1 + neto).cumprod()
+    caida_max = (curva / curva.cummax() - 1).min()
+    print(f"Rentabilidad anual {anual:.1%} · volatilidad {vol_real:.1%} · "
+          f"Sharpe {anual / vol_real:.2f} · caída máxima {caida_max:.1%}")
+    return neto</code></pre></div>
+      <p class="fig-note">Código educativo, no una recomendación. Necesitas tus propios datos de precios y de tipos de interés, por ejemplo de los bancos centrales. Antes de fiarte del resultado, aplica los pasos del <a href="01-trading-algoritmico.html">documento 1</a>. Si quieres que un agente de IA te ayude a construirlo y vigilarlo, sigue con <a href="03-agentes-claude-trading.html">el documento 3</a>.</p>
+    </section>
+
+    <section class="sec" id="fuentes">
+      <p class="kicker">Fuentes</p>
+      <h2 data-short="Fuentes">Fuentes y lecturas</h2>
+      <ol class="refs">
+        <li>BIS (2025). OTC foreign exchange turnover in April 2025. <a href="https://www.bis.org/statistics/rpfx25_fx.htm" target="_blank" rel="noopener">Datos</a> · <a href="https://www.bis.org/press/p250930.htm" target="_blank" rel="noopener">Nota de prensa</a></li>
+        <li>BIS Markets Committee (2017). The sterling «flash event» of 7 October 2016. <a href="https://www.bis.org/publ/mktc09.htm" target="_blank" rel="noopener">Informe</a></li>
+        <li>Reserve Bank of Australia (2019). The Recent Japanese Yen Flash Event. <a href="https://www.rba.gov.au/publications/smp/2019/feb/box-b-the-recent-japanese-yen-flash-event.html" target="_blank" rel="noopener">Recuadro B</a></li>
+        <li>FCA (2014). Multas a cinco bancos por fallos en el mercado de divisas. <a href="https://www.fca.org.uk/news/press-releases/fca-fines-five-banks-%C2%A311-billion-fx-failings-and-announces-industry-wide-remediation-programme" target="_blank" rel="noopener">Nota de prensa</a></li>
+        <li>Global Foreign Exchange Committee. FX Global Code, principio 17 (last look).</li>
+        <li>Lustig, H., Roussanov, N. y Verdelhan, A. (2011). Common Risk Factors in Currency Markets. <i>Review of Financial Studies</i>.</li>
+        <li>Menkhoff, L., Sarno, L., Schmeling, M. y Schrimpf, A. (2012). Carry Trades and Global Foreign Exchange Volatility (<i>Journal of Finance</i>) y Currency Momentum Strategies (<i>Journal of Financial Economics</i>).</li>
+        <li>Brunnermeier, M., Nagel, S. y Pedersen, L. (2008). Carry Trades and Currency Crashes. <i>NBER Macroeconomics Annual</i>.</li>
+        <li>Moskowitz, T., Ooi, Y. H. y Pedersen, L. (2012). Time Series Momentum. <i>Journal of Financial Economics</i>.</li>
+        <li>Asness, C., Moskowitz, T. y Pedersen, L. (2013). Value and Momentum Everywhere. <i>Journal of Finance</i>.</li>
+        <li>Neely, C., Weller, P. y Ulrich, J. (2009). The Adaptive Markets Hypothesis: Evidence from the Foreign Exchange Market. <i>Journal of Financial and Quantitative Analysis</i>.</li>
+        <li>ESMA (2018). Medidas de intervención sobre CFD para clientes minoristas.</li>
+        <li>CNMV (2023). Resolución de 11 de julio de 2023 sobre CFD y otros productos apalancados. <a href="https://www.cnmv.es/docportal/aldia/Resolucion_CFD.pdf" target="_blank" rel="noopener">PDF</a></li>
+      </ol>
+    </section>
+  </main>
+</div>
+<footer class="foot wrap"><nav aria-label="Documentos de la serie"><ul class="series-nav"><li><a href="01-trading-algoritmico.html"><span class="dot" style="--c:var(--c1)"></span>1 · Trading algorítmico</a></li><li><a href="#top" aria-current="page"><span class="dot" style="--c:var(--c2)"></span>2 · Forex algorítmico</a></li><li><a href="03-agentes-claude-trading.html"><span class="dot" style="--c:var(--c3)"></span>3 · Agentes Claude</a></li><li><a href="04-verdad-cuentas-fondeo.html"><span class="dot" style="--c:var(--c4)"></span>4 · Cuentas de fondeo</a></li></ul></nav><p>Contenido educativo. No es asesoramiento financiero ni una recomendación de inversión. Las cifras proceden de las fuentes citadas; las simulaciones usan datos aleatorios y solo ilustran ideas.</p><p>Serie «Máquinas y mercados» · Septiembre de 2026</p></footer>
+<script>
+(function () {
+  "use strict";
+  var NS = "http://www.w3.org/2000/svg";
+  var root = document.documentElement;
+  var reduceMotion = !!(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches);
+
+  function css(name) { return getComputedStyle(root).getPropertyValue(name).trim(); }
+  /* color resuelto de un token (los tokens pueden apuntar a otros tokens) */
+  function tokenColor(name) {
+    var p = document.createElement("span");
+    p.style.color = "var(" + name + ")"; p.style.display = "none";
+    document.body.appendChild(p);
+    var c = getComputedStyle(p).color; p.remove();
+    return c;
+  }
+  function $$(sel, ctx) { return Array.prototype.slice.call((ctx || document).querySelectorAll(sel)); }
+
+  /* ---------- cambios de tema (sistema o selector del visor) ---------- */
+  var themeFns = [];
+  function onTheme(fn) { themeFns.push(fn); }
+  function fireTheme() { themeFns.forEach(function (f) { try { f(); } catch (e) {} }); }
+  if (window.matchMedia) {
+    var mq = matchMedia("(prefers-color-scheme: dark)");
+    if (mq.addEventListener) mq.addEventListener("change", fireTheme);
+  }
+  new MutationObserver(fireTheme).observe(root, { attributes: true, attributeFilter: ["data-theme"] });
+
+  /* ---------- azar reproducible ---------- */
+  function rng(seed) {
+    var a = seed >>> 0;
+    return function () {
+      a |= 0; a = a + 0x6D2B79F5 | 0;
+      var t = Math.imul(a ^ a >>> 15, 1 | a);
+      t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+      return ((t ^ t >>> 14) >>> 0) / 4294967296;
+    };
+  }
+  function normal(r) { var u = 0; while (u === 0) u = r(); var v = r(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v); }
+
+  /* ---------- formato en español ---------- */
+  var nfCache = {};
+  function nf(d) { if (!nfCache[d]) nfCache[d] = new Intl.NumberFormat("es-ES", { minimumFractionDigits: d, maximumFractionDigits: d, useGrouping: "always" }); return nfCache[d]; }
+  function fmt(v, d) { d = d || 0; var s = nf(d).format(Math.abs(v)); return (v < 0 && Math.abs(v) >= Math.pow(10, -d) / 2 ? "−" : "") + s; }
+  function pct(v, d) { return fmt(v, d === undefined ? 1 : d) + " %"; }
+  function money(v, cur, d) { return fmt(v, d || 0) + " " + (cur || "$"); }
+  function signed(v, d, unit) { var s = fmt(v, d); return (v > 0 ? "+" : "") + s + (unit || ""); }
+
+  /* ---------- SVG ---------- */
+  function el(tag, attrs, parent) {
+    var e = document.createElementNS(NS, tag);
+    if (attrs) for (var k in attrs) {
+      if (attrs[k] === undefined || attrs[k] === null) continue;
+      if (k === "text") e.textContent = attrs[k];
+      else e.setAttribute(k, attrs[k]);
+    }
+    if (parent) parent.appendChild(e);
+    return e;
+  }
+  function lin(d0, d1, r0, r1) { var f = function (v) { return r0 + (v - d0) / (d1 - d0) * (r1 - r0); }; f.invert = function (p) { return d0 + (p - r0) / (r1 - r0) * (d1 - d0); }; return f; }
+  function logs(d0, d1, r0, r1) { var a = Math.log10(d0), b = Math.log10(d1); return function (v) { return r0 + (Math.log10(v) - a) / (b - a) * (r1 - r0); }; }
+  function niceStep(span, count) { var s0 = Math.pow(10, Math.floor(Math.log10(span / count))); var e = span / count / s0; return s0 * (e >= 7.5 ? 10 : e >= 3.5 ? 5 : e >= 1.5 ? 2 : 1); }
+  function niceDomain(min, max, count) { if (min === max) { min -= 1; max += 1; } var st = niceStep(max - min, count || 5); return [Math.floor(min / st) * st, Math.ceil(max / st) * st, st]; }
+  function ticks(min, max, step) { var t = []; for (var v = min; v <= max + step * 1e-6; v += step) t.push(+v.toFixed(10)); return t; }
+  /* barra con extremo de dato redondeado (4px) y base recta */
+  function barPath(x0, x1, y, h, r) {
+    r = Math.min(r === undefined ? 4 : r, Math.abs(x1 - x0), h / 2);
+    if (x1 >= x0) return "M" + x0 + "," + y + "H" + (x1 - r) + "Q" + x1 + "," + y + " " + x1 + "," + (y + r) + "V" + (y + h - r) + "Q" + x1 + "," + (y + h) + " " + (x1 - r) + "," + (y + h) + "H" + x0 + "Z";
+    return "M" + x0 + "," + y + "H" + (x1 + r) + "Q" + x1 + "," + y + " " + x1 + "," + (y + r) + "V" + (y + h - r) + "Q" + x1 + "," + (y + h) + " " + (x1 + r) + "," + (y + h) + "H" + x0 + "Z";
+  }
+  function roundRect(x0, x1, y, h, r) {
+    var w = Math.max(x1 - x0, 1); r = Math.min(r === undefined ? 4 : r, w / 2, h / 2);
+    return "M" + (x0 + r) + "," + y + "H" + (x1 - r) + "Q" + x1 + "," + y + " " + x1 + "," + (y + r) + "V" + (y + h - r) + "Q" + x1 + "," + (y + h) + " " + (x1 - r) + "," + (y + h) + "H" + (x0 + r) + "Q" + x0 + "," + (y + h) + " " + x0 + "," + (y + h - r) + "V" + (y + r) + "Q" + x0 + "," + y + " " + (x0 + r) + "," + y + "Z";
+  }
+  function wrapText(str, maxChars) {
+    var out = [];
+    String(str).split("\n").forEach(function (para) {
+      var words = para.split(" "), line = "";
+      words.forEach(function (w) {
+        if (!line) line = w;
+        else if ((line + " " + w).length <= maxChars) line += " " + w;
+        else { out.push(line); line = w; }
+      });
+      out.push(line);
+    });
+    return out;
+  }
+
+  /* ---------- tooltip ---------- */
+  var tipEl = document.createElement("div");
+  tipEl.className = "viz-tip"; tipEl.setAttribute("aria-hidden", "true");
+  document.body.appendChild(tipEl);
+  function showTip(title, rows, x, y, note) {
+    tipEl.replaceChildren();
+    if (title) { var t = document.createElement("div"); t.className = "t"; t.textContent = title; tipEl.appendChild(t); }
+    (rows || []).forEach(function (r) {
+      var d = document.createElement("div"); d.className = "r";
+      if (r.color) { var k = document.createElement("i"); k.style.background = r.color; d.appendChild(k); }
+      var b = document.createElement("b"); b.textContent = r.value; d.appendChild(b);
+      if (r.label) { var s = document.createElement("span"); s.textContent = r.label; d.appendChild(s); }
+      tipEl.appendChild(d);
+    });
+    if (note) { var n = document.createElement("div"); n.className = "n"; n.textContent = note; tipEl.appendChild(n); }
+    tipEl.classList.add("on");
+    var w = tipEl.offsetWidth, h = tipEl.offsetHeight;
+    var left = x + 14, top = y - h - 12;
+    if (left + w > window.innerWidth - 8) left = x - w - 14;
+    if (left < 8) left = 8;
+    if (top < 8) top = y + 18;
+    tipEl.style.left = left + "px"; tipEl.style.top = top + "px";
+  }
+  function hideTip() { tipEl.classList.remove("on"); }
+  window.addEventListener("scroll", hideTip, { passive: true });
+
+  /* ---------- redibujo según el ancho ---------- */
+  function responsive(box, render) {
+    var last = 0;
+    function run(force) { var w = Math.round(box.clientWidth); if (w && (force || w !== last)) { last = w; render(w); } }
+    if (window.ResizeObserver) new ResizeObserver(function () { run(false); }).observe(box);
+    else window.addEventListener("resize", function () { run(false); });
+    run(true);
+    return { redraw: function () { run(true); } };
+  }
+
+  /* ---------- tabla gemela de cada gráfico ---------- */
+  function dataTable(fig, headers, rows, numericCols) {
+    if (!fig) return;
+    var d = fig.querySelector("details.data");
+    if (!d) {
+      d = document.createElement("details"); d.className = "data";
+      var s = document.createElement("summary"); s.textContent = "Ver los datos en tabla"; d.appendChild(s);
+      fig.appendChild(d);
+    }
+    var old = d.querySelector(".tbl-wrap"); if (old) old.remove();
+    var wrap = document.createElement("div"); wrap.className = "tbl-wrap";
+    var tb = document.createElement("table"), th = document.createElement("thead"), tr = document.createElement("tr");
+    headers.forEach(function (h, i) { var c = document.createElement("th"); c.textContent = h; if (numericCols && numericCols.indexOf(i) >= 0) c.className = "num"; tr.appendChild(c); });
+    th.appendChild(tr); tb.appendChild(th);
+    var body = document.createElement("tbody");
+    rows.forEach(function (r) {
+      var row = document.createElement("tr");
+      r.forEach(function (v, i) { var c = document.createElement("td"); c.textContent = v; if (numericCols && numericCols.indexOf(i) >= 0) c.className = "num"; row.appendChild(c); });
+      body.appendChild(row);
+    });
+    tb.appendChild(body); wrap.appendChild(tb); d.appendChild(wrap);
+  }
+
+  function svgRoot(box, W, H, label) {
+    box.replaceChildren();
+    var s = el("svg", { width: W, height: H, viewBox: "0 0 " + W + " " + H, role: "img", "aria-label": label || "", class: "viz" }, box);
+    return s;
+  }
+  function tipAtEl(node, title, rows, note) {
+    var r = node.getBoundingClientRect();
+    showTip(title, rows, r.left + r.width / 2, r.top, note);
+  }
+
+  /* ---------- barras horizontales (magnitud, divergentes, embudo) ---------- */
+  function hbar(box, cfg0) {
+    var cur = cfg0;
+    var rr = responsive(box, function (W) {
+      var cfg = cur, rows = cfg.rows, fmtv = cfg.fmt || function (v) { return fmt(v, 1); };
+      var narrow = W < (cfg.narrowAt || 560);
+      var barH = cfg.barH || 18, gap = cfg.gap || 14;
+      var labelW = narrow ? 0 : (cfg.labelW || 160);
+      var hasRef = rows.some(function (r) { return r.ref; });
+      var labelLine = narrow ? 20 : 0;
+      var rowH = labelLine + barH + gap + (hasRef ? 6 : 0);
+      var top = hasRef ? 16 : 4;
+      var H = top + rows.length * rowH;
+      var min = cfg.domain ? cfg.domain[0] : Math.min(0, d3min(rows)), max = cfg.domain ? cfg.domain[1] : Math.max(0, d3max(rows)) * 1.02;
+      var valW = cfg.valW || 70;
+      var x0 = labelW + (labelW ? 12 : 0) + (min < 0 ? valW : 0), x1 = W - (max > 0 ? valW : 6);
+      var x = lin(min, max, x0, x1);
+      var svg = svgRoot(box, W, H, cfg.aria);
+      var zero = x(0);
+      el("line", { x1: zero, x2: zero, y1: top - 4, y2: H - gap / 2, class: "base" }, svg);
+      rows.forEach(function (r, i) {
+        var y = top + i * rowH + labelLine + (hasRef ? 6 : 0);
+        var g = el("g", { class: "row" }, svg);
+        if (narrow) el("text", { x: 0, y: y - 6, class: r.strong ? "lbl-strong" : "lbl", text: r.label }, g);
+        else el("text", { x: 0, y: y + barH / 2 + 4, class: r.strong ? "lbl-strong" : "lbl", text: r.label }, g);
+        var col = r.color || (cfg.diverging ? (r.value >= 0 ? "var(--pos)" : "var(--neg)") : (cfg.color || "var(--accent)"));
+        var xv = x(r.value);
+        if (Math.abs(xv - zero) >= 1) el("path", { d: barPath(zero, xv, y, barH, 4), class: "mark", style: "fill:" + col }, g);
+        var lab = cfg.valueLabel ? cfg.valueLabel(r) : fmtv(r.value);
+        if (r.value >= 0) el("text", { x: xv + 6, y: y + barH / 2 + 4, class: "val", text: lab }, g);
+        else el("text", { x: xv - 6, y: y + barH / 2 + 4, class: "val", "text-anchor": "end", text: lab }, g);
+        if (r.ref) {
+          var xr = x(r.ref.value);
+          el("line", { x1: xr, x2: xr, y1: y - 5, y2: y + barH + 5, class: "ref" }, g);
+          if (narrow) el("text", { x: W, y: y - 6, "text-anchor": "end", class: "lbl", style: "font-size:11px", text: r.ref.label }, g);
+          else el("text", { x: xr + 4, y: y - 6, class: "lbl", style: "font-size:11px", text: r.ref.label }, g);
+        }
+        var hit = el("rect", { x: 0, y: y - (narrow ? labelLine : 4) - (hasRef ? 6 : 0), width: W, height: barH + (narrow ? labelLine : 8) + (hasRef ? 6 : 0), class: "hit", tabindex: 0, "aria-label": r.label + ": " + lab }, g);
+        var rowsTip = function () { var out = [{ value: lab, label: cfg.unitLabel || "", color: col }]; if (r.ref) out.push({ value: fmtv(r.ref.value), label: r.ref.tip || r.ref.label, color: "var(--ink)" }); return out; };
+        hit.addEventListener("pointermove", function (ev) { showTip(r.label, rowsTip(), ev.clientX, ev.clientY, r.note); });
+        hit.addEventListener("pointerdown", function (ev) { showTip(r.label, rowsTip(), ev.clientX, ev.clientY, r.note); });
+        hit.addEventListener("pointerleave", hideTip);
+        hit.addEventListener("focus", function () { tipAtEl(hit, r.label, rowsTip(), r.note); });
+        hit.addEventListener("blur", hideTip);
+      });
+    });
+    rr.update = function (c) { cur = c; rr.redraw(); };
+    return rr;
+    function d3min(rs) { return Math.min.apply(null, rs.map(function (r) { return r.value; })); }
+    function d3max(rs) { return Math.max.apply(null, rs.map(function (r) { return Math.max(r.value, r.ref ? r.ref.value : -Infinity); })); }
+  }
+
+  /* ---------- rangos en un eje (horizontes, latencias, sesiones) ---------- */
+  function range(box, cfg0) {
+    var cur = cfg0;
+    var rr = responsive(box, function (W) {
+      var cfg = cur, rows = cfg.rows;
+      var narrow = W < (cfg.narrowAt || 600);
+      var barH = cfg.barH || 14, gap = cfg.gap || 16;
+      var labelW = narrow ? 0 : (cfg.labelW || 170);
+      var labelLine = narrow ? 20 : 0;
+      var rowH = labelLine + barH + gap;
+      var lv = 0;
+      (cfg.bands || []).concat(cfg.markers || []).forEach(function (o) { lv = Math.max(lv, o.level || 0); });
+      var top = (cfg.bands || cfg.markers) ? 26 + 14 * lv : 6;
+      var bottom = 28;
+      var H = top + rows.length * rowH + bottom - gap / 2;
+      var x0 = labelW + (labelW ? 14 : 0), x1 = W - (cfg.padRight || 14);
+      var x = cfg.scale === "log" ? logs(cfg.domain[0], cfg.domain[1], x0, x1) : lin(cfg.domain[0], cfg.domain[1], x0, x1);
+      var svg = svgRoot(box, W, H, cfg.aria);
+      var plotTop = top - 6, plotBot = H - bottom + 4;
+      (cfg.bands || []).forEach(function (b) {
+        el("rect", { x: x(b.from), y: plotTop, width: Math.max(1, x(b.to) - x(b.from)), height: plotBot - plotTop, class: "band" }, svg);
+        el("text", { x: x(b.from) + 4, y: plotTop - 6 - 14 * (b.level || 0), class: "lbl", style: "font-size:11.5px", text: narrow && b.short ? b.short : b.label }, svg);
+      });
+      (cfg.ticks || []).forEach(function (t) {
+        var xx = x(t.v);
+        el("line", { x1: xx, x2: xx, y1: plotTop, y2: plotBot, class: "grid" }, svg);
+        if (!(narrow && t.minor)) el("text", { x: xx, y: H - 8, "text-anchor": "middle", text: t.label }, svg);
+      });
+      el("line", { x1: x0, x2: x1, y1: plotBot, y2: plotBot, class: "base" }, svg);
+      (cfg.markers || []).forEach(function (m) {
+        var xx = x(m.v);
+        el("line", { x1: xx, x2: xx, y1: plotTop, y2: plotBot, class: "ref", style: "stroke-width:1" }, svg);
+        if (!(narrow && m.hideNarrow)) el("text", { x: xx + (m.anchor === "end" ? -4 : 4), y: plotTop - 6 - 14 * (m.level || 0), "text-anchor": m.anchor || "start", class: "lbl", style: "font-size:11.5px", text: narrow && m.short ? m.short : m.label }, svg);
+      });
+      rows.forEach(function (r, i) {
+        var y = top + i * rowH + labelLine;
+        var g = el("g", { class: "row" }, svg);
+        if (narrow) el("text", { x: 0, y: y - 6, class: r.strong ? "lbl-strong" : "lbl", text: r.label }, g);
+        else el("text", { x: 0, y: y + barH / 2 + 4, class: r.strong ? "lbl-strong" : "lbl", text: r.label }, g);
+        var col = r.color || cfg.color || "var(--accent)";
+        (r.segs || []).forEach(function (s) {
+          el("path", { d: roundRect(x(s[0]), x(s[1]), y, barH, 4), class: "mark", style: "fill:" + col + (r.dim ? ";opacity:.45" : "") }, g);
+        });
+        if (r.dot !== undefined) el("circle", { cx: x(r.dot), cy: y + barH / 2, r: 5.5, class: "mark", style: "fill:" + col + ";stroke:var(--surface);stroke-width:2" }, g);
+        var txt = cfg.describe ? cfg.describe(r) : "";
+        var hit = el("rect", { x: 0, y: y - 6 - labelLine, width: W, height: barH + 12 + labelLine, class: "hit", tabindex: 0, "aria-label": r.label + (txt ? ": " + txt : "") }, g);
+        var rowsTip = function () { return [{ value: txt, color: col }]; };
+        hit.addEventListener("pointermove", function (ev) { showTip(r.label, rowsTip(), ev.clientX, ev.clientY, r.note); });
+        hit.addEventListener("pointerdown", function (ev) { showTip(r.label, rowsTip(), ev.clientX, ev.clientY, r.note); });
+        hit.addEventListener("pointerleave", hideTip);
+        hit.addEventListener("focus", function () { tipAtEl(hit, r.label, rowsTip(), r.note); });
+        hit.addEventListener("blur", hideTip);
+      });
+    });
+    rr.update = function (c) { cur = c; rr.redraw(); };
+    return rr;
+  }
+
+  /* ---------- líneas con cruz de lectura ---------- */
+  function line(box, cfg0) {
+    var state = { i: -1 }, cur = cfg0;
+    var rr = responsive(box, function (W) {
+      var cfg = cur, narrow = W < 560;
+      var H = narrow ? (cfg.hNarrow || 250) : (cfg.height || 320);
+      var xs = cfg.x, S = cfg.series, C = cfg.context || [];
+      var yFmt = cfg.yFmt || function (v) { return fmt(v, 0); };
+      var all = [];
+      S.concat(C).forEach(function (s) { s.values.forEach(function (v) { if (v !== null && v !== undefined && isFinite(v)) all.push(v); }); });
+      (cfg.hlines || []).forEach(function (h) { all.push(h.y); });
+      var lo = cfg.yDomain ? cfg.yDomain[0] : Math.min.apply(null, all), hi = cfg.yDomain ? cfg.yDomain[1] : Math.max.apply(null, all);
+      var nd = niceDomain(lo, hi, narrow ? 4 : 5);
+      if (cfg.yDomain) nd = [cfg.yDomain[0], cfg.yDomain[1], niceStep(cfg.yDomain[1] - cfg.yDomain[0], narrow ? 4 : 5)];
+      var yt = ticks(Math.ceil(nd[0] / nd[2]) * nd[2], nd[1], nd[2]);
+      var left = Math.max.apply(null, yt.map(function (v) { return yFmt(v).length; })) * 6.8 + 12;
+      var right = cfg.padRight || 14, top = (cfg.vlines && cfg.vlines.length) ? 24 : 10, bottom = 28;
+      var x = lin(xs[0], xs[xs.length - 1], left, W - right);
+      var y = lin(nd[0], nd[1], H - bottom, top);
+      var svg = svgRoot(box, W, H, cfg.aria);
+      yt.forEach(function (v) {
+        el("line", { x1: left, x2: W - right, y1: y(v), y2: y(v), class: Math.abs(v) < 1e-9 && cfg.zeroBase ? "base" : "grid" }, svg);
+        el("text", { x: left - 8, y: y(v) + 4, "text-anchor": "end", text: yFmt(v) }, svg);
+      });
+      (cfg.xTicks || []).forEach(function (t) {
+        if (narrow && t.minor) return;
+        el("text", { x: x(t.v), y: H - 8, "text-anchor": t.anchor || "middle", text: t.label }, svg);
+      });
+      el("line", { x1: left, x2: W - right, y1: H - bottom, y2: H - bottom, class: "base" }, svg);
+      (cfg.vlines || []).forEach(function (v) {
+        el("line", { x1: x(v.x), x2: x(v.x), y1: top - 4, y2: H - bottom, class: "ref", style: "stroke-width:1" }, svg);
+        el("text", { x: x(v.x) + (v.anchor === "end" ? -5 : 5), y: top - 10, "text-anchor": v.anchor || "start", class: "lbl", style: "font-size:11.5px", text: v.label }, svg);
+      });
+      function pathOf(vals) {
+        var d = "", pen = false;
+        for (var i = 0; i < vals.length; i++) {
+          var v = vals[i];
+          if (v === null || v === undefined || !isFinite(v)) { pen = false; continue; }
+          d += (pen ? "L" : "M") + x(xs[i]).toFixed(1) + "," + y(v).toFixed(1); pen = true;
+        }
+        return d;
+      }
+      C.forEach(function (c) { el("path", { d: pathOf(c.values), style: "fill:none;stroke:" + (c.color || "var(--deemph)") + ";stroke-width:" + (c.width || 1) + ";stroke-linejoin:round;opacity:" + (c.opacity || 0.9) }, svg); });
+      if (cfg.area) {
+        var s0 = S[0], dA = pathOf(s0.values);
+        if (dA) {
+          var firstI = s0.values.findIndex(function (v) { return v !== null && v !== undefined; });
+          var lastI = s0.values.length - 1; while (lastI > 0 && (s0.values[lastI] === null || s0.values[lastI] === undefined)) lastI--;
+          el("path", { d: dA + "L" + x(xs[lastI]) + "," + y(Math.max(nd[0], 0)) + "L" + x(xs[firstI]) + "," + y(Math.max(nd[0], 0)) + "Z", style: "fill:" + s0.color + ";opacity:.1;stroke:none" }, svg);
+        }
+      }
+      (cfg.hlines || []).forEach(function (h) {
+        el("line", { x1: left, x2: W - right, y1: y(h.y), y2: y(h.y), class: "ref", style: "stroke-width:1;stroke:" + (h.color || "var(--ink)") }, svg);
+        el("text", { x: h.anchor === "start" ? left + 6 : W - right - 4, y: y(h.y) + (h.below ? 15 : -6), "text-anchor": h.anchor === "start" ? "start" : "end", class: "lbl", style: "font-size:11.5px", text: h.label }, svg);
+      });
+      S.forEach(function (s) {
+        el("path", { d: pathOf(s.values), style: "fill:none;stroke:" + s.color + ";stroke-width:" + (s.width || 2) + ";stroke-linejoin:round;stroke-linecap:round" }, svg);
+        if (cfg.endDots !== false) {
+          var li = s.values.length - 1; while (li > 0 && (s.values[li] === null || s.values[li] === undefined)) li--;
+          el("circle", { cx: x(xs[li]), cy: y(s.values[li]), r: 4.5, style: "fill:" + s.color + ";stroke:var(--surface);stroke-width:2" }, svg);
+        }
+      });
+      if (cfg.noHover) return;
+      var cross = el("line", { x1: 0, x2: 0, y1: top, y2: H - bottom, class: "cross", style: "opacity:0" }, svg);
+      var dots = S.map(function (s) { return el("circle", { r: 4.5, style: "fill:" + s.color + ";stroke:var(--surface);stroke-width:2;opacity:0" }, svg); });
+      var ov = el("rect", { x: left, y: top, width: Math.max(1, W - left - right), height: Math.max(1, H - top - bottom), class: "hit", tabindex: 0, style: "cursor:crosshair", "aria-label": (cfg.aria || "Gráfico") + ". Usa las flechas para recorrer los valores." }, svg);
+      function nearest(px) { var v = x.invert(px), bi = 0, bd = Infinity; for (var i = 0; i < xs.length; i++) { var dd = Math.abs(xs[i] - v); if (dd < bd) { bd = dd; bi = i; } } return bi; }
+      function paint(i, cx, cy) {
+        state.i = i;
+        var px = x(xs[i]);
+        cross.setAttribute("x1", px); cross.setAttribute("x2", px); cross.style.opacity = 1;
+        var rows = [];
+        S.forEach(function (s, k) {
+          var v = s.values[i];
+          if (v === null || v === undefined || !isFinite(v)) { dots[k].style.opacity = 0; return; }
+          dots[k].setAttribute("cx", px); dots[k].setAttribute("cy", y(v)); dots[k].style.opacity = 1;
+          rows.push({ value: (cfg.tipFmt || yFmt)(v), label: s.name, color: s.color });
+        });
+        var extra = cfg.tipExtra ? cfg.tipExtra(i) : null;
+        if (extra) rows = rows.concat(extra);
+        var title = cfg.tipTitle ? cfg.tipTitle(i) : String(xs[i]);
+        if (cx === undefined) { var r = ov.getBoundingClientRect(); cx = r.left + (px - left); cy = r.top + 10; }
+        showTip(title, rows, cx, cy, cfg.tipNote ? cfg.tipNote(i) : null);
+      }
+      function clear() { cross.style.opacity = 0; dots.forEach(function (d) { d.style.opacity = 0; }); hideTip(); }
+      function fromEvent(ev) { var r = svg.getBoundingClientRect(); paint(nearest(ev.clientX - r.left), ev.clientX, ev.clientY); }
+      ov.addEventListener("pointermove", fromEvent);
+      ov.addEventListener("pointerdown", fromEvent);
+      ov.addEventListener("pointerleave", clear);
+      ov.addEventListener("blur", clear);
+      ov.addEventListener("focus", function () { paint(state.i >= 0 ? state.i : xs.length - 1); });
+      ov.addEventListener("keydown", function (ev) {
+        var step = ev.shiftKey ? Math.max(1, Math.round(xs.length / 20)) : 1;
+        if (ev.key === "ArrowRight") { paint(Math.min(xs.length - 1, (state.i < 0 ? 0 : state.i) + step)); ev.preventDefault(); }
+        if (ev.key === "ArrowLeft") { paint(Math.max(0, (state.i < 0 ? xs.length - 1 : state.i) - step)); ev.preventDefault(); }
+        if (ev.key === "Escape") clear();
+      });
+    });
+    rr.update = function (c) { cur = c; state.i = -1; rr.redraw(); };
+    return rr;
+  }
+
+  /* ---------- diagrama de flujo lineal (horizontal o vertical según ancho) ---------- */
+  function flow(box, cfg) {
+    return responsive(box, function (W) {
+      var n = cfg.nodes.length, horiz = W >= (cfg.breakAt || 720);
+      var hl = cfg.hl || [];
+      var svg, H;
+      if (horiz) {
+        var aw = cfg.arrowW || 70, nw = (W - (n - 1) * aw) / n;
+        var cpl = Math.max(10, Math.floor((nw - 22) / 6.5));
+        var lines = cfg.nodes.map(function (nd) { return wrapText(nd.d || "", cpl); });
+        var tl = cfg.nodes.map(function (nd) { return wrapText(nd.t, Math.floor((nw - 22) / 8)); });
+        var maxL = Math.max.apply(null, lines.map(function (l, i) { return l.length + tl[i].length; }));
+        var nh = 22 + maxL * 17 + 8;
+        var top = 4;
+        H = top + nh + 6;
+        svg = svgRoot(box, W, H, cfg.aria);
+        cfg.nodes.forEach(function (nd, i) {
+          var x0 = i * (nw + aw);
+          var g = el("g", { class: "fnode" + (hl.indexOf(i) >= 0 ? " hl" : "") }, svg);
+          el("rect", { x: x0 + 0.5, y: top + 0.5, width: nw - 1, height: nh - 1, rx: 8 }, g);
+          var yy = top + 22;
+          tl[i].forEach(function (t) { el("text", { x: x0 + 12, y: yy, class: "ft", text: t }, g); yy += 17; });
+          lines[i].forEach(function (t) { el("text", { x: x0 + 12, y: yy + 1, class: "fd", text: t }, g); yy += 17; });
+          if (i < n - 1) {
+            var ax0 = x0 + nw + 6, ax1 = x0 + nw + aw - 8, ay = top + nh / 2;
+            el("line", { x1: ax0, x2: ax1 - 6, y1: ay, y2: ay, class: "fedge" }, svg);
+            el("path", { d: "M" + ax1 + "," + ay + "l-7,-4.5v9z", class: "fhead" }, svg);
+            var lab = wrapText(cfg.edges[i] || "", Math.floor(aw / 6.4));
+            lab.forEach(function (t, k) { el("text", { x: (ax0 + ax1) / 2, y: ay - 8 - (lab.length - 1 - k) * 13, "text-anchor": "middle", class: "flabel", text: t }, svg); });
+          }
+        });
+      } else {
+        var cplV = Math.max(16, Math.floor((W - 26) / 6.6));
+        var blocks = cfg.nodes.map(function (nd) { return { t: wrapText(nd.t, Math.floor((W - 26) / 8)), d: wrapText(nd.d || "", cplV) }; });
+        var ah = 44, yy2 = 2; H = 0;
+        var heights = blocks.map(function (b) { return 20 + (b.t.length + b.d.length) * 17 + 6; });
+        H = heights.reduce(function (a, b) { return a + b; }, 0) + (n - 1) * ah + 4;
+        svg = svgRoot(box, W, H, cfg.aria);
+        blocks.forEach(function (b, i) {
+          var g = el("g", { class: "fnode" + (hl.indexOf(i) >= 0 ? " hl" : "") }, svg);
+          el("rect", { x: 0.5, y: yy2 + 0.5, width: W - 1, height: heights[i] - 1, rx: 8 }, g);
+          var ty = yy2 + 21;
+          b.t.forEach(function (t) { el("text", { x: 12, y: ty, class: "ft", text: t }, g); ty += 17; });
+          b.d.forEach(function (t) { el("text", { x: 12, y: ty + 1, class: "fd", text: t }, g); ty += 17; });
+          yy2 += heights[i];
+          if (i < n - 1) {
+            var ax = 26;
+            el("line", { x1: ax, x2: ax, y1: yy2 + 5, y2: yy2 + ah - 11, class: "fedge" }, svg);
+            el("path", { d: "M" + ax + "," + (yy2 + ah - 4) + "l-4.5,-7h9z", class: "fhead" }, svg);
+            el("text", { x: ax + 14, y: yy2 + ah / 2 + 4, class: "flabel", text: (cfg.edges[i] || "").replace(/\n/g, " ") }, svg);
+            yy2 += ah;
+          }
+        });
+      }
+    });
+  }
+
+  /* ---------- guilloche (roseta de billete) ---------- */
+  function guilloche(canvas) {
+    var gen = 0, lastW = 0, ready = false;
+    function draw(animate) {
+      var my = ++gen;
+      var S = canvas.clientWidth; if (!S) return;
+      lastW = S;
+      var dpr = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width = Math.round(S * dpr); canvas.height = Math.round(S * dpr);
+      var ctx = canvas.getContext("2d"); ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      var col = tokenColor("--accent"), ink = tokenColor("--accent-ink"), c = S / 2, R = S * 0.485;
+      var dark = root.getAttribute("data-theme") === "dark" || (!root.getAttribute("data-theme") && window.matchMedia && matchMedia("(prefers-color-scheme: dark)").matches);
+      var curves = [], i;
+      for (i = 0; i < 44; i++) (function (ph) { curves.push(function (t) { var r = R * (0.87 + 0.055 * Math.sin(18 * t + ph)); return [c + r * Math.cos(t), c + r * Math.sin(t)]; }); })(i / 44 * Math.PI * 2);
+      for (i = 0; i < 30; i++) (function (ph) { curves.push(function (t) { var r = R * (0.665 + 0.105 * Math.sin(7 * t + ph) * Math.cos(2 * t + ph / 3)); return [c + r * Math.cos(t), c + r * Math.sin(t)]; }); })(i / 30 * Math.PI * 2 / 7);
+      for (i = 0; i < 20; i++) (function (ph) { curves.push(function (t) { var r = R * (0.45 + 0.085 * Math.cos(11 * t + ph)); return [c + r * Math.cos(t), c + r * Math.sin(t)]; }); })(i / 20 * Math.PI * 2 / 11);
+      function batch(list) {
+        ctx.save();
+        ctx.beginPath(); ctx.arc(c, c, R, 0, Math.PI * 2); ctx.arc(c, c, R * 0.35, 0, Math.PI * 2, true); ctx.clip();
+        ctx.strokeStyle = col; ctx.lineWidth = Math.max(0.5, S / 820); ctx.globalAlpha = dark ? 0.46 : 0.36;
+        list.forEach(function (f) { ctx.beginPath(); for (var k = 0; k <= 900; k++) { var p = f(k / 900 * Math.PI * 2); if (k) ctx.lineTo(p[0], p[1]); else ctx.moveTo(p[0], p[1]); } ctx.stroke(); });
+        ctx.restore();
+      }
+      function rings() {
+        ctx.save(); ctx.globalAlpha = 0.85; ctx.strokeStyle = ink; ctx.lineWidth = 1;
+        [0.995, 0.965, 0.36].forEach(function (k) { ctx.beginPath(); ctx.arc(c, c, R * k, 0, Math.PI * 2); ctx.stroke(); });
+        ctx.restore();
+      }
+      if (animate && !reduceMotion) {
+        var idx = 0;
+        (function frame() {
+          if (my !== gen) return;
+          batch(curves.slice(idx, idx + 5)); idx += 5;
+          if (idx < curves.length) requestAnimationFrame(frame); else rings();
+        })();
+      } else { batch(curves); rings(); }
+    }
+    if (window.ResizeObserver) new ResizeObserver(function () { if (ready && canvas.clientWidth !== lastW) draw(false); }).observe(canvas);
+    onTheme(function () { draw(false); });
+    draw(true); ready = true;
+  }
+
+  /* ---------- índice lateral ---------- */
+  function buildToc() {
+    var toc = document.querySelector(".toc"); if (!toc) return;
+    var secs = $$(".content > .sec[id]");
+    var det = document.createElement("details"), sum = document.createElement("summary");
+    sum.textContent = "Índice del documento"; det.appendChild(sum);
+    var ol = document.createElement("ol");
+    var links = secs.map(function (s) {
+      var h = s.querySelector("h2"), li = document.createElement("li"), a = document.createElement("a");
+      a.href = "#" + s.id; a.textContent = (h && (h.getAttribute("data-short") || h.textContent)) || s.id;
+      li.appendChild(a); ol.appendChild(li); return a;
+    });
+    det.appendChild(ol); toc.appendChild(det);
+    if (window.matchMedia) {
+      var wide = matchMedia("(min-width:1080px)");
+      var sync = function () { det.open = wide.matches; };
+      sync(); if (wide.addEventListener) wide.addEventListener("change", sync);
+    }
+    if ("IntersectionObserver" in window) {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (en) {
+          if (en.isIntersecting) {
+            var id = en.target.id;
+            links.forEach(function (a) { if (a.getAttribute("href") === "#" + id) a.setAttribute("aria-current", "true"); else a.removeAttribute("aria-current"); });
+          }
+        });
+      }, { rootMargin: "-15% 0px -75% 0px" });
+      secs.forEach(function (s) { io.observe(s); });
+    }
+  }
+
+  /* ---------- microtexto de seguridad ---------- */
+  function microprint() {
+    $$(".microprint").forEach(function (m) {
+      var s = (m.getAttribute("data-text") || "MÁQUINAS Y MERCADOS") + " · ";
+      m.textContent = new Array(40).join(s);
+    });
+  }
+
+  /* ---------- código: resaltado mínimo y botón de copiar ---------- */
+  function highlight(codeEl) {
+    var src = codeEl.textContent;
+    var re = /(#[^\n]*)|("""[\s\S]*?"""|[rfbuRFBU]{0,2}"(?:\\.|[^"\\\n])*"|[rfbuRFBU]{0,2}'(?:\\.|[^'\\\n])*')|\b(def|return|import|from|as|if|elif|else|for|in|and|or|not|None|True|False|with|raise|class|while|lambda|try|except|pass|yield)\b|\b(\d+(?:\.\d+)?(?:e-?\d+)?)\b/g;
+    var frag = document.createDocumentFragment(), last = 0, m;
+    while ((m = re.exec(src))) {
+      if (m.index > last) frag.appendChild(document.createTextNode(src.slice(last, m.index)));
+      var sp = document.createElement("span");
+      sp.className = m[1] ? "c-com" : m[2] ? "c-str" : m[3] ? "c-kw" : "c-num";
+      sp.textContent = m[0]; frag.appendChild(sp); last = m.index + m[0].length;
+    }
+    if (last < src.length) frag.appendChild(document.createTextNode(src.slice(last)));
+    codeEl.replaceChildren(frag);
+  }
+  function codeBlocks() {
+    $$(".codeblock").forEach(function (cb) {
+      var code = cb.querySelector("code"); if (!code) return;
+      if (cb.getAttribute("data-lang") === "python") highlight(code);
+      var b = document.createElement("button"); b.type = "button"; b.className = "copy"; b.textContent = "Copiar";
+      b.addEventListener("click", function () {
+        var txt = code.textContent;
+        var fallback = function () { var r = document.createRange(); r.selectNodeContents(code); var s = window.getSelection(); s.removeAllRanges(); s.addRange(r); b.textContent = "Seleccionado"; };
+        try {
+          if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(function () { b.textContent = "Copiado"; setTimeout(function () { b.textContent = "Copiar"; }, 1600); }, fallback);
+          else fallback();
+        } catch (e) { fallback(); }
+      });
+      cb.appendChild(b);
+    });
+  }
+
+  window.MM = {
+    css: css, tokenColor: tokenColor, rng: rng, normal: normal, fmt: fmt, pct: pct, money: money, signed: signed,
+    el: el, lin: lin, logs: logs, niceDomain: niceDomain, ticks: ticks,
+    showTip: showTip, hideTip: hideTip, responsive: responsive, dataTable: dataTable,
+    hbar: hbar, range: range, line: line, flow: flow, onTheme: onTheme, reduceMotion: reduceMotion
+  };
+
+  buildToc();
+  microprint();
+  codeBlocks();
+  $$(".emblem canvas").forEach(guilloche);
+})();
+
+</script>
+<script>
+(function () {
+  var M = window.MM;
+  var pc = function (v) { return M.fmt(v, 1) + " %"; };
+
+  /* Divisas */
+  var ccy = [
+    { label: "Dólar estadounidense (USD)", value: 89.2 }, { label: "Euro (EUR)", value: 28.9 }, { label: "Yen (JPY)", value: 16.8 },
+    { label: "Libra (GBP)", value: 10.2 }, { label: "Renminbi (CNY)", value: 8.5 }, { label: "Franco suizo (CHF)", value: 6.4 }, { label: "Dólar de Hong Kong (HKD)", value: 3.8 }
+  ];
+  M.hbar(document.getElementById("ccy"), { aria: "Porcentaje de operaciones de divisas en que aparece cada moneda, abril de 2025", rows: ccy, domain: [0, 100], fmt: pc, labelW: 200, unitLabel: "de las operaciones" });
+  M.dataTable(document.getElementById("fig-ccy"), ["Divisa", "% de operaciones"], ccy.map(function (r) { return [r.label, pc(r.value)]; }), [1]);
+
+  /* Sesiones */
+  function hh(h) { return String(h % 24).padStart(2, "0") + ":00"; }
+  var ses = [
+    { label: "Sídney", segs: [[23, 24], [0, 8]], txt: "23:00 a 08:00" },
+    { label: "Tokio", segs: [[1, 10]], txt: "01:00 a 10:00" },
+    { label: "Londres", segs: [[9, 18]], txt: "09:00 a 18:00", strong: true },
+    { label: "Nueva York", segs: [[14, 23]], txt: "14:00 a 23:00", strong: true }
+  ];
+  var tk = []; for (var h = 0; h <= 24; h += 3) tk.push({ v: h, label: hh(h === 24 ? 0 : h), minor: h % 6 !== 0, anchor: h === 24 ? "end" : undefined });
+  M.range(document.getElementById("ses"), {
+    aria: "Sesiones del mercado de divisas a lo largo del día en hora de España",
+    rows: ses, scale: "lin", domain: [0, 24], labelW: 110, ticks: tk,
+    bands: [{ from: 14, to: 18, label: "Solape Londres–Nueva York", short: "Solape", level: 1 }],
+    markers: [{ v: 20, label: "Fed", anchor: "end", hideNarrow: true }, { v: 23, label: "Rollover", anchor: "end" }],
+    describe: function (r) { return r.txt; }
+  });
+  M.dataTable(document.getElementById("fig-ses"), ["Sesión", "Horario aproximado (España)"], ses.map(function (r) { return [r.label, r.txt]; }));
+
+  /* Martingala frente a riesgo fijo: mismas tiradas */
+  function mart(seed, N) {
+    var r = M.rng(seed), eqM = 10000, eqF = 10000, k = 0, bust = -1, Mv = [eqM], Fv = [eqF];
+    for (var i = 1; i <= N; i++) {
+      var win = r() < 0.5;
+      if (bust < 0) { var stake = 10 * Math.pow(2, k); if (win) { eqM += stake; k = 0; } else { eqM -= stake; k++; } if (10 * Math.pow(2, k) > eqM) bust = i; }
+      var risk = eqF * 0.01; eqF += win ? risk : -risk;
+      Mv.push(eqM); Fv.push(eqF);
+    }
+    return { M: Mv, F: Fv, bust: bust };
+  }
+  var mt = mart(302, 700), idx = mt.M.map(function (_, i) { return i; });
+  var usd = function (v) { return M.fmt(v, 0) + " $"; };
+  M.line(document.getElementById("mart"), {
+    aria: "Evolución de una cuenta con martingala frente a una con riesgo fijo del 1 por ciento",
+    x: idx, series: [{ name: "Riesgo fijo del 1 %", color: "var(--c1)", values: mt.F }, { name: "Martingala", color: "var(--c2)", values: mt.M }],
+    yFmt: usd, yDomain: [0, 14000],
+    xTicks: [{ v: 0, label: "0", anchor: "start" }, { v: 100, label: "100", minor: true }, { v: 200, label: "200" }, { v: 300, label: "300", minor: true }, { v: 400, label: "400" }, { v: 500, label: "500", minor: true }, { v: 600, label: "600" }, { v: 700, label: "700", anchor: "end" }],
+    vlines: [{ x: mt.bust, label: "La martingala ya no puede doblar", anchor: "end" }],
+    tipTitle: function (i) { return "Operación " + i; }
+  });
+  var mrows = []; for (var q = 0; q <= 700; q += 50) mrows.push(["Operación " + q, usd(mt.F[q]), usd(mt.M[q])]);
+  M.dataTable(document.getElementById("fig-mart"), ["Momento", "Riesgo fijo 1 %", "Martingala"], mrows, [1, 2]);
+
+  /* Calculadora de costes */
+  function num(id) { var v = parseFloat(document.getElementById(id).value); return isFinite(v) ? v : 0; }
+  function costs() {
+    var n = num("c-n"), c = num("c-cost"), e = num("c-edge"), l = num("c-lots");
+    document.getElementById("c-n-out").textContent = M.fmt(n);
+    var cost = n * c * l * 10, gross = n * e * l * 10, net = gross - cost, share = e > 0 ? c / e * 100 : 100;
+    document.getElementById("c-costs").textContent = usd(cost);
+    document.getElementById("c-gross").textContent = usd(gross);
+    document.getElementById("c-net").textContent = (net > 0 ? "+" : "") + usd(net);
+    var card = document.getElementById("c-net-card"), badge = document.getElementById("c-badge");
+    card.classList.toggle("is-good", net > 0); card.classList.toggle("is-bad", net <= 0);
+    badge.replaceChildren();
+    var ns = "http://www.w3.org/2000/svg", sv = document.createElementNS(ns, "svg"); sv.setAttribute("viewBox", "0 0 12 12"); sv.setAttribute("aria-hidden", "true");
+    var pth = document.createElementNS(ns, "path"); pth.setAttribute("d", net > 0 ? "M6 2l4 6H2z" : "M6 10L2 4h8z"); pth.setAttribute("fill", "currentColor"); sv.appendChild(pth);
+    badge.appendChild(sv); badge.appendChild(document.createTextNode(net > 0 ? "A tu favor" : "En contra"));
+    var mi = document.getElementById("c-meter-i"), mb = document.getElementById("c-meter");
+    mi.style.width = Math.min(100, share) + "%";
+    mb.className = "meter" + (share >= 80 ? " crit" : share >= 50 ? " warn" : "");
+    mb.setAttribute("aria-label", "Los costes se comen el " + M.fmt(share, 0) + " % de la ventaja");
+    document.getElementById("c-read").textContent = share >= 100
+      ? "Los costes (" + M.fmt(c, 1) + " pips) superan tu ventaja bruta (" + M.fmt(e, 1) + " pips). Cuantas más operaciones hagas, más pierdes."
+      : "Los costes se comen el " + M.fmt(share, 0) + " % de tu ventaja. Con " + M.fmt(n) + " operaciones al mes pagas " + usd(cost) + " para ganar, en teoría, " + usd(net) + " netos.";
+  }
+  ["c-n", "c-cost", "c-edge", "c-lots"].forEach(function (id) { document.getElementById(id).addEventListener("input", costs); });
+  costs();
+
+  /* Tamaño de posición */
+  function size() {
+    var cap = num("s-cap"), r = num("s-risk"), stop = Math.max(1, num("s-stop")), px = num("s-px") || 1.1;
+    document.getElementById("s-risk-out").textContent = M.fmt(r, 2).replace(/,?0+$/, "") + " %";
+    var money = cap * r / 100, lots = money / (stop * 10), nom = lots * 100000 * px, lev = cap > 0 ? nom / cap : 0;
+    document.getElementById("s-lots").textContent = M.fmt(lots, 2);
+    document.getElementById("s-money").textContent = usd(money);
+    document.getElementById("s-nom").textContent = usd(nom);
+    document.getElementById("s-lev").textContent = M.fmt(lev, 1) + "×";
+    document.getElementById("s-margin").textContent = "Garantía necesaria a 30:1: " + usd(nom / 30);
+    var mi = document.getElementById("s-meter-i"), mb = document.getElementById("s-meter"), sh = Math.min(100, lev / 30 * 100);
+    mi.style.width = sh + "%";
+    mb.className = "meter" + (lev > 30 ? " crit" : lev > 10 ? " warn" : "");
+    mb.setAttribute("aria-label", "Apalancamiento efectivo de " + M.fmt(lev, 1) + " veces frente a un máximo de 30");
+  }
+  ["s-cap", "s-risk", "s-stop", "s-px"].forEach(function (id) { document.getElementById(id).addEventListener("input", size); });
+  size();
+
+  /* Pila tecnológica */
+  M.flow(document.getElementById("stack"), {
+    aria: "Pila tecnológica de un sistema de forex: datos, estrategia, riesgo, ejecución y bróker",
+    nodes: [
+      { t: "Datos", d: "Flujo de precios del bróker o de un proveedor" },
+      { t: "Estrategia", d: "Python, MQL5 o C#" },
+      { t: "Riesgo", d: "Límites duros y parada de emergencia" },
+      { t: "Ejecución", d: "MT5, cTrader, FIX o REST" },
+      { t: "Bróker", d: "Cuenta real o demo" }
+    ],
+    edges: ["precios", "posición\ndeseada", "orden\npermitida", "órdenes"],
+    hl: [2]
+  });
+})();
+</script>
+</body>
+</html>

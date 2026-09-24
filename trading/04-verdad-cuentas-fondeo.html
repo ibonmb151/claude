@@ -1,0 +1,1325 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>La verdad del fondeo</title>
+<meta name="description" content="Cómo ganan dinero las firmas de cuentas de fondeo, qué dicen los datos sobre quién cobra y qué pasa si eres rentable, con un simulador de probabilidades.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..800;1,6..96,400..800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap">
+<style>
+/* ============================================================
+   Máquinas y mercados · sistema visual común
+   Billete: papel neutro, tinta de grabado, un color por documento
+   ============================================================ */
+:root{
+  --paper:#F4F5F2; --surface:#FCFCFB; --surface-2:#EEF0EC;
+  --ink:#121614; --ink-2:#48504B; --muted:#646C67;
+  --rule:#DCE1DC; --rule-strong:#C3CAC4; --grid:#E6E9E5; --deemph:#B4BBB6;
+  --good:#006300; --good-mark:#0ca30c;
+  --warn:#8a5a00; --warn-mark:#fab219;
+  --crit:#b42e2e; --crit-mark:#d03b3b;
+  --c1:#2a78d6; --c2:#eb6834; --c3:#1baf7a; --c4:#4a3aa7;
+  --pos:#2a78d6; --neg:#e34948;
+  --o1:#a39ef9; --o2:#8b85de; --o3:#736dc3; --o4:#5d55a9; --o5:#483e90;
+  --accent:var(--c1); --accent-ink:#1c5cab;
+  --wash:color-mix(in oklab, var(--accent) 8%, var(--surface));
+  --f-display:"Bodoni Moda","Bodoni 72",Didot,"Bodoni MT",Georgia,serif;
+  --f-sans:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  --radius:10px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --paper:#0F1211; --surface:#161A18; --surface-2:#1D2220;
+    --ink:#EDF1EE; --ink-2:#B7BFBA; --muted:#8E9791;
+    --rule:#262D29; --rule-strong:#37403B; --grid:#222826; --deemph:#4B544F;
+    --good:#0ca30c; --good-mark:#0ca30c;
+    --warn:#fab219; --warn-mark:#fab219;
+    --crit:#e66767; --crit-mark:#e66767;
+    --c1:#3987e5; --c2:#d95926; --c3:#199e70; --c4:#9085e9;
+    --pos:#3987e5; --neg:#e66767;
+    --o1:#5d57a4; --o2:#726dbc; --o3:#8884d5; --o4:#9e9bee; --o5:#b6b3ff;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --paper:#0F1211; --surface:#161A18; --surface-2:#1D2220;
+  --ink:#EDF1EE; --ink-2:#B7BFBA; --muted:#8E9791;
+  --rule:#262D29; --rule-strong:#37403B; --grid:#222826; --deemph:#4B544F;
+  --good:#0ca30c; --good-mark:#0ca30c;
+  --warn:#fab219; --warn-mark:#fab219;
+  --crit:#e66767; --crit-mark:#e66767;
+  --c1:#3987e5; --c2:#d95926; --c3:#199e70; --c4:#9085e9;
+  --pos:#3987e5; --neg:#e66767;
+  --o1:#5d57a4; --o2:#726dbc; --o3:#8884d5; --o4:#9e9bee; --o5:#b6b3ff;
+}
+
+/* ---------- base ---------- */
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%;scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--f-sans);font-size:17px;line-height:1.62;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+@media (max-width:600px){body{font-size:16px}}
+h1,h2,h3,h4{margin:0;text-wrap:balance}
+p{margin:0}
+figure{margin:0}
+a{color:var(--accent-ink);text-decoration-line:underline;text-decoration-thickness:1px;text-underline-offset:3px}
+a:hover{text-decoration-thickness:2px}
+:focus-visible{outline:2px solid var(--accent-ink);outline-offset:2px;border-radius:3px}
+::selection{background:color-mix(in oklab,var(--accent) 28%,transparent)}
+strong,b{font-weight:600}
+abbr[title]{text-decoration:underline dotted;text-underline-offset:3px}
+.num{font-variant-numeric:tabular-nums}
+.wrap{max-width:1180px;margin-inline:auto;padding-inline:clamp(16px,4vw,44px)}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+
+/* ---------- barra de la serie ---------- */
+.series{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 24px;padding-block:16px 14px;border-bottom:1px solid var(--rule)}
+.series .brand{font:500 11.5px/1.2 var(--f-mono);letter-spacing:.18em;text-transform:uppercase;color:var(--ink-2)}
+.series-nav{display:flex;flex-wrap:wrap;gap:4px 6px;margin:0;padding:0;list-style:none}
+.series-nav a,.series-nav span.soon{display:inline-flex;align-items:center;gap:8px;font:500 13px/1 var(--f-sans);color:var(--ink-2);text-decoration:none;padding:8px 11px;border-radius:999px;border:1px solid transparent}
+.series-nav .dot{width:8px;height:8px;border-radius:1.5px;transform:rotate(45deg);background:var(--c);flex:none}
+.series-nav a:hover{border-color:var(--rule-strong);color:var(--ink)}
+.series-nav a[aria-current="page"]{border-color:var(--rule-strong);background:var(--surface);color:var(--ink)}
+.series-nav span.soon{opacity:.6}
+
+/* ---------- portada ---------- */
+.hero{display:grid;gap:28px;align-items:center;padding-block:clamp(36px,6vw,76px) clamp(26px,4vw,44px)}
+@media (min-width:880px){.hero{grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:48px}}
+.eyebrow{display:flex;flex-wrap:wrap;gap:6px 16px;font:500 12px/1.3 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.eyebrow b{color:var(--accent-ink);font-weight:500}
+.hero h1{font-family:var(--f-display);font-weight:600;font-size:clamp(46px,7.4vw,100px);line-height:.95;letter-spacing:-.015em;margin-top:18px}
+.hero h1 em{font-style:italic;font-weight:500;color:var(--accent-ink)}
+.dek{font-size:clamp(18px,1.7vw,21px);line-height:1.5;color:var(--ink-2);max-width:42ch;margin-top:22px}
+.meta{margin-top:18px;font:13px/1.5 var(--f-mono);color:var(--muted)}
+.emblem{position:relative;width:min(100%,390px);aspect-ratio:1;justify-self:end;container-type:inline-size}
+@media (max-width:879px){.emblem{width:min(62vw,250px);justify-self:start;order:-1}}
+.emblem canvas{position:absolute;inset:0;width:100%;height:100%}
+.emblem .numeral{position:absolute;inset:0;display:grid;place-items:center;font-family:var(--f-display);font-weight:500;font-style:italic;font-size:30cqw;line-height:1;color:var(--accent-ink);padding-bottom:3cqw}
+.emblem .serial{position:absolute;left:0;right:0;top:calc(100% + 10px);text-align:center;font:500 11px/1 var(--f-mono);letter-spacing:.3em;color:var(--muted)}
+.microprint{font:500 6.5px/1 var(--f-mono);letter-spacing:.24em;color:var(--muted);white-space:nowrap;overflow:hidden;padding-block:4px;border-block:1px solid var(--rule);user-select:none}
+
+/* ---------- en corto ---------- */
+.tldr{background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);padding:22px clamp(18px,3vw,30px) 24px;margin-top:28px}
+.tldr h2{font:500 12px/1 var(--f-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.tldr ul{list-style:none;margin:16px 0 0;padding:0;display:grid;gap:14px 28px;grid-template-columns:repeat(auto-fit,minmax(250px,1fr))}
+.tldr li{position:relative;padding-left:20px;font-size:16px;line-height:1.5}
+.tldr li::before{content:"";position:absolute;left:1px;top:.5em;width:7px;height:7px;background:var(--accent);transform:rotate(45deg)}
+
+/* ---------- documento ---------- */
+.doc{display:grid;gap:36px;padding-block:44px 88px}
+@media (min-width:1080px){.doc{grid-template-columns:200px minmax(0,1fr);gap:60px}}
+.toc{font-size:14px}
+.toc details{border:1px solid var(--rule);border-radius:var(--radius);background:var(--surface);padding:2px 12px}
+.toc summary{cursor:pointer;font:500 12px/1 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2);padding:14px 2px}
+.toc ol{list-style:none;margin:0 0 10px;padding:0;display:grid;gap:2px;counter-reset:toc}
+.toc a{display:grid;grid-template-columns:24px 1fr;gap:4px;padding:6px 8px;border-radius:6px;color:var(--ink-2);text-decoration:none;line-height:1.35}
+.toc a::before{counter-increment:toc;content:counter(toc,decimal-leading-zero);font:500 11px/1.75 var(--f-mono);color:var(--muted)}
+.toc a:hover{background:var(--surface-2);color:var(--ink)}
+.toc a[aria-current="true"]{color:var(--ink);background:var(--surface-2)}
+.toc a[aria-current="true"]::before{color:var(--accent-ink)}
+@media (min-width:1080px){
+  .toc{position:sticky;top:calc(env(safe-area-inset-top,0px) + 24px);align-self:start;max-height:calc(100vh - 48px);overflow:auto}
+  .toc details{border:0;background:none;padding:0}
+  .toc summary{display:none}
+  .toc a:hover,.toc a[aria-current="true"]{background:var(--surface)}
+}
+.content{min-width:0;counter-reset:sec}
+.sec{counter-increment:sec;scroll-margin-top:24px}
+.sec + .sec{margin-top:84px}
+.sec > * + *{margin-top:18px}
+.sec > .kicker + h2{margin-top:12px}
+.sec > h2 + *{margin-top:22px}
+.sec > .fig,.sec > .cards,.sec > .stats,.sec > .tbl-wrap,.sec > .callout,.sec > .steps,.sec > .codeblock,.sec > .matrix,.sec > .tiers,.sec > .timeline,.sec > .split,.sec > .limits,.sec > .diagram{margin-top:30px}
+.sec > h3{margin-top:40px}
+.sec p,.sec > ul,.sec > ol{max-width:68ch}
+.sec > ul,.sec > ol{padding-left:1.25em}
+.sec > ul li + li,.sec > ol li + li{margin-top:8px}
+.kicker{display:flex;align-items:center;gap:10px;font:500 12px/1 var(--f-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.kicker::before{content:counter(sec,decimal-leading-zero);color:var(--accent-ink)}
+.sec h2{font-family:var(--f-display);font-weight:500;font-size:clamp(31px,3.7vw,46px);line-height:1.05;letter-spacing:-.01em}
+.sec h3{font-size:20px;line-height:1.3;font-weight:600}
+.lead{font-size:clamp(18px,1.5vw,19.5px);line-height:1.58;color:var(--ink-2)}
+.pull{font-family:var(--f-display);font-style:italic;font-weight:500;font-size:clamp(23px,2.4vw,29px);line-height:1.3;color:var(--ink);max-width:34ch;padding-block:6px}
+.pull b{color:var(--accent-ink);font-weight:600}
+
+/* ---------- tarjetas ---------- */
+.cards{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+.cards.two{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+.cards.quad{grid-template-columns:1fr}
+@media (min-width:560px){.cards.quad{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.card{background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);padding:18px 18px 16px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.card > .tag{font:500 11px/1.2 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--accent-ink)}
+.card > .ct{font:600 17px/1.3 var(--f-sans);margin:0;color:var(--ink)}
+.card > p{font-size:15px;line-height:1.55;color:var(--ink-2);margin:0;max-width:none}
+.card > .ex{margin-top:auto;padding-top:10px;font-size:13.5px;line-height:1.45;color:var(--muted);border-top:1px solid var(--rule)}
+.card > ul{margin:0;padding-left:1.1em;font-size:15px;line-height:1.5;color:var(--ink-2)}
+.card > ul li + li{margin-top:4px}
+.card.big > .ct{font:500 24px/1.15 var(--f-display)}
+
+/* ---------- cifras ---------- */
+.stats{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.stats.quad{grid-template-columns:repeat(2,minmax(0,1fr))}
+@media (max-width:479px){.stats.quad{grid-template-columns:1fr}}
+@media (min-width:1180px){.stats.quad{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.stat{background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);padding:16px 18px 14px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.stat .v{font:600 clamp(27px,2.8vw,34px)/1.05 var(--f-sans);letter-spacing:-.015em;color:var(--ink)}
+.stat .v small{font-size:.5em;font-weight:500;letter-spacing:0;color:var(--ink-2);margin-left:4px}
+.stat .l{font-size:14.5px;line-height:1.45;color:var(--ink-2)}
+.stat .s{font:11.5px/1.45 var(--f-mono);color:var(--muted);margin-top:auto;padding-top:4px}
+.stat.is-good .v{color:var(--good)} .stat.is-bad .v{color:var(--crit)}
+.stat .badge{display:inline-flex;align-items:center;gap:6px;font:500 12px/1 var(--f-sans);padding:4px 8px;border-radius:999px;border:1px solid var(--rule-strong);color:var(--ink-2);align-self:flex-start}
+.stat .badge svg{width:12px;height:12px}
+.stat.is-good .badge{color:var(--good);border-color:color-mix(in oklab,var(--good-mark) 45%,var(--rule))}
+.stat.is-bad .badge{color:var(--crit);border-color:color-mix(in oklab,var(--crit-mark) 45%,var(--rule))}
+
+/* ---------- avisos ---------- */
+.callout{display:grid;grid-template-columns:22px minmax(0,1fr);gap:12px;align-items:start;padding:16px 18px;border-radius:var(--radius);border:1px solid var(--rule);background:var(--surface)}
+.callout > svg{width:20px;height:20px;margin-top:2px;color:var(--accent-ink)}
+.callout .ct{font-weight:600;display:block;margin-bottom:2px}
+.callout p{font-size:15.5px;line-height:1.55;color:var(--ink-2);max-width:none}
+.callout p + p{margin-top:8px}
+.callout.warn{border-color:color-mix(in oklab,var(--warn-mark) 50%,var(--rule));background:color-mix(in oklab,var(--warn-mark) 7%,var(--surface))}
+.callout.warn > svg{color:var(--warn)}
+.callout.crit{border-color:color-mix(in oklab,var(--crit-mark) 45%,var(--rule));background:color-mix(in oklab,var(--crit-mark) 6%,var(--surface))}
+.callout.crit > svg{color:var(--crit)}
+.callout.good{border-color:color-mix(in oklab,var(--good-mark) 40%,var(--rule));background:color-mix(in oklab,var(--good-mark) 6%,var(--surface))}
+.callout.good > svg{color:var(--good)}
+
+/* ---------- tablas ---------- */
+.tbl-wrap{overflow-x:auto;border:1px solid var(--rule);border-radius:var(--radius);background:var(--surface)}
+.tbl-wrap table{min-width:640px}
+table{border-collapse:collapse;width:100%;font-size:14.5px;line-height:1.45}
+caption{caption-side:top;text-align:left;padding:14px 14px 4px;font-weight:600;font-size:15px}
+th{font:500 11.5px/1.3 var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);text-align:left;padding:12px 14px;border-bottom:1px solid var(--rule-strong);vertical-align:bottom}
+td{padding:11px 14px;border-bottom:1px solid var(--rule);vertical-align:top;color:var(--ink-2)}
+tbody tr:last-child td{border-bottom:0}
+td:first-child{color:var(--ink);font-weight:600}
+th.num,td.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+td .sub{display:block;font-weight:400;font-size:13px;color:var(--muted)}
+
+/* ---------- pasos ---------- */
+.steps{list-style:none;margin:0;padding:0;counter-reset:st}
+.sec > ol.steps,.sec > ol.timeline{padding-left:0;max-width:none}
+.steps > li{display:grid;grid-template-columns:52px minmax(0,1fr);gap:14px;padding:16px 0;border-top:1px solid var(--rule);max-width:none}
+.steps > li:last-child{border-bottom:1px solid var(--rule)}
+.steps > li::before{counter-increment:st;content:counter(st);font:500 32px/1 var(--f-display);color:var(--accent-ink);padding-top:2px}
+.steps b{display:block;font-weight:600;color:var(--ink)}
+.steps span{display:block;color:var(--ink-2);font-size:15.5px;line-height:1.55;margin-top:2px}
+
+/* ---------- figuras y gráficos ---------- */
+.fig{background:var(--surface);border:1px solid var(--rule);border-radius:12px;padding:20px clamp(14px,2.4vw,24px) 16px;margin-inline:0;min-width:0}
+.fig-title{font:600 17px/1.35 var(--f-sans);color:var(--ink)}
+.fig-sub{font-size:14.5px;line-height:1.5;color:var(--ink-2);margin-top:4px;max-width:72ch}
+.chart{position:relative;margin-top:16px;min-height:60px}
+.chart svg{display:block;overflow:visible}
+.legend{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13.5px;color:var(--ink-2);margin-top:14px}
+.legend span{display:inline-flex;align-items:center;gap:7px}
+.legend i{display:inline-block;width:16px;height:2px;border-radius:1px;background:var(--k)}
+.legend i.box{width:10px;height:10px;border-radius:2px}
+.fig-note{font-size:13px;line-height:1.55;color:var(--muted);margin-top:12px;max-width:none}
+.fig details.data{margin-top:12px;border-top:1px solid var(--rule);padding-top:10px}
+.fig details.data summary{cursor:pointer;font:500 12.5px/1.4 var(--f-mono);color:var(--ink-2);width:max-content;max-width:100%}
+.fig details.data .tbl-wrap{margin-top:10px}
+.fig details.data table{min-width:0}
+.viz text{font-family:var(--f-sans);font-size:12px;fill:var(--muted)}
+.viz .grid{stroke:var(--grid);stroke-width:1;shape-rendering:crispEdges}
+.viz .base{stroke:var(--rule-strong);stroke-width:1;shape-rendering:crispEdges}
+.viz .lbl{fill:var(--ink-2);font-size:12.5px}
+.viz .lbl-strong{fill:var(--ink);font-size:13px;font-weight:600}
+.viz .val{fill:var(--ink);font-size:12.5px;font-variant-numeric:tabular-nums}
+.viz .hit{fill:transparent;cursor:default}
+.viz .hit:focus{outline:none}
+.viz .hit:focus-visible{stroke:var(--accent-ink);stroke-width:2px}
+.viz .cross{stroke:var(--ink-2);stroke-width:1;shape-rendering:crispEdges}
+.viz .mark{transition:opacity .15s}
+.viz g.row:hover .mark,.viz g.row:focus-within .mark{opacity:.8}
+.viz .ref{stroke:var(--ink);stroke-width:1.5}
+.viz .band{fill:var(--wash)}
+
+.viz-tip{position:fixed;z-index:50;pointer-events:none;min-width:130px;max-width:290px;background:var(--ink);color:var(--paper);border-radius:8px;padding:9px 11px 10px;font:13px/1.4 var(--f-sans);box-shadow:0 12px 30px -12px rgba(0,0,0,.45);opacity:0;transform:translateY(4px);transition:opacity .12s,transform .12s;left:0;top:0}
+.viz-tip.on{opacity:1;transform:none}
+.viz-tip .t{font:500 11px/1.3 var(--f-mono);letter-spacing:.05em;opacity:.72;margin-bottom:5px}
+.viz-tip .r{display:flex;align-items:baseline;gap:8px}
+.viz-tip .r + .r{margin-top:2px}
+.viz-tip .r i{flex:none;width:12px;height:2px;border-radius:1px;align-self:center}
+.viz-tip .r b{font-weight:600;font-variant-numeric:tabular-nums}
+.viz-tip .r span{opacity:.78}
+.viz-tip .n{margin-top:6px;opacity:.78;font-size:12px}
+
+/* ---------- controles ---------- */
+.controls{display:grid;gap:14px 22px;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));margin-top:18px}
+.controls.four{grid-template-columns:repeat(auto-fit,minmax(170px,1fr))}
+.ctl{display:flex;flex-direction:column;gap:6px;min-width:0}
+.ctl label{display:flex;justify-content:space-between;gap:10px;font-size:13.5px;color:var(--ink-2)}
+.ctl output{font:500 13px var(--f-mono);color:var(--ink);white-space:nowrap}
+.ctl input[type="range"]{width:100%;accent-color:var(--accent-ink)}
+.ctl input[type="number"],.ctl select{font:15px var(--f-sans);color:var(--ink);background:var(--paper);border:1px solid var(--rule-strong);border-radius:8px;padding:8px 10px;width:100%}
+.ctl .hint{font-size:12px;color:var(--muted)}
+.btns{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.btn{font:500 14px/1 var(--f-sans);color:var(--ink);background:var(--surface);border:1px solid var(--rule-strong);border-radius:999px;padding:9px 14px;cursor:pointer}
+.btn:hover{border-color:var(--ink-2)}
+.btn[aria-pressed="true"]{background:var(--accent-ink);border-color:var(--accent-ink);color:var(--surface)}
+.btn.ghost{border-style:dashed}
+.readout{margin-top:16px;padding:14px 16px;border-radius:8px;background:var(--wash);font-size:15.5px;line-height:1.55;color:var(--ink)}
+.meter{height:10px;border-radius:999px;background:color-mix(in oklab,var(--accent) 16%,var(--surface));overflow:hidden;margin-top:8px}
+.meter > i{display:block;height:100%;border-radius:999px;background:var(--accent);transition:width .25s}
+.meter.warn > i{background:var(--warn-mark)} .meter.crit > i{background:var(--crit-mark)}
+.meter.warn{background:color-mix(in oklab,var(--warn-mark) 18%,var(--surface))} .meter.crit{background:color-mix(in oklab,var(--crit-mark) 16%,var(--surface))}
+
+/* ---------- código ---------- */
+.codeblock{position:relative}
+pre.code{margin:0;overflow-x:auto;background:var(--surface-2);border:1px solid var(--rule);border-radius:var(--radius);padding:18px 18px 16px;font:13.5px/1.6 var(--f-mono);color:var(--ink);tab-size:4}
+pre.code code{font:inherit}
+.codeblock .copy{position:absolute;top:8px;right:8px;font:500 12px/1 var(--f-mono);color:var(--ink-2);background:var(--surface);border:1px solid var(--rule-strong);border-radius:6px;padding:6px 9px;cursor:pointer}
+.codeblock .copy:hover{color:var(--ink);border-color:var(--ink-2)}
+.codeblock .lang{position:absolute;top:10px;left:18px;font:500 10.5px/1 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.codeblock .lang + pre.code{padding-top:34px}
+.c-com{color:var(--muted);font-style:italic}
+.c-str{color:var(--accent-ink)}
+.c-kw{font-weight:600}
+.c-num{color:var(--accent-ink)}
+code:not(pre code){font:.88em var(--f-mono);background:var(--surface-2);border:1px solid var(--rule);border-radius:4px;padding:.05em .35em}
+.prompt{background:var(--surface);border:1px dashed var(--rule-strong);border-radius:var(--radius);padding:16px 18px;font-size:15px;line-height:1.6;color:var(--ink)}
+.prompt .who{font:500 11px/1 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:8px}
+
+/* ---------- diagramas ---------- */
+.diagram{background:var(--surface);border:1px solid var(--rule);border-radius:12px;padding:18px clamp(12px,2.4vw,22px)}
+.diagram .scroll{overflow-x:auto}
+.scroll-hint{display:none;font:12px/1.4 var(--f-mono);color:var(--muted);margin-bottom:8px}
+@media (max-width:800px){.scroll-hint{display:block}}
+.diagram svg text{font-family:var(--f-sans)}
+.flowchart{margin-top:6px}
+.fnode rect{fill:var(--surface);stroke:var(--rule-strong)}
+.fnode.hl rect{fill:var(--wash);stroke:var(--accent)}
+.fnode .ft{fill:var(--ink);font-size:14px;font-weight:600}
+.fnode .fd{fill:var(--ink-2);font-size:12px}
+.fedge{stroke:var(--ink-2);stroke-width:1.25;fill:none}
+.fhead{fill:var(--ink-2)}
+.flabel{fill:var(--muted);font:11px var(--f-mono)}
+
+/* ---------- lista de límites ---------- */
+.limits{display:grid;gap:0;counter-reset:lim;border-top:1px solid var(--rule)}
+.limit{display:grid;grid-template-columns:44px minmax(0,1fr);gap:16px;padding:20px 0;border-bottom:1px solid var(--rule)}
+.limit::before{counter-increment:lim;content:counter(lim);font:500 30px/1 var(--f-display);color:var(--accent-ink);padding-top:2px}
+.limit h3{font-size:18px;line-height:1.3;font-weight:600}
+.limit p{margin-top:6px;color:var(--ink-2);font-size:16px;max-width:66ch}
+.limit .datum{margin-top:10px;font:12.5px/1.5 var(--f-mono);color:var(--ink);background:var(--surface);border:1px solid var(--rule);border-radius:6px;padding:8px 10px;max-width:66ch}
+.limit > div > .fig{margin-top:18px}
+@media (max-width:600px){.limit{grid-template-columns:1fr;gap:4px}.limit::before{font-size:24px}}
+
+/* ---------- dos columnas sí/no ---------- */
+.split{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+.split > div{background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);padding:18px 20px}
+.split h3{display:flex;align-items:center;gap:8px;font-size:17px}
+.split h3 svg{width:18px;height:18px}
+.split .yes h3{color:var(--good)} .split .no h3{color:var(--crit)}
+.split ul{margin:10px 0 0;padding-left:1.1em;color:var(--ink-2);font-size:15.5px;line-height:1.55}
+.split li + li{margin-top:6px}
+
+/* ---------- cronología ---------- */
+.timeline{list-style:none;margin:0;padding:0;border-left:1px solid var(--rule-strong);margin-left:6px}
+.timeline li{position:relative;padding:0 0 20px 22px;max-width:none}
+.timeline li::before{content:"";position:absolute;left:-5px;top:.45em;width:9px;height:9px;background:var(--accent);transform:rotate(45deg)}
+.timeline time{display:block;font:500 12px/1.4 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--accent-ink)}
+.timeline b{display:block;margin-top:2px}
+.timeline span{display:block;color:var(--ink-2);font-size:15.5px;line-height:1.55;max-width:66ch;margin-top:2px}
+
+/* ---------- fuentes y pie ---------- */
+.refs{font-size:14px;line-height:1.55;color:var(--ink-2);padding-left:1.3em}
+.refs li + li{margin-top:7px}
+.foot{border-top:1px solid var(--rule);padding-block:28px 40px;display:grid;gap:18px}
+.foot p{font-size:13.5px;color:var(--muted);max-width:80ch}
+.foot .series-nav{justify-content:flex-start}
+
+@media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
+.fig .stats{margin-top:16px}
+
+/* página */
+:root{--accent:var(--c4);--accent-ink:#4a3aa7}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--accent-ink:#B3AAF3}}
+:root[data-theme="dark"]{--accent-ink:#B3AAF3}
+details.rules{margin-top:14px;border-top:1px solid var(--rule);padding-top:10px}
+details.rules summary{cursor:pointer;font:500 12.5px/1.4 var(--f-mono);color:var(--ink-2);width:max-content;max-width:100%}
+.sim-sub{font:600 15px/1.35 var(--f-sans);color:var(--ink);margin-top:22px}
+.checklist{list-style:none;padding:0!important;display:grid;gap:10px}
+.checklist li{position:relative;padding-left:26px}
+.checklist li::before{content:"";position:absolute;left:2px;top:.35em;width:13px;height:13px;border:1.5px solid var(--accent-ink);border-radius:3px}
+.checklist li::after{content:"";position:absolute;left:6px;top:.52em;width:5px;height:8px;border:solid var(--accent-ink);border-width:0 1.8px 1.8px 0;transform:rotate(45deg)}
+</style>
+</head>
+<body>
+<header class="series wrap" id="top"><span class="brand">Máquinas y mercados</span><nav aria-label="Documentos de la serie"><ul class="series-nav"><li><a href="01-trading-algoritmico.html"><span class="dot" style="--c:var(--c1)"></span>1 · Trading algorítmico</a></li><li><a href="02-forex-algoritmico.html"><span class="dot" style="--c:var(--c2)"></span>2 · Forex algorítmico</a></li><li><a href="03-agentes-claude-trading.html"><span class="dot" style="--c:var(--c3)"></span>3 · Agentes Claude</a></li><li><a href="#top" aria-current="page"><span class="dot" style="--c:var(--c4)"></span>4 · Cuentas de fondeo</a></li></ul></nav></header>
+<section class="hero wrap">
+  <div class="hero-text">
+    <p class="eyebrow"><span>Máquinas y mercados</span><b>Documento 4 de 4</b></p>
+    <h1>La verdad <em>del fondeo</em></h1>
+    <p class="dek">Cómo ganan dinero las firmas de cuentas de fondeo, qué dicen los datos sobre quién cobra y qué pasa cuando eres rentable de verdad. Con un simulador para calcular tus probabilidades.</p>
+    <p class="meta">Septiembre de 2026 · 17 minutos de lectura</p>
+  </div>
+  <div class="emblem" aria-hidden="true"><canvas></canvas><span class="numeral">4</span><span class="serial">MM · 04 · 2026</span></div>
+</section>
+<div class="wrap"><div class="microprint" aria-hidden="true" data-text="CUENTAS DE FONDEO · FASE 1 · FASE 2 · PAGO"></div>
+  <div class="tldr">
+    <h2>En corto</h2>
+    <ul>
+      <li>Operas en una cuenta demo. FTMO, la firma más grande, lo explica en sus condiciones: todas sus cuentas usan capital ficticio y puede copiar tus operaciones en su propia cuenta real.</li>
+      <li>Cobra poca gente. En el mayor estudio público, con 300.000 cuentas de 10 firmas, el 14&nbsp;% superó la prueba y solo el 7&nbsp;% del total recibió algún pago.</li>
+      <li>El negocio vive de las cuotas y de que la mayoría arriesgue demasiado. Si eres rentable, en una firma seria cobrarás, pero con techo, más vigilancia y riesgo de que la firma cierre.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="doc wrap">
+  <aside class="toc" aria-label="Índice"></aside>
+  <main class="content">
+
+    <section class="sec" id="como-funciona">
+      <p class="kicker">Mecánica</p>
+      <h2 data-short="Cómo funciona">Cómo funciona una cuenta de fondeo</h2>
+      <p class="lead">Pagas una cuota por una prueba en una cuenta simulada. Si cumples unas reglas, pasas a otra cuenta simulada y cobras una parte de lo que ganes en ella.</p>
+      <figure class="diagram">
+        <div class="flowchart" id="how"></div>
+        <figcaption class="fig-note">Parámetros del programa de dos fases de FTMO, la firma más conocida. Otras firmas cambian objetivos, límites y reparto: pruebas de una sola fase, financiación inmediata o pérdidas máximas que siguen a tu saldo más alto.</figcaption>
+      </figure>
+      <p>FTMO devuelve la cuota con el primer pago. El reparto parte del 80&nbsp;% y sube al 90&nbsp;% con su plan de escalado, que añade un 25&nbsp;% de saldo cada cuatro meses si ganas al menos un 10&nbsp;% en ese periodo y cobras dos veces, hasta 2 millones de dólares entre todas tus cuentas.</p>
+    </section>
+
+    <section class="sec" id="datos">
+      <p class="kicker">Los números</p>
+      <h2 data-short="Qué dicen los datos">Qué dicen los datos</h2>
+      <p class="lead">Las firmas no publican cuántos clientes aprueban ni cuántos cobran. El dato público más sólido procede de un proveedor de tecnología para estas firmas.</p>
+      <figure class="fig" id="fig-fpfx">
+        <p class="fig-title">De cada 100 compradores de una prueba</p>
+        <p class="fig-sub">Datos de FPFX Tech sobre más de 300.000 cuentas de 100.000 traders en 10 firmas, publicados en septiembre de 2024.</p>
+        <div class="chart" id="fpfx"></div>
+        <p class="fig-note">Fuente: FPFX Tech, vía Finance Magnates. El 45&nbsp;% de quienes llegaron a una cuenta financiada cobró al menos una vez.</p>
+      </figure>
+      <div class="stats quad">
+        <div class="stat"><span class="v">4&nbsp;%</span><span class="l">del tamaño de la cuenta fue el pago medio de quien cobró: unos 4.000&nbsp;$ en una de 100.000&nbsp;$.</span><span class="s">FPFX Tech, 2024</span></div>
+        <div class="stat"><span class="v">≈800&nbsp;$</span><span class="l">gastó de media cada cuenta en pruebas a lo largo de su vida, normalmente en tres intentos.</span><span class="s">FPFX Tech, 2024</span></div>
+        <div class="stat"><span class="v">329<small>M$</small></span><span class="l">ingresó el grupo de FTMO en 2024, con un beneficio neto de 62,5 millones de dólares.</span><span class="s">Finance Magnates, 2025</span></div>
+        <div class="stat"><span class="v">450<small>M$</small></span><span class="l">pagados por FTMO a sus traders en sus diez primeros años.</span><span class="s">FTMO, septiembre de 2025</span></div>
+      </div>
+      <p>Las dos cosas son ciertas a la vez: las firmas serias pagan mucho dinero en total y la mayoría de sus clientes nunca cobra. Como las cuentas son simuladas, los pagos salen de los ingresos de la firma, que proceden sobre todo de las cuotas, y de lo que gane si copia en real a sus mejores traders. FTMO no desglosa qué parte de sus gastos son pagos a traders.</p>
+    </section>
+
+    <section class="sec" id="dinero-real">
+      <p class="kicker">Transparencia</p>
+      <h2 data-short="¿Es dinero real?">¿Es dinero real?</h2>
+      <p class="lead">No. En casi todas las firmas de forex y CFD, la cuenta financiada es una cuenta demo con precios reales.</p>
+      <div class="callout">
+        <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="10" cy="10" r="8.25" stroke="currentColor" stroke-width="1.5"/><path d="M10 9v5M10 6.2v.1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        <div><span class="ct">Lo que dice FTMO</span><p>En sus preguntas frecuentes explica que todas sus cuentas, incluida la financiada, son demo con capital ficticio y cotizaciones reales de proveedores de liquidez. Puede analizar tus operaciones y replicar algunas en su propia cuenta real, sin que eso cambie tu resultado ni tu recompensa.</p></div>
+      </div>
+      <p>En la práctica, la firma funciona como un bróker B-book. Tus beneficios simulados son un gasto para ella, y tus pérdidas no le aportan nada más allá de la cuota. Para cubrirse puede copiar en real a quienes ganan de forma constante. Eso explica dos cosas que verás si te va bien: el capital que te asignan tiene techo y tus operaciones reciben más atención.</p>
+      <h3>El caso My Forex Funds</h3>
+      <p>En agosto de 2023, la CFTC demandó a su matriz, Traders Global Group, por cobrar al menos 310 millones de dólares en cuotas a más de 135.000 clientes, a los que presuntamente hacía creer que operaban en cuentas reales. En mayo de 2025, un juez federal archivó el caso de forma definitiva y sancionó a la propia CFTC por engañar al tribunal, con más de 3,1 millones de dólares en costas. Mientras tanto, la firma pasó casi dos años cerrada y con los fondos congelados.</p>
+      <p>La lección para el cliente: el modelo demo es legal si está bien explicado. Lo que importa es que las reglas sean claras y que la firma pague lo que promete.</p>
+      <div class="callout warn">
+        <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 2.8l8 14H2l8-14z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M10 8v4.2M10 14.6v.1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        <div><span class="ct">En España</span><p>La CNMV advirtió en 2019 del riesgo de fraude en las cuentas de trading financiadas ligadas a cursos de pago, y recordó que esa actividad queda fuera de su supervisión. No hay fondo de garantía ni supervisor que te proteja: tienes un contrato con una empresa, a menudo extranjera.</p></div>
+      </div>
+    </section>
+
+    <section class="sec" id="reglas">
+      <p class="kicker">Letra pequeña</p>
+      <h2 data-short="Las reglas">Las reglas que deciden si cobras</h2>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Regla</th><th>Qué significa</th><th>Cómo te afecta</th></tr></thead>
+          <tbody>
+            <tr><td>Pérdida máxima diaria</td><td>Normalmente un 5&nbsp;% del saldo, contando también la pérdida de las posiciones abiertas</td><td>Una mala tarde con posiciones abiertas basta para perder la cuenta</td></tr>
+            <tr><td>Pérdida máxima total</td><td>Un 10&nbsp;% fijo, o un límite que sube con tu saldo máximo (trailing)</td><td>El trailing, habitual en futuros, castiga devolver parte de lo ganado</td></tr>
+            <tr><td>Objetivo de beneficio</td><td>+10&nbsp;% en la fase 1 y +5&nbsp;% en la fase 2</td><td>Empuja a arriesgar más de lo sensato para llegar antes</td></tr>
+            <tr><td>Días mínimos</td><td>Operar un número mínimo de días, según la firma</td><td>Impide aprobar con una sola apuesta afortunada</td></tr>
+            <tr><td>Consistencia</td><td>Ningún día puede aportar más de cierto porcentaje del beneficio</td><td>Penaliza las ganancias concentradas en pocas sesiones</td></tr>
+            <tr><td>Noticias y fin de semana</td><td>En algunas cuentas se prohíbe operar alrededor de noticias fuertes o mantener posiciones el fin de semana</td><td>Invalida estrategias que viven de esos momentos</td></tr>
+            <tr><td>Estrategias prohibidas</td><td>Arbitraje de latencia, aprovechar precios retrasados, cubrirse entre cuentas o firmas, copiar señales de terceros, apuestas a todo o nada</td><td>Es el motivo más citado en las denegaciones de pago</td></tr>
+            <tr><td>Verificación de identidad</td><td>KYC antes del primer pago</td><td>Retrasos y denegaciones si algo no cuadra</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout warn">
+        <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 2.8l8 14H2l8-14z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M10 8v4.2M10 14.6v.1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        <div><span class="ct">Lee los términos completos</span><p>Las cláusulas vagas, del tipo «prácticas contrarias al espíritu del programa», dejan a la firma la última palabra sobre si cobras.</p></div>
+      </div>
+    </section>
+
+    <section class="sec" id="simulador">
+      <p class="kicker">Simulador</p>
+      <h2 data-short="Simulador">¿Qué probabilidad tienes de cobrar?</h2>
+      <p class="lead">Este simulador enfrenta a miles de traders virtuales con las reglas de dos fases de FTMO. Cada operación gana o pierde según tu tasa de acierto y tu relación entre beneficio y riesgo. Elige un perfil o mueve los controles.</p>
+      <figure class="fig" id="fig-sim">
+        <p class="fig-title">Simulador de una prueba de dos fases</p>
+        <p class="fig-sub">4.000 traders virtuales por simulación, con una cuenta de 100.000&nbsp;$. Todo se calcula en tu navegador.</p>
+        <div class="btns" role="group" aria-label="Perfiles de ejemplo">
+          <button class="btn" type="button" data-preset="sin" aria-pressed="true">Sin ventaja</button>
+          <button class="btn" type="button" data-preset="modesta" aria-pressed="false">Ventaja modesta</button>
+          <button class="btn" type="button" data-preset="solida" aria-pressed="false">Ventaja sólida</button>
+          <button class="btn" type="button" data-preset="apostador" aria-pressed="false">Apostador</button>
+        </div>
+        <div class="controls four">
+          <div class="ctl"><label for="q-p">Tasa de acierto <output id="q-p-out" for="q-p"></output></label><input id="q-p" type="range" min="25" max="65" step="1" value="40"></div>
+          <div class="ctl"><label for="q-r">Beneficio / riesgo <output id="q-r-out" for="q-r"></output></label><input id="q-r" type="range" min="0.5" max="3" step="0.1" value="1.5"></div>
+          <div class="ctl"><label for="q-risk">Riesgo por operación <output id="q-risk-out" for="q-risk"></output></label><input id="q-risk" type="range" min="0.25" max="4" step="0.25" value="1"></div>
+          <div class="ctl"><label for="q-tpd">Operaciones al día <output id="q-tpd-out" for="q-tpd"></output></label><input id="q-tpd" type="range" min="1" max="8" step="1" value="2"></div>
+          <div class="ctl"><label for="q-cost">Coste por operación <output id="q-cost-out" for="q-cost"></output></label><input id="q-cost" type="range" min="0" max="0.2" step="0.01" value="0.05"><span class="hint">0,05 R ≈ 1,25 pips con un stop de 25 pips</span></div>
+          <div class="ctl"><label for="q-split">Reparto para ti <output id="q-split-out" for="q-split"></output></label><input id="q-split" type="range" min="50" max="90" step="5" value="80"></div>
+          <div class="ctl"><label for="q-fee">Cuota ($)</label><input id="q-fee" type="number" min="0" max="5000" step="10" value="570"><span class="hint">≈ 540 € en FTMO para 100.000 $</span></div>
+          <div class="ctl"><label for="q-months">Meses en cuenta financiada</label><select id="q-months"><option value="3">3 meses</option><option value="6" selected>6 meses</option><option value="12">12 meses</option></select></div>
+        </div>
+        <details class="rules"><summary>Cambiar las reglas de la prueba</summary>
+          <div class="controls four">
+            <div class="ctl"><label for="q-t1">Objetivo fase 1 (%)</label><input id="q-t1" type="number" min="1" max="30" step="0.5" value="10"></div>
+            <div class="ctl"><label for="q-t2">Objetivo fase 2 (%)</label><input id="q-t2" type="number" min="1" max="30" step="0.5" value="5"></div>
+            <div class="ctl"><label for="q-daily">Pérdida diaria máx. (%)</label><input id="q-daily" type="number" min="1" max="20" step="0.5" value="5"></div>
+            <div class="ctl"><label for="q-max">Pérdida total máx. (%)</label><input id="q-max" type="number" min="2" max="30" step="0.5" value="10"></div>
+          </div>
+        </details>
+        <p class="readout" id="sim-edge" aria-live="polite"></p>
+        <p class="sim-sub">Qué parte de los compradores llega a cada etapa</p>
+        <div class="chart" id="sim-funnel"></div>
+        <div class="stats quad">
+          <div class="stat" id="sim-ev-card"><span class="v" id="sim-ev">–</span><span class="l">de valor esperado por intento, contando la devolución de la cuota</span><span class="badge" id="sim-ev-badge"></span></div>
+          <div class="stat"><span class="v" id="sim-avg">–</span><span class="l">cobra de media, en total, quien cobra alguna vez</span></div>
+          <div class="stat"><span class="v" id="sim-firm">–</span><span class="l" id="sim-firm-l">de las cuotas se queda en la firma</span></div>
+          <div class="stat"><span class="v" id="sim-days">–</span><span class="l">sesiones tarda la mitad de quienes superan la fase 1</span></div>
+        </div>
+        <p class="sim-sub">Treinta trayectorias en la fase 1</p>
+        <div class="chart" id="sim-paths"></div>
+        <div class="legend"><span><i style="--k:var(--accent)"></i>Superan la fase 1</span><span><i style="--k:var(--deemph)"></i>Eliminados o sin terminar</span></div>
+        <p class="readout" id="sim-read" aria-live="polite"></p>
+        <div class="btns"><button class="btn ghost" id="sim-again" type="button">Repetir con otros traders</button></div>
+        <p class="fig-note">Supuestos del modelo: operaciones independientes con resultado fijo en R; el riesgo se calcula sobre la cuenta inicial; la pérdida diaria se mide con operaciones cerradas; cada fase dura como máximo 120 sesiones; en la cuenta financiada se cobra cada 10 sesiones si hay beneficio, y el saldo vuelve al inicial; la cuota se devuelve con el primer pago. No incluye días mínimos, reglas de consistencia, límites de pago, deslizamiento extra, denegaciones ni cierres de la firma.</p>
+      </figure>
+      <p>El resultado más llamativo aparece con el perfil sin ventaja. Con disciplina y costes bajos, el valor esperado sale positivo aunque cada operación pierda dinero de media, porque pagas una cuota fija y la firma asume las pérdidas de la cuenta financiada: es como comprar una opción barata. Con el perfil de apostador, el mismo trader lo pierde todo. El dato real, un 7&nbsp;% que cobra con un pago medio del 4&nbsp;% de la cuenta, está por debajo de lo que da el modelo sin ventaja. Una explicación plausible es que muchos compradores arriesgan demasiado o incumplen reglas, y que las firmas añaden reglas y revisiones que el modelo no recoge.</p>
+    </section>
+
+    <section class="sec" id="rentable">
+      <p class="kicker">La pregunta</p>
+      <h2 data-short="Si eres rentable">Qué pasa si eres rentable de verdad</h2>
+      <p class="lead">Si tu ventaja es real, una firma seria te pagará. Lo que cambia es tu relación con la firma y el tipo de riesgo que corres.</p>
+      <div class="cards two">
+        <article class="card"><span class="tag">Cobras</span><h3 class="ct">En una firma seria, sí</h3><p>FTMO dice haber pagado más de 450 millones de dólares en diez años. Con el primer pago te devuelve la cuota, y el reparto sube del 80&nbsp;% al 90&nbsp;% con el plan de escalado.</p></article>
+        <article class="card"><span class="tag">Coste</span><h3 class="ct">Pasas a ser un gasto para la firma</h3><p>Como tu cuenta es simulada, cada euro que ganas lo paga la firma con sus ingresos. Por eso le interesa copiar en real a los mejores y vigilar a quien gana de forma constante.</p></article>
+        <article class="card"><span class="tag">Techo</span><h3 class="ct">Creces, pero hasta un límite</h3><p>En FTMO, un 25&nbsp;% más de saldo cada cuatro meses si cumples las condiciones, hasta 2 millones de dólares entre todas tus cuentas. Otras firmas limitan además lo que puedes retirar en cada periodo.</p></article>
+        <article class="card"><span class="tag">Escrutinio</span><h3 class="ct">Más revisión de cómo ganas</h3><p>The Funded Trader denegó más de 2 millones de dólares en pagos en enero y febrero de 2024, alegando KYC, fraude y estrategias prohibidas, mientras pagaba 17 millones. Semanas después suspendió su actividad.</p></article>
+        <article class="card"><span class="tag">Contraparte</span><h3 class="ct">Tu saldo pendiente no está protegido</h3><p>En 2024, MetaQuotes retiró licencias de MetaTrader a firmas de fondeo y True Forex Funds dejó de operar. Según estimaciones del sector, entre 80 y 100 firmas desaparecieron entre 2024 y finales de 2025. Cobra a menudo y no acumules saldo.</p></article>
+        <article class="card"><span class="tag">Hacienda</span><h3 class="ct">Tributa como actividad profesional</h3><p>La Dirección General de Tributos (consulta vinculante V1722-23) considera estos cobros rendimientos de una actividad económica profesional, que tributan en la base general del IRPF. Según tu caso, puede obligarte a darte de alta en Hacienda y como autónomo. Consulta con un asesor.</p></article>
+      </div>
+      <div class="callout good">
+        <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="10" cy="10" r="8.25" stroke="currentColor" stroke-width="1.5"/><path d="M6.5 10.3l2.3 2.3 4.7-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div><span class="ct">El siguiente paso lógico</span><p>Si tu ventaja es real y la has medido bien (<a href="01-trading-algoritmico.html">documento 1</a>), la cuenta de fondeo funciona mejor como una opción barata que como un sueldo. Úsala para ganar capital y experiencia mientras construyes un historial verificable con tu propio dinero y poco apalancamiento, que es lo que te abre la puerta a una mesa de trading de verdad.</p></div>
+      </div>
+    </section>
+
+    <section class="sec" id="cronologia">
+      <p class="kicker">Contexto</p>
+      <h2 data-short="Cronología">Cronología del sector</h2>
+      <ol class="timeline">
+        <li><time>2015</time><b>Nace FTMO en Praga</b><span>Se convierte en la referencia del modelo de prueba en dos fases.</span></li>
+        <li><time>Junio de 2019</time><b>Aviso de la CNMV</b><span>Advierte del riesgo de fraude en las cuentas de trading financiadas ligadas a cursos de formación.</span></li>
+        <li><time>Agosto de 2023</time><b>La CFTC contra My Forex Funds</b><span>Un juez congela sus fondos a petición del regulador estadounidense.</span></li>
+        <li><time>Febrero de 2024</time><b>MetaQuotes corta el grifo</b><span>Retira licencias de MetaTrader a firmas de fondeo. True Forex Funds deja de operar y otras migran a cTrader, DXtrade o Match-Trader.</span></li>
+        <li><time>Marzo de 2024</time><b>The Funded Trader se detiene</b><span>Suspende su actividad tras semanas de quejas por pagos denegados.</span></li>
+        <li><time>Septiembre de 2024</time><b>El estudio de FPFX Tech</b><span>El 14&nbsp;% de los traders supera la prueba y el 7&nbsp;% cobra alguna vez.</span></li>
+        <li><time>Mayo de 2025</time><b>Archivado el caso My Forex Funds</b><span>El juez sanciona a la CFTC por engañar al tribunal.</span></li>
+        <li><time>Septiembre de 2025</time><b>FTMO cumple diez años</b><span>Anuncia más de 450 millones de dólares pagados a traders.</span></li>
+        <li><time>Diciembre de 2025</time><b>FTMO compra OANDA</b><span>Completa la adquisición del bróker regulado, con entidades en EE.&nbsp;UU., Reino Unido, Japón y otros mercados.</span></li>
+      </ol>
+    </section>
+
+    <section class="sec" id="elegir">
+      <p class="kicker">Antes de pagar</p>
+      <h2 data-short="Cómo elegir">Cómo elegir una firma</h2>
+      <ul class="checklist">
+        <li>Varios años operando y pagos que puedan comprobar terceros.</li>
+        <li>Reglas completas y publicadas, sin cláusulas vagas.</li>
+        <li>Empresa identificable, con registro mercantil y cuentas anuales accesibles.</li>
+        <li>Plataforma y proveedor de precios conocidos.</li>
+        <li>Un historial razonable de cambios de reglas y de cómo trata las denegaciones.</li>
+        <li>Sin cursos caros obligatorios para acceder a la cuenta.</li>
+        <li>Pagos frecuentes, para no acumular saldo pendiente.</li>
+      </ul>
+      <div class="callout crit">
+        <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="10" cy="10" r="8.25" stroke="currentColor" stroke-width="1.5"/><path d="M7 7l6 6M13 7l-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        <div><span class="ct">Señales de alarma</span><p>Financiación garantizada, cuentas enormes por cuotas mínimas, presión para pagar rápido, cursos obligatorios de varios miles de euros y reglas que cambian de un día para otro.</p></div>
+      </div>
+    </section>
+
+    <section class="sec" id="veredicto">
+      <p class="kicker">Veredicto</p>
+      <h2 data-short="¿Merece la pena?">¿Merece la pena?</h2>
+      <div class="split">
+        <div class="yes"><h3><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 10.5l4 4 8-9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Puede tener sentido si</h3>
+          <ul>
+            <li>Tienes una estrategia probada y la disciplina de arriesgar poco por operación.</li>
+            <li>Tratas la cuota como el precio de una opción, no como una inversión.</li>
+            <li>Repartes entre dos o tres firmas serias y cobras a menudo.</li>
+          </ul></div>
+        <div class="no"><h3><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5 5l10 10M15 5L5 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>No lo tiene si</h3>
+          <ul>
+            <li>Buscas aprender a operar o un sueldo estable.</li>
+            <li>Necesitas arriesgar mucho para llegar al objetivo.</li>
+            <li>Tu estrategia depende de noticias, de la latencia o de las rendijas del entorno demo.</li>
+          </ul></div>
+      </div>
+      <p class="pull">El modelo funciona porque <b>la mayoría arriesga demasiado</b>. Si eres disciplinado juegas con ventaja, y si eres rentable de verdad acabarás queriendo algo más grande.</p>
+    </section>
+
+    <section class="sec" id="fuentes">
+      <p class="kicker">Fuentes</p>
+      <h2 data-short="Fuentes">Fuentes y lecturas</h2>
+      <ol class="refs">
+        <li>Finance Magnates (2024). Only 7% of 300,000 Prop Trading Accounts Achieved Payouts (datos de FPFX Tech). <a href="https://www.financemagnates.com/forex/analysis/exclusive-only-7-of-300000-prop-trading-accounts-achieved-payouts/" target="_blank" rel="noopener">Artículo</a></li>
+        <li>FTMO. How it works; Scaling and Reward Growth Plan; How does an FTMO Account work from the technical side. <a href="https://ftmo.com/en/how-it-works/" target="_blank" rel="noopener">Programa</a> · <a href="https://ftmo.com/en/reward-growth-and-scaling-plan/" target="_blank" rel="noopener">Escalado</a> · <a href="https://ftmo.com/en/faq/how-does-an-ftmo-account-work-from-the-technical-side/" target="_blank" rel="noopener">Preguntas frecuentes</a></li>
+        <li>Finance Magnates (2025). FTMO's Parent Netted Over $62 Million on $329M Revenue in 2024. <a href="https://www.financemagnates.com/forex/ftmos-parent-netted-over-62-million-on-329m-revenue-in-2024/" target="_blank" rel="noopener">Artículo</a></li>
+        <li>Finance Magnates (2025). FTMO Announces Over $450 Million Paid Out as Prop Trading Firm Turns 10. <a href="https://www.financemagnates.com/forex/ftmo-announces-over-450-million-paid-out-as-prop-trading-firm-turns-10/" target="_blank" rel="noopener">Artículo</a></li>
+        <li>FTMO (2025). FTMO completes acquisition of OANDA from CVC. <a href="https://ftmo.com/en/press-release/ftmo-completes-acquisition-of-oanda-from-cvc/" target="_blank" rel="noopener">Nota de prensa</a></li>
+        <li>Finance Magnates (2025). In a Blow to the CFTC, US Court Throws Out My Forex Funds Lawsuit. <a href="https://www.financemagnates.com/forex/my-forex-funds-parent-defeats-cftc-in-court-as-judge-imposes-sanctions/" target="_blank" rel="noopener">Artículo</a></li>
+        <li>Finance Magnates (2024). The Funded Trader «Pauses All Operations». <a href="https://www.financemagnates.com/forex/breaking-prop-trading-firm-the-funded-trader-pauses-all-operations/" target="_blank" rel="noopener">Artículo</a></li>
+        <li>Finance Magnates (2024). Prop Trading Firms' Renaissance: Cutting US Clients, Integrating New Trading Platforms. <a href="https://www.financemagnates.com/forex/prop-trading-firms-renaissance-cutting-us-clients-integrating-new-trading-platforms/" target="_blank" rel="noopener">Artículo</a></li>
+        <li>CNMV (2019). La CNMV advierte sobre las páginas web de cuentas de trading financiadas ligadas a cursos de formación. <a href="https://www.cnmv.es/portal/verDoc.axd?t=%7B304c66da-fafb-4000-be53-0eee33017f3d%7D" target="_blank" rel="noopener">PDF</a></li>
+        <li>Dirección General de Tributos. Consulta vinculante V1722-23, de 15 de junio de 2023. <a href="https://www.iberley.es/resoluciones/resolucion-vinculante-direccion-general-tributos-v1722-23-15-06-2023-11639388" target="_blank" rel="noopener">Texto</a></li>
+      </ol>
+    </section>
+  </main>
+</div>
+<footer class="foot wrap"><nav aria-label="Documentos de la serie"><ul class="series-nav"><li><a href="01-trading-algoritmico.html"><span class="dot" style="--c:var(--c1)"></span>1 · Trading algorítmico</a></li><li><a href="02-forex-algoritmico.html"><span class="dot" style="--c:var(--c2)"></span>2 · Forex algorítmico</a></li><li><a href="03-agentes-claude-trading.html"><span class="dot" style="--c:var(--c3)"></span>3 · Agentes Claude</a></li><li><a href="#top" aria-current="page"><span class="dot" style="--c:var(--c4)"></span>4 · Cuentas de fondeo</a></li></ul></nav><p>Contenido educativo. No es asesoramiento financiero ni una recomendación de inversión. Las cifras proceden de las fuentes citadas; las simulaciones usan datos aleatorios y solo ilustran ideas.</p><p>Serie «Máquinas y mercados» · Septiembre de 2026</p></footer>
+<script>
+(function () {
+  "use strict";
+  var NS = "http://www.w3.org/2000/svg";
+  var root = document.documentElement;
+  var reduceMotion = !!(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches);
+
+  function css(name) { return getComputedStyle(root).getPropertyValue(name).trim(); }
+  /* color resuelto de un token (los tokens pueden apuntar a otros tokens) */
+  function tokenColor(name) {
+    var p = document.createElement("span");
+    p.style.color = "var(" + name + ")"; p.style.display = "none";
+    document.body.appendChild(p);
+    var c = getComputedStyle(p).color; p.remove();
+    return c;
+  }
+  function $$(sel, ctx) { return Array.prototype.slice.call((ctx || document).querySelectorAll(sel)); }
+
+  /* ---------- cambios de tema (sistema o selector del visor) ---------- */
+  var themeFns = [];
+  function onTheme(fn) { themeFns.push(fn); }
+  function fireTheme() { themeFns.forEach(function (f) { try { f(); } catch (e) {} }); }
+  if (window.matchMedia) {
+    var mq = matchMedia("(prefers-color-scheme: dark)");
+    if (mq.addEventListener) mq.addEventListener("change", fireTheme);
+  }
+  new MutationObserver(fireTheme).observe(root, { attributes: true, attributeFilter: ["data-theme"] });
+
+  /* ---------- azar reproducible ---------- */
+  function rng(seed) {
+    var a = seed >>> 0;
+    return function () {
+      a |= 0; a = a + 0x6D2B79F5 | 0;
+      var t = Math.imul(a ^ a >>> 15, 1 | a);
+      t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+      return ((t ^ t >>> 14) >>> 0) / 4294967296;
+    };
+  }
+  function normal(r) { var u = 0; while (u === 0) u = r(); var v = r(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v); }
+
+  /* ---------- formato en español ---------- */
+  var nfCache = {};
+  function nf(d) { if (!nfCache[d]) nfCache[d] = new Intl.NumberFormat("es-ES", { minimumFractionDigits: d, maximumFractionDigits: d, useGrouping: "always" }); return nfCache[d]; }
+  function fmt(v, d) { d = d || 0; var s = nf(d).format(Math.abs(v)); return (v < 0 && Math.abs(v) >= Math.pow(10, -d) / 2 ? "−" : "") + s; }
+  function pct(v, d) { return fmt(v, d === undefined ? 1 : d) + " %"; }
+  function money(v, cur, d) { return fmt(v, d || 0) + " " + (cur || "$"); }
+  function signed(v, d, unit) { var s = fmt(v, d); return (v > 0 ? "+" : "") + s + (unit || ""); }
+
+  /* ---------- SVG ---------- */
+  function el(tag, attrs, parent) {
+    var e = document.createElementNS(NS, tag);
+    if (attrs) for (var k in attrs) {
+      if (attrs[k] === undefined || attrs[k] === null) continue;
+      if (k === "text") e.textContent = attrs[k];
+      else e.setAttribute(k, attrs[k]);
+    }
+    if (parent) parent.appendChild(e);
+    return e;
+  }
+  function lin(d0, d1, r0, r1) { var f = function (v) { return r0 + (v - d0) / (d1 - d0) * (r1 - r0); }; f.invert = function (p) { return d0 + (p - r0) / (r1 - r0) * (d1 - d0); }; return f; }
+  function logs(d0, d1, r0, r1) { var a = Math.log10(d0), b = Math.log10(d1); return function (v) { return r0 + (Math.log10(v) - a) / (b - a) * (r1 - r0); }; }
+  function niceStep(span, count) { var s0 = Math.pow(10, Math.floor(Math.log10(span / count))); var e = span / count / s0; return s0 * (e >= 7.5 ? 10 : e >= 3.5 ? 5 : e >= 1.5 ? 2 : 1); }
+  function niceDomain(min, max, count) { if (min === max) { min -= 1; max += 1; } var st = niceStep(max - min, count || 5); return [Math.floor(min / st) * st, Math.ceil(max / st) * st, st]; }
+  function ticks(min, max, step) { var t = []; for (var v = min; v <= max + step * 1e-6; v += step) t.push(+v.toFixed(10)); return t; }
+  /* barra con extremo de dato redondeado (4px) y base recta */
+  function barPath(x0, x1, y, h, r) {
+    r = Math.min(r === undefined ? 4 : r, Math.abs(x1 - x0), h / 2);
+    if (x1 >= x0) return "M" + x0 + "," + y + "H" + (x1 - r) + "Q" + x1 + "," + y + " " + x1 + "," + (y + r) + "V" + (y + h - r) + "Q" + x1 + "," + (y + h) + " " + (x1 - r) + "," + (y + h) + "H" + x0 + "Z";
+    return "M" + x0 + "," + y + "H" + (x1 + r) + "Q" + x1 + "," + y + " " + x1 + "," + (y + r) + "V" + (y + h - r) + "Q" + x1 + "," + (y + h) + " " + (x1 + r) + "," + (y + h) + "H" + x0 + "Z";
+  }
+  function roundRect(x0, x1, y, h, r) {
+    var w = Math.max(x1 - x0, 1); r = Math.min(r === undefined ? 4 : r, w / 2, h / 2);
+    return "M" + (x0 + r) + "," + y + "H" + (x1 - r) + "Q" + x1 + "," + y + " " + x1 + "," + (y + r) + "V" + (y + h - r) + "Q" + x1 + "," + (y + h) + " " + (x1 - r) + "," + (y + h) + "H" + (x0 + r) + "Q" + x0 + "," + (y + h) + " " + x0 + "," + (y + h - r) + "V" + (y + r) + "Q" + x0 + "," + y + " " + (x0 + r) + "," + y + "Z";
+  }
+  function wrapText(str, maxChars) {
+    var out = [];
+    String(str).split("\n").forEach(function (para) {
+      var words = para.split(" "), line = "";
+      words.forEach(function (w) {
+        if (!line) line = w;
+        else if ((line + " " + w).length <= maxChars) line += " " + w;
+        else { out.push(line); line = w; }
+      });
+      out.push(line);
+    });
+    return out;
+  }
+
+  /* ---------- tooltip ---------- */
+  var tipEl = document.createElement("div");
+  tipEl.className = "viz-tip"; tipEl.setAttribute("aria-hidden", "true");
+  document.body.appendChild(tipEl);
+  function showTip(title, rows, x, y, note) {
+    tipEl.replaceChildren();
+    if (title) { var t = document.createElement("div"); t.className = "t"; t.textContent = title; tipEl.appendChild(t); }
+    (rows || []).forEach(function (r) {
+      var d = document.createElement("div"); d.className = "r";
+      if (r.color) { var k = document.createElement("i"); k.style.background = r.color; d.appendChild(k); }
+      var b = document.createElement("b"); b.textContent = r.value; d.appendChild(b);
+      if (r.label) { var s = document.createElement("span"); s.textContent = r.label; d.appendChild(s); }
+      tipEl.appendChild(d);
+    });
+    if (note) { var n = document.createElement("div"); n.className = "n"; n.textContent = note; tipEl.appendChild(n); }
+    tipEl.classList.add("on");
+    var w = tipEl.offsetWidth, h = tipEl.offsetHeight;
+    var left = x + 14, top = y - h - 12;
+    if (left + w > window.innerWidth - 8) left = x - w - 14;
+    if (left < 8) left = 8;
+    if (top < 8) top = y + 18;
+    tipEl.style.left = left + "px"; tipEl.style.top = top + "px";
+  }
+  function hideTip() { tipEl.classList.remove("on"); }
+  window.addEventListener("scroll", hideTip, { passive: true });
+
+  /* ---------- redibujo según el ancho ---------- */
+  function responsive(box, render) {
+    var last = 0;
+    function run(force) { var w = Math.round(box.clientWidth); if (w && (force || w !== last)) { last = w; render(w); } }
+    if (window.ResizeObserver) new ResizeObserver(function () { run(false); }).observe(box);
+    else window.addEventListener("resize", function () { run(false); });
+    run(true);
+    return { redraw: function () { run(true); } };
+  }
+
+  /* ---------- tabla gemela de cada gráfico ---------- */
+  function dataTable(fig, headers, rows, numericCols) {
+    if (!fig) return;
+    var d = fig.querySelector("details.data");
+    if (!d) {
+      d = document.createElement("details"); d.className = "data";
+      var s = document.createElement("summary"); s.textContent = "Ver los datos en tabla"; d.appendChild(s);
+      fig.appendChild(d);
+    }
+    var old = d.querySelector(".tbl-wrap"); if (old) old.remove();
+    var wrap = document.createElement("div"); wrap.className = "tbl-wrap";
+    var tb = document.createElement("table"), th = document.createElement("thead"), tr = document.createElement("tr");
+    headers.forEach(function (h, i) { var c = document.createElement("th"); c.textContent = h; if (numericCols && numericCols.indexOf(i) >= 0) c.className = "num"; tr.appendChild(c); });
+    th.appendChild(tr); tb.appendChild(th);
+    var body = document.createElement("tbody");
+    rows.forEach(function (r) {
+      var row = document.createElement("tr");
+      r.forEach(function (v, i) { var c = document.createElement("td"); c.textContent = v; if (numericCols && numericCols.indexOf(i) >= 0) c.className = "num"; row.appendChild(c); });
+      body.appendChild(row);
+    });
+    tb.appendChild(body); wrap.appendChild(tb); d.appendChild(wrap);
+  }
+
+  function svgRoot(box, W, H, label) {
+    box.replaceChildren();
+    var s = el("svg", { width: W, height: H, viewBox: "0 0 " + W + " " + H, role: "img", "aria-label": label || "", class: "viz" }, box);
+    return s;
+  }
+  function tipAtEl(node, title, rows, note) {
+    var r = node.getBoundingClientRect();
+    showTip(title, rows, r.left + r.width / 2, r.top, note);
+  }
+
+  /* ---------- barras horizontales (magnitud, divergentes, embudo) ---------- */
+  function hbar(box, cfg0) {
+    var cur = cfg0;
+    var rr = responsive(box, function (W) {
+      var cfg = cur, rows = cfg.rows, fmtv = cfg.fmt || function (v) { return fmt(v, 1); };
+      var narrow = W < (cfg.narrowAt || 560);
+      var barH = cfg.barH || 18, gap = cfg.gap || 14;
+      var labelW = narrow ? 0 : (cfg.labelW || 160);
+      var hasRef = rows.some(function (r) { return r.ref; });
+      var labelLine = narrow ? 20 : 0;
+      var rowH = labelLine + barH + gap + (hasRef ? 6 : 0);
+      var top = hasRef ? 16 : 4;
+      var H = top + rows.length * rowH;
+      var min = cfg.domain ? cfg.domain[0] : Math.min(0, d3min(rows)), max = cfg.domain ? cfg.domain[1] : Math.max(0, d3max(rows)) * 1.02;
+      var valW = cfg.valW || 70;
+      var x0 = labelW + (labelW ? 12 : 0) + (min < 0 ? valW : 0), x1 = W - (max > 0 ? valW : 6);
+      var x = lin(min, max, x0, x1);
+      var svg = svgRoot(box, W, H, cfg.aria);
+      var zero = x(0);
+      el("line", { x1: zero, x2: zero, y1: top - 4, y2: H - gap / 2, class: "base" }, svg);
+      rows.forEach(function (r, i) {
+        var y = top + i * rowH + labelLine + (hasRef ? 6 : 0);
+        var g = el("g", { class: "row" }, svg);
+        if (narrow) el("text", { x: 0, y: y - 6, class: r.strong ? "lbl-strong" : "lbl", text: r.label }, g);
+        else el("text", { x: 0, y: y + barH / 2 + 4, class: r.strong ? "lbl-strong" : "lbl", text: r.label }, g);
+        var col = r.color || (cfg.diverging ? (r.value >= 0 ? "var(--pos)" : "var(--neg)") : (cfg.color || "var(--accent)"));
+        var xv = x(r.value);
+        if (Math.abs(xv - zero) >= 1) el("path", { d: barPath(zero, xv, y, barH, 4), class: "mark", style: "fill:" + col }, g);
+        var lab = cfg.valueLabel ? cfg.valueLabel(r) : fmtv(r.value);
+        if (r.value >= 0) el("text", { x: xv + 6, y: y + barH / 2 + 4, class: "val", text: lab }, g);
+        else el("text", { x: xv - 6, y: y + barH / 2 + 4, class: "val", "text-anchor": "end", text: lab }, g);
+        if (r.ref) {
+          var xr = x(r.ref.value);
+          el("line", { x1: xr, x2: xr, y1: y - 5, y2: y + barH + 5, class: "ref" }, g);
+          if (narrow) el("text", { x: W, y: y - 6, "text-anchor": "end", class: "lbl", style: "font-size:11px", text: r.ref.label }, g);
+          else el("text", { x: xr + 4, y: y - 6, class: "lbl", style: "font-size:11px", text: r.ref.label }, g);
+        }
+        var hit = el("rect", { x: 0, y: y - (narrow ? labelLine : 4) - (hasRef ? 6 : 0), width: W, height: barH + (narrow ? labelLine : 8) + (hasRef ? 6 : 0), class: "hit", tabindex: 0, "aria-label": r.label + ": " + lab }, g);
+        var rowsTip = function () { var out = [{ value: lab, label: cfg.unitLabel || "", color: col }]; if (r.ref) out.push({ value: fmtv(r.ref.value), label: r.ref.tip || r.ref.label, color: "var(--ink)" }); return out; };
+        hit.addEventListener("pointermove", function (ev) { showTip(r.label, rowsTip(), ev.clientX, ev.clientY, r.note); });
+        hit.addEventListener("pointerdown", function (ev) { showTip(r.label, rowsTip(), ev.clientX, ev.clientY, r.note); });
+        hit.addEventListener("pointerleave", hideTip);
+        hit.addEventListener("focus", function () { tipAtEl(hit, r.label, rowsTip(), r.note); });
+        hit.addEventListener("blur", hideTip);
+      });
+    });
+    rr.update = function (c) { cur = c; rr.redraw(); };
+    return rr;
+    function d3min(rs) { return Math.min.apply(null, rs.map(function (r) { return r.value; })); }
+    function d3max(rs) { return Math.max.apply(null, rs.map(function (r) { return Math.max(r.value, r.ref ? r.ref.value : -Infinity); })); }
+  }
+
+  /* ---------- rangos en un eje (horizontes, latencias, sesiones) ---------- */
+  function range(box, cfg0) {
+    var cur = cfg0;
+    var rr = responsive(box, function (W) {
+      var cfg = cur, rows = cfg.rows;
+      var narrow = W < (cfg.narrowAt || 600);
+      var barH = cfg.barH || 14, gap = cfg.gap || 16;
+      var labelW = narrow ? 0 : (cfg.labelW || 170);
+      var labelLine = narrow ? 20 : 0;
+      var rowH = labelLine + barH + gap;
+      var lv = 0;
+      (cfg.bands || []).concat(cfg.markers || []).forEach(function (o) { lv = Math.max(lv, o.level || 0); });
+      var top = (cfg.bands || cfg.markers) ? 26 + 14 * lv : 6;
+      var bottom = 28;
+      var H = top + rows.length * rowH + bottom - gap / 2;
+      var x0 = labelW + (labelW ? 14 : 0), x1 = W - (cfg.padRight || 14);
+      var x = cfg.scale === "log" ? logs(cfg.domain[0], cfg.domain[1], x0, x1) : lin(cfg.domain[0], cfg.domain[1], x0, x1);
+      var svg = svgRoot(box, W, H, cfg.aria);
+      var plotTop = top - 6, plotBot = H - bottom + 4;
+      (cfg.bands || []).forEach(function (b) {
+        el("rect", { x: x(b.from), y: plotTop, width: Math.max(1, x(b.to) - x(b.from)), height: plotBot - plotTop, class: "band" }, svg);
+        el("text", { x: x(b.from) + 4, y: plotTop - 6 - 14 * (b.level || 0), class: "lbl", style: "font-size:11.5px", text: narrow && b.short ? b.short : b.label }, svg);
+      });
+      (cfg.ticks || []).forEach(function (t) {
+        var xx = x(t.v);
+        el("line", { x1: xx, x2: xx, y1: plotTop, y2: plotBot, class: "grid" }, svg);
+        if (!(narrow && t.minor)) el("text", { x: xx, y: H - 8, "text-anchor": "middle", text: t.label }, svg);
+      });
+      el("line", { x1: x0, x2: x1, y1: plotBot, y2: plotBot, class: "base" }, svg);
+      (cfg.markers || []).forEach(function (m) {
+        var xx = x(m.v);
+        el("line", { x1: xx, x2: xx, y1: plotTop, y2: plotBot, class: "ref", style: "stroke-width:1" }, svg);
+        if (!(narrow && m.hideNarrow)) el("text", { x: xx + (m.anchor === "end" ? -4 : 4), y: plotTop - 6 - 14 * (m.level || 0), "text-anchor": m.anchor || "start", class: "lbl", style: "font-size:11.5px", text: narrow && m.short ? m.short : m.label }, svg);
+      });
+      rows.forEach(function (r, i) {
+        var y = top + i * rowH + labelLine;
+        var g = el("g", { class: "row" }, svg);
+        if (narrow) el("text", { x: 0, y: y - 6, class: r.strong ? "lbl-strong" : "lbl", text: r.label }, g);
+        else el("text", { x: 0, y: y + barH / 2 + 4, class: r.strong ? "lbl-strong" : "lbl", text: r.label }, g);
+        var col = r.color || cfg.color || "var(--accent)";
+        (r.segs || []).forEach(function (s) {
+          el("path", { d: roundRect(x(s[0]), x(s[1]), y, barH, 4), class: "mark", style: "fill:" + col + (r.dim ? ";opacity:.45" : "") }, g);
+        });
+        if (r.dot !== undefined) el("circle", { cx: x(r.dot), cy: y + barH / 2, r: 5.5, class: "mark", style: "fill:" + col + ";stroke:var(--surface);stroke-width:2" }, g);
+        var txt = cfg.describe ? cfg.describe(r) : "";
+        var hit = el("rect", { x: 0, y: y - 6 - labelLine, width: W, height: barH + 12 + labelLine, class: "hit", tabindex: 0, "aria-label": r.label + (txt ? ": " + txt : "") }, g);
+        var rowsTip = function () { return [{ value: txt, color: col }]; };
+        hit.addEventListener("pointermove", function (ev) { showTip(r.label, rowsTip(), ev.clientX, ev.clientY, r.note); });
+        hit.addEventListener("pointerdown", function (ev) { showTip(r.label, rowsTip(), ev.clientX, ev.clientY, r.note); });
+        hit.addEventListener("pointerleave", hideTip);
+        hit.addEventListener("focus", function () { tipAtEl(hit, r.label, rowsTip(), r.note); });
+        hit.addEventListener("blur", hideTip);
+      });
+    });
+    rr.update = function (c) { cur = c; rr.redraw(); };
+    return rr;
+  }
+
+  /* ---------- líneas con cruz de lectura ---------- */
+  function line(box, cfg0) {
+    var state = { i: -1 }, cur = cfg0;
+    var rr = responsive(box, function (W) {
+      var cfg = cur, narrow = W < 560;
+      var H = narrow ? (cfg.hNarrow || 250) : (cfg.height || 320);
+      var xs = cfg.x, S = cfg.series, C = cfg.context || [];
+      var yFmt = cfg.yFmt || function (v) { return fmt(v, 0); };
+      var all = [];
+      S.concat(C).forEach(function (s) { s.values.forEach(function (v) { if (v !== null && v !== undefined && isFinite(v)) all.push(v); }); });
+      (cfg.hlines || []).forEach(function (h) { all.push(h.y); });
+      var lo = cfg.yDomain ? cfg.yDomain[0] : Math.min.apply(null, all), hi = cfg.yDomain ? cfg.yDomain[1] : Math.max.apply(null, all);
+      var nd = niceDomain(lo, hi, narrow ? 4 : 5);
+      if (cfg.yDomain) nd = [cfg.yDomain[0], cfg.yDomain[1], niceStep(cfg.yDomain[1] - cfg.yDomain[0], narrow ? 4 : 5)];
+      var yt = ticks(Math.ceil(nd[0] / nd[2]) * nd[2], nd[1], nd[2]);
+      var left = Math.max.apply(null, yt.map(function (v) { return yFmt(v).length; })) * 6.8 + 12;
+      var right = cfg.padRight || 14, top = (cfg.vlines && cfg.vlines.length) ? 24 : 10, bottom = 28;
+      var x = lin(xs[0], xs[xs.length - 1], left, W - right);
+      var y = lin(nd[0], nd[1], H - bottom, top);
+      var svg = svgRoot(box, W, H, cfg.aria);
+      yt.forEach(function (v) {
+        el("line", { x1: left, x2: W - right, y1: y(v), y2: y(v), class: Math.abs(v) < 1e-9 && cfg.zeroBase ? "base" : "grid" }, svg);
+        el("text", { x: left - 8, y: y(v) + 4, "text-anchor": "end", text: yFmt(v) }, svg);
+      });
+      (cfg.xTicks || []).forEach(function (t) {
+        if (narrow && t.minor) return;
+        el("text", { x: x(t.v), y: H - 8, "text-anchor": t.anchor || "middle", text: t.label }, svg);
+      });
+      el("line", { x1: left, x2: W - right, y1: H - bottom, y2: H - bottom, class: "base" }, svg);
+      (cfg.vlines || []).forEach(function (v) {
+        el("line", { x1: x(v.x), x2: x(v.x), y1: top - 4, y2: H - bottom, class: "ref", style: "stroke-width:1" }, svg);
+        el("text", { x: x(v.x) + (v.anchor === "end" ? -5 : 5), y: top - 10, "text-anchor": v.anchor || "start", class: "lbl", style: "font-size:11.5px", text: v.label }, svg);
+      });
+      function pathOf(vals) {
+        var d = "", pen = false;
+        for (var i = 0; i < vals.length; i++) {
+          var v = vals[i];
+          if (v === null || v === undefined || !isFinite(v)) { pen = false; continue; }
+          d += (pen ? "L" : "M") + x(xs[i]).toFixed(1) + "," + y(v).toFixed(1); pen = true;
+        }
+        return d;
+      }
+      C.forEach(function (c) { el("path", { d: pathOf(c.values), style: "fill:none;stroke:" + (c.color || "var(--deemph)") + ";stroke-width:" + (c.width || 1) + ";stroke-linejoin:round;opacity:" + (c.opacity || 0.9) }, svg); });
+      if (cfg.area) {
+        var s0 = S[0], dA = pathOf(s0.values);
+        if (dA) {
+          var firstI = s0.values.findIndex(function (v) { return v !== null && v !== undefined; });
+          var lastI = s0.values.length - 1; while (lastI > 0 && (s0.values[lastI] === null || s0.values[lastI] === undefined)) lastI--;
+          el("path", { d: dA + "L" + x(xs[lastI]) + "," + y(Math.max(nd[0], 0)) + "L" + x(xs[firstI]) + "," + y(Math.max(nd[0], 0)) + "Z", style: "fill:" + s0.color + ";opacity:.1;stroke:none" }, svg);
+        }
+      }
+      (cfg.hlines || []).forEach(function (h) {
+        el("line", { x1: left, x2: W - right, y1: y(h.y), y2: y(h.y), class: "ref", style: "stroke-width:1;stroke:" + (h.color || "var(--ink)") }, svg);
+        el("text", { x: h.anchor === "start" ? left + 6 : W - right - 4, y: y(h.y) + (h.below ? 15 : -6), "text-anchor": h.anchor === "start" ? "start" : "end", class: "lbl", style: "font-size:11.5px", text: h.label }, svg);
+      });
+      S.forEach(function (s) {
+        el("path", { d: pathOf(s.values), style: "fill:none;stroke:" + s.color + ";stroke-width:" + (s.width || 2) + ";stroke-linejoin:round;stroke-linecap:round" }, svg);
+        if (cfg.endDots !== false) {
+          var li = s.values.length - 1; while (li > 0 && (s.values[li] === null || s.values[li] === undefined)) li--;
+          el("circle", { cx: x(xs[li]), cy: y(s.values[li]), r: 4.5, style: "fill:" + s.color + ";stroke:var(--surface);stroke-width:2" }, svg);
+        }
+      });
+      if (cfg.noHover) return;
+      var cross = el("line", { x1: 0, x2: 0, y1: top, y2: H - bottom, class: "cross", style: "opacity:0" }, svg);
+      var dots = S.map(function (s) { return el("circle", { r: 4.5, style: "fill:" + s.color + ";stroke:var(--surface);stroke-width:2;opacity:0" }, svg); });
+      var ov = el("rect", { x: left, y: top, width: Math.max(1, W - left - right), height: Math.max(1, H - top - bottom), class: "hit", tabindex: 0, style: "cursor:crosshair", "aria-label": (cfg.aria || "Gráfico") + ". Usa las flechas para recorrer los valores." }, svg);
+      function nearest(px) { var v = x.invert(px), bi = 0, bd = Infinity; for (var i = 0; i < xs.length; i++) { var dd = Math.abs(xs[i] - v); if (dd < bd) { bd = dd; bi = i; } } return bi; }
+      function paint(i, cx, cy) {
+        state.i = i;
+        var px = x(xs[i]);
+        cross.setAttribute("x1", px); cross.setAttribute("x2", px); cross.style.opacity = 1;
+        var rows = [];
+        S.forEach(function (s, k) {
+          var v = s.values[i];
+          if (v === null || v === undefined || !isFinite(v)) { dots[k].style.opacity = 0; return; }
+          dots[k].setAttribute("cx", px); dots[k].setAttribute("cy", y(v)); dots[k].style.opacity = 1;
+          rows.push({ value: (cfg.tipFmt || yFmt)(v), label: s.name, color: s.color });
+        });
+        var extra = cfg.tipExtra ? cfg.tipExtra(i) : null;
+        if (extra) rows = rows.concat(extra);
+        var title = cfg.tipTitle ? cfg.tipTitle(i) : String(xs[i]);
+        if (cx === undefined) { var r = ov.getBoundingClientRect(); cx = r.left + (px - left); cy = r.top + 10; }
+        showTip(title, rows, cx, cy, cfg.tipNote ? cfg.tipNote(i) : null);
+      }
+      function clear() { cross.style.opacity = 0; dots.forEach(function (d) { d.style.opacity = 0; }); hideTip(); }
+      function fromEvent(ev) { var r = svg.getBoundingClientRect(); paint(nearest(ev.clientX - r.left), ev.clientX, ev.clientY); }
+      ov.addEventListener("pointermove", fromEvent);
+      ov.addEventListener("pointerdown", fromEvent);
+      ov.addEventListener("pointerleave", clear);
+      ov.addEventListener("blur", clear);
+      ov.addEventListener("focus", function () { paint(state.i >= 0 ? state.i : xs.length - 1); });
+      ov.addEventListener("keydown", function (ev) {
+        var step = ev.shiftKey ? Math.max(1, Math.round(xs.length / 20)) : 1;
+        if (ev.key === "ArrowRight") { paint(Math.min(xs.length - 1, (state.i < 0 ? 0 : state.i) + step)); ev.preventDefault(); }
+        if (ev.key === "ArrowLeft") { paint(Math.max(0, (state.i < 0 ? xs.length - 1 : state.i) - step)); ev.preventDefault(); }
+        if (ev.key === "Escape") clear();
+      });
+    });
+    rr.update = function (c) { cur = c; state.i = -1; rr.redraw(); };
+    return rr;
+  }
+
+  /* ---------- diagrama de flujo lineal (horizontal o vertical según ancho) ---------- */
+  function flow(box, cfg) {
+    return responsive(box, function (W) {
+      var n = cfg.nodes.length, horiz = W >= (cfg.breakAt || 720);
+      var hl = cfg.hl || [];
+      var svg, H;
+      if (horiz) {
+        var aw = cfg.arrowW || 70, nw = (W - (n - 1) * aw) / n;
+        var cpl = Math.max(10, Math.floor((nw - 22) / 6.5));
+        var lines = cfg.nodes.map(function (nd) { return wrapText(nd.d || "", cpl); });
+        var tl = cfg.nodes.map(function (nd) { return wrapText(nd.t, Math.floor((nw - 22) / 8)); });
+        var maxL = Math.max.apply(null, lines.map(function (l, i) { return l.length + tl[i].length; }));
+        var nh = 22 + maxL * 17 + 8;
+        var top = 4;
+        H = top + nh + 6;
+        svg = svgRoot(box, W, H, cfg.aria);
+        cfg.nodes.forEach(function (nd, i) {
+          var x0 = i * (nw + aw);
+          var g = el("g", { class: "fnode" + (hl.indexOf(i) >= 0 ? " hl" : "") }, svg);
+          el("rect", { x: x0 + 0.5, y: top + 0.5, width: nw - 1, height: nh - 1, rx: 8 }, g);
+          var yy = top + 22;
+          tl[i].forEach(function (t) { el("text", { x: x0 + 12, y: yy, class: "ft", text: t }, g); yy += 17; });
+          lines[i].forEach(function (t) { el("text", { x: x0 + 12, y: yy + 1, class: "fd", text: t }, g); yy += 17; });
+          if (i < n - 1) {
+            var ax0 = x0 + nw + 6, ax1 = x0 + nw + aw - 8, ay = top + nh / 2;
+            el("line", { x1: ax0, x2: ax1 - 6, y1: ay, y2: ay, class: "fedge" }, svg);
+            el("path", { d: "M" + ax1 + "," + ay + "l-7,-4.5v9z", class: "fhead" }, svg);
+            var lab = wrapText(cfg.edges[i] || "", Math.floor(aw / 6.4));
+            lab.forEach(function (t, k) { el("text", { x: (ax0 + ax1) / 2, y: ay - 8 - (lab.length - 1 - k) * 13, "text-anchor": "middle", class: "flabel", text: t }, svg); });
+          }
+        });
+      } else {
+        var cplV = Math.max(16, Math.floor((W - 26) / 6.6));
+        var blocks = cfg.nodes.map(function (nd) { return { t: wrapText(nd.t, Math.floor((W - 26) / 8)), d: wrapText(nd.d || "", cplV) }; });
+        var ah = 44, yy2 = 2; H = 0;
+        var heights = blocks.map(function (b) { return 20 + (b.t.length + b.d.length) * 17 + 6; });
+        H = heights.reduce(function (a, b) { return a + b; }, 0) + (n - 1) * ah + 4;
+        svg = svgRoot(box, W, H, cfg.aria);
+        blocks.forEach(function (b, i) {
+          var g = el("g", { class: "fnode" + (hl.indexOf(i) >= 0 ? " hl" : "") }, svg);
+          el("rect", { x: 0.5, y: yy2 + 0.5, width: W - 1, height: heights[i] - 1, rx: 8 }, g);
+          var ty = yy2 + 21;
+          b.t.forEach(function (t) { el("text", { x: 12, y: ty, class: "ft", text: t }, g); ty += 17; });
+          b.d.forEach(function (t) { el("text", { x: 12, y: ty + 1, class: "fd", text: t }, g); ty += 17; });
+          yy2 += heights[i];
+          if (i < n - 1) {
+            var ax = 26;
+            el("line", { x1: ax, x2: ax, y1: yy2 + 5, y2: yy2 + ah - 11, class: "fedge" }, svg);
+            el("path", { d: "M" + ax + "," + (yy2 + ah - 4) + "l-4.5,-7h9z", class: "fhead" }, svg);
+            el("text", { x: ax + 14, y: yy2 + ah / 2 + 4, class: "flabel", text: (cfg.edges[i] || "").replace(/\n/g, " ") }, svg);
+            yy2 += ah;
+          }
+        });
+      }
+    });
+  }
+
+  /* ---------- guilloche (roseta de billete) ---------- */
+  function guilloche(canvas) {
+    var gen = 0, lastW = 0, ready = false;
+    function draw(animate) {
+      var my = ++gen;
+      var S = canvas.clientWidth; if (!S) return;
+      lastW = S;
+      var dpr = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width = Math.round(S * dpr); canvas.height = Math.round(S * dpr);
+      var ctx = canvas.getContext("2d"); ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      var col = tokenColor("--accent"), ink = tokenColor("--accent-ink"), c = S / 2, R = S * 0.485;
+      var dark = root.getAttribute("data-theme") === "dark" || (!root.getAttribute("data-theme") && window.matchMedia && matchMedia("(prefers-color-scheme: dark)").matches);
+      var curves = [], i;
+      for (i = 0; i < 44; i++) (function (ph) { curves.push(function (t) { var r = R * (0.87 + 0.055 * Math.sin(18 * t + ph)); return [c + r * Math.cos(t), c + r * Math.sin(t)]; }); })(i / 44 * Math.PI * 2);
+      for (i = 0; i < 30; i++) (function (ph) { curves.push(function (t) { var r = R * (0.665 + 0.105 * Math.sin(7 * t + ph) * Math.cos(2 * t + ph / 3)); return [c + r * Math.cos(t), c + r * Math.sin(t)]; }); })(i / 30 * Math.PI * 2 / 7);
+      for (i = 0; i < 20; i++) (function (ph) { curves.push(function (t) { var r = R * (0.45 + 0.085 * Math.cos(11 * t + ph)); return [c + r * Math.cos(t), c + r * Math.sin(t)]; }); })(i / 20 * Math.PI * 2 / 11);
+      function batch(list) {
+        ctx.save();
+        ctx.beginPath(); ctx.arc(c, c, R, 0, Math.PI * 2); ctx.arc(c, c, R * 0.35, 0, Math.PI * 2, true); ctx.clip();
+        ctx.strokeStyle = col; ctx.lineWidth = Math.max(0.5, S / 820); ctx.globalAlpha = dark ? 0.46 : 0.36;
+        list.forEach(function (f) { ctx.beginPath(); for (var k = 0; k <= 900; k++) { var p = f(k / 900 * Math.PI * 2); if (k) ctx.lineTo(p[0], p[1]); else ctx.moveTo(p[0], p[1]); } ctx.stroke(); });
+        ctx.restore();
+      }
+      function rings() {
+        ctx.save(); ctx.globalAlpha = 0.85; ctx.strokeStyle = ink; ctx.lineWidth = 1;
+        [0.995, 0.965, 0.36].forEach(function (k) { ctx.beginPath(); ctx.arc(c, c, R * k, 0, Math.PI * 2); ctx.stroke(); });
+        ctx.restore();
+      }
+      if (animate && !reduceMotion) {
+        var idx = 0;
+        (function frame() {
+          if (my !== gen) return;
+          batch(curves.slice(idx, idx + 5)); idx += 5;
+          if (idx < curves.length) requestAnimationFrame(frame); else rings();
+        })();
+      } else { batch(curves); rings(); }
+    }
+    if (window.ResizeObserver) new ResizeObserver(function () { if (ready && canvas.clientWidth !== lastW) draw(false); }).observe(canvas);
+    onTheme(function () { draw(false); });
+    draw(true); ready = true;
+  }
+
+  /* ---------- índice lateral ---------- */
+  function buildToc() {
+    var toc = document.querySelector(".toc"); if (!toc) return;
+    var secs = $$(".content > .sec[id]");
+    var det = document.createElement("details"), sum = document.createElement("summary");
+    sum.textContent = "Índice del documento"; det.appendChild(sum);
+    var ol = document.createElement("ol");
+    var links = secs.map(function (s) {
+      var h = s.querySelector("h2"), li = document.createElement("li"), a = document.createElement("a");
+      a.href = "#" + s.id; a.textContent = (h && (h.getAttribute("data-short") || h.textContent)) || s.id;
+      li.appendChild(a); ol.appendChild(li); return a;
+    });
+    det.appendChild(ol); toc.appendChild(det);
+    if (window.matchMedia) {
+      var wide = matchMedia("(min-width:1080px)");
+      var sync = function () { det.open = wide.matches; };
+      sync(); if (wide.addEventListener) wide.addEventListener("change", sync);
+    }
+    if ("IntersectionObserver" in window) {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (en) {
+          if (en.isIntersecting) {
+            var id = en.target.id;
+            links.forEach(function (a) { if (a.getAttribute("href") === "#" + id) a.setAttribute("aria-current", "true"); else a.removeAttribute("aria-current"); });
+          }
+        });
+      }, { rootMargin: "-15% 0px -75% 0px" });
+      secs.forEach(function (s) { io.observe(s); });
+    }
+  }
+
+  /* ---------- microtexto de seguridad ---------- */
+  function microprint() {
+    $$(".microprint").forEach(function (m) {
+      var s = (m.getAttribute("data-text") || "MÁQUINAS Y MERCADOS") + " · ";
+      m.textContent = new Array(40).join(s);
+    });
+  }
+
+  /* ---------- código: resaltado mínimo y botón de copiar ---------- */
+  function highlight(codeEl) {
+    var src = codeEl.textContent;
+    var re = /(#[^\n]*)|("""[\s\S]*?"""|[rfbuRFBU]{0,2}"(?:\\.|[^"\\\n])*"|[rfbuRFBU]{0,2}'(?:\\.|[^'\\\n])*')|\b(def|return|import|from|as|if|elif|else|for|in|and|or|not|None|True|False|with|raise|class|while|lambda|try|except|pass|yield)\b|\b(\d+(?:\.\d+)?(?:e-?\d+)?)\b/g;
+    var frag = document.createDocumentFragment(), last = 0, m;
+    while ((m = re.exec(src))) {
+      if (m.index > last) frag.appendChild(document.createTextNode(src.slice(last, m.index)));
+      var sp = document.createElement("span");
+      sp.className = m[1] ? "c-com" : m[2] ? "c-str" : m[3] ? "c-kw" : "c-num";
+      sp.textContent = m[0]; frag.appendChild(sp); last = m.index + m[0].length;
+    }
+    if (last < src.length) frag.appendChild(document.createTextNode(src.slice(last)));
+    codeEl.replaceChildren(frag);
+  }
+  function codeBlocks() {
+    $$(".codeblock").forEach(function (cb) {
+      var code = cb.querySelector("code"); if (!code) return;
+      if (cb.getAttribute("data-lang") === "python") highlight(code);
+      var b = document.createElement("button"); b.type = "button"; b.className = "copy"; b.textContent = "Copiar";
+      b.addEventListener("click", function () {
+        var txt = code.textContent;
+        var fallback = function () { var r = document.createRange(); r.selectNodeContents(code); var s = window.getSelection(); s.removeAllRanges(); s.addRange(r); b.textContent = "Seleccionado"; };
+        try {
+          if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(function () { b.textContent = "Copiado"; setTimeout(function () { b.textContent = "Copiar"; }, 1600); }, fallback);
+          else fallback();
+        } catch (e) { fallback(); }
+      });
+      cb.appendChild(b);
+    });
+  }
+
+  window.MM = {
+    css: css, tokenColor: tokenColor, rng: rng, normal: normal, fmt: fmt, pct: pct, money: money, signed: signed,
+    el: el, lin: lin, logs: logs, niceDomain: niceDomain, ticks: ticks,
+    showTip: showTip, hideTip: hideTip, responsive: responsive, dataTable: dataTable,
+    hbar: hbar, range: range, line: line, flow: flow, onTheme: onTheme, reduceMotion: reduceMotion
+  };
+
+  buildToc();
+  microprint();
+  codeBlocks();
+  $$(".emblem canvas").forEach(guilloche);
+})();
+
+</script>
+<script>
+(function () {
+  var M = window.MM;
+  function $(id) { return document.getElementById(id); }
+  var usd = function (v) { return M.fmt(v, 0) + " $"; };
+  var pct1 = function (v) { return M.fmt(v, 1) + " %"; };
+
+  /* Cómo funciona */
+  M.flow($("how"), {
+    aria: "Recorrido de una cuenta de fondeo: cuota, fase 1, fase 2, cuenta financiada y escalado",
+    nodes: [
+      { t: "Cuota", d: "≈ 540 € por una cuenta de 100.000 $" },
+      { t: "Fase 1", d: "+10 % sin perder un 5 % en un día ni un 10 % en total" },
+      { t: "Fase 2", d: "+5 % con los mismos límites" },
+      { t: "Cuenta financiada", d: "Simulada. Cobras el 80 % de lo que ganes" },
+      { t: "Escalado", d: "+25 % de saldo cada 4 meses, hasta 2 M$" }
+    ],
+    edges: ["compras", "superas", "superas", "si cumples"],
+    hl: [3]
+  });
+
+  /* Embudo real de FPFX */
+  var fp = [
+    { label: "Compran una prueba", value: 100, color: "var(--o1)" },
+    { label: "Llegan a cuenta financiada", value: 14, color: "var(--o3)" },
+    { label: "Cobran al menos una vez", value: 7, color: "var(--o5)" }
+  ];
+  M.hbar($("fpfx"), { aria: "De cada 100 compradores de una prueba, 14 llegan a cuenta financiada y 7 cobran", rows: fp, domain: [0, 100], labelW: 210, fmt: function (v) { return M.fmt(v, 0) + " de 100"; } });
+  M.dataTable($("fig-fpfx"), ["Etapa", "De cada 100"], fp.map(function (r) { return [r.label, M.fmt(r.value, 0)]; }), [1]);
+
+  /* Simulador */
+  var PRE = {
+    sin: { p: 40, r: 1.5, risk: 1, tpd: 2, cost: 0.05 },
+    modesta: { p: 43, r: 1.5, risk: 1, tpd: 2, cost: 0.05 },
+    solida: { p: 45, r: 1.5, risk: 1, tpd: 2, cost: 0.05 },
+    apostador: { p: 40, r: 1.5, risk: 3, tpd: 4, cost: 0.05 }
+  };
+  var seed = 7, N = 4000;
+  function num(id, d) { var v = parseFloat($(id).value); return isFinite(v) ? v : d; }
+  function params() {
+    return {
+      p: num("q-p", 40) / 100, R: num("q-r", 1.5), risk: num("q-risk", 1), tpd: Math.round(num("q-tpd", 2)), cost: num("q-cost", 0.05),
+      split: num("q-split", 80) / 100, fee: Math.max(0, num("q-fee", 570)), fundedDays: num("q-months", 6) * 21,
+      t1: Math.max(0.5, num("q-t1", 10)), t2: Math.max(0.5, num("q-t2", 5)), daily: Math.max(0.5, num("q-daily", 5)), maxLoss: Math.max(1, num("q-max", 10)),
+      maxDays: 120, cycle: 10, acct: 100000
+    };
+  }
+  function run(P, n, sd) {
+    var r = M.rng(sd), win = P.R * P.risk - P.cost * P.risk, loss = -P.risk - P.cost * P.risk;
+    function phase(target) {
+      var bal = 0;
+      for (var d = 1; d <= P.maxDays; d++) {
+        var start = bal;
+        for (var k = 0; k < P.tpd; k++) {
+          bal += (r() < P.p) ? win : loss;
+          if (start - bal >= P.daily - 1e-9 || bal <= -P.maxLoss + 1e-9) return -d;
+          if (bal >= target) return d;
+        }
+      }
+      return 0;
+    }
+    var s = { p1: 0, p2: 0, paid1: 0, paid3: 0, sumPaid: 0, sumRefund: 0, d1: [] };
+    for (var i = 0; i < n; i++) {
+      var d1 = phase(P.t1); if (d1 <= 0) continue; s.p1++; s.d1.push(d1);
+      var d2 = phase(P.t2); if (d2 <= 0) continue; s.p2++;
+      var bal = 0, paid = 0, cnt = 0;
+      for (var d = 1; d <= P.fundedDays; d++) {
+        var start = bal, dead = false;
+        for (var k = 0; k < P.tpd; k++) { bal += (r() < P.p) ? win : loss; if (start - bal >= P.daily - 1e-9 || bal <= -P.maxLoss + 1e-9) { dead = true; break; } }
+        if (dead) break;
+        if (d % P.cycle === 0 && bal > 0) { paid += P.split * bal / 100 * P.acct; cnt++; bal = 0; }
+      }
+      if (cnt >= 1) { s.paid1++; s.sumRefund += P.fee; }
+      if (cnt >= 3) s.paid3++;
+      s.sumPaid += paid;
+    }
+    s.d1.sort(function (a, b) { return a - b; });
+    return {
+      p1: s.p1 / n * 100, p2: s.p2 / n * 100, paid1: s.paid1 / n * 100, paid3: s.paid3 / n * 100,
+      avg: s.paid1 ? s.sumPaid / s.paid1 : 0, ev: (s.sumPaid + s.sumRefund) / n - P.fee,
+      keep: P.fee > 0 ? (1 - (s.sumPaid + s.sumRefund) / (n * P.fee)) * 100 : 0, med: s.d1.length ? s.d1[Math.floor(s.d1.length / 2)] : null
+    };
+  }
+  function paths(P, n, sd, days) {
+    var r = M.rng(sd), win = P.R * P.risk - P.cost * P.risk, loss = -P.risk - P.cost * P.risk, out = [];
+    for (var i = 0; i < n; i++) {
+      var bal = 0, vals = [0], state = 0, end = null;
+      for (var d = 1; d <= days; d++) {
+        if (state !== 0) { vals.push(null); continue; }
+        var start = bal;
+        for (var k = 0; k < P.tpd; k++) {
+          bal += (r() < P.p) ? win : loss;
+          if (start - bal >= P.daily - 1e-9 || bal <= -P.maxLoss + 1e-9) { state = -1; break; }
+          if (bal >= P.t1) { state = 1; break; }
+        }
+        vals.push(bal);
+        if (state !== 0) end = d;
+      }
+      out.push({ vals: vals, state: state, end: end });
+    }
+    return out;
+  }
+  var funnelChart = null, pathChart = null;
+  function sharpeOf(P) { var m = (P.p * P.R - (1 - P.p) - P.cost) * P.risk, sd = (P.R + 1) * P.risk * Math.sqrt(P.p * (1 - P.p)); return sd > 0 ? m * P.tpd / (sd * Math.sqrt(P.tpd)) * Math.sqrt(252) : 0; }
+  function labels() {
+    $("q-p-out").textContent = M.fmt(num("q-p", 40), 0) + " %";
+    $("q-r-out").textContent = M.fmt(num("q-r", 1.5), 1) + " R";
+    $("q-risk-out").textContent = M.fmt(num("q-risk", 1), 2).replace(/,?0+$/, "") + " %";
+    $("q-tpd-out").textContent = M.fmt(num("q-tpd", 2), 0);
+    $("q-cost-out").textContent = M.fmt(num("q-cost", 0.05), 2) + " R";
+    $("q-split-out").textContent = M.fmt(num("q-split", 80), 0) + " %";
+  }
+  function render() {
+    labels();
+    var P = params(), res = run(P, N, seed);
+    var edgeR = P.p * P.R - (1 - P.p) - P.cost, sh = sharpeOf(P);
+    $("sim-edge").textContent = "Ventaja por operación: " + (edgeR > 0 ? "+" : "") + M.fmt(edgeR, 3) + " R (" + (edgeR > 0 ? "+" : "") + M.fmt(edgeR * P.risk, 3) + " % de la cuenta). Equivale a un Sharpe anual de " + M.fmt(sh, 2) + ".";
+    var rows = [
+      { label: "Compran la prueba", value: 100, color: "var(--o1)" },
+      { label: "Superan la fase 1", value: res.p1, color: "var(--o2)" },
+      { label: "Superan la fase 2", value: res.p2, color: "var(--o3)", ref: { value: 14, label: "Dato real: 14 %", tip: "Estudio FPFX Tech" } },
+      { label: "Cobran al menos una vez", value: res.paid1, color: "var(--o4)", ref: { value: 7, label: "Dato real: 7 %", tip: "Estudio FPFX Tech" } },
+      { label: "Cobran 3 veces o más", value: res.paid3, color: "var(--o5)" }
+    ];
+    var fcfg = { aria: "Porcentaje de traders simulados que llega a cada etapa", rows: rows, domain: [0, 100], labelW: 200, fmt: pct1, unitLabel: "de los compradores" };
+    if (funnelChart) funnelChart.update(fcfg); else funnelChart = M.hbar($("sim-funnel"), fcfg);
+    var card = $("sim-ev-card"), badge = $("sim-ev-badge"), good = res.ev > 0;
+    $("sim-ev").textContent = (good ? "+" : "") + usd(res.ev);
+    card.classList.toggle("is-good", good); card.classList.toggle("is-bad", !good);
+    badge.replaceChildren();
+    var ns = "http://www.w3.org/2000/svg", sv = document.createElementNS(ns, "svg"); sv.setAttribute("viewBox", "0 0 12 12"); sv.setAttribute("aria-hidden", "true");
+    var pth = document.createElementNS(ns, "path"); pth.setAttribute("d", good ? "M6 2l4 6H2z" : "M6 10L2 4h8z"); pth.setAttribute("fill", "currentColor"); sv.appendChild(pth);
+    badge.appendChild(sv); badge.appendChild(document.createTextNode(good ? "A tu favor" : "En contra"));
+    $("sim-avg").textContent = res.paid1 > 0 ? usd(res.avg) : "–";
+    if (res.keep >= 0) { $("sim-firm").textContent = pct1(res.keep); $("sim-firm-l").textContent = "de las cuotas se queda en la firma"; }
+    else { $("sim-firm").textContent = "+" + pct1(-res.keep); $("sim-firm-l").textContent = "más de lo que ingresa en cuotas paga la firma a estos traders"; }
+    $("sim-days").textContent = res.med ? M.fmt(res.med, 0) : "–";
+    var txt = "De cada 100 personas con este perfil, " + M.fmt(res.paid1, 1) + " cobran al menos una vez. ";
+    if (res.ev > 0 && edgeR <= 0) txt += "Aunque cada operación pierde dinero de media, el valor esperado del intento es positivo: la cuota es fija y la firma asume las pérdidas de la cuenta financiada. Las firmas compensan esta asimetría con más reglas y revisiones, y con clientes que arriesgan demasiado.";
+    else if (res.ev > 0) txt += "Con una ventaja real y riesgo controlado, cada intento vale de media " + usd(res.ev) + ". Es el perfil que las firmas vigilan más de cerca.";
+    else txt += "Con este perfil, la cuota es dinero perdido en promedio. Así es como ganan las firmas.";
+    $("sim-read").textContent = txt;
+    var ps = paths(P, 30, seed * 31 + 5, 60), xs = []; for (var d = 0; d <= 60; d++) xs.push(d);
+    var ctxs = ps.map(function (p) { return { values: p.vals, color: p.state === 1 ? "var(--accent)" : "var(--deemph)", width: p.state === 1 ? 1.6 : 1, opacity: 0.95 }; });
+    ctxs.sort(function (a, b) { return (a.width > b.width) - (b.width > a.width); });
+    var pcfg = {
+      aria: "Treinta trayectorias simuladas de la fase 1 entre el objetivo y el límite de pérdidas",
+      x: xs, series: [], context: ctxs, yDomain: [-(P.maxLoss + 2), P.t1 + 2], height: 280,
+      yFmt: function (v) { return (v > 0 ? "+" : "") + M.fmt(v, 0) + " %"; },
+      hlines: [{ y: P.t1, label: "Objetivo +" + M.fmt(P.t1, 1).replace(/,0$/, "") + " %", color: "var(--accent)" }, { y: -P.maxLoss, label: "Límite −" + M.fmt(P.maxLoss, 1).replace(/,0$/, "") + " %", color: "var(--crit-mark)", below: true }],
+      xTicks: [{ v: 0, label: "Día 0", anchor: "start" }, { v: 10, label: "10", minor: true }, { v: 20, label: "20" }, { v: 30, label: "30", minor: true }, { v: 40, label: "40" }, { v: 50, label: "50", minor: true }, { v: 60, label: "60 sesiones", anchor: "end" }],
+      tipTitle: function (i) { return "Sesión " + i; },
+      tipExtra: function (i) {
+        var alive = 0, pass = 0, out = 0;
+        ps.forEach(function (p) { if (p.end !== null && p.end <= i) { if (p.state === 1) pass++; else out++; } else alive++; });
+        return [{ value: String(alive), label: "siguen en juego" }, { value: String(pass), label: "han aprobado", color: "var(--accent)" }, { value: String(out), label: "eliminados", color: "var(--deemph)" }];
+      }
+    };
+    if (pathChart) pathChart.update(pcfg); else pathChart = M.line($("sim-paths"), pcfg);
+    M.dataTable($("fig-sim"), ["Resultado", "Valor"], rows.map(function (r) { return [r.label, pct1(r.value)]; }).concat([
+      ["Valor esperado por intento", (good ? "+" : "") + usd(res.ev)], ["Pago medio de quien cobra", res.paid1 > 0 ? usd(res.avg) : "–"],
+      ["Parte de las cuotas que retiene la firma", pct1(res.keep)], ["Sesiones medianas para superar la fase 1", res.med ? String(res.med) : "–"]
+    ]), [1]);
+  }
+  var pend = 0;
+  function later() { labels(); clearTimeout(pend); pend = setTimeout(render, 140); }
+  function markCustom() { document.querySelectorAll("[data-preset]").forEach(function (b) { b.setAttribute("aria-pressed", "false"); }); }
+  ["q-p", "q-r", "q-risk", "q-tpd", "q-cost", "q-split"].forEach(function (id) { $(id).addEventListener("input", function () { markCustom(); later(); }); });
+  ["q-fee", "q-months", "q-t1", "q-t2", "q-daily", "q-max"].forEach(function (id) { $(id).addEventListener("input", later); $(id).addEventListener("change", later); });
+  document.querySelectorAll("[data-preset]").forEach(function (b) {
+    b.addEventListener("click", function () {
+      var pr = PRE[b.getAttribute("data-preset")];
+      $("q-p").value = pr.p; $("q-r").value = pr.r; $("q-risk").value = pr.risk; $("q-tpd").value = pr.tpd; $("q-cost").value = pr.cost;
+      document.querySelectorAll("[data-preset]").forEach(function (o) { o.setAttribute("aria-pressed", o === b ? "true" : "false"); });
+      render();
+    });
+  });
+  $("sim-again").addEventListener("click", function () { seed = (seed * 48271 + 11) % 2147483647; render(); });
+  render();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,1305 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Agentes Claude en trading</title>
+<meta name="description" content="Dónde aporta valor un agente de Claude en un sistema de trading algorítmico, dónde es un riesgo, cómo encajarlo y cuánto cuesta, con la evidencia disponible.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..800;1,6..96,400..800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap">
+<style>
+/* ============================================================
+   Máquinas y mercados · sistema visual común
+   Billete: papel neutro, tinta de grabado, un color por documento
+   ============================================================ */
+:root{
+  --paper:#F4F5F2; --surface:#FCFCFB; --surface-2:#EEF0EC;
+  --ink:#121614; --ink-2:#48504B; --muted:#646C67;
+  --rule:#DCE1DC; --rule-strong:#C3CAC4; --grid:#E6E9E5; --deemph:#B4BBB6;
+  --good:#006300; --good-mark:#0ca30c;
+  --warn:#8a5a00; --warn-mark:#fab219;
+  --crit:#b42e2e; --crit-mark:#d03b3b;
+  --c1:#2a78d6; --c2:#eb6834; --c3:#1baf7a; --c4:#4a3aa7;
+  --pos:#2a78d6; --neg:#e34948;
+  --o1:#a39ef9; --o2:#8b85de; --o3:#736dc3; --o4:#5d55a9; --o5:#483e90;
+  --accent:var(--c1); --accent-ink:#1c5cab;
+  --wash:color-mix(in oklab, var(--accent) 8%, var(--surface));
+  --f-display:"Bodoni Moda","Bodoni 72",Didot,"Bodoni MT",Georgia,serif;
+  --f-sans:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  --radius:10px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --paper:#0F1211; --surface:#161A18; --surface-2:#1D2220;
+    --ink:#EDF1EE; --ink-2:#B7BFBA; --muted:#8E9791;
+    --rule:#262D29; --rule-strong:#37403B; --grid:#222826; --deemph:#4B544F;
+    --good:#0ca30c; --good-mark:#0ca30c;
+    --warn:#fab219; --warn-mark:#fab219;
+    --crit:#e66767; --crit-mark:#e66767;
+    --c1:#3987e5; --c2:#d95926; --c3:#199e70; --c4:#9085e9;
+    --pos:#3987e5; --neg:#e66767;
+    --o1:#5d57a4; --o2:#726dbc; --o3:#8884d5; --o4:#9e9bee; --o5:#b6b3ff;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --paper:#0F1211; --surface:#161A18; --surface-2:#1D2220;
+  --ink:#EDF1EE; --ink-2:#B7BFBA; --muted:#8E9791;
+  --rule:#262D29; --rule-strong:#37403B; --grid:#222826; --deemph:#4B544F;
+  --good:#0ca30c; --good-mark:#0ca30c;
+  --warn:#fab219; --warn-mark:#fab219;
+  --crit:#e66767; --crit-mark:#e66767;
+  --c1:#3987e5; --c2:#d95926; --c3:#199e70; --c4:#9085e9;
+  --pos:#3987e5; --neg:#e66767;
+  --o1:#5d57a4; --o2:#726dbc; --o3:#8884d5; --o4:#9e9bee; --o5:#b6b3ff;
+}
+
+/* ---------- base ---------- */
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%;scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--f-sans);font-size:17px;line-height:1.62;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+@media (max-width:600px){body{font-size:16px}}
+h1,h2,h3,h4{margin:0;text-wrap:balance}
+p{margin:0}
+figure{margin:0}
+a{color:var(--accent-ink);text-decoration-line:underline;text-decoration-thickness:1px;text-underline-offset:3px}
+a:hover{text-decoration-thickness:2px}
+:focus-visible{outline:2px solid var(--accent-ink);outline-offset:2px;border-radius:3px}
+::selection{background:color-mix(in oklab,var(--accent) 28%,transparent)}
+strong,b{font-weight:600}
+abbr[title]{text-decoration:underline dotted;text-underline-offset:3px}
+.num{font-variant-numeric:tabular-nums}
+.wrap{max-width:1180px;margin-inline:auto;padding-inline:clamp(16px,4vw,44px)}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+
+/* ---------- barra de la serie ---------- */
+.series{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 24px;padding-block:16px 14px;border-bottom:1px solid var(--rule)}
+.series .brand{font:500 11.5px/1.2 var(--f-mono);letter-spacing:.18em;text-transform:uppercase;color:var(--ink-2)}
+.series-nav{display:flex;flex-wrap:wrap;gap:4px 6px;margin:0;padding:0;list-style:none}
+.series-nav a,.series-nav span.soon{display:inline-flex;align-items:center;gap:8px;font:500 13px/1 var(--f-sans);color:var(--ink-2);text-decoration:none;padding:8px 11px;border-radius:999px;border:1px solid transparent}
+.series-nav .dot{width:8px;height:8px;border-radius:1.5px;transform:rotate(45deg);background:var(--c);flex:none}
+.series-nav a:hover{border-color:var(--rule-strong);color:var(--ink)}
+.series-nav a[aria-current="page"]{border-color:var(--rule-strong);background:var(--surface);color:var(--ink)}
+.series-nav span.soon{opacity:.6}
+
+/* ---------- portada ---------- */
+.hero{display:grid;gap:28px;align-items:center;padding-block:clamp(36px,6vw,76px) clamp(26px,4vw,44px)}
+@media (min-width:880px){.hero{grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:48px}}
+.eyebrow{display:flex;flex-wrap:wrap;gap:6px 16px;font:500 12px/1.3 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.eyebrow b{color:var(--accent-ink);font-weight:500}
+.hero h1{font-family:var(--f-display);font-weight:600;font-size:clamp(46px,7.4vw,100px);line-height:.95;letter-spacing:-.015em;margin-top:18px}
+.hero h1 em{font-style:italic;font-weight:500;color:var(--accent-ink)}
+.dek{font-size:clamp(18px,1.7vw,21px);line-height:1.5;color:var(--ink-2);max-width:42ch;margin-top:22px}
+.meta{margin-top:18px;font:13px/1.5 var(--f-mono);color:var(--muted)}
+.emblem{position:relative;width:min(100%,390px);aspect-ratio:1;justify-self:end;container-type:inline-size}
+@media (max-width:879px){.emblem{width:min(62vw,250px);justify-self:start;order:-1}}
+.emblem canvas{position:absolute;inset:0;width:100%;height:100%}
+.emblem .numeral{position:absolute;inset:0;display:grid;place-items:center;font-family:var(--f-display);font-weight:500;font-style:italic;font-size:30cqw;line-height:1;color:var(--accent-ink);padding-bottom:3cqw}
+.emblem .serial{position:absolute;left:0;right:0;top:calc(100% + 10px);text-align:center;font:500 11px/1 var(--f-mono);letter-spacing:.3em;color:var(--muted)}
+.microprint{font:500 6.5px/1 var(--f-mono);letter-spacing:.24em;color:var(--muted);white-space:nowrap;overflow:hidden;padding-block:4px;border-block:1px solid var(--rule);user-select:none}
+
+/* ---------- en corto ---------- */
+.tldr{background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);padding:22px clamp(18px,3vw,30px) 24px;margin-top:28px}
+.tldr h2{font:500 12px/1 var(--f-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.tldr ul{list-style:none;margin:16px 0 0;padding:0;display:grid;gap:14px 28px;grid-template-columns:repeat(auto-fit,minmax(250px,1fr))}
+.tldr li{position:relative;padding-left:20px;font-size:16px;line-height:1.5}
+.tldr li::before{content:"";position:absolute;left:1px;top:.5em;width:7px;height:7px;background:var(--accent);transform:rotate(45deg)}
+
+/* ---------- documento ---------- */
+.doc{display:grid;gap:36px;padding-block:44px 88px}
+@media (min-width:1080px){.doc{grid-template-columns:200px minmax(0,1fr);gap:60px}}
+.toc{font-size:14px}
+.toc details{border:1px solid var(--rule);border-radius:var(--radius);background:var(--surface);padding:2px 12px}
+.toc summary{cursor:pointer;font:500 12px/1 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2);padding:14px 2px}
+.toc ol{list-style:none;margin:0 0 10px;padding:0;display:grid;gap:2px;counter-reset:toc}
+.toc a{display:grid;grid-template-columns:24px 1fr;gap:4px;padding:6px 8px;border-radius:6px;color:var(--ink-2);text-decoration:none;line-height:1.35}
+.toc a::before{counter-increment:toc;content:counter(toc,decimal-leading-zero);font:500 11px/1.75 var(--f-mono);color:var(--muted)}
+.toc a:hover{background:var(--surface-2);color:var(--ink)}
+.toc a[aria-current="true"]{color:var(--ink);background:var(--surface-2)}
+.toc a[aria-current="true"]::before{color:var(--accent-ink)}
+@media (min-width:1080px){
+  .toc{position:sticky;top:calc(env(safe-area-inset-top,0px) + 24px);align-self:start;max-height:calc(100vh - 48px);overflow:auto}
+  .toc details{border:0;background:none;padding:0}
+  .toc summary{display:none}
+  .toc a:hover,.toc a[aria-current="true"]{background:var(--surface)}
+}
+.content{min-width:0;counter-reset:sec}
+.sec{counter-increment:sec;scroll-margin-top:24px}
+.sec + .sec{margin-top:84px}
+.sec > * + *{margin-top:18px}
+.sec > .kicker + h2{margin-top:12px}
+.sec > h2 + *{margin-top:22px}
+.sec > .fig,.sec > .cards,.sec > .stats,.sec > .tbl-wrap,.sec > .callout,.sec > .steps,.sec > .codeblock,.sec > .matrix,.sec > .tiers,.sec > .timeline,.sec > .split,.sec > .limits,.sec > .diagram{margin-top:30px}
+.sec > h3{margin-top:40px}
+.sec p,.sec > ul,.sec > ol{max-width:68ch}
+.sec > ul,.sec > ol{padding-left:1.25em}
+.sec > ul li + li,.sec > ol li + li{margin-top:8px}
+.kicker{display:flex;align-items:center;gap:10px;font:500 12px/1 var(--f-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.kicker::before{content:counter(sec,decimal-leading-zero);color:var(--accent-ink)}
+.sec h2{font-family:var(--f-display);font-weight:500;font-size:clamp(31px,3.7vw,46px);line-height:1.05;letter-spacing:-.01em}
+.sec h3{font-size:20px;line-height:1.3;font-weight:600}
+.lead{font-size:clamp(18px,1.5vw,19.5px);line-height:1.58;color:var(--ink-2)}
+.pull{font-family:var(--f-display);font-style:italic;font-weight:500;font-size:clamp(23px,2.4vw,29px);line-height:1.3;color:var(--ink);max-width:34ch;padding-block:6px}
+.pull b{color:var(--accent-ink);font-weight:600}
+
+/* ---------- tarjetas ---------- */
+.cards{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+.cards.two{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+.cards.quad{grid-template-columns:1fr}
+@media (min-width:560px){.cards.quad{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.card{background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);padding:18px 18px 16px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.card > .tag{font:500 11px/1.2 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--accent-ink)}
+.card > .ct{font:600 17px/1.3 var(--f-sans);margin:0;color:var(--ink)}
+.card > p{font-size:15px;line-height:1.55;color:var(--ink-2);margin:0;max-width:none}
+.card > .ex{margin-top:auto;padding-top:10px;font-size:13.5px;line-height:1.45;color:var(--muted);border-top:1px solid var(--rule)}
+.card > ul{margin:0;padding-left:1.1em;font-size:15px;line-height:1.5;color:var(--ink-2)}
+.card > ul li + li{margin-top:4px}
+.card.big > .ct{font:500 24px/1.15 var(--f-display)}
+
+/* ---------- cifras ---------- */
+.stats{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.stats.quad{grid-template-columns:repeat(2,minmax(0,1fr))}
+@media (max-width:479px){.stats.quad{grid-template-columns:1fr}}
+@media (min-width:1180px){.stats.quad{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.stat{background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);padding:16px 18px 14px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.stat .v{font:600 clamp(27px,2.8vw,34px)/1.05 var(--f-sans);letter-spacing:-.015em;color:var(--ink)}
+.stat .v small{font-size:.5em;font-weight:500;letter-spacing:0;color:var(--ink-2);margin-left:4px}
+.stat .l{font-size:14.5px;line-height:1.45;color:var(--ink-2)}
+.stat .s{font:11.5px/1.45 var(--f-mono);color:var(--muted);margin-top:auto;padding-top:4px}
+.stat.is-good .v{color:var(--good)} .stat.is-bad .v{color:var(--crit)}
+.stat .badge{display:inline-flex;align-items:center;gap:6px;font:500 12px/1 var(--f-sans);padding:4px 8px;border-radius:999px;border:1px solid var(--rule-strong);color:var(--ink-2);align-self:flex-start}
+.stat .badge svg{width:12px;height:12px}
+.stat.is-good .badge{color:var(--good);border-color:color-mix(in oklab,var(--good-mark) 45%,var(--rule))}
+.stat.is-bad .badge{color:var(--crit);border-color:color-mix(in oklab,var(--crit-mark) 45%,var(--rule))}
+
+/* ---------- avisos ---------- */
+.callout{display:grid;grid-template-columns:22px minmax(0,1fr);gap:12px;align-items:start;padding:16px 18px;border-radius:var(--radius);border:1px solid var(--rule);background:var(--surface)}
+.callout > svg{width:20px;height:20px;margin-top:2px;color:var(--accent-ink)}
+.callout .ct{font-weight:600;display:block;margin-bottom:2px}
+.callout p{font-size:15.5px;line-height:1.55;color:var(--ink-2);max-width:none}
+.callout p + p{margin-top:8px}
+.callout.warn{border-color:color-mix(in oklab,var(--warn-mark) 50%,var(--rule));background:color-mix(in oklab,var(--warn-mark) 7%,var(--surface))}
+.callout.warn > svg{color:var(--warn)}
+.callout.crit{border-color:color-mix(in oklab,var(--crit-mark) 45%,var(--rule));background:color-mix(in oklab,var(--crit-mark) 6%,var(--surface))}
+.callout.crit > svg{color:var(--crit)}
+.callout.good{border-color:color-mix(in oklab,var(--good-mark) 40%,var(--rule));background:color-mix(in oklab,var(--good-mark) 6%,var(--surface))}
+.callout.good > svg{color:var(--good)}
+
+/* ---------- tablas ---------- */
+.tbl-wrap{overflow-x:auto;border:1px solid var(--rule);border-radius:var(--radius);background:var(--surface)}
+.tbl-wrap table{min-width:640px}
+table{border-collapse:collapse;width:100%;font-size:14.5px;line-height:1.45}
+caption{caption-side:top;text-align:left;padding:14px 14px 4px;font-weight:600;font-size:15px}
+th{font:500 11.5px/1.3 var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);text-align:left;padding:12px 14px;border-bottom:1px solid var(--rule-strong);vertical-align:bottom}
+td{padding:11px 14px;border-bottom:1px solid var(--rule);vertical-align:top;color:var(--ink-2)}
+tbody tr:last-child td{border-bottom:0}
+td:first-child{color:var(--ink);font-weight:600}
+th.num,td.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+td .sub{display:block;font-weight:400;font-size:13px;color:var(--muted)}
+
+/* ---------- pasos ---------- */
+.steps{list-style:none;margin:0;padding:0;counter-reset:st}
+.sec > ol.steps,.sec > ol.timeline{padding-left:0;max-width:none}
+.steps > li{display:grid;grid-template-columns:52px minmax(0,1fr);gap:14px;padding:16px 0;border-top:1px solid var(--rule);max-width:none}
+.steps > li:last-child{border-bottom:1px solid var(--rule)}
+.steps > li::before{counter-increment:st;content:counter(st);font:500 32px/1 var(--f-display);color:var(--accent-ink);padding-top:2px}
+.steps b{display:block;font-weight:600;color:var(--ink)}
+.steps span{display:block;color:var(--ink-2);font-size:15.5px;line-height:1.55;margin-top:2px}
+
+/* ---------- figuras y gráficos ---------- */
+.fig{background:var(--surface);border:1px solid var(--rule);border-radius:12px;padding:20px clamp(14px,2.4vw,24px) 16px;margin-inline:0;min-width:0}
+.fig-title{font:600 17px/1.35 var(--f-sans);color:var(--ink)}
+.fig-sub{font-size:14.5px;line-height:1.5;color:var(--ink-2);margin-top:4px;max-width:72ch}
+.chart{position:relative;margin-top:16px;min-height:60px}
+.chart svg{display:block;overflow:visible}
+.legend{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13.5px;color:var(--ink-2);margin-top:14px}
+.legend span{display:inline-flex;align-items:center;gap:7px}
+.legend i{display:inline-block;width:16px;height:2px;border-radius:1px;background:var(--k)}
+.legend i.box{width:10px;height:10px;border-radius:2px}
+.fig-note{font-size:13px;line-height:1.55;color:var(--muted);margin-top:12px;max-width:none}
+.fig details.data{margin-top:12px;border-top:1px solid var(--rule);padding-top:10px}
+.fig details.data summary{cursor:pointer;font:500 12.5px/1.4 var(--f-mono);color:var(--ink-2);width:max-content;max-width:100%}
+.fig details.data .tbl-wrap{margin-top:10px}
+.fig details.data table{min-width:0}
+.viz text{font-family:var(--f-sans);font-size:12px;fill:var(--muted)}
+.viz .grid{stroke:var(--grid);stroke-width:1;shape-rendering:crispEdges}
+.viz .base{stroke:var(--rule-strong);stroke-width:1;shape-rendering:crispEdges}
+.viz .lbl{fill:var(--ink-2);font-size:12.5px}
+.viz .lbl-strong{fill:var(--ink);font-size:13px;font-weight:600}
+.viz .val{fill:var(--ink);font-size:12.5px;font-variant-numeric:tabular-nums}
+.viz .hit{fill:transparent;cursor:default}
+.viz .hit:focus{outline:none}
+.viz .hit:focus-visible{stroke:var(--accent-ink);stroke-width:2px}
+.viz .cross{stroke:var(--ink-2);stroke-width:1;shape-rendering:crispEdges}
+.viz .mark{transition:opacity .15s}
+.viz g.row:hover .mark,.viz g.row:focus-within .mark{opacity:.8}
+.viz .ref{stroke:var(--ink);stroke-width:1.5}
+.viz .band{fill:var(--wash)}
+
+.viz-tip{position:fixed;z-index:50;pointer-events:none;min-width:130px;max-width:290px;background:var(--ink);color:var(--paper);border-radius:8px;padding:9px 11px 10px;font:13px/1.4 var(--f-sans);box-shadow:0 12px 30px -12px rgba(0,0,0,.45);opacity:0;transform:translateY(4px);transition:opacity .12s,transform .12s;left:0;top:0}
+.viz-tip.on{opacity:1;transform:none}
+.viz-tip .t{font:500 11px/1.3 var(--f-mono);letter-spacing:.05em;opacity:.72;margin-bottom:5px}
+.viz-tip .r{display:flex;align-items:baseline;gap:8px}
+.viz-tip .r + .r{margin-top:2px}
+.viz-tip .r i{flex:none;width:12px;height:2px;border-radius:1px;align-self:center}
+.viz-tip .r b{font-weight:600;font-variant-numeric:tabular-nums}
+.viz-tip .r span{opacity:.78}
+.viz-tip .n{margin-top:6px;opacity:.78;font-size:12px}
+
+/* ---------- controles ---------- */
+.controls{display:grid;gap:14px 22px;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));margin-top:18px}
+.controls.four{grid-template-columns:repeat(auto-fit,minmax(170px,1fr))}
+.ctl{display:flex;flex-direction:column;gap:6px;min-width:0}
+.ctl label{display:flex;justify-content:space-between;gap:10px;font-size:13.5px;color:var(--ink-2)}
+.ctl output{font:500 13px var(--f-mono);color:var(--ink);white-space:nowrap}
+.ctl input[type="range"]{width:100%;accent-color:var(--accent-ink)}
+.ctl input[type="number"],.ctl select{font:15px var(--f-sans);color:var(--ink);background:var(--paper);border:1px solid var(--rule-strong);border-radius:8px;padding:8px 10px;width:100%}
+.ctl .hint{font-size:12px;color:var(--muted)}
+.btns{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.btn{font:500 14px/1 var(--f-sans);color:var(--ink);background:var(--surface);border:1px solid var(--rule-strong);border-radius:999px;padding:9px 14px;cursor:pointer}
+.btn:hover{border-color:var(--ink-2)}
+.btn[aria-pressed="true"]{background:var(--accent-ink);border-color:var(--accent-ink);color:var(--surface)}
+.btn.ghost{border-style:dashed}
+.readout{margin-top:16px;padding:14px 16px;border-radius:8px;background:var(--wash);font-size:15.5px;line-height:1.55;color:var(--ink)}
+.meter{height:10px;border-radius:999px;background:color-mix(in oklab,var(--accent) 16%,var(--surface));overflow:hidden;margin-top:8px}
+.meter > i{display:block;height:100%;border-radius:999px;background:var(--accent);transition:width .25s}
+.meter.warn > i{background:var(--warn-mark)} .meter.crit > i{background:var(--crit-mark)}
+.meter.warn{background:color-mix(in oklab,var(--warn-mark) 18%,var(--surface))} .meter.crit{background:color-mix(in oklab,var(--crit-mark) 16%,var(--surface))}
+
+/* ---------- código ---------- */
+.codeblock{position:relative}
+pre.code{margin:0;overflow-x:auto;background:var(--surface-2);border:1px solid var(--rule);border-radius:var(--radius);padding:18px 18px 16px;font:13.5px/1.6 var(--f-mono);color:var(--ink);tab-size:4}
+pre.code code{font:inherit}
+.codeblock .copy{position:absolute;top:8px;right:8px;font:500 12px/1 var(--f-mono);color:var(--ink-2);background:var(--surface);border:1px solid var(--rule-strong);border-radius:6px;padding:6px 9px;cursor:pointer}
+.codeblock .copy:hover{color:var(--ink);border-color:var(--ink-2)}
+.codeblock .lang{position:absolute;top:10px;left:18px;font:500 10.5px/1 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.codeblock .lang + pre.code{padding-top:34px}
+.c-com{color:var(--muted);font-style:italic}
+.c-str{color:var(--accent-ink)}
+.c-kw{font-weight:600}
+.c-num{color:var(--accent-ink)}
+code:not(pre code){font:.88em var(--f-mono);background:var(--surface-2);border:1px solid var(--rule);border-radius:4px;padding:.05em .35em}
+.prompt{background:var(--surface);border:1px dashed var(--rule-strong);border-radius:var(--radius);padding:16px 18px;font-size:15px;line-height:1.6;color:var(--ink)}
+.prompt .who{font:500 11px/1 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:8px}
+
+/* ---------- diagramas ---------- */
+.diagram{background:var(--surface);border:1px solid var(--rule);border-radius:12px;padding:18px clamp(12px,2.4vw,22px)}
+.diagram .scroll{overflow-x:auto}
+.scroll-hint{display:none;font:12px/1.4 var(--f-mono);color:var(--muted);margin-bottom:8px}
+@media (max-width:800px){.scroll-hint{display:block}}
+.diagram svg text{font-family:var(--f-sans)}
+.flowchart{margin-top:6px}
+.fnode rect{fill:var(--surface);stroke:var(--rule-strong)}
+.fnode.hl rect{fill:var(--wash);stroke:var(--accent)}
+.fnode .ft{fill:var(--ink);font-size:14px;font-weight:600}
+.fnode .fd{fill:var(--ink-2);font-size:12px}
+.fedge{stroke:var(--ink-2);stroke-width:1.25;fill:none}
+.fhead{fill:var(--ink-2)}
+.flabel{fill:var(--muted);font:11px var(--f-mono)}
+
+/* ---------- lista de límites ---------- */
+.limits{display:grid;gap:0;counter-reset:lim;border-top:1px solid var(--rule)}
+.limit{display:grid;grid-template-columns:44px minmax(0,1fr);gap:16px;padding:20px 0;border-bottom:1px solid var(--rule)}
+.limit::before{counter-increment:lim;content:counter(lim);font:500 30px/1 var(--f-display);color:var(--accent-ink);padding-top:2px}
+.limit h3{font-size:18px;line-height:1.3;font-weight:600}
+.limit p{margin-top:6px;color:var(--ink-2);font-size:16px;max-width:66ch}
+.limit .datum{margin-top:10px;font:12.5px/1.5 var(--f-mono);color:var(--ink);background:var(--surface);border:1px solid var(--rule);border-radius:6px;padding:8px 10px;max-width:66ch}
+.limit > div > .fig{margin-top:18px}
+@media (max-width:600px){.limit{grid-template-columns:1fr;gap:4px}.limit::before{font-size:24px}}
+
+/* ---------- dos columnas sí/no ---------- */
+.split{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+.split > div{background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);padding:18px 20px}
+.split h3{display:flex;align-items:center;gap:8px;font-size:17px}
+.split h3 svg{width:18px;height:18px}
+.split .yes h3{color:var(--good)} .split .no h3{color:var(--crit)}
+.split ul{margin:10px 0 0;padding-left:1.1em;color:var(--ink-2);font-size:15.5px;line-height:1.55}
+.split li + li{margin-top:6px}
+
+/* ---------- cronología ---------- */
+.timeline{list-style:none;margin:0;padding:0;border-left:1px solid var(--rule-strong);margin-left:6px}
+.timeline li{position:relative;padding:0 0 20px 22px;max-width:none}
+.timeline li::before{content:"";position:absolute;left:-5px;top:.45em;width:9px;height:9px;background:var(--accent);transform:rotate(45deg)}
+.timeline time{display:block;font:500 12px/1.4 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--accent-ink)}
+.timeline b{display:block;margin-top:2px}
+.timeline span{display:block;color:var(--ink-2);font-size:15.5px;line-height:1.55;max-width:66ch;margin-top:2px}
+
+/* ---------- fuentes y pie ---------- */
+.refs{font-size:14px;line-height:1.55;color:var(--ink-2);padding-left:1.3em}
+.refs li + li{margin-top:7px}
+.foot{border-top:1px solid var(--rule);padding-block:28px 40px;display:grid;gap:18px}
+.foot p{font-size:13.5px;color:var(--muted);max-width:80ch}
+.foot .series-nav{justify-content:flex-start}
+
+@media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
+.fig .stats{margin-top:16px}
+
+/* página */
+:root{--accent:var(--c3);--accent-ink:#0B7650}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--accent-ink:#4FD0A0}}
+:root[data-theme="dark"]{--accent-ink:#4FD0A0}
+.matrix{display:grid;grid-template-columns:30px repeat(2,minmax(0,1fr));gap:12px}
+.mx-y{grid-row:1 / 3;grid-column:1;display:flex;align-items:center;justify-content:center}
+.mx-y span{writing-mode:vertical-rl;transform:rotate(180deg);font:500 11px/1 var(--f-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
+.mx-x{grid-column:2 / 4;text-align:center;font:500 11px/1 var(--f-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.mq{background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);padding:16px 18px;min-width:0}
+.mq-h{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px}
+.mq-h b{font:500 22px/1.1 var(--f-display)}
+.mq ul{margin:10px 0 0;padding-left:1.1em;color:var(--ink-2);font-size:15px;line-height:1.5}
+.mq li + li{margin-top:5px}
+.chip{display:inline-flex;align-items:center;gap:6px;font:500 12px/1 var(--f-sans);padding:5px 9px;border-radius:999px;border:1px solid var(--rule-strong);color:var(--ink-2)}
+.chip svg{width:12px;height:12px}
+.chip.good{color:var(--good);border-color:color-mix(in oklab,var(--good-mark) 45%,var(--rule))}
+.chip.warn{color:var(--warn);border-color:color-mix(in oklab,var(--warn-mark) 55%,var(--rule))}
+.chip.crit{color:var(--crit);border-color:color-mix(in oklab,var(--crit-mark) 45%,var(--rule))}
+@media (max-width:640px){.matrix{grid-template-columns:1fr}.mx-y,.mx-x{display:none}}
+.arch{min-width:760px}
+.arch .zone{font:500 11px var(--f-mono);letter-spacing:.14em;fill:var(--muted)}
+.arch .box{fill:var(--surface);stroke:var(--rule-strong)}
+.arch .box.me{fill:var(--wash);stroke:var(--accent)}
+.arch .box.core{fill:var(--surface-2);stroke:var(--rule-strong)}
+.arch .bt{fill:var(--ink);font-size:14px;font-weight:600}
+.arch .bd{fill:var(--ink-2);font-size:12px}
+.arch .ln{stroke:var(--ink-2);stroke-width:1.3;fill:none}
+.arch .ln.ro{stroke-dasharray:5 4}
+.arch .hd{fill:var(--ink-2)}
+.arch .lab{fill:var(--ink-2);font:11.5px var(--f-mono)}
+.arch .front{stroke:var(--crit-mark);stroke-width:1.5;stroke-dasharray:7 5}
+.arch .front-l{fill:var(--crit);font:500 12px var(--f-sans)}
+.principles{list-style:none;padding:0!important;display:grid;gap:10px}
+.principles li{padding-left:22px;position:relative}
+.principles li::before{content:"";position:absolute;left:2px;top:.55em;width:7px;height:7px;background:var(--accent);transform:rotate(45deg)}
+.ev-card .who{font:500 11.5px/1.3 var(--f-mono);color:var(--muted)}
+</style>
+</head>
+<body>
+<header class="series wrap" id="top"><span class="brand">Máquinas y mercados</span><nav aria-label="Documentos de la serie"><ul class="series-nav"><li><a href="01-trading-algoritmico.html"><span class="dot" style="--c:var(--c1)"></span>1 · Trading algorítmico</a></li><li><a href="02-forex-algoritmico.html"><span class="dot" style="--c:var(--c2)"></span>2 · Forex algorítmico</a></li><li><a href="#top" aria-current="page"><span class="dot" style="--c:var(--c3)"></span>3 · Agentes Claude</a></li><li><a href="04-verdad-cuentas-fondeo.html"><span class="dot" style="--c:var(--c4)"></span>4 · Cuentas de fondeo</a></li></ul></nav></header>
+<section class="hero wrap">
+  <div class="hero-text">
+    <p class="eyebrow"><span>Máquinas y mercados</span><b>Documento 3 de 4</b></p>
+    <h1>Agentes Claude <em>en trading</em></h1>
+    <p class="dek">Dónde aporta valor real un agente de IA en un sistema de trading algorítmico, dónde es un riesgo, cómo encajarlo y cuánto cuesta. Con la evidencia disponible y un veredicto claro.</p>
+    <p class="meta">Septiembre de 2026 · 16 minutos de lectura</p>
+  </div>
+  <div class="emblem" aria-hidden="true"><canvas></canvas><span class="numeral">3</span><span class="serial">MM · 03 · 2026</span></div>
+</section>
+<div class="wrap"><div class="microprint" aria-hidden="true" data-text="AGENTES CLAUDE · PROPONE · DECIDE · APRUEBA"></div>
+  <div class="tldr">
+    <h2>En corto</h2>
+    <ul>
+      <li>Aporta mucho como multiplicador de trabajo: programar, revisar, limpiar datos, leer documentos, vigilar el sistema y escribir informes.</li>
+      <li>Como oráculo, no. En competiciones con dinero real y en evaluaciones rigurosas, las estrategias generadas o ejecutadas por modelos de lenguaje no han demostrado ventaja.</li>
+      <li>La regla de oro: el agente propone, el código determinista decide y tú apruebas. Nunca le des acceso directo a las órdenes reales.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="doc wrap">
+  <aside class="toc" aria-label="Índice"></aside>
+  <main class="content">
+
+    <section class="sec" id="que-es">
+      <p class="kicker">Qué es</p>
+      <h2 data-short="Qué es un agente">Qué es un agente Claude</h2>
+      <p class="lead">Un agente es un modelo de lenguaje que trabaja en bucle: recibe un encargo, decide qué herramienta usar, mira el resultado y repite hasta terminar. Las herramientas las defines tú, y con ellas decides lo que puede y lo que no puede hacer.</p>
+      <figure class="diagram">
+        <div class="flowchart" id="loop"></div>
+        <figcaption class="fig-note">El bucle se repite hasta que el modelo da la tarea por terminada o hasta el límite que fijes. Si una herramienta no existe, el agente no puede usarla: así se controla su alcance.</figcaption>
+      </figure>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Pieza</th><th>Qué es</th><th>Para qué sirve en trading</th></tr></thead>
+          <tbody>
+            <tr><td>API de Claude</td><td>Llamadas a los modelos desde tu código, con herramientas y salidas estructuradas en JSON</td><td>Clasificar textos, extraer datos y generar informes dentro de tu sistema</td></tr>
+            <tr><td>Claude Code</td><td>Agente de programación en la terminal, el editor o la web</td><td>Construir, probar y revisar tu sistema de trading</td></tr>
+            <tr><td>Claude Agent SDK</td><td>El motor de Claude Code como librería, con lectura de archivos, terminal y subagentes</td><td>Agentes propios que corren en tus servidores</td></tr>
+            <tr><td>Managed Agents</td><td>Anthropic ejecuta el agente y su entorno aislado, también de forma programada (beta)</td><td>Informes nocturnos o revisiones periódicas sin mantener servidores</td></tr>
+            <tr><td>MCP</td><td>Protocolo estándar para conectar herramientas y fuentes de datos</td><td>Dar acceso controlado a bases de datos, ficheros o APIs de datos de mercado</td></tr>
+            <tr><td>API por lotes</td><td>Procesamiento asíncrono a mitad de precio</td><td>Reprocesar años de comunicados o noticias</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>La familia de modelos va de Haiku 4.5, rápido y barato, a Sonnet 5 y Opus 5 para trabajo de más razonamiento, y Fable 5.1, el más capaz. Para clasificar miles de textos basta un modelo pequeño; para revisar la lógica de un backtest compensa uno grande.</p>
+    </section>
+
+    <section class="sec" id="mapa">
+      <p class="kicker">Mapa de valor</p>
+      <h2 data-short="Dónde aporta">Dónde aporta y dónde no</h2>
+      <p class="lead">El valor está en el trabajo que rodea a la estrategia. El riesgo crece cuanto más cerca pones al modelo de la orden real.</p>
+      <div class="matrix" role="group" aria-label="Casos de uso según su valor y su riesgo">
+        <div class="mx-y" aria-hidden="true"><span>Más valor ↑</span></div>
+        <div class="mq">
+          <p class="mq-h"><b>Empieza por aquí</b><span class="chip good"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 6.5l2.2 2.2 4.8-5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>Valor alto · riesgo bajo</span></p>
+          <ul><li>Programar y revisar código con Claude Code</li><li>Limpiar y validar datos</li><li>Vigilar el sistema en modo solo lectura</li><li>Informes y diario de trading</li></ul>
+        </div>
+        <div class="mq">
+          <p class="mq-h"><b>Con controles</b><span class="chip warn"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M6 2v5M6 9.3v.2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>Valor alto · riesgo medio</span></p>
+          <ul><li>Investigación y backtests asistidos, con riesgo de sobreajuste</li><li>Señales a partir de texto: bancos centrales y noticias</li><li>Traducir las reglas de una firma de fondeo a comprobaciones automáticas</li></ul>
+        </div>
+        <div class="mq">
+          <p class="mq-h"><b>Útil para aprender</b><span class="chip"><svg viewBox="0 0 12 12" aria-hidden="true"><circle cx="6" cy="6" r="3" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>Valor bajo · riesgo bajo</span></p>
+          <ul><li>Preguntar conceptos y repasar teoría</li><li>Resumir libros y artículos</li></ul>
+        </div>
+        <div class="mq">
+          <p class="mq-h"><b>Evítalo</b><span class="chip crit"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3 3l6 6M9 3L3 9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>Valor bajo · riesgo alto</span></p>
+          <ul><li>Que decida y envíe órdenes reales por su cuenta</li><li>Pedirle el precio de mañana</li><li>Darle las claves de tu cuenta real</li></ul>
+        </div>
+        <div class="mx-x" aria-hidden="true">Más riesgo →</div>
+      </div>
+    </section>
+
+    <section class="sec" id="arquitectura">
+      <p class="kicker">Arquitectura</p>
+      <h2 data-short="Arquitectura">Cómo encajarlo sin poner en riesgo la cuenta</h2>
+      <p class="lead">La idea central es una frontera: los agentes trabajan alrededor del sistema, pero la orden solo recorre un núcleo de código determinista que tú controlas.</p>
+      <figure class="diagram">
+        <p class="scroll-hint">Desliza hacia los lados para ver el diagrama completo.</p>
+        <div class="scroll">
+          <svg class="arch" viewBox="0 0 900 410" role="img" aria-label="Arquitectura: los agentes Claude proponen cambios, escriben datos con fecha y leen registros; solo el núcleo determinista envía órdenes al bróker, y tú apruebas los cambios">
+            <text class="zone" x="20" y="40">AGENTES CLAUDE</text>
+            <rect class="box" x="20" y="54" width="170" height="80" rx="8"/>
+            <text class="bt" x="34" y="80">Analista de texto</text>
+            <text class="bd" x="34" y="100">Lee bancos centrales</text>
+            <text class="bd" x="34" y="116">y noticias</text>
+            <rect class="box" x="220" y="54" width="160" height="80" rx="8"/>
+            <text class="bt" x="234" y="80">Investigador</text>
+            <text class="bd" x="234" y="100">Claude Code: código,</text>
+            <text class="bd" x="234" y="116">tests y backtests</text>
+            <rect class="box me" x="450" y="54" width="140" height="80" rx="8"/>
+            <text class="bt" x="464" y="80">Tú</text>
+            <text class="bd" x="464" y="100">Revisas y apruebas</text>
+            <text class="bd" x="464" y="116">cada cambio</text>
+            <rect class="box" x="650" y="54" width="230" height="80" rx="8"/>
+            <text class="bt" x="664" y="80">Vigilante</text>
+            <text class="bd" x="664" y="100">Detecta fallos, rechazos</text>
+            <text class="bd" x="664" y="116">y desvíos del backtest</text>
+
+            <line class="ln" x1="380" y1="94" x2="442" y2="94"/><path class="hd" d="M450,94 l-8,-4.5 v9 z"/>
+            <text class="lab" x="415" y="72" text-anchor="middle">propone</text>
+            <text class="lab" x="415" y="85" text-anchor="middle">cambios</text>
+            <line class="ln" x1="650" y1="94" x2="598" y2="94"/><path class="hd" d="M590,94 l8,-4.5 v9 z"/>
+            <text class="lab" x="620" y="85" text-anchor="middle">alertas</text>
+
+            <line class="ln" x1="105" y1="134" x2="105" y2="282"/><path class="hd" d="M105,290 l-4.5,-8 h9 z"/>
+            <text class="lab" x="114" y="178">features con fecha</text>
+            <line class="ln" x1="500" y1="134" x2="500" y2="282"/><path class="hd" d="M500,290 l-4.5,-8 h9 z"/>
+            <text class="lab" x="509" y="178">despliegas lo aprobado</text>
+            <line class="ln ro" x1="690" y1="290" x2="690" y2="142"/><path class="hd" d="M690,134 l-4.5,8 h9 z"/>
+            <text class="lab" x="699" y="262">registros, solo lectura</text>
+
+            <line class="front" x1="20" y1="214" x2="880" y2="214"/>
+            <text class="front-l" x="122" y="206">Frontera: ningún agente envía órdenes al bróker</text>
+
+            <rect class="box core" x="20" y="290" width="150" height="70" rx="8"/>
+            <text class="bt" x="34" y="316">Datos</text><text class="bd" x="34" y="336">Precios y features</text>
+            <rect class="box core" x="200" y="290" width="150" height="70" rx="8"/>
+            <text class="bt" x="214" y="316">Señales</text><text class="bd" x="214" y="336">Reglas fijas</text>
+            <rect class="box core" x="380" y="290" width="150" height="70" rx="8"/>
+            <text class="bt" x="394" y="316">Riesgo</text><text class="bd" x="394" y="336">Límites duros</text>
+            <rect class="box core" x="560" y="290" width="150" height="70" rx="8"/>
+            <text class="bt" x="574" y="316">Ejecución</text><text class="bd" x="574" y="336">Órdenes al bróker</text>
+            <rect class="box core" x="740" y="290" width="140" height="70" rx="8"/>
+            <text class="bt" x="754" y="316">Bróker</text><text class="bd" x="754" y="336">Cuenta real</text>
+            <line class="ln" x1="170" y1="325" x2="192" y2="325"/><path class="hd" d="M200,325 l-8,-4.5 v9 z"/>
+            <line class="ln" x1="350" y1="325" x2="372" y2="325"/><path class="hd" d="M380,325 l-8,-4.5 v9 z"/>
+            <line class="ln" x1="530" y1="325" x2="552" y2="325"/><path class="hd" d="M560,325 l-8,-4.5 v9 z"/>
+            <line class="ln" x1="710" y1="325" x2="732" y2="325"/><path class="hd" d="M740,325 l-8,-4.5 v9 z"/>
+            <text class="zone" x="20" y="392">NÚCLEO DETERMINISTA · LA ÚNICA VÍA HACIA EL MERCADO</text>
+          </svg>
+        </div>
+        <figcaption class="fig-note">En el núcleo, cada pieza pasa a la siguiente la posición deseada, la orden permitida y la orden ejecutada. Los agentes escriben datos, proponen cambios y leen registros, pero ninguno cruza la frontera hacia el bróker.</figcaption>
+      </figure>
+      <h3>Siete reglas para diseñarlo</h3>
+      <ul class="principles">
+        <li><b>El agente nunca está en el camino de la orden.</b> Si el modelo falla o tarda, el sistema sigue igual.</li>
+        <li><b>Permisos mínimos.</b> Herramientas de solo lectura. Si alguna vez prueba órdenes, solo en demo y con límites escritos en el código.</li>
+        <li><b>Todo se valida con código.</b> Esquemas de salida, tests y backtests reproducibles antes de aceptar nada.</li>
+        <li><b>Registro de pruebas.</b> Cuenta cuántas ideas se han probado para corregir el Sharpe por el número de intentos.</li>
+        <li><b>Datos con fecha.</b> Cada feature se guarda con la hora a la que habría estado disponible.</li>
+        <li><b>El texto externo es información, no instrucciones.</b> Una noticia puede esconder órdenes para el agente.</li>
+        <li><b>Versiones fijadas.</b> Identificador del modelo, prompts y resultados guardados para poder repetir cualquier análisis.</li>
+      </ul>
+    </section>
+
+    <section class="sec" id="trabajos">
+      <p class="kicker">Casos de uso</p>
+      <h2 data-short="Seis trabajos">Seis trabajos que un agente hace bien</h2>
+      <p class="lead">Ninguno pide que el modelo adivine el mercado. Todos ahorran horas o evitan errores caros.</p>
+      <div class="cards two">
+        <article class="card"><span class="tag">Claude Code</span><h3 class="ct">Desarrollador cuantitativo</h3><p>Construye el backtester, escribe tests que detectan el uso de datos del futuro, traduce estrategias de MQL5 a Python y revisa cada cambio.</p><p class="ex">Control: todo entra como un cambio revisable y con tests.</p></article>
+        <article class="card"><span class="tag">Datos</span><h3 class="ct">Ingeniero de datos</h3><p>Detecta huecos y precios anómalos, corrige zonas horarias y cambios de hora, y cuadra tus operaciones con los extractos del bróker.</p><p class="ex">Control: informes de calidad que puedes comparar día a día.</p></article>
+        <article class="card"><span class="tag">Texto</span><h3 class="ct">Analista de bancos centrales</h3><p>Clasifica el tono de cada comunicado frente al anterior, extrae las frases clave y lo guarda como dato con fecha.</p><p class="ex">Control: evaluación solo fuera de muestra y contraste con etiquetas humanas.</p></article>
+        <article class="card"><span class="tag">Operaciones</span><h3 class="ct">Vigilante</h3><p>Cada pocos minutos revisa registros y métricas: deslizamiento frente al modelo, órdenes rechazadas, desconexiones y desvíos respecto al backtest.</p><p class="ex">Control: solo lectura. Avisa, no actúa.</p></article>
+        <article class="card"><span class="tag">Reglas</span><h3 class="ct">Auditor de reglas de fondeo</h3><p>Convierte las normas de una firma en comprobaciones automáticas y te avisa antes de rozar la pérdida diaria o de operar en una ventana de noticias prohibida.</p><p class="ex">Control: las comprobaciones son código revisado, no la opinión del modelo. Más en <a href="04-verdad-cuentas-fondeo.html">el documento 4</a>.</p></article>
+        <article class="card"><span class="tag">Informes</span><h3 class="ct">Redactor y entrenador</h3><p>Escribe el informe diario y el semanal, y analiza tu diario para detectar desviaciones del plan: stops movidos, operaciones de revancha, exceso de riesgo.</p><p class="ex">Control: trabaja sobre tus datos y cita de dónde sale cada cifra.</p></article>
+      </div>
+    </section>
+
+    <section class="sec" id="evidencia">
+      <p class="kicker">Evidencia</p>
+      <h2 data-short="Lo que dicen los datos">Lo que dicen los datos</h2>
+      <p class="lead">Los modelos de lenguaje leen bien. Cuando se les pide que inventen estrategias o que operen solos, los resultados son otra historia.</p>
+      <div class="cards two">
+        <article class="card ev-card"><span class="tag">Leer noticias</span><h3 class="ct">Hay señal en los titulares</h3><p>Las puntuaciones de GPT-4 sobre titulares predijeron el rendimiento del día siguiente, sobre todo en empresas pequeñas y con noticias negativas. La ventaja se reduce a medida que más inversores usan estos modelos.</p><p class="ex who">Lopez-Lira y Tang, 2023–2024</p></article>
+        <article class="card ev-card"><span class="tag">Leer bancos centrales</span><h3 class="ct">Entiende a la Reserva Federal</h3><p>GPT clasificó el tono de los comunicados de la Fed de 2010 a 2020 mejor que los métodos anteriores, con explicaciones comparables a las de un analista humano.</p><p class="ex who">Hansen y Kazinnik, 2023</p></article>
+        <article class="card ev-card"><span class="tag">La trampa</span><h3 class="ct">Sabe demasiado del pasado</h3><p>En señales de sentimiento con GPT-3.5 aparecen sesgo de anticipación y un efecto distracción: el modelo mezcla lo que sabe de la empresa con el texto que lee.</p><p class="ex who">Glasserman y Lin, 2023</p></article>
+        <article class="card ev-card"><span class="tag">Largo plazo</span><h3 class="ct">Las ventajas publicadas se deshacen</h3><p>Con veinte años de datos y más de cien valores, las ventajas de las estrategias basadas en LLM se deterioran. Son demasiado prudentes en mercados alcistas y demasiado agresivas en los bajistas.</p><p class="ex who">Li y otros, FINSABER, KDD 2026</p></article>
+        <article class="card ev-card"><span class="tag">Evaluación honesta</span><h3 class="ct">Ninguna estrategia sobrevivió</h3><p>Con herramientas que impiden mirar el futuro y un ajuste por el número de pruebas, se rechazaron todas las estrategias que propusieron dos modelos punteros. Un oráculo con trampa y un Sharpe de 35 pasó los tests estadísticos habituales, lo que obliga a poner salvaguardas en la propia arquitectura.</p><p class="ex who">Gençay, arXiv, agosto de 2026</p></article>
+        <article class="card ev-card"><span class="tag">Dinero real</span><h3 class="ct">Cuatro de seis perdieron</h3><p>Seis modelos recibieron 10.000&nbsp;$ reales cada uno para operar cripto durante 17 días. Cuatro acabaron en pérdidas. El ganador, Qwen3 Max, hizo unas 43 operaciones, menos de tres al día.</p><p class="ex who">Alpha Arena, nof1, 2025</p></article>
+      </div>
+      <figure class="fig" id="fig-arena">
+        <p class="fig-title">Alpha Arena, temporada 1: resultado de 10.000 $ por modelo</p>
+        <p class="fig-sub">Del 18 de octubre al 3 de noviembre de 2025, con contratos perpetuos de cripto apalancados en Hyperliquid.</p>
+        <div class="chart" id="arena"></div>
+        <div class="legend"><span><i class="box" style="--k:var(--pos)"></i>Ganancia</span><span><i class="box" style="--k:var(--neg)"></i>Pérdida</span></div>
+        <p class="fig-note">Muestra minúscula: 17 días y un solo mercado. Habla más de gestión del riesgo que de inteligencia; los organizadores atribuyeron las pérdidas al exceso de apalancamiento y a la dificultad de los modelos con series numéricas. Fuente: nof1, recogido por ForkLog.</p>
+      </figure>
+    </section>
+
+    <section class="sec" id="riesgos">
+      <p class="kicker">Riesgos</p>
+      <h2 data-short="Riesgos">Riesgos y cómo evitarlos</h2>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Riesgo</th><th>Qué pasa</th><th>Cómo evitarlo</th></tr></thead>
+          <tbody>
+            <tr><td>Errores y alucinaciones</td><td>Código que parece correcto y no lo es, o cifras inventadas</td><td>Tests automáticos, backtests reproducibles y revisión humana de cada cambio</td></tr>
+            <tr><td>Sesgo de anticipación</td><td>El modelo conoce lo que pasó después de la fecha simulada</td><td>Evaluar solo con datos posteriores a su fecha de corte; guardar cada dato con la hora a la que estaba disponible</td></tr>
+            <tr><td>Sobreajuste acelerado</td><td>Probar cien ideas en una tarde multiplica los falsos positivos</td><td>Registro de todas las pruebas, Sharpe deflactado y un tramo final que nadie mira</td></tr>
+            <tr><td>Inyección de instrucciones</td><td>Una noticia o una web maliciosa incluye órdenes dirigidas al agente</td><td>El agente que lee texto externo no tiene herramientas de trading y su salida pasa por un esquema fijo</td></tr>
+            <tr><td>Resultados que cambian</td><td>Mismo texto, respuesta distinta, o una versión nueva del modelo</td><td>Fijar el identificador del modelo, guardar entradas y salidas, y reevaluar al cambiar de versión</td></tr>
+            <tr><td>Latencia</td><td>Cada respuesta tarda segundos</td><td>Fuera del camino rápido, en horizontes de horas o días</td></tr>
+            <tr><td>Coste</td><td>Muchos documentos con un modelo grande</td><td>Elegir el modelo según la tarea, usar la API por lotes y la caché de prompts</td></tr>
+            <tr><td>Credenciales</td><td>Claves del bróker o de la API expuestas</td><td>Gestor de secretos, permisos mínimos, cuentas demo para el agente y registro de auditoría</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="sec" id="coste">
+      <p class="kicker">Coste</p>
+      <h2 data-short="Cuánto cuesta">Cuánto cuesta</h2>
+      <p class="lead">Para leer textos cada día, el coste suele ser pequeño comparado con el de los datos de mercado. Calcúlalo con tu caso.</p>
+      <figure class="fig" id="fig-cost">
+        <p class="fig-title">Calculadora de coste mensual</p>
+        <p class="fig-sub">Ejemplo inicial: 40 documentos al día (comunicados, noticias, informes) de unos 3.000 tokens cada uno.</p>
+        <div class="controls">
+          <div class="ctl"><label for="k-docs">Documentos al día <output id="k-docs-out" for="k-docs">40</output></label><input id="k-docs" type="range" min="1" max="1000" step="1" value="40"></div>
+          <div class="ctl"><label for="k-in">Tokens de entrada por documento</label><input id="k-in" type="number" min="100" max="200000" step="100" value="3000"><span class="hint">Unas 2.200 palabras en español</span></div>
+          <div class="ctl"><label for="k-out">Tokens de respuesta por documento</label><input id="k-out" type="number" min="10" max="20000" step="10" value="400"></div>
+          <div class="ctl"><label for="k-model">Modelo</label><select id="k-model"><option value="1,5">Claude Haiku 4.5</option><option value="2,10" selected>Claude Sonnet 5</option><option value="5,25">Claude Opus 5</option><option value="10,50">Claude Fable 5.1</option></select></div>
+          <div class="ctl"><label for="k-days">Días al mes</label><input id="k-days" type="number" min="1" max="31" step="1" value="22"></div>
+          <div class="ctl"><label for="k-batch" style="justify-content:flex-start;gap:8px"><input id="k-batch" type="checkbox"> Usar la API por lotes (−50&nbsp;%)</label><span class="hint">Para trabajos que pueden esperar unas horas</span></div>
+        </div>
+        <div class="stats">
+          <div class="stat"><span class="v" id="k-month">–</span><span class="l">al mes</span></div>
+          <div class="stat"><span class="v" id="k-doc">–</span><span class="l">por documento</span></div>
+          <div class="stat"><span class="v" id="k-tok">–</span><span class="l">millones de tokens al mes</span></div>
+        </div>
+        <p class="fig-note">Precios de la API de Anthropic por millón de tokens (entrada / salida) en septiembre de 2026: Haiku 4.5, 1 / 5&nbsp;$; Sonnet 5, 2 / 10&nbsp;$; Opus 5, 5 / 25&nbsp;$; Fable 5.1, 10 / 50&nbsp;$. Sin descuentos por caché. Compruébalos antes de presupuestar.</p>
+      </figure>
+    </section>
+
+    <section class="sec" id="ejemplo">
+      <p class="kicker">Ejemplo</p>
+      <h2 data-short="Ejemplo de código">Un ejemplo concreto</h2>
+      <p class="lead">Un analista de bancos centrales en Python. Compara el comunicado nuevo con el anterior y devuelve un JSON con un esquema fijo, listo para guardarlo como dato con fecha.</p>
+      <div class="codeblock" data-lang="python"><span class="lang">Python · SDK oficial de Anthropic</span><pre class="code"><code>import json
+import anthropic
+
+client = anthropic.Anthropic()  # lee ANTHROPIC_API_KEY del entorno
+
+ESQUEMA = {
+    "type": "object",
+    "properties": {
+        "banco": {"type": "string", "enum": ["Fed", "BCE", "BoE", "BoJ", "BNS"]},
+        "tono": {"type": "string",
+                 "enum": ["muy_dovish", "dovish", "neutral", "hawkish", "muy_hawkish"]},
+        "cambio": {"type": "string", "enum": ["mas_dovish", "igual", "mas_hawkish"]},
+        "frases_clave": {"type": "array", "items": {"type": "string"}},
+        "justificacion": {"type": "string"},
+    },
+    "required": ["banco", "tono", "cambio", "frases_clave", "justificacion"],
+    "additionalProperties": False,
+}
+
+
+def leer_comunicado(anterior: str, nuevo: str) -> dict:
+    resp = client.beta.messages.create(
+        model="claude-opus-5",
+        max_tokens=16000,
+        betas=["server-side-fallback-2026-07-01"],
+        fallbacks="default",  # si el modelo rechaza la petición, la reintenta otro
+        system=("Eres analista de política monetaria. Compara los dos comunicados "
+                "y usa solo su texto, sin información posterior a su fecha."),
+        messages=[{"role": "user",
+                   "content": f"Comunicado anterior:\n{anterior}\n\nComunicado nuevo:\n{nuevo}"}],
+        output_config={"effort": "low",
+                       "format": {"type": "json_schema", "schema": ESQUEMA}},
+    )
+    if resp.stop_reason == "refusal":
+        raise RuntimeError("Petición rechazada: revísala a mano")
+    texto = next(b.text for b in resp.content if b.type == "text")
+    return json.loads(texto)</code></pre></div>
+      <p>Guarda cada resultado con la hora de publicación del comunicado y evalúa su capacidad de predicción solo con comunicados posteriores a la fecha de corte del modelo. El esfuerzo bajo (<code>effort: "low"</code>) abarata una tarea de clasificación sencilla.</p>
+      <h3>Y un encargo para Claude Code</h3>
+      <div class="prompt"><span class="who">Encargo en la terminal</span>Crea en este repositorio un backtester diario de forex en Python con pandas. Requisitos: costes por par y swaps; un test que falle si alguna señal usa datos del día siguiente; walk-forward en tres tramos; un registro <code>backtests.csv</code> con cada ejecución y sus parámetros; y un informe con Sharpe, caída máxima y número de pruebas realizadas. Antes de escribir código, propón la estructura de carpetas y espera mi visto bueno.</div>
+    </section>
+
+    <section class="sec" id="hoja">
+      <p class="kicker">Plan</p>
+      <h2 data-short="Hoja de ruta">Hoja de ruta de 90 días</h2>
+      <ol class="steps">
+        <li><div><b>Semanas 1 y 2 · Base</b><span>Claude Code monta los datos, el backtester y los tests que detectan el uso de datos del futuro.</span></div></li>
+        <li><div><b>Semanas 3 y 4 · Método</b><span>Registro de pruebas, walk-forward y una primera estrategia sencilla, como la del <a href="02-forex-algoritmico.html">documento 2</a>.</span></div></li>
+        <li><div><b>Mes 2 · Demo</b><span>Cuenta demo, agente vigilante de solo lectura e informe diario automático.</span></div></li>
+        <li><div><b>Mes 3 · Texto</b><span>Analista de bancos centrales. Sus datos se guardan con fecha y se evalúan solo fuera de muestra.</span></div></li>
+        <li><div><b>Después · Dinero real</b><span>Capital pequeño, límites duros en el código y revisión mensual de todo lo anterior.</span></div></li>
+      </ol>
+    </section>
+
+    <section class="sec" id="veredicto">
+      <p class="kicker">Veredicto</p>
+      <h2 data-short="¿Vale de algo?">¿Vale de algo?</h2>
+      <div class="split">
+        <div class="yes"><h3><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 10.5l4 4 8-9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Sí, para</h3>
+          <ul>
+            <li>Construir y mantener el sistema mucho más rápido.</li>
+            <li>Revisar código y cazar errores de anticipación o de costes.</li>
+            <li>Leer y resumir a escala: comunicados, actas, noticias e informes.</li>
+            <li>Vigilar el sistema y avisarte cuando algo se desvía.</li>
+            <li>Documentar y llevar un diario de trading honesto.</li>
+          </ul></div>
+        <div class="no"><h3><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5 5l10 10M15 5L5 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>No, para</h3>
+          <ul>
+            <li>Decidir y enviar órdenes reales por su cuenta.</li>
+            <li>Predecir el precio de mañana.</li>
+            <li>Sustituir la validación estadística.</li>
+            <li>Tareas que se deciden en milisegundos.</li>
+          </ul></div>
+      </div>
+      <p class="pull">Un agente Claude no te da <b>ventaja de mercado</b> por sí solo. Te da capacidad de investigación y mejores procesos, que es donde fallan la mayoría de los sistemas.</p>
+      <p>La ventaja, si existe, sigue saliendo de una de las cuatro fuentes del <a href="01-trading-algoritmico.html">documento 1</a>: dar un servicio, asumir un riesgo, aprovechar errores ajenos o saber antes. Un agente te ayuda a encontrarla antes y a no engañarte al medirla.</p>
+    </section>
+
+    <section class="sec" id="fuentes">
+      <p class="kicker">Fuentes</p>
+      <h2 data-short="Fuentes">Fuentes y lecturas</h2>
+      <ol class="refs">
+        <li>Anthropic. Documentación de la API de Claude: modelos, precios, herramientas, salidas estructuradas y API por lotes (consultada en septiembre de 2026).</li>
+        <li>Lopez-Lira, A. y Tang, Y. (2023). Can ChatGPT Forecast Stock Price Movements? Return Predictability and Large Language Models. <a href="https://arxiv.org/abs/2304.07619" target="_blank" rel="noopener">arXiv:2304.07619</a></li>
+        <li>Hansen, A. L. y Kazinnik, S. (2023). Can ChatGPT Decipher Fedspeak? <a href="https://ssrn.com/abstract=4399406" target="_blank" rel="noopener">SSRN</a></li>
+        <li>Glasserman, P. y Lin, C. (2023). Assessing Look-Ahead Bias in Stock Return Predictions Generated by GPT Sentiment Analysis. <a href="https://arxiv.org/abs/2309.17322" target="_blank" rel="noopener">arXiv:2309.17322</a></li>
+        <li>Li, W., Kim, H., Cucuringu, M. y Ma, T. Can LLM-based Financial Investing Strategies Outperform the Market in Long Run? KDD 2026. <a href="https://arxiv.org/abs/2505.07078" target="_blank" rel="noopener">arXiv:2505.07078</a></li>
+        <li>Gençay, E. (2026). What survives honest evaluation? Leakage-safe, search-aware assessment of LLM-driven trading strategy discovery. <a href="https://arxiv.org/abs/2608.27734" target="_blank" rel="noopener">arXiv:2608.27734</a></li>
+        <li>nof1 (2025). Alpha Arena, temporada 1. <a href="https://nof1.ai/" target="_blank" rel="noopener">nof1.ai</a> · Resultados en <a href="https://forklog.com/en/four-out-of-six-ai-models-suffer-losses-in-trading-tournament/" target="_blank" rel="noopener">ForkLog</a></li>
+      </ol>
+    </section>
+  </main>
+</div>
+<footer class="foot wrap"><nav aria-label="Documentos de la serie"><ul class="series-nav"><li><a href="01-trading-algoritmico.html"><span class="dot" style="--c:var(--c1)"></span>1 · Trading algorítmico</a></li><li><a href="02-forex-algoritmico.html"><span class="dot" style="--c:var(--c2)"></span>2 · Forex algorítmico</a></li><li><a href="#top" aria-current="page"><span class="dot" style="--c:var(--c3)"></span>3 · Agentes Claude</a></li><li><a href="04-verdad-cuentas-fondeo.html"><span class="dot" style="--c:var(--c4)"></span>4 · Cuentas de fondeo</a></li></ul></nav><p>Contenido educativo. No es asesoramiento financiero ni una recomendación de inversión. Las cifras proceden de las fuentes citadas; las simulaciones usan datos aleatorios y solo ilustran ideas.</p><p>Serie «Máquinas y mercados» · Septiembre de 2026</p></footer>
+<script>
+(function () {
+  "use strict";
+  var NS = "http://www.w3.org/2000/svg";
+  var root = document.documentElement;
+  var reduceMotion = !!(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches);
+
+  function css(name) { return getComputedStyle(root).getPropertyValue(name).trim(); }
+  /* color resuelto de un token (los tokens pueden apuntar a otros tokens) */
+  function tokenColor(name) {
+    var p = document.createElement("span");
+    p.style.color = "var(" + name + ")"; p.style.display = "none";
+    document.body.appendChild(p);
+    var c = getComputedStyle(p).color; p.remove();
+    return c;
+  }
+  function $$(sel, ctx) { return Array.prototype.slice.call((ctx || document).querySelectorAll(sel)); }
+
+  /* ---------- cambios de tema (sistema o selector del visor) ---------- */
+  var themeFns = [];
+  function onTheme(fn) { themeFns.push(fn); }
+  function fireTheme() { themeFns.forEach(function (f) { try { f(); } catch (e) {} }); }
+  if (window.matchMedia) {
+    var mq = matchMedia("(prefers-color-scheme: dark)");
+    if (mq.addEventListener) mq.addEventListener("change", fireTheme);
+  }
+  new MutationObserver(fireTheme).observe(root, { attributes: true, attributeFilter: ["data-theme"] });
+
+  /* ---------- azar reproducible ---------- */
+  function rng(seed) {
+    var a = seed >>> 0;
+    return function () {
+      a |= 0; a = a + 0x6D2B79F5 | 0;
+      var t = Math.imul(a ^ a >>> 15, 1 | a);
+      t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+      return ((t ^ t >>> 14) >>> 0) / 4294967296;
+    };
+  }
+  function normal(r) { var u = 0; while (u === 0) u = r(); var v = r(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v); }
+
+  /* ---------- formato en español ---------- */
+  var nfCache = {};
+  function nf(d) { if (!nfCache[d]) nfCache[d] = new Intl.NumberFormat("es-ES", { minimumFractionDigits: d, maximumFractionDigits: d, useGrouping: "always" }); return nfCache[d]; }
+  function fmt(v, d) { d = d || 0; var s = nf(d).format(Math.abs(v)); return (v < 0 && Math.abs(v) >= Math.pow(10, -d) / 2 ? "−" : "") + s; }
+  function pct(v, d) { return fmt(v, d === undefined ? 1 : d) + " %"; }
+  function money(v, cur, d) { return fmt(v, d || 0) + " " + (cur || "$"); }
+  function signed(v, d, unit) { var s = fmt(v, d); return (v > 0 ? "+" : "") + s + (unit || ""); }
+
+  /* ---------- SVG ---------- */
+  function el(tag, attrs, parent) {
+    var e = document.createElementNS(NS, tag);
+    if (attrs) for (var k in attrs) {
+      if (attrs[k] === undefined || attrs[k] === null) continue;
+      if (k === "text") e.textContent = attrs[k];
+      else e.setAttribute(k, attrs[k]);
+    }
+    if (parent) parent.appendChild(e);
+    return e;
+  }
+  function lin(d0, d1, r0, r1) { var f = function (v) { return r0 + (v - d0) / (d1 - d0) * (r1 - r0); }; f.invert = function (p) { return d0 + (p - r0) / (r1 - r0) * (d1 - d0); }; return f; }
+  function logs(d0, d1, r0, r1) { var a = Math.log10(d0), b = Math.log10(d1); return function (v) { return r0 + (Math.log10(v) - a) / (b - a) * (r1 - r0); }; }
+  function niceStep(span, count) { var s0 = Math.pow(10, Math.floor(Math.log10(span / count))); var e = span / count / s0; return s0 * (e >= 7.5 ? 10 : e >= 3.5 ? 5 : e >= 1.5 ? 2 : 1); }
+  function niceDomain(min, max, count) { if (min === max) { min -= 1; max += 1; } var st = niceStep(max - min, count || 5); return [Math.floor(min / st) * st, Math.ceil(max / st) * st, st]; }
+  function ticks(min, max, step) { var t = []; for (var v = min; v <= max + step * 1e-6; v += step) t.push(+v.toFixed(10)); return t; }
+  /* barra con extremo de dato redondeado (4px) y base recta */
+  function barPath(x0, x1, y, h, r) {
+    r = Math.min(r === undefined ? 4 : r, Math.abs(x1 - x0), h / 2);
+    if (x1 >= x0) return "M" + x0 + "," + y + "H" + (x1 - r) + "Q" + x1 + "," + y + " " + x1 + "," + (y + r) + "V" + (y + h - r) + "Q" + x1 + "," + (y + h) + " " + (x1 - r) + "," + (y + h) + "H" + x0 + "Z";
+    return "M" + x0 + "," + y + "H" + (x1 + r) + "Q" + x1 + "," + y + " " + x1 + "," + (y + r) + "V" + (y + h - r) + "Q" + x1 + "," + (y + h) + " " + (x1 + r) + "," + (y + h) + "H" + x0 + "Z";
+  }
+  function roundRect(x0, x1, y, h, r) {
+    var w = Math.max(x1 - x0, 1); r = Math.min(r === undefined ? 4 : r, w / 2, h / 2);
+    return "M" + (x0 + r) + "," + y + "H" + (x1 - r) + "Q" + x1 + "," + y + " " + x1 + "," + (y + r) + "V" + (y + h - r) + "Q" + x1 + "," + (y + h) + " " + (x1 - r) + "," + (y + h) + "H" + (x0 + r) + "Q" + x0 + "," + (y + h) + " " + x0 + "," + (y + h - r) + "V" + (y + r) + "Q" + x0 + "," + y + " " + (x0 + r) + "," + y + "Z";
+  }
+  function wrapText(str, maxChars) {
+    var out = [];
+    String(str).split("\n").forEach(function (para) {
+      var words = para.split(" "), line = "";
+      words.forEach(function (w) {
+        if (!line) line = w;
+        else if ((line + " " + w).length <= maxChars) line += " " + w;
+        else { out.push(line); line = w; }
+      });
+      out.push(line);
+    });
+    return out;
+  }
+
+  /* ---------- tooltip ---------- */
+  var tipEl = document.createElement("div");
+  tipEl.className = "viz-tip"; tipEl.setAttribute("aria-hidden", "true");
+  document.body.appendChild(tipEl);
+  function showTip(title, rows, x, y, note) {
+    tipEl.replaceChildren();
+    if (title) { var t = document.createElement("div"); t.className = "t"; t.textContent = title; tipEl.appendChild(t); }
+    (rows || []).forEach(function (r) {
+      var d = document.createElement("div"); d.className = "r";
+      if (r.color) { var k = document.createElement("i"); k.style.background = r.color; d.appendChild(k); }
+      var b = document.createElement("b"); b.textContent = r.value; d.appendChild(b);
+      if (r.label) { var s = document.createElement("span"); s.textContent = r.label; d.appendChild(s); }
+      tipEl.appendChild(d);
+    });
+    if (note) { var n = document.createElement("div"); n.className = "n"; n.textContent = note; tipEl.appendChild(n); }
+    tipEl.classList.add("on");
+    var w = tipEl.offsetWidth, h = tipEl.offsetHeight;
+    var left = x + 14, top = y - h - 12;
+    if (left + w > window.innerWidth - 8) left = x - w - 14;
+    if (left < 8) left = 8;
+    if (top < 8) top = y + 18;
+    tipEl.style.left = left + "px"; tipEl.style.top = top + "px";
+  }
+  function hideTip() { tipEl.classList.remove("on"); }
+  window.addEventListener("scroll", hideTip, { passive: true });
+
+  /* ---------- redibujo según el ancho ---------- */
+  function responsive(box, render) {
+    var last = 0;
+    function run(force) { var w = Math.round(box.clientWidth); if (w && (force || w !== last)) { last = w; render(w); } }
+    if (window.ResizeObserver) new ResizeObserver(function () { run(false); }).observe(box);
+    else window.addEventListener("resize", function () { run(false); });
+    run(true);
+    return { redraw: function () { run(true); } };
+  }
+
+  /* ---------- tabla gemela de cada gráfico ---------- */
+  function dataTable(fig, headers, rows, numericCols) {
+    if (!fig) return;
+    var d = fig.querySelector("details.data");
+    if (!d) {
+      d = document.createElement("details"); d.className = "data";
+      var s = document.createElement("summary"); s.textContent = "Ver los datos en tabla"; d.appendChild(s);
+      fig.appendChild(d);
+    }
+    var old = d.querySelector(".tbl-wrap"); if (old) old.remove();
+    var wrap = document.createElement("div"); wrap.className = "tbl-wrap";
+    var tb = document.createElement("table"), th = document.createElement("thead"), tr = document.createElement("tr");
+    headers.forEach(function (h, i) { var c = document.createElement("th"); c.textContent = h; if (numericCols && numericCols.indexOf(i) >= 0) c.className = "num"; tr.appendChild(c); });
+    th.appendChild(tr); tb.appendChild(th);
+    var body = document.createElement("tbody");
+    rows.forEach(function (r) {
+      var row = document.createElement("tr");
+      r.forEach(function (v, i) { var c = document.createElement("td"); c.textContent = v; if (numericCols && numericCols.indexOf(i) >= 0) c.className = "num"; row.appendChild(c); });
+      body.appendChild(row);
+    });
+    tb.appendChild(body); wrap.appendChild(tb); d.appendChild(wrap);
+  }
+
+  function svgRoot(box, W, H, label) {
+    box.replaceChildren();
+    var s = el("svg", { width: W, height: H, viewBox: "0 0 " + W + " " + H, role: "img", "aria-label": label || "", class: "viz" }, box);
+    return s;
+  }
+  function tipAtEl(node, title, rows, note) {
+    var r = node.getBoundingClientRect();
+    showTip(title, rows, r.left + r.width / 2, r.top, note);
+  }
+
+  /* ---------- barras horizontales (magnitud, divergentes, embudo) ---------- */
+  function hbar(box, cfg0) {
+    var cur = cfg0;
+    var rr = responsive(box, function (W) {
+      var cfg = cur, rows = cfg.rows, fmtv = cfg.fmt || function (v) { return fmt(v, 1); };
+      var narrow = W < (cfg.narrowAt || 560);
+      var barH = cfg.barH || 18, gap = cfg.gap || 14;
+      var labelW = narrow ? 0 : (cfg.labelW || 160);
+      var hasRef = rows.some(function (r) { return r.ref; });
+      var labelLine = narrow ? 20 : 0;
+      var rowH = labelLine + barH + gap + (hasRef ? 6 : 0);
+      var top = hasRef ? 16 : 4;
+      var H = top + rows.length * rowH;
+      var min = cfg.domain ? cfg.domain[0] : Math.min(0, d3min(rows)), max = cfg.domain ? cfg.domain[1] : Math.max(0, d3max(rows)) * 1.02;
+      var valW = cfg.valW || 70;
+      var x0 = labelW + (labelW ? 12 : 0) + (min < 0 ? valW : 0), x1 = W - (max > 0 ? valW : 6);
+      var x = lin(min, max, x0, x1);
+      var svg = svgRoot(box, W, H, cfg.aria);
+      var zero = x(0);
+      el("line", { x1: zero, x2: zero, y1: top - 4, y2: H - gap / 2, class: "base" }, svg);
+      rows.forEach(function (r, i) {
+        var y = top + i * rowH + labelLine + (hasRef ? 6 : 0);
+        var g = el("g", { class: "row" }, svg);
+        if (narrow) el("text", { x: 0, y: y - 6, class: r.strong ? "lbl-strong" : "lbl", text: r.label }, g);
+        else el("text", { x: 0, y: y + barH / 2 + 4, class: r.strong ? "lbl-strong" : "lbl", text: r.label }, g);
+        var col = r.color || (cfg.diverging ? (r.value >= 0 ? "var(--pos)" : "var(--neg)") : (cfg.color || "var(--accent)"));
+        var xv = x(r.value);
+        if (Math.abs(xv - zero) >= 1) el("path", { d: barPath(zero, xv, y, barH, 4), class: "mark", style: "fill:" + col }, g);
+        var lab = cfg.valueLabel ? cfg.valueLabel(r) : fmtv(r.value);
+        if (r.value >= 0) el("text", { x: xv + 6, y: y + barH / 2 + 4, class: "val", text: lab }, g);
+        else el("text", { x: xv - 6, y: y + barH / 2 + 4, class: "val", "text-anchor": "end", text: lab }, g);
+        if (r.ref) {
+          var xr = x(r.ref.value);
+          el("line", { x1: xr, x2: xr, y1: y - 5, y2: y + barH + 5, class: "ref" }, g);
+          if (narrow) el("text", { x: W, y: y - 6, "text-anchor": "end", class: "lbl", style: "font-size:11px", text: r.ref.label }, g);
+          else el("text", { x: xr + 4, y: y - 6, class: "lbl", style: "font-size:11px", text: r.ref.label }, g);
+        }
+        var hit = el("rect", { x: 0, y: y - (narrow ? labelLine : 4) - (hasRef ? 6 : 0), width: W, height: barH + (narrow ? labelLine : 8) + (hasRef ? 6 : 0), class: "hit", tabindex: 0, "aria-label": r.label + ": " + lab }, g);
+        var rowsTip = function () { var out = [{ value: lab, label: cfg.unitLabel || "", color: col }]; if (r.ref) out.push({ value: fmtv(r.ref.value), label: r.ref.tip || r.ref.label, color: "var(--ink)" }); return out; };
+        hit.addEventListener("pointermove", function (ev) { showTip(r.label, rowsTip(), ev.clientX, ev.clientY, r.note); });
+        hit.addEventListener("pointerdown", function (ev) { showTip(r.label, rowsTip(), ev.clientX, ev.clientY, r.note); });
+        hit.addEventListener("pointerleave", hideTip);
+        hit.addEventListener("focus", function () { tipAtEl(hit, r.label, rowsTip(), r.note); });
+        hit.addEventListener("blur", hideTip);
+      });
+    });
+    rr.update = function (c) { cur = c; rr.redraw(); };
+    return rr;
+    function d3min(rs) { return Math.min.apply(null, rs.map(function (r) { return r.value; })); }
+    function d3max(rs) { return Math.max.apply(null, rs.map(function (r) { return Math.max(r.value, r.ref ? r.ref.value : -Infinity); })); }
+  }
+
+  /* ---------- rangos en un eje (horizontes, latencias, sesiones) ---------- */
+  function range(box, cfg0) {
+    var cur = cfg0;
+    var rr = responsive(box, function (W) {
+      var cfg = cur, rows = cfg.rows;
+      var narrow = W < (cfg.narrowAt || 600);
+      var barH = cfg.barH || 14, gap = cfg.gap || 16;
+      var labelW = narrow ? 0 : (cfg.labelW || 170);
+      var labelLine = narrow ? 20 : 0;
+      var rowH = labelLine + barH + gap;
+      var lv = 0;
+      (cfg.bands || []).concat(cfg.markers || []).forEach(function (o) { lv = Math.max(lv, o.level || 0); });
+      var top = (cfg.bands || cfg.markers) ? 26 + 14 * lv : 6;
+      var bottom = 28;
+      var H = top + rows.length * rowH + bottom - gap / 2;
+      var x0 = labelW + (labelW ? 14 : 0), x1 = W - (cfg.padRight || 14);
+      var x = cfg.scale === "log" ? logs(cfg.domain[0], cfg.domain[1], x0, x1) : lin(cfg.domain[0], cfg.domain[1], x0, x1);
+      var svg = svgRoot(box, W, H, cfg.aria);
+      var plotTop = top - 6, plotBot = H - bottom + 4;
+      (cfg.bands || []).forEach(function (b) {
+        el("rect", { x: x(b.from), y: plotTop, width: Math.max(1, x(b.to) - x(b.from)), height: plotBot - plotTop, class: "band" }, svg);
+        el("text", { x: x(b.from) + 4, y: plotTop - 6 - 14 * (b.level || 0), class: "lbl", style: "font-size:11.5px", text: narrow && b.short ? b.short : b.label }, svg);
+      });
+      (cfg.ticks || []).forEach(function (t) {
+        var xx = x(t.v);
+        el("line", { x1: xx, x2: xx, y1: plotTop, y2: plotBot, class: "grid" }, svg);
+        if (!(narrow && t.minor)) el("text", { x: xx, y: H - 8, "text-anchor": "middle", text: t.label }, svg);
+      });
+      el("line", { x1: x0, x2: x1, y1: plotBot, y2: plotBot, class: "base" }, svg);
+      (cfg.markers || []).forEach(function (m) {
+        var xx = x(m.v);
+        el("line", { x1: xx, x2: xx, y1: plotTop, y2: plotBot, class: "ref", style: "stroke-width:1" }, svg);
+        if (!(narrow && m.hideNarrow)) el("text", { x: xx + (m.anchor === "end" ? -4 : 4), y: plotTop - 6 - 14 * (m.level || 0), "text-anchor": m.anchor || "start", class: "lbl", style: "font-size:11.5px", text: narrow && m.short ? m.short : m.label }, svg);
+      });
+      rows.forEach(function (r, i) {
+        var y = top + i * rowH + labelLine;
+        var g = el("g", { class: "row" }, svg);
+        if (narrow) el("text", { x: 0, y: y - 6, class: r.strong ? "lbl-strong" : "lbl", text: r.label }, g);
+        else el("text", { x: 0, y: y + barH / 2 + 4, class: r.strong ? "lbl-strong" : "lbl", text: r.label }, g);
+        var col = r.color || cfg.color || "var(--accent)";
+        (r.segs || []).forEach(function (s) {
+          el("path", { d: roundRect(x(s[0]), x(s[1]), y, barH, 4), class: "mark", style: "fill:" + col + (r.dim ? ";opacity:.45" : "") }, g);
+        });
+        if (r.dot !== undefined) el("circle", { cx: x(r.dot), cy: y + barH / 2, r: 5.5, class: "mark", style: "fill:" + col + ";stroke:var(--surface);stroke-width:2" }, g);
+        var txt = cfg.describe ? cfg.describe(r) : "";
+        var hit = el("rect", { x: 0, y: y - 6 - labelLine, width: W, height: barH + 12 + labelLine, class: "hit", tabindex: 0, "aria-label": r.label + (txt ? ": " + txt : "") }, g);
+        var rowsTip = function () { return [{ value: txt, color: col }]; };
+        hit.addEventListener("pointermove", function (ev) { showTip(r.label, rowsTip(), ev.clientX, ev.clientY, r.note); });
+        hit.addEventListener("pointerdown", function (ev) { showTip(r.label, rowsTip(), ev.clientX, ev.clientY, r.note); });
+        hit.addEventListener("pointerleave", hideTip);
+        hit.addEventListener("focus", function () { tipAtEl(hit, r.label, rowsTip(), r.note); });
+        hit.addEventListener("blur", hideTip);
+      });
+    });
+    rr.update = function (c) { cur = c; rr.redraw(); };
+    return rr;
+  }
+
+  /* ---------- líneas con cruz de lectura ---------- */
+  function line(box, cfg0) {
+    var state = { i: -1 }, cur = cfg0;
+    var rr = responsive(box, function (W) {
+      var cfg = cur, narrow = W < 560;
+      var H = narrow ? (cfg.hNarrow || 250) : (cfg.height || 320);
+      var xs = cfg.x, S = cfg.series, C = cfg.context || [];
+      var yFmt = cfg.yFmt || function (v) { return fmt(v, 0); };
+      var all = [];
+      S.concat(C).forEach(function (s) { s.values.forEach(function (v) { if (v !== null && v !== undefined && isFinite(v)) all.push(v); }); });
+      (cfg.hlines || []).forEach(function (h) { all.push(h.y); });
+      var lo = cfg.yDomain ? cfg.yDomain[0] : Math.min.apply(null, all), hi = cfg.yDomain ? cfg.yDomain[1] : Math.max.apply(null, all);
+      var nd = niceDomain(lo, hi, narrow ? 4 : 5);
+      if (cfg.yDomain) nd = [cfg.yDomain[0], cfg.yDomain[1], niceStep(cfg.yDomain[1] - cfg.yDomain[0], narrow ? 4 : 5)];
+      var yt = ticks(Math.ceil(nd[0] / nd[2]) * nd[2], nd[1], nd[2]);
+      var left = Math.max.apply(null, yt.map(function (v) { return yFmt(v).length; })) * 6.8 + 12;
+      var right = cfg.padRight || 14, top = (cfg.vlines && cfg.vlines.length) ? 24 : 10, bottom = 28;
+      var x = lin(xs[0], xs[xs.length - 1], left, W - right);
+      var y = lin(nd[0], nd[1], H - bottom, top);
+      var svg = svgRoot(box, W, H, cfg.aria);
+      yt.forEach(function (v) {
+        el("line", { x1: left, x2: W - right, y1: y(v), y2: y(v), class: Math.abs(v) < 1e-9 && cfg.zeroBase ? "base" : "grid" }, svg);
+        el("text", { x: left - 8, y: y(v) + 4, "text-anchor": "end", text: yFmt(v) }, svg);
+      });
+      (cfg.xTicks || []).forEach(function (t) {
+        if (narrow && t.minor) return;
+        el("text", { x: x(t.v), y: H - 8, "text-anchor": t.anchor || "middle", text: t.label }, svg);
+      });
+      el("line", { x1: left, x2: W - right, y1: H - bottom, y2: H - bottom, class: "base" }, svg);
+      (cfg.vlines || []).forEach(function (v) {
+        el("line", { x1: x(v.x), x2: x(v.x), y1: top - 4, y2: H - bottom, class: "ref", style: "stroke-width:1" }, svg);
+        el("text", { x: x(v.x) + (v.anchor === "end" ? -5 : 5), y: top - 10, "text-anchor": v.anchor || "start", class: "lbl", style: "font-size:11.5px", text: v.label }, svg);
+      });
+      function pathOf(vals) {
+        var d = "", pen = false;
+        for (var i = 0; i < vals.length; i++) {
+          var v = vals[i];
+          if (v === null || v === undefined || !isFinite(v)) { pen = false; continue; }
+          d += (pen ? "L" : "M") + x(xs[i]).toFixed(1) + "," + y(v).toFixed(1); pen = true;
+        }
+        return d;
+      }
+      C.forEach(function (c) { el("path", { d: pathOf(c.values), style: "fill:none;stroke:" + (c.color || "var(--deemph)") + ";stroke-width:" + (c.width || 1) + ";stroke-linejoin:round;opacity:" + (c.opacity || 0.9) }, svg); });
+      if (cfg.area) {
+        var s0 = S[0], dA = pathOf(s0.values);
+        if (dA) {
+          var firstI = s0.values.findIndex(function (v) { return v !== null && v !== undefined; });
+          var lastI = s0.values.length - 1; while (lastI > 0 && (s0.values[lastI] === null || s0.values[lastI] === undefined)) lastI--;
+          el("path", { d: dA + "L" + x(xs[lastI]) + "," + y(Math.max(nd[0], 0)) + "L" + x(xs[firstI]) + "," + y(Math.max(nd[0], 0)) + "Z", style: "fill:" + s0.color + ";opacity:.1;stroke:none" }, svg);
+        }
+      }
+      (cfg.hlines || []).forEach(function (h) {
+        el("line", { x1: left, x2: W - right, y1: y(h.y), y2: y(h.y), class: "ref", style: "stroke-width:1;stroke:" + (h.color || "var(--ink)") }, svg);
+        el("text", { x: h.anchor === "start" ? left + 6 : W - right - 4, y: y(h.y) + (h.below ? 15 : -6), "text-anchor": h.anchor === "start" ? "start" : "end", class: "lbl", style: "font-size:11.5px", text: h.label }, svg);
+      });
+      S.forEach(function (s) {
+        el("path", { d: pathOf(s.values), style: "fill:none;stroke:" + s.color + ";stroke-width:" + (s.width || 2) + ";stroke-linejoin:round;stroke-linecap:round" }, svg);
+        if (cfg.endDots !== false) {
+          var li = s.values.length - 1; while (li > 0 && (s.values[li] === null || s.values[li] === undefined)) li--;
+          el("circle", { cx: x(xs[li]), cy: y(s.values[li]), r: 4.5, style: "fill:" + s.color + ";stroke:var(--surface);stroke-width:2" }, svg);
+        }
+      });
+      if (cfg.noHover) return;
+      var cross = el("line", { x1: 0, x2: 0, y1: top, y2: H - bottom, class: "cross", style: "opacity:0" }, svg);
+      var dots = S.map(function (s) { return el("circle", { r: 4.5, style: "fill:" + s.color + ";stroke:var(--surface);stroke-width:2;opacity:0" }, svg); });
+      var ov = el("rect", { x: left, y: top, width: Math.max(1, W - left - right), height: Math.max(1, H - top - bottom), class: "hit", tabindex: 0, style: "cursor:crosshair", "aria-label": (cfg.aria || "Gráfico") + ". Usa las flechas para recorrer los valores." }, svg);
+      function nearest(px) { var v = x.invert(px), bi = 0, bd = Infinity; for (var i = 0; i < xs.length; i++) { var dd = Math.abs(xs[i] - v); if (dd < bd) { bd = dd; bi = i; } } return bi; }
+      function paint(i, cx, cy) {
+        state.i = i;
+        var px = x(xs[i]);
+        cross.setAttribute("x1", px); cross.setAttribute("x2", px); cross.style.opacity = 1;
+        var rows = [];
+        S.forEach(function (s, k) {
+          var v = s.values[i];
+          if (v === null || v === undefined || !isFinite(v)) { dots[k].style.opacity = 0; return; }
+          dots[k].setAttribute("cx", px); dots[k].setAttribute("cy", y(v)); dots[k].style.opacity = 1;
+          rows.push({ value: (cfg.tipFmt || yFmt)(v), label: s.name, color: s.color });
+        });
+        var extra = cfg.tipExtra ? cfg.tipExtra(i) : null;
+        if (extra) rows = rows.concat(extra);
+        var title = cfg.tipTitle ? cfg.tipTitle(i) : String(xs[i]);
+        if (cx === undefined) { var r = ov.getBoundingClientRect(); cx = r.left + (px - left); cy = r.top + 10; }
+        showTip(title, rows, cx, cy, cfg.tipNote ? cfg.tipNote(i) : null);
+      }
+      function clear() { cross.style.opacity = 0; dots.forEach(function (d) { d.style.opacity = 0; }); hideTip(); }
+      function fromEvent(ev) { var r = svg.getBoundingClientRect(); paint(nearest(ev.clientX - r.left), ev.clientX, ev.clientY); }
+      ov.addEventListener("pointermove", fromEvent);
+      ov.addEventListener("pointerdown", fromEvent);
+      ov.addEventListener("pointerleave", clear);
+      ov.addEventListener("blur", clear);
+      ov.addEventListener("focus", function () { paint(state.i >= 0 ? state.i : xs.length - 1); });
+      ov.addEventListener("keydown", function (ev) {
+        var step = ev.shiftKey ? Math.max(1, Math.round(xs.length / 20)) : 1;
+        if (ev.key === "ArrowRight") { paint(Math.min(xs.length - 1, (state.i < 0 ? 0 : state.i) + step)); ev.preventDefault(); }
+        if (ev.key === "ArrowLeft") { paint(Math.max(0, (state.i < 0 ? xs.length - 1 : state.i) - step)); ev.preventDefault(); }
+        if (ev.key === "Escape") clear();
+      });
+    });
+    rr.update = function (c) { cur = c; state.i = -1; rr.redraw(); };
+    return rr;
+  }
+
+  /* ---------- diagrama de flujo lineal (horizontal o vertical según ancho) ---------- */
+  function flow(box, cfg) {
+    return responsive(box, function (W) {
+      var n = cfg.nodes.length, horiz = W >= (cfg.breakAt || 720);
+      var hl = cfg.hl || [];
+      var svg, H;
+      if (horiz) {
+        var aw = cfg.arrowW || 70, nw = (W - (n - 1) * aw) / n;
+        var cpl = Math.max(10, Math.floor((nw - 22) / 6.5));
+        var lines = cfg.nodes.map(function (nd) { return wrapText(nd.d || "", cpl); });
+        var tl = cfg.nodes.map(function (nd) { return wrapText(nd.t, Math.floor((nw - 22) / 8)); });
+        var maxL = Math.max.apply(null, lines.map(function (l, i) { return l.length + tl[i].length; }));
+        var nh = 22 + maxL * 17 + 8;
+        var top = 4;
+        H = top + nh + 6;
+        svg = svgRoot(box, W, H, cfg.aria);
+        cfg.nodes.forEach(function (nd, i) {
+          var x0 = i * (nw + aw);
+          var g = el("g", { class: "fnode" + (hl.indexOf(i) >= 0 ? " hl" : "") }, svg);
+          el("rect", { x: x0 + 0.5, y: top + 0.5, width: nw - 1, height: nh - 1, rx: 8 }, g);
+          var yy = top + 22;
+          tl[i].forEach(function (t) { el("text", { x: x0 + 12, y: yy, class: "ft", text: t }, g); yy += 17; });
+          lines[i].forEach(function (t) { el("text", { x: x0 + 12, y: yy + 1, class: "fd", text: t }, g); yy += 17; });
+          if (i < n - 1) {
+            var ax0 = x0 + nw + 6, ax1 = x0 + nw + aw - 8, ay = top + nh / 2;
+            el("line", { x1: ax0, x2: ax1 - 6, y1: ay, y2: ay, class: "fedge" }, svg);
+            el("path", { d: "M" + ax1 + "," + ay + "l-7,-4.5v9z", class: "fhead" }, svg);
+            var lab = wrapText(cfg.edges[i] || "", Math.floor(aw / 6.4));
+            lab.forEach(function (t, k) { el("text", { x: (ax0 + ax1) / 2, y: ay - 8 - (lab.length - 1 - k) * 13, "text-anchor": "middle", class: "flabel", text: t }, svg); });
+          }
+        });
+      } else {
+        var cplV = Math.max(16, Math.floor((W - 26) / 6.6));
+        var blocks = cfg.nodes.map(function (nd) { return { t: wrapText(nd.t, Math.floor((W - 26) / 8)), d: wrapText(nd.d || "", cplV) }; });
+        var ah = 44, yy2 = 2; H = 0;
+        var heights = blocks.map(function (b) { return 20 + (b.t.length + b.d.length) * 17 + 6; });
+        H = heights.reduce(function (a, b) { return a + b; }, 0) + (n - 1) * ah + 4;
+        svg = svgRoot(box, W, H, cfg.aria);
+        blocks.forEach(function (b, i) {
+          var g = el("g", { class: "fnode" + (hl.indexOf(i) >= 0 ? " hl" : "") }, svg);
+          el("rect", { x: 0.5, y: yy2 + 0.5, width: W - 1, height: heights[i] - 1, rx: 8 }, g);
+          var ty = yy2 + 21;
+          b.t.forEach(function (t) { el("text", { x: 12, y: ty, class: "ft", text: t }, g); ty += 17; });
+          b.d.forEach(function (t) { el("text", { x: 12, y: ty + 1, class: "fd", text: t }, g); ty += 17; });
+          yy2 += heights[i];
+          if (i < n - 1) {
+            var ax = 26;
+            el("line", { x1: ax, x2: ax, y1: yy2 + 5, y2: yy2 + ah - 11, class: "fedge" }, svg);
+            el("path", { d: "M" + ax + "," + (yy2 + ah - 4) + "l-4.5,-7h9z", class: "fhead" }, svg);
+            el("text", { x: ax + 14, y: yy2 + ah / 2 + 4, class: "flabel", text: (cfg.edges[i] || "").replace(/\n/g, " ") }, svg);
+            yy2 += ah;
+          }
+        });
+      }
+    });
+  }
+
+  /* ---------- guilloche (roseta de billete) ---------- */
+  function guilloche(canvas) {
+    var gen = 0, lastW = 0, ready = false;
+    function draw(animate) {
+      var my = ++gen;
+      var S = canvas.clientWidth; if (!S) return;
+      lastW = S;
+      var dpr = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width = Math.round(S * dpr); canvas.height = Math.round(S * dpr);
+      var ctx = canvas.getContext("2d"); ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      var col = tokenColor("--accent"), ink = tokenColor("--accent-ink"), c = S / 2, R = S * 0.485;
+      var dark = root.getAttribute("data-theme") === "dark" || (!root.getAttribute("data-theme") && window.matchMedia && matchMedia("(prefers-color-scheme: dark)").matches);
+      var curves = [], i;
+      for (i = 0; i < 44; i++) (function (ph) { curves.push(function (t) { var r = R * (0.87 + 0.055 * Math.sin(18 * t + ph)); return [c + r * Math.cos(t), c + r * Math.sin(t)]; }); })(i / 44 * Math.PI * 2);
+      for (i = 0; i < 30; i++) (function (ph) { curves.push(function (t) { var r = R * (0.665 + 0.105 * Math.sin(7 * t + ph) * Math.cos(2 * t + ph / 3)); return [c + r * Math.cos(t), c + r * Math.sin(t)]; }); })(i / 30 * Math.PI * 2 / 7);
+      for (i = 0; i < 20; i++) (function (ph) { curves.push(function (t) { var r = R * (0.45 + 0.085 * Math.cos(11 * t + ph)); return [c + r * Math.cos(t), c + r * Math.sin(t)]; }); })(i / 20 * Math.PI * 2 / 11);
+      function batch(list) {
+        ctx.save();
+        ctx.beginPath(); ctx.arc(c, c, R, 0, Math.PI * 2); ctx.arc(c, c, R * 0.35, 0, Math.PI * 2, true); ctx.clip();
+        ctx.strokeStyle = col; ctx.lineWidth = Math.max(0.5, S / 820); ctx.globalAlpha = dark ? 0.46 : 0.36;
+        list.forEach(function (f) { ctx.beginPath(); for (var k = 0; k <= 900; k++) { var p = f(k / 900 * Math.PI * 2); if (k) ctx.lineTo(p[0], p[1]); else ctx.moveTo(p[0], p[1]); } ctx.stroke(); });
+        ctx.restore();
+      }
+      function rings() {
+        ctx.save(); ctx.globalAlpha = 0.85; ctx.strokeStyle = ink; ctx.lineWidth = 1;
+        [0.995, 0.965, 0.36].forEach(function (k) { ctx.beginPath(); ctx.arc(c, c, R * k, 0, Math.PI * 2); ctx.stroke(); });
+        ctx.restore();
+      }
+      if (animate && !reduceMotion) {
+        var idx = 0;
+        (function frame() {
+          if (my !== gen) return;
+          batch(curves.slice(idx, idx + 5)); idx += 5;
+          if (idx < curves.length) requestAnimationFrame(frame); else rings();
+        })();
+      } else { batch(curves); rings(); }
+    }
+    if (window.ResizeObserver) new ResizeObserver(function () { if (ready && canvas.clientWidth !== lastW) draw(false); }).observe(canvas);
+    onTheme(function () { draw(false); });
+    draw(true); ready = true;
+  }
+
+  /* ---------- índice lateral ---------- */
+  function buildToc() {
+    var toc = document.querySelector(".toc"); if (!toc) return;
+    var secs = $$(".content > .sec[id]");
+    var det = document.createElement("details"), sum = document.createElement("summary");
+    sum.textContent = "Índice del documento"; det.appendChild(sum);
+    var ol = document.createElement("ol");
+    var links = secs.map(function (s) {
+      var h = s.querySelector("h2"), li = document.createElement("li"), a = document.createElement("a");
+      a.href = "#" + s.id; a.textContent = (h && (h.getAttribute("data-short") || h.textContent)) || s.id;
+      li.appendChild(a); ol.appendChild(li); return a;
+    });
+    det.appendChild(ol); toc.appendChild(det);
+    if (window.matchMedia) {
+      var wide = matchMedia("(min-width:1080px)");
+      var sync = function () { det.open = wide.matches; };
+      sync(); if (wide.addEventListener) wide.addEventListener("change", sync);
+    }
+    if ("IntersectionObserver" in window) {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (en) {
+          if (en.isIntersecting) {
+            var id = en.target.id;
+            links.forEach(function (a) { if (a.getAttribute("href") === "#" + id) a.setAttribute("aria-current", "true"); else a.removeAttribute("aria-current"); });
+          }
+        });
+      }, { rootMargin: "-15% 0px -75% 0px" });
+      secs.forEach(function (s) { io.observe(s); });
+    }
+  }
+
+  /* ---------- microtexto de seguridad ---------- */
+  function microprint() {
+    $$(".microprint").forEach(function (m) {
+      var s = (m.getAttribute("data-text") || "MÁQUINAS Y MERCADOS") + " · ";
+      m.textContent = new Array(40).join(s);
+    });
+  }
+
+  /* ---------- código: resaltado mínimo y botón de copiar ---------- */
+  function highlight(codeEl) {
+    var src = codeEl.textContent;
+    var re = /(#[^\n]*)|("""[\s\S]*?"""|[rfbuRFBU]{0,2}"(?:\\.|[^"\\\n])*"|[rfbuRFBU]{0,2}'(?:\\.|[^'\\\n])*')|\b(def|return|import|from|as|if|elif|else|for|in|and|or|not|None|True|False|with|raise|class|while|lambda|try|except|pass|yield)\b|\b(\d+(?:\.\d+)?(?:e-?\d+)?)\b/g;
+    var frag = document.createDocumentFragment(), last = 0, m;
+    while ((m = re.exec(src))) {
+      if (m.index > last) frag.appendChild(document.createTextNode(src.slice(last, m.index)));
+      var sp = document.createElement("span");
+      sp.className = m[1] ? "c-com" : m[2] ? "c-str" : m[3] ? "c-kw" : "c-num";
+      sp.textContent = m[0]; frag.appendChild(sp); last = m.index + m[0].length;
+    }
+    if (last < src.length) frag.appendChild(document.createTextNode(src.slice(last)));
+    codeEl.replaceChildren(frag);
+  }
+  function codeBlocks() {
+    $$(".codeblock").forEach(function (cb) {
+      var code = cb.querySelector("code"); if (!code) return;
+      if (cb.getAttribute("data-lang") === "python") highlight(code);
+      var b = document.createElement("button"); b.type = "button"; b.className = "copy"; b.textContent = "Copiar";
+      b.addEventListener("click", function () {
+        var txt = code.textContent;
+        var fallback = function () { var r = document.createRange(); r.selectNodeContents(code); var s = window.getSelection(); s.removeAllRanges(); s.addRange(r); b.textContent = "Seleccionado"; };
+        try {
+          if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(function () { b.textContent = "Copiado"; setTimeout(function () { b.textContent = "Copiar"; }, 1600); }, fallback);
+          else fallback();
+        } catch (e) { fallback(); }
+      });
+      cb.appendChild(b);
+    });
+  }
+
+  window.MM = {
+    css: css, tokenColor: tokenColor, rng: rng, normal: normal, fmt: fmt, pct: pct, money: money, signed: signed,
+    el: el, lin: lin, logs: logs, niceDomain: niceDomain, ticks: ticks,
+    showTip: showTip, hideTip: hideTip, responsive: responsive, dataTable: dataTable,
+    hbar: hbar, range: range, line: line, flow: flow, onTheme: onTheme, reduceMotion: reduceMotion
+  };
+
+  buildToc();
+  microprint();
+  codeBlocks();
+  $$(".emblem canvas").forEach(guilloche);
+})();
+
+</script>
+<script>
+(function () {
+  var M = window.MM;
+
+  /* Bucle del agente */
+  M.flow(document.getElementById("loop"), {
+    aria: "Bucle de un agente: encargo, el modelo decide, usa una herramienta, lee el resultado y entrega",
+    nodes: [
+      { t: "Encargo", d: "Lo que pides, con su contexto" },
+      { t: "Claude decide", d: "Qué paso dar y con qué herramienta" },
+      { t: "Herramienta", d: "Tu función: leer datos, lanzar un backtest…" },
+      { t: "Resultado", d: "Vuelve al modelo, que repite o termina" },
+      { t: "Entrega", d: "Código, informe o JSON validado" }
+    ],
+    edges: ["contexto", "llamada", "salida", "tarea\nterminada"],
+    hl: [1]
+  });
+
+  /* Alpha Arena */
+  var arena = [
+    { label: "Qwen3 Max", value: 22.31, note: "Saldo final: 12.231 $" },
+    { label: "DeepSeek", value: 4.89, note: "Saldo final: 10.489 $" },
+    { label: "Claude Sonnet 4.5", value: -42.01, note: "Saldo final: 5.799 $" },
+    { label: "Gemini 2.5 Pro", value: -45.55, note: "Saldo final: 5.445 $" },
+    { label: "Grok", value: -57.92, note: "Saldo final: 4.208 $" },
+    { label: "GPT-5", value: -58.74, note: "Saldo final: 4.126 $" }
+  ];
+  var sp = function (v) { return (v > 0 ? "+" : "") + M.fmt(v, 1) + " %"; };
+  M.hbar(document.getElementById("arena"), { aria: "Resultado de cada modelo en Alpha Arena, temporada 1", rows: arena, diverging: true, domain: [-70, 30], fmt: sp, labelW: 150, unitLabel: "sobre 10.000 $" });
+  M.dataTable(document.getElementById("fig-arena"), ["Modelo", "Resultado", "Saldo final"], arena.map(function (r) { return [r.label, sp(r.value), r.note.replace("Saldo final: ", "")]; }), [1, 2]);
+
+  /* Calculadora de coste */
+  function num(id) { var v = parseFloat(document.getElementById(id).value); return isFinite(v) ? v : 0; }
+  function money(v) { return (v < 10 ? M.fmt(v, 2) : M.fmt(v, 0)) + " $"; }
+  function cost() {
+    var docs = num("k-docs"), tin = num("k-in"), tout = num("k-out"), days = num("k-days");
+    var pr = document.getElementById("k-model").value.split(",").map(Number);
+    var batch = document.getElementById("k-batch").checked ? 0.5 : 1;
+    document.getElementById("k-docs-out").textContent = M.fmt(docs);
+    var perDoc = (tin * pr[0] + tout * pr[1]) / 1e6 * batch;
+    var month = perDoc * docs * days;
+    document.getElementById("k-month").textContent = money(month);
+    document.getElementById("k-doc").textContent = perDoc < 0.01 ? "< 0,01 $" : money(perDoc);
+    document.getElementById("k-tok").textContent = M.fmt((tin + tout) * docs * days / 1e6, 1);
+  }
+  ["k-docs", "k-in", "k-out", "k-model", "k-days", "k-batch"].forEach(function (id) { var e = document.getElementById(id); e.addEventListener("input", cost); e.addEventListener("change", cost); });
+  cost();
+})();
+</script>
+</body>
+</html>
