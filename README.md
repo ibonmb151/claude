@@ -1,6 +1,6 @@
 # Máquinas y mercados
 
-Serie de once documentos HTML interactivos sobre trading algorítmico, escritos en español en septiembre de 2026.
+Serie de catorce documentos HTML interactivos sobre trading algorítmico, escritos en español en septiembre de 2026.
 
 | Nº | Documento | Qué contiene |
 |---|---|---|
@@ -15,6 +15,9 @@ Serie de once documentos HTML interactivos sobre trading algorítmico, escritos 
 | 9 | [Jev, el decisor](trading/09-jev-el-decisor.html) | Cómo un decisor, agente de IA o persona, enciende y apaga estrategias según el mercado: arquitectura con todo separado, cinco opciones para leer y decidir, simulador de una regla fija, histéresis, límites y evaluación por fases |
 | 10 | [El plan hasta diciembre](trading/10-plan-hasta-diciembre.html) | El plan del 28 de septiembre al 31 de diciembre de 2026: calendario semana a semana, mes de desarrollo, incubación en demo, pruebas de fondeo con simulador, qué hacer con cada cobro, cuándo pasar a capital propio, 2027, presupuesto detallado y la parte legal y fiscal en Bizkaia |
 | 11 | [Mejora continua](trading/11-mejora-continua.html) | Cómo mejorar sin engañarse: el resultado separado en variables, una arquitectura para aislarlas, cuántas observaciones hacen falta, registro de intentos y Sharpe deflactado, vigilancia con CUSUM, el camino de un cambio y la cadencia de revisiones |
+| 12 | [La plataforma](trading/12-la-plataforma.html) | El sistema completo en varios ordenadores y sedes, sin tecnicismos: células, principal y reserva con cerrojo, cuánto importa la latencia, las siete capas de aislamiento, cómo se fabrica un nodo, cómo se programa, decisiones de diseño y costes |
+| 13 | [Especificación del núcleo](trading/13-especificacion-nucleo.html) | Lo que corre dentro de una célula, listo para programar: unidades, eventos, motor determinista, datos y velas, las tres estrategias, tamaño, las 22 comprobaciones de riesgo, gestor de órdenes, cliente asyncio de la cTrader Open API, diario encadenado, configuración y pruebas, con el código probado |
+| 14 | [Especificación de la operación](trading/14-especificacion-operacion.html) | Lo que rodea al núcleo: guardián, gemelo, laboratorio, Jev en código, plano de control con comandos firmados, cerrojo y relevo entre sedes, despliegue, seguridad, métricas y avisos, simulacros, manuales de incidentes y el plan de trabajo tarea a tarea con Claude Code |
 
 ## Cómo abrirlos
 

@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>La verdad del fondeo</title>
-<meta name="description" content="Cómo ganan dinero las firmas de cuentas de fondeo, qué dicen los datos sobre quién cobra y qué pasa si eres rentable, con un simulador de probabilidades.">
+<title>La plataforma</title>
+<meta name="description" content="La plataforma completa explicada sin tecnicismos: si se puede montar en varios ordenadores y sitios, cómo se aísla cada parte, cómo se releva una máquina caída, cómo se fabrica un nodo nuevo, cómo se programa y cuánto cuesta.">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..800;1,6..96,400..800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap">
 <style>
 /* ============================================================
@@ -355,36 +355,72 @@ code:not(pre code){font:.88em var(--f-mono);background:var(--surface-2);border:1
 .fig .stats{margin-top:16px}
 
 /* página */
-:root{--accent:var(--c4);--accent-ink:#4a3aa7}
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--accent-ink:#B3AAF3}}
-:root[data-theme="dark"]{--accent-ink:#B3AAF3}
-details.rules{margin-top:14px;border-top:1px solid var(--rule);padding-top:10px}
-details.rules summary{cursor:pointer;font:500 12.5px/1.4 var(--f-mono);color:var(--ink-2);width:max-content;max-width:100%}
-.sim-sub{font:600 15px/1.35 var(--f-sans);color:var(--ink);margin-top:22px}
+:root{--accent:var(--c12);--accent-ink:var(--k12)}
+.tldr ul{grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr))}
+.arch{min-width:760px}
+.arch .zone{font:500 11px var(--f-mono);letter-spacing:.14em;fill:var(--muted)}
+.arch .box{fill:var(--surface);stroke:var(--rule-strong)}
+.arch .box.me{fill:var(--wash);stroke:var(--accent)}
+.arch .box.core{fill:var(--surface-2);stroke:var(--rule-strong)}
+.arch .box.cell{fill:none;stroke:var(--accent);stroke-width:1.5;stroke-dasharray:6 5}
+.arch .bt{fill:var(--ink);font-size:14px;font-weight:600}
+.arch .bd{fill:var(--ink-2);font-size:12px}
+.arch .ln{stroke:var(--ink-2);stroke-width:1.3;fill:none}
+.arch .ln.ro{stroke-dasharray:5 4}
+.arch .ln.dot{stroke-dasharray:1.5 4;stroke-linecap:round;stroke-width:1.6}
+.arch .ln.acc{stroke:var(--accent-ink);stroke-width:1.6}
+.arch .hd{fill:var(--ink-2)}
+.arch .hd.acc{fill:var(--accent-ink)}
+.arch .lab{fill:var(--ink-2);font:11.5px var(--f-mono)}
+.arch .tick{fill:var(--muted);font:11px var(--f-mono)}
+.arch .bar{fill:var(--accent)}
+.arch .bar.soft{fill:color-mix(in oklab,var(--accent) 45%,var(--surface))}
+.arch .bar.off{fill:var(--deemph)}
+.arch .bar.crit{fill:var(--crit-mark)}
+.arch .gm{fill:var(--accent-ink);stroke:var(--surface);stroke-width:2}
+.arch .vl{stroke:var(--ink-2);stroke-width:1;stroke-dasharray:3 3}
+.arch .axis{stroke:var(--rule-strong);stroke-width:1}
+.principles{list-style:none;padding:0!important;display:grid;gap:10px}
+.principles li{padding-left:22px;position:relative}
+.principles li::before{content:"";position:absolute;left:2px;top:.55em;width:7px;height:7px;background:var(--accent);transform:rotate(45deg)}
 .checklist{list-style:none;padding:0!important;display:grid;gap:10px}
 .checklist li{position:relative;padding-left:26px}
 .checklist li::before{content:"";position:absolute;left:2px;top:.35em;width:13px;height:13px;border:1.5px solid var(--accent-ink);border-radius:3px}
 .checklist li::after{content:"";position:absolute;left:6px;top:.52em;width:5px;height:8px;border:solid var(--accent-ink);border-width:0 1.8px 1.8px 0;transform:rotate(45deg)}
+.verdict{display:inline-block;font:600 12px/1.2 var(--f-sans);padding:3px 8px;border-radius:999px;border:1px solid var(--rule-strong);white-space:nowrap}
+.verdict.si{color:var(--good);border-color:color-mix(in oklab,var(--good-mark) 45%,var(--rule))}
+.verdict.no{color:var(--crit);border-color:color-mix(in oklab,var(--crit-mark) 45%,var(--rule))}
+.legend i.dash{height:0;background:none;border-top:2px dashed var(--k)}
+.legend i.dot{height:0;background:none;border-top:2px dotted var(--k)}
+.controls.two{grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+.verdict.parcial{color:var(--warn);border-color:color-mix(in oklab,var(--warn-mark) 55%,var(--rule))}
+.modes .card .ct{font-size:17px}
+.modes dl{margin:4px 0 0;display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 10px;font-size:14px;line-height:1.45}
+.modes dt{color:var(--muted);font:500 11px/1.9 var(--f-mono);letter-spacing:.08em;text-transform:uppercase}
+.modes dd{margin:0;color:var(--ink-2)}
+.fig .stat .v{white-space:nowrap;font-size:clamp(22px,2.3vw,30px)}
+td.nw{white-space:nowrap}
 </style>
 </head>
 <body>
-<header class="series wrap" id="top"><span class="brand">Máquinas y mercados</span><nav aria-label="Documentos de la serie"><ol class="series-nav"><li><a href="01-trading-algoritmico.html" title="1 · Trading algorítmico" aria-label="Documento 1 · Trading algorítmico"><span class="dot" style="--c:var(--c1)"></span>1</a></li><li><a href="02-forex-algoritmico.html" title="2 · Forex algorítmico" aria-label="Documento 2 · Forex algorítmico"><span class="dot" style="--c:var(--c2)"></span>2</a></li><li><a href="03-agentes-claude-trading.html" title="3 · Agentes Claude" aria-label="Documento 3 · Agentes Claude"><span class="dot" style="--c:var(--c3)"></span>3</a></li><li><a href="#top" aria-current="page"><span class="dot" style="--c:var(--c4)"></span>4 · Cuentas de fondeo</a></li><li><a href="05-ctrader-api-mcp.html" title="5 · cTrader: API y MCP" aria-label="Documento 5 · cTrader: API y MCP"><span class="dot" style="--c:var(--c5)"></span>5</a></li><li><a href="06-gestion-del-riesgo.html" title="6 · Gestión del riesgo" aria-label="Documento 6 · Gestión del riesgo"><span class="dot" style="--c:var(--c6)"></span>6</a></li><li><a href="07-infraestructura-y-costes.html" title="7 · Infraestructura y costes" aria-label="Documento 7 · Infraestructura y costes"><span class="dot" style="--c:var(--c7)"></span>7</a></li><li><a href="08-atlas-de-estrategias.html" title="8 · Atlas de estrategias" aria-label="Documento 8 · Atlas de estrategias"><span class="dot" style="--c:var(--c8)"></span>8</a></li><li><a href="09-jev-el-decisor.html" title="9 · Jev, el decisor" aria-label="Documento 9 · Jev, el decisor"><span class="dot" style="--c:var(--c9)"></span>9</a></li><li><a href="10-plan-hasta-diciembre.html" title="10 · El plan hasta diciembre" aria-label="Documento 10 · El plan hasta diciembre"><span class="dot" style="--c:var(--c10)"></span>10</a></li><li><a href="11-mejora-continua.html" title="11 · Mejora continua" aria-label="Documento 11 · Mejora continua"><span class="dot" style="--c:var(--c11)"></span>11</a></li><li><a href="12-la-plataforma.html" title="12 · La plataforma" aria-label="Documento 12 · La plataforma"><span class="dot" style="--c:var(--c12)"></span>12</a></li><li><a href="13-especificacion-nucleo.html" title="13 · Especificación del núcleo" aria-label="Documento 13 · Especificación del núcleo"><span class="dot" style="--c:var(--c13)"></span>13</a></li><li><a href="14-especificacion-operacion.html" title="14 · Especificación de la operación" aria-label="Documento 14 · Especificación de la operación"><span class="dot" style="--c:var(--c14)"></span>14</a></li></ol></nav></header>
+<header class="series wrap" id="top"><span class="brand">Máquinas y mercados</span><nav aria-label="Documentos de la serie"><ol class="series-nav"><li><a href="01-trading-algoritmico.html" title="1 · Trading algorítmico" aria-label="Documento 1 · Trading algorítmico"><span class="dot" style="--c:var(--c1)"></span>1</a></li><li><a href="02-forex-algoritmico.html" title="2 · Forex algorítmico" aria-label="Documento 2 · Forex algorítmico"><span class="dot" style="--c:var(--c2)"></span>2</a></li><li><a href="03-agentes-claude-trading.html" title="3 · Agentes Claude" aria-label="Documento 3 · Agentes Claude"><span class="dot" style="--c:var(--c3)"></span>3</a></li><li><a href="04-verdad-cuentas-fondeo.html" title="4 · Cuentas de fondeo" aria-label="Documento 4 · Cuentas de fondeo"><span class="dot" style="--c:var(--c4)"></span>4</a></li><li><a href="05-ctrader-api-mcp.html" title="5 · cTrader: API y MCP" aria-label="Documento 5 · cTrader: API y MCP"><span class="dot" style="--c:var(--c5)"></span>5</a></li><li><a href="06-gestion-del-riesgo.html" title="6 · Gestión del riesgo" aria-label="Documento 6 · Gestión del riesgo"><span class="dot" style="--c:var(--c6)"></span>6</a></li><li><a href="07-infraestructura-y-costes.html" title="7 · Infraestructura y costes" aria-label="Documento 7 · Infraestructura y costes"><span class="dot" style="--c:var(--c7)"></span>7</a></li><li><a href="08-atlas-de-estrategias.html" title="8 · Atlas de estrategias" aria-label="Documento 8 · Atlas de estrategias"><span class="dot" style="--c:var(--c8)"></span>8</a></li><li><a href="09-jev-el-decisor.html" title="9 · Jev, el decisor" aria-label="Documento 9 · Jev, el decisor"><span class="dot" style="--c:var(--c9)"></span>9</a></li><li><a href="10-plan-hasta-diciembre.html" title="10 · El plan hasta diciembre" aria-label="Documento 10 · El plan hasta diciembre"><span class="dot" style="--c:var(--c10)"></span>10</a></li><li><a href="11-mejora-continua.html" title="11 · Mejora continua" aria-label="Documento 11 · Mejora continua"><span class="dot" style="--c:var(--c11)"></span>11</a></li><li><a href="#top" aria-current="page"><span class="dot" style="--c:var(--c12)"></span>12 · La plataforma</a></li><li><a href="13-especificacion-nucleo.html" title="13 · Especificación del núcleo" aria-label="Documento 13 · Especificación del núcleo"><span class="dot" style="--c:var(--c13)"></span>13</a></li><li><a href="14-especificacion-operacion.html" title="14 · Especificación de la operación" aria-label="Documento 14 · Especificación de la operación"><span class="dot" style="--c:var(--c14)"></span>14</a></li></ol></nav></header>
 <section class="hero wrap">
   <div class="hero-text">
-    <p class="eyebrow"><span>Máquinas y mercados</span><b>Documento 4 de 14</b></p>
-    <h1>La verdad <em>del fondeo</em></h1>
-    <p class="dek">Cómo ganan dinero las firmas de cuentas de fondeo, qué dicen los datos sobre quién cobra y qué pasa cuando eres rentable de verdad. Con un simulador para calcular tus probabilidades.</p>
-    <p class="meta">Septiembre de 2026 · 17 minutos de lectura</p>
+    <p class="eyebrow"><span>Máquinas y mercados</span><b>Documento 12 de 14</b></p>
+    <h1>La plataforma, <em>por dentro</em></h1>
+    <p class="dek">Si el sistema se puede montar en varios ordenadores y en varios sitios a la vez, cómo se aísla cada parte, qué pasa cuando una máquina cae y cómo se programa todo, explicado sin tecnicismos. Los documentos 13 y 14 lo bajan al detalle técnico.</p>
+    <p class="meta">Septiembre de 2026 · 20 minutos de lectura</p>
   </div>
-  <div class="emblem" aria-hidden="true"><canvas></canvas><span class="numeral">4</span><span class="serial">MM · 04 · 2026</span></div>
+  <div class="emblem" aria-hidden="true"><canvas></canvas><span class="numeral">12</span><span class="serial">MM · 12 · 2026</span></div>
 </section>
-<div class="wrap"><div class="microprint" aria-hidden="true" data-text="CUENTAS DE FONDEO · FASE 1 · FASE 2 · PAGO"></div>
+<div class="wrap"><div class="microprint" aria-hidden="true" data-text="CÉLULA · RESERVA · CERROJO · TURNO · DIARIO · GUARDIÁN · RECETA · IMAGEN"></div>
   <div class="tldr">
     <h2>En corto</h2>
     <ul>
-      <li>Operas en una cuenta demo. FTMO, la firma más grande, lo explica en sus condiciones: todas sus cuentas usan capital ficticio y puede copiar tus operaciones en su propia cuenta real.</li>
-      <li>Cobra poca gente. En el mayor estudio público, con 300.000 cuentas de 10 firmas, el 14&nbsp;% superó la prueba y solo el 7&nbsp;% del total recibió algún pago.</li>
-      <li>El negocio vive de las cuotas y de que la mayoría arriesgue demasiado. Si eres rentable, en una firma seria cobrarás, pero con techo, más vigilancia y riesgo de que la firma cierre.</li>
+      <li>Sí es viable, y es la forma correcta de crecer, con una condición: cada cuenta la maneja un solo ordenador a la vez. El mismo sistema se copia en células, una por cuenta, aisladas entre sí, y en otro proveedor espera una reserva que solo actúa si la principal cae.</li>
+      <li>Repartirse por varios sitios no sirve para ganar velocidad: en estrategias de minutos a semanas, unos milisegundos no cambian nada. Sirve para aguantar fallos, para aislar y para estar cerca de cada bróker cuando están en ciudades distintas.</li>
+      <li>Se programa como un solo motor que funciona igual en cuatro modos: backtest, repetición, sombra y real. Entre modos solo cambia de dónde llegan los datos y a dónde van las órdenes, nunca la lógica.</li>
+      <li>Un nodo nuevo se fabrica con una receta: la misma imagen de software y la misma receta de instalación, con su configuración y sus credenciales. En media hora hay una célula nueva, igual que las demás.</li>
     </ul>
   </div>
 </div>
@@ -393,219 +429,422 @@ details.rules summary{cursor:pointer;font:500 12.5px/1.4 var(--f-mono);color:var
   <aside class="toc" aria-label="Índice"></aside>
   <main class="content">
 
-    <section class="sec" id="como-funciona">
-      <p class="kicker">Mecánica</p>
-      <h2 data-short="Cómo funciona">Cómo funciona una cuenta de fondeo</h2>
-      <p class="lead">Pagas una cuota por una prueba en una cuenta simulada. Si cumples unas reglas, pasas a otra cuenta simulada y cobras una parte de lo que ganes en ella.</p>
-      <figure class="diagram">
-        <div class="flowchart" id="how"></div>
-        <figcaption class="fig-note">Parámetros del programa de dos fases de FTMO, la firma más conocida. Otras firmas cambian objetivos, límites y reparto: pruebas de una sola fase, financiación inmediata o pérdidas máximas que siguen a tu saldo más alto.</figcaption>
-      </figure>
-      <p>FTMO devuelve la cuota con el primer pago. El reparto parte del 80&nbsp;% y sube al 90&nbsp;% con su plan de escalado, que añade un 25&nbsp;% de saldo cada cuatro meses si ganas al menos un 10&nbsp;% en ese periodo y cobras dos veces, hasta 2 millones de dólares entre todas tus cuentas.</p>
-    </section>
-
-    <section class="sec" id="datos">
-      <p class="kicker">Los números</p>
-      <h2 data-short="Qué dicen los datos">Qué dicen los datos</h2>
-      <p class="lead">Las firmas no publican cuántos clientes aprueban ni cuántos cobran. El dato público más sólido procede de un proveedor de tecnología para estas firmas.</p>
-      <figure class="fig" id="fig-fpfx">
-        <p class="fig-title">De cada 100 compradores de una prueba</p>
-        <p class="fig-sub">Datos de FPFX Tech sobre más de 300.000 cuentas de 100.000 traders en 10 firmas, publicados en septiembre de 2024.</p>
-        <div class="chart" id="fpfx"></div>
-        <p class="fig-note">Fuente: FPFX Tech, vía Finance Magnates. El 45&nbsp;% de quienes llegaron a una cuenta financiada cobró al menos una vez.</p>
-      </figure>
-      <div class="stats quad">
-        <div class="stat"><span class="v">4&nbsp;%</span><span class="l">del tamaño de la cuenta fue el pago medio de quien cobró: unos 4.000&nbsp;$ en una de 100.000&nbsp;$.</span><span class="s">FPFX Tech, 2024</span></div>
-        <div class="stat"><span class="v">≈800&nbsp;$</span><span class="l">gastó de media cada cuenta en pruebas a lo largo de su vida, normalmente en tres intentos.</span><span class="s">FPFX Tech, 2024</span></div>
-        <div class="stat"><span class="v">329<small>M$</small></span><span class="l">ingresó el grupo de FTMO en 2024, con un beneficio neto de 62,5 millones de dólares.</span><span class="s">Finance Magnates, 2025</span></div>
-        <div class="stat"><span class="v">450<small>M$</small></span><span class="l">pagados por FTMO a sus traders en sus diez primeros años.</span><span class="s">FTMO, septiembre de 2025</span></div>
-      </div>
-      <p>Las dos cosas son ciertas a la vez: las firmas serias pagan mucho dinero en total y la mayoría de sus clientes nunca cobra. Como las cuentas son simuladas, los pagos salen de los ingresos de la firma, que proceden sobre todo de las cuotas, y de lo que gane si copia en real a sus mejores traders. FTMO no desglosa qué parte de sus gastos son pagos a traders.</p>
-    </section>
-
-    <section class="sec" id="dinero-real">
-      <p class="kicker">Transparencia</p>
-      <h2 data-short="¿Es dinero real?">¿Es dinero real?</h2>
-      <p class="lead">No. En casi todas las firmas de forex y CFD, la cuenta financiada es una cuenta demo con precios reales.</p>
-      <div class="callout">
-        <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="10" cy="10" r="8.25" stroke="currentColor" stroke-width="1.5"/><path d="M10 9v5M10 6.2v.1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-        <div><span class="ct">Lo que dice FTMO</span><p>En sus preguntas frecuentes explica que todas sus cuentas, incluida la financiada, son demo con capital ficticio y cotizaciones reales de proveedores de liquidez. Puede analizar tus operaciones y replicar algunas en su propia cuenta real, sin que eso cambie tu resultado ni tu recompensa.</p></div>
-      </div>
-      <p>En la práctica, la firma funciona como un bróker B-book. Tus beneficios simulados son un gasto para ella, y tus pérdidas no le aportan nada más allá de la cuota. Para cubrirse puede copiar en real a quienes ganan de forma constante. Eso explica dos cosas que verás si te va bien: el capital que te asignan tiene techo y tus operaciones reciben más atención.</p>
-      <h3>El caso My Forex Funds</h3>
-      <p>En agosto de 2023, la CFTC demandó a su matriz, Traders Global Group, por cobrar al menos 310 millones de dólares en cuotas a más de 135.000 clientes, a los que presuntamente hacía creer que operaban en cuentas reales. En mayo de 2025, un juez federal archivó el caso de forma definitiva y sancionó a la propia CFTC por engañar al tribunal, con más de 3,1 millones de dólares en costas. Mientras tanto, la firma pasó casi dos años cerrada y con los fondos congelados.</p>
-      <p>La lección para el cliente: el modelo demo es legal si está bien explicado. Lo que importa es que las reglas sean claras y que la firma pague lo que promete.</p>
-      <div class="callout warn">
-        <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 2.8l8 14H2l8-14z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M10 8v4.2M10 14.6v.1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-        <div><span class="ct">En España</span><p>La CNMV advirtió en 2019 del riesgo de fraude en las cuentas de trading financiadas ligadas a cursos de pago, y recordó que esa actividad queda fuera de su supervisión. No hay fondo de garantía ni supervisor que te proteja: tienes un contrato con una empresa, a menudo extranjera.</p></div>
-      </div>
-    </section>
-
-    <section class="sec" id="reglas">
-      <p class="kicker">Letra pequeña</p>
-      <h2 data-short="Las reglas">Las reglas que deciden si cobras</h2>
+    <section class="sec" id="respuesta">
+      <p class="kicker">La pregunta</p>
+      <h2 data-short="¿Varios ordenadores?">¿Varios ordenadores a la vez?</h2>
+      <p class="lead">Sí, pero no como parece a primera vista. Hay cinco formas de repartir un sistema entre ordenadores: dos son la base de la plataforma, una es peligrosa y dos solo valen para partes concretas.</p>
       <div class="tbl-wrap">
         <table>
-          <thead><tr><th>Regla</th><th>Qué significa</th><th>Cómo te afecta</th></tr></thead>
+          <thead><tr><th>Forma de repartirlo</th><th>Qué es</th><th>Veredicto</th><th>Por qué</th></tr></thead>
           <tbody>
-            <tr><td>Pérdida máxima diaria</td><td>Normalmente un 5&nbsp;% del saldo, contando también la pérdida de las posiciones abiertas</td><td>Una mala tarde con posiciones abiertas basta para perder la cuenta</td></tr>
-            <tr><td>Pérdida máxima total</td><td>Un 10&nbsp;% fijo, o un límite que sube con tu saldo máximo (trailing)</td><td>El trailing, habitual en futuros, castiga devolver parte de lo ganado</td></tr>
-            <tr><td>Objetivo de beneficio</td><td>+10&nbsp;% en la fase 1 y +5&nbsp;% en la fase 2</td><td>Empuja a arriesgar más de lo sensato para llegar antes</td></tr>
-            <tr><td>Días mínimos</td><td>Operar un número mínimo de días, según la firma</td><td>Impide aprobar con una sola apuesta afortunada</td></tr>
-            <tr><td>Consistencia</td><td>Ningún día puede aportar más de cierto porcentaje del beneficio</td><td>Penaliza las ganancias concentradas en pocas sesiones</td></tr>
-            <tr><td>Noticias y fin de semana</td><td>En algunas cuentas se prohíbe operar alrededor de noticias fuertes o mantener posiciones el fin de semana</td><td>Invalida estrategias que viven de esos momentos</td></tr>
-            <tr><td>Estrategias prohibidas</td><td>Arbitraje de latencia, aprovechar precios retrasados, cubrirse entre cuentas o firmas, copiar señales de terceros, apuestas a todo o nada</td><td>Es el motivo más citado en las denegaciones de pago</td></tr>
-            <tr><td>Verificación de identidad</td><td>KYC antes del primer pago</td><td>Retrasos y denegaciones si algo no cuadra</td></tr>
+            <tr><td>Una célula por cuenta</td><td>El mismo sistema copiado: una copia completa por cada cuenta o bróker, en su propia máquina</td><td><span class="verdict si">Sí, es la base</span></td><td>Si una falla o la atacan, las demás siguen. Cada una puede estar cerca de su bróker</td></tr>
+            <tr><td>Principal y reserva</td><td>Para cada cuenta, una máquina opera y otra, en otro proveedor, espera</td><td><span class="verdict si">Sí, con cerrojo</span></td><td>Da continuidad si cae la principal, sin riesgo de órdenes duplicadas</td></tr>
+            <tr><td>Dos máquinas operando la misma cuenta</td><td>Las dos reciben las señales y las dos envían órdenes</td><td><span class="verdict no">No</span></td><td>Cada señal saldría dos veces: posiciones dobles y límites de riesgo rotos</td></tr>
+            <tr><td>Piezas repartidas</td><td>Datos en un sitio, decisiones en otro y órdenes en un tercero</td><td><span class="verdict parcial">En parte</span></td><td>Investigación, Jev y supervisión sí pueden vivir aparte. La cadena que va de la señal a la orden, no: cada salto entre sitios es un fallo posible</td></tr>
+            <tr><td>Varios sitios para ganar velocidad</td><td>Máquinas en varias ciudades para llegar antes al mercado</td><td><span class="verdict parcial">Casi nunca</span></td><td>Solo sirve si hay brókeres en ciudades distintas. Con posiciones de minutos a semanas, unos milisegundos no cambian el resultado</td></tr>
           </tbody>
         </table>
       </div>
-      <div class="callout warn">
-        <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 2.8l8 14H2l8-14z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M10 8v4.2M10 14.6v.1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-        <div><span class="ct">Lee los términos completos</span><p>Las cláusulas vagas, del tipo «prácticas contrarias al espíritu del programa», dejan a la firma la última palabra sobre si cobras.</p></div>
-      </div>
+      <p class="pull">Varias copias del mismo sistema, sí; <b>varias manos sobre la misma cuenta</b>, nunca.</p>
     </section>
 
-    <section class="sec" id="simulador">
-      <p class="kicker">Simulador</p>
-      <h2 data-short="Simulador">¿Qué probabilidad tienes de cobrar?</h2>
-      <p class="lead">Este simulador enfrenta a miles de traders virtuales con las reglas de dos fases de FTMO. Cada operación gana o pierde según tu tasa de acierto y tu relación entre beneficio y riesgo. Elige un perfil o mueve los controles.</p>
-      <figure class="fig" id="fig-sim">
-        <p class="fig-title">Simulador de una prueba de dos fases</p>
-        <p class="fig-sub">4.000 traders virtuales por simulación, con una cuenta de 100.000&nbsp;$. Todo se calcula en tu navegador.</p>
-        <div class="btns" role="group" aria-label="Perfiles de ejemplo">
-          <button class="btn" type="button" data-preset="sin" aria-pressed="true">Sin ventaja</button>
-          <button class="btn" type="button" data-preset="modesta" aria-pressed="false">Ventaja modesta</button>
-          <button class="btn" type="button" data-preset="solida" aria-pressed="false">Ventaja sólida</button>
-          <button class="btn" type="button" data-preset="apostador" aria-pressed="false">Apostador</button>
+    <section class="sec" id="imagen">
+      <p class="kicker">Visión general</p>
+      <h2 data-short="La plataforma en una imagen">La plataforma en una imagen</h2>
+      <p class="lead">Todo lo que hemos ido viendo en la serie, colocado en su sitio. Dentro de la célula está lo que opera; fuera, lo que investiga, decide pesos o vigila, sin poder enviar órdenes.</p>
+      <figure class="diagram">
+        <p class="scroll-hint">Desliza hacia los lados para ver el diagrama completo.</p>
+        <div class="scroll">
+          <svg class="arch" viewBox="0 0 900 560" role="img" aria-label="La plataforma. Dentro de la célula, una por cuenta: datos, señal, tamaño, riesgo y órdenes en cadena hacia el bróker, que devuelve precios y ejecuciones. Todo queda en el diario, la caja negra. El guardián vigila la cuenta con su propia conexión y puede cerrarlo todo. Fuera de la célula: Jev decide el peso de cada estrategia, el plano de control recibe el estado y solo puede pausar, y el laboratorio trabaja con una copia del diario sin permiso para operar.">
+            <rect class="box" x="250" y="16" width="240" height="80" rx="8"/>
+            <text class="bt" x="266" y="42">Jev, el decisor</text>
+            <text class="bd" x="266" y="64">Decide el peso de cada</text>
+            <text class="bd" x="266" y="82">estrategia. No toca órdenes.</text>
+            <rect class="box" x="652" y="16" width="240" height="80" rx="8"/>
+            <text class="bt" x="668" y="42">Plano de control</text>
+            <text class="bd" x="668" y="64">Tu panel, los avisos, la</text>
+            <text class="bd" x="668" y="82">configuración y la parada.</text>
+
+            <rect class="box cell" x="8" y="132" width="700" height="300" rx="14"/>
+            <text class="zone" x="24" y="156">CÉLULA · UNA POR CUENTA</text>
+            <rect class="box" x="24" y="172" width="112" height="64" rx="8"/><text class="bt" x="36" y="198">Datos</text><text class="bd" x="36" y="218">precios y velas</text>
+            <rect class="box" x="158" y="172" width="112" height="64" rx="8"/><text class="bt" x="170" y="198">Señal</text><text class="bd" x="170" y="218">qué y cuándo</text>
+            <rect class="box" x="292" y="172" width="112" height="64" rx="8"/><text class="bt" x="304" y="198">Tamaño</text><text class="bd" x="304" y="218">cuánto</text>
+            <rect class="box" x="426" y="172" width="112" height="64" rx="8"/><text class="bt" x="438" y="198">Riesgo</text><text class="bd" x="438" y="218">puede vetar</text>
+            <rect class="box me" x="560" y="172" width="112" height="64" rx="8"/><text class="bt" x="572" y="198">Órdenes</text><text class="bd" x="572" y="218">envía y sigue</text>
+            <line class="ln" x1="136" y1="204" x2="150" y2="204"/><path class="hd" d="M158,204l-8,-4.5v9z"/>
+            <line class="ln" x1="270" y1="204" x2="284" y2="204"/><path class="hd" d="M292,204l-8,-4.5v9z"/>
+            <line class="ln" x1="404" y1="204" x2="418" y2="204"/><path class="hd" d="M426,204l-8,-4.5v9z"/>
+            <line class="ln" x1="538" y1="204" x2="552" y2="204"/><path class="hd" d="M560,204l-8,-4.5v9z"/>
+
+            <rect class="box core" x="740" y="172" width="152" height="64" rx="8"/><text class="bt" x="756" y="198">Bróker</text><text class="bd" x="756" y="218">cTrader</text>
+            <line class="ln acc" x1="672" y1="196" x2="730" y2="196"/><path class="hd acc" d="M740,196l-9,-5v10z"/>
+            <path class="ln" d="M816,236V262H80V244"/><path class="hd" d="M80,236l-4.5,8h9z"/>
+            <text class="lab" x="440" y="256">precios y ejecuciones</text>
+
+            <path class="ln ro" d="M348,96V164"/><path class="hd" d="M348,172l-4.5,-8h9z"/>
+            <text class="lab" x="356" y="126">pesos</text>
+            <path class="ln ro" d="M680,104V124"/><path class="hd" d="M680,96l-4.5,8h9z"/><path class="hd" d="M680,132l-4.5,-8h9z"/>
+            <text class="lab" x="690" y="120">estado · solo pausar</text>
+
+            <path class="ln ro" d="M348,236V282"/><path class="hd" d="M348,290l-4.5,-8h9z"/><text class="lab" x="356" y="281">todo se anota</text>
+            <rect class="box core" x="24" y="290" width="484" height="56" rx="8"/>
+            <text class="bt" x="40" y="314">Diario, la caja negra</text>
+            <text class="bd" x="40" y="334">Todo lo que entra y sale, con su hora y su versión</text>
+
+            <rect class="box" x="532" y="290" width="160" height="110" rx="8"/>
+            <text class="bt" x="548" y="314">Guardián</text>
+            <text class="bd" x="548" y="334">Vigila la cuenta con</text>
+            <text class="bd" x="548" y="352">su propia conexión</text>
+            <text class="bd" x="548" y="370">y puede cerrarlo todo</text>
+            <path class="ln ro" d="M692,345H860V244"/><path class="hd" d="M860,236l-4.5,8h9z"/>
+            <text class="lab" x="716" y="338">su conexión</text>
+
+            <text class="bd" x="24" y="410">En otro proveedor espera una reserva de esta célula,</text>
+            <text class="bd" x="24" y="426">apagada para operar hasta que tome el cerrojo.</text>
+
+            <path class="ln ro" d="M120,346V386"/><path class="ln ro" d="M120,436V468"/><path class="hd" d="M120,476l-4.5,-8h9z"/>
+            <text class="lab" x="128" y="462">copia del diario</text>
+            <rect class="box" x="8" y="476" width="400" height="76" rx="8"/>
+            <text class="bt" x="24" y="502">Laboratorio</text>
+            <text class="bd" x="24" y="522">Backtests, gemelo y mejoras con la copia del diario.</text>
+            <text class="bd" x="24" y="540">Sin ningún permiso para operar.</text>
+          </svg>
         </div>
-        <div class="controls four">
-          <div class="ctl"><label for="q-p">Tasa de acierto <output id="q-p-out" for="q-p"></output></label><input id="q-p" type="range" min="25" max="65" step="1" value="40"></div>
-          <div class="ctl"><label for="q-r">Beneficio / riesgo <output id="q-r-out" for="q-r"></output></label><input id="q-r" type="range" min="0.5" max="3" step="0.1" value="1.5"></div>
-          <div class="ctl"><label for="q-risk">Riesgo por operación <output id="q-risk-out" for="q-risk"></output></label><input id="q-risk" type="range" min="0.25" max="4" step="0.25" value="1"></div>
-          <div class="ctl"><label for="q-tpd">Operaciones al día <output id="q-tpd-out" for="q-tpd"></output></label><input id="q-tpd" type="range" min="1" max="8" step="1" value="2"></div>
-          <div class="ctl"><label for="q-cost">Coste por operación <output id="q-cost-out" for="q-cost"></output></label><input id="q-cost" type="range" min="0" max="0.2" step="0.01" value="0.05"><span class="hint">0,05 R ≈ 1,25 pips con un stop de 25 pips</span></div>
-          <div class="ctl"><label for="q-split">Reparto para ti <output id="q-split-out" for="q-split"></output></label><input id="q-split" type="range" min="50" max="90" step="5" value="80"></div>
-          <div class="ctl"><label for="q-fee">Cuota ($)</label><input id="q-fee" type="number" min="0" max="5000" step="10" value="570"><span class="hint">≈ 540 € en FTMO para 100.000 $</span></div>
-          <div class="ctl"><label for="q-months">Meses en cuenta financiada</label><select id="q-months"><option value="3">3 meses</option><option value="6" selected>6 meses</option><option value="12">12 meses</option></select></div>
-        </div>
-        <details class="rules"><summary>Cambiar las reglas de la prueba</summary>
-          <div class="controls four">
-            <div class="ctl"><label for="q-t1">Objetivo fase 1 (%)</label><input id="q-t1" type="number" min="1" max="30" step="0.5" value="10"></div>
-            <div class="ctl"><label for="q-t2">Objetivo fase 2 (%)</label><input id="q-t2" type="number" min="1" max="30" step="0.5" value="5"></div>
-            <div class="ctl"><label for="q-daily">Pérdida diaria máx. (%)</label><input id="q-daily" type="number" min="1" max="20" step="0.5" value="5"></div>
-            <div class="ctl"><label for="q-max">Pérdida total máx. (%)</label><input id="q-max" type="number" min="2" max="30" step="0.5" value="10"></div>
-          </div>
-        </details>
-        <p class="readout" id="sim-edge" aria-live="polite"></p>
-        <p class="sim-sub">Qué parte de los compradores llega a cada etapa</p>
-        <div class="chart" id="sim-funnel"></div>
-        <div class="stats quad">
-          <div class="stat" id="sim-ev-card"><span class="v" id="sim-ev">–</span><span class="l">de valor esperado por intento, contando la devolución de la cuota</span><span class="badge" id="sim-ev-badge"></span></div>
-          <div class="stat"><span class="v" id="sim-avg">–</span><span class="l">cobra de media, en total, quien cobra alguna vez</span></div>
-          <div class="stat"><span class="v" id="sim-firm">–</span><span class="l" id="sim-firm-l">de las cuotas se queda en la firma</span></div>
-          <div class="stat"><span class="v" id="sim-days">–</span><span class="l">sesiones tarda la mitad de quienes superan la fase 1</span></div>
-        </div>
-        <p class="sim-sub">Treinta trayectorias en la fase 1</p>
-        <div class="chart" id="sim-paths"></div>
-        <div class="legend"><span><i style="--k:var(--accent)"></i>Superan la fase 1</span><span><i style="--k:var(--deemph)"></i>Eliminados o sin terminar</span></div>
-        <p class="readout" id="sim-read" aria-live="polite"></p>
-        <div class="btns"><button class="btn ghost" id="sim-again" type="button">Repetir con otros traders</button></div>
-        <p class="fig-note">Supuestos del modelo: operaciones independientes con resultado fijo en R; el riesgo se calcula sobre la cuenta inicial; la pérdida diaria se mide con operaciones cerradas; cada fase dura como máximo 120 sesiones; en la cuenta financiada se cobra cada 10 sesiones si hay beneficio, y el saldo vuelve al inicial; la cuota se devuelve con el primer pago. No incluye días mínimos, reglas de consistencia, límites de pago, deslizamiento extra, denegaciones ni cierres de la firma.</p>
       </figure>
-      <p>El resultado más llamativo aparece con el perfil sin ventaja. Con disciplina y costes bajos, el valor esperado sale positivo aunque cada operación pierda dinero de media, porque pagas una cuota fija y la firma asume las pérdidas de la cuenta financiada: es como comprar una opción barata. Con el perfil de apostador, el mismo trader lo pierde todo. El dato real, un 7&nbsp;% que cobra con un pago medio del 4&nbsp;% de la cuenta, está por debajo de lo que da el modelo sin ventaja. Una explicación plausible es que muchos compradores arriesgan demasiado o incumplen reglas, y que las firmas añaden reglas y revisiones que el modelo no recoge. Cómo dimensionar el riesgo para no rozar esos límites lo explica el <a href="06-gestion-del-riesgo.html">documento 6</a>.</p>
-    </section>
-
-    <section class="sec" id="rentable">
-      <p class="kicker">La pregunta</p>
-      <h2 data-short="Si eres rentable">Qué pasa si eres rentable de verdad</h2>
-      <p class="lead">Si tu ventaja es real, una firma seria te pagará. Lo que cambia es tu relación con la firma y el tipo de riesgo que corres.</p>
-      <div class="cards two">
-        <article class="card"><span class="tag">Cobras</span><h3 class="ct">En una firma seria, sí</h3><p>FTMO dice haber pagado más de 450 millones de dólares en diez años. Con el primer pago te devuelve la cuota, y el reparto sube del 80&nbsp;% al 90&nbsp;% con el plan de escalado.</p></article>
-        <article class="card"><span class="tag">Coste</span><h3 class="ct">Pasas a ser un gasto para la firma</h3><p>Como tu cuenta es simulada, cada euro que ganas lo paga la firma con sus ingresos. Por eso le interesa copiar en real a los mejores y vigilar a quien gana de forma constante.</p></article>
-        <article class="card"><span class="tag">Techo</span><h3 class="ct">Creces, pero hasta un límite</h3><p>En FTMO, un 25&nbsp;% más de saldo cada cuatro meses si cumples las condiciones, hasta 2 millones de dólares entre todas tus cuentas. Otras firmas limitan además lo que puedes retirar en cada periodo.</p></article>
-        <article class="card"><span class="tag">Escrutinio</span><h3 class="ct">Más revisión de cómo ganas</h3><p>The Funded Trader denegó más de 2 millones de dólares en pagos en enero y febrero de 2024, alegando KYC, fraude y estrategias prohibidas, mientras pagaba 17 millones. Semanas después suspendió su actividad.</p></article>
-        <article class="card"><span class="tag">Contraparte</span><h3 class="ct">Tu saldo pendiente no está protegido</h3><p>En 2024, MetaQuotes retiró licencias de MetaTrader a firmas de fondeo y True Forex Funds dejó de operar. Según estimaciones del sector, entre 80 y 100 firmas desaparecieron entre 2024 y finales de 2025. Cobra a menudo y no acumules saldo.</p></article>
-        <article class="card"><span class="tag">Hacienda</span><h3 class="ct">Tributa como actividad profesional</h3><p>La Dirección General de Tributos (consulta vinculante V1722-23) considera estos cobros rendimientos de una actividad económica profesional, que tributan en la base general del IRPF. Según tu caso, puede obligarte a darte de alta en Hacienda y como autónomo. Consulta con un asesor.</p></article>
-      </div>
-      <div class="callout good">
-        <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="10" cy="10" r="8.25" stroke="currentColor" stroke-width="1.5"/><path d="M6.5 10.3l2.3 2.3 4.7-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        <div><span class="ct">El siguiente paso lógico</span><p>Si tu ventaja es real y la has medido bien (<a href="01-trading-algoritmico.html">documento 1</a>), la cuenta de fondeo funciona mejor como una opción barata que como un sueldo. Úsala para ganar capital y experiencia mientras construyes un historial verificable con tu propio dinero y poco apalancamiento, que es lo que te abre la puerta a una mesa de trading de verdad. El <a href="10-plan-hasta-diciembre.html">documento 10</a> lo convierte en un plan con fechas y presupuesto.</p></div>
+      <div class="cards">
+        <article class="card"><span class="tag">Datos</span><h3 class="ct">Los ojos</h3><p>Recibe los precios del bróker, los limpia y fabrica las velas. Si un precio es imposible o llega tarde, lo marca y no deja operar con él.</p></article>
+        <article class="card"><span class="tag">Señal</span><h3 class="ct">Las estrategias</h3><p>Cada estrategia dice qué quiere tener y cuándo, sin saber cuánto dinero hay. Son piezas separadas que se encienden y apagan por su cuenta.</p></article>
+        <article class="card"><span class="tag">Tamaño</span><h3 class="ct">Cuánto</h3><p>Convierte cada señal en una cantidad según el riesgo que toca y el peso que ha dado Jev a esa estrategia.</p></article>
+        <article class="card"><span class="tag">Riesgo</span><h3 class="ct">El que puede decir que no</h3><p>Comprueba cada orden antes de salir: límites diarios, stop obligatorio, reglas de la firma. Si algo no cuadra, la orden no sale.</p></article>
+        <article class="card"><span class="tag">Órdenes</span><h3 class="ct">El que envía y comprueba</h3><p>Envía cada orden una sola vez, sigue su estado y comprueba con el bróker que lo que cree tener es lo que tiene de verdad.</p></article>
+        <article class="card"><span class="tag">Diario</span><h3 class="ct">La caja negra</h3><p>Anota todo lo que entra y sale. Con él se puede repetir cualquier día exactamente igual, que es la base del gemelo del documento 11.</p></article>
+        <article class="card"><span class="tag">Guardián</span><h3 class="ct">El vigilante independiente</h3><p>Otro programa, con su propia conexión, que mira la cuenta desde fuera. Si el motor se cuelga o se pasa de límites, pausa o cierra.</p></article>
+        <article class="card"><span class="tag">Fuera de la célula</span><h3 class="ct">Jev, el control y el laboratorio</h3><p>Deciden pesos, muestran el estado o investigan, pero ninguno puede enviar una orden. Si todos caen, la célula sigue operando con seguridad.</p></article>
       </div>
     </section>
 
-    <section class="sec" id="cronologia">
-      <p class="kicker">Contexto</p>
-      <h2 data-short="Cronología">Cronología del sector</h2>
-      <ol class="timeline">
-        <li><time>2015</time><b>Nace FTMO en Praga</b><span>Se convierte en la referencia del modelo de prueba en dos fases.</span></li>
-        <li><time>Junio de 2019</time><b>Aviso de la CNMV</b><span>Advierte del riesgo de fraude en las cuentas de trading financiadas ligadas a cursos de formación.</span></li>
-        <li><time>Agosto de 2023</time><b>La CFTC contra My Forex Funds</b><span>Un juez congela sus fondos a petición del regulador estadounidense.</span></li>
-        <li><time>Febrero de 2024</time><b>MetaQuotes corta el grifo</b><span>Retira licencias de MetaTrader a firmas de fondeo. True Forex Funds deja de operar y otras migran a cTrader, DXtrade o Match-Trader.</span></li>
-        <li><time>Marzo de 2024</time><b>The Funded Trader se detiene</b><span>Suspende su actividad tras semanas de quejas por pagos denegados.</span></li>
-        <li><time>Septiembre de 2024</time><b>El estudio de FPFX Tech</b><span>El 14&nbsp;% de los traders supera la prueba y el 7&nbsp;% cobra alguna vez.</span></li>
-        <li><time>Mayo de 2025</time><b>Archivado el caso My Forex Funds</b><span>El juez sanciona a la CFTC por engañar al tribunal.</span></li>
-        <li><time>Septiembre de 2025</time><b>FTMO cumple diez años</b><span>Anuncia más de 450 millones de dólares pagados a traders.</span></li>
-        <li><time>Diciembre de 2025</time><b>FTMO compra OANDA</b><span>Completa la adquisición del bróker regulado, con entidades en EE.&nbsp;UU., Reino Unido, Japón y otros mercados.</span></li>
-      </ol>
+    <section class="sec" id="celulas">
+      <p class="kicker">Células</p>
+      <h2 data-short="Células">Células: el mismo sistema, copiado y aislado</h2>
+      <p class="lead">Una célula es una copia completa del sistema dedicada a una sola cuenta. Todas las células ejecutan el mismo software; lo que cambia es su configuración, sus credenciales y su diario, que nunca se comparten.</p>
+      <figure class="diagram">
+        <p class="scroll-hint">Desliza hacia los lados para ver el mapa completo.</p>
+        <div class="scroll">
+          <svg class="arch" viewBox="0 0 900 480" role="img" aria-label="Mapa de sitios. En Bilbao están tus dispositivos y el laboratorio. En Londres, con el proveedor A, las células principales de la cuenta de FTMO y de la cuenta propia, cada una conectada al servidor de su bróker en Equinix LD5. En Ámsterdam, con el proveedor B, esperan sus reservas. En la nube europea están el plano de control, con los cerrojos, y el almacén de copias. Un túnel privado une Bilbao con todas las máquinas para administrarlas, y el estado y las copias viajan de las células a la nube.">
+            <text class="zone" x="8" y="24">BILBAO</text>
+            <rect class="box" x="8" y="40" width="222" height="76" rx="8"/><text class="bt" x="22" y="66">Tus dispositivos</text><text class="bd" x="22" y="86">Panel, avisos en el móvil</text><text class="bd" x="22" y="104">y llaves físicas</text>
+            <rect class="box" x="8" y="140" width="222" height="76" rx="8"/><text class="bt" x="22" y="166">Laboratorio</text><text class="bd" x="22" y="186">Mini PC o nube: backtests,</text><text class="bd" x="22" y="204">gemelo y Claude Code</text>
+
+            <text class="zone" x="300" y="24">LONDRES · PROVEEDOR A</text>
+            <rect class="box me" x="300" y="40" width="300" height="76" rx="8"/><text class="bt" x="314" y="66">Célula 1 · cuenta de FTMO</text><text class="bd" x="314" y="86">Principal: la única que opera</text><text class="bd" x="314" y="104">esta cuenta</text>
+            <rect class="box me" x="300" y="132" width="300" height="76" rx="8"/><text class="bt" x="314" y="158">Célula 2 · cuenta propia</text><text class="bd" x="314" y="178">Principal de la cuenta en</text><text class="bd" x="314" y="196">tu bróker regulado</text>
+
+            <text class="zone" x="300" y="256">ÁMSTERDAM · PROVEEDOR B</text>
+            <rect class="box" x="300" y="270" width="300" height="64" rx="8"/><text class="bt" x="314" y="296">Reserva de la célula 1</text><text class="bd" x="314" y="316">Solo opera si toma el cerrojo</text>
+            <rect class="box" x="300" y="350" width="300" height="64" rx="8"/><text class="bt" x="314" y="376">Reserva de la célula 2</text><text class="bd" x="314" y="396">Solo opera si toma el cerrojo</text>
+
+            <text class="zone" x="670" y="24">BRÓKERES · EQUINIX LD5</text>
+            <rect class="box core" x="670" y="40" width="222" height="64" rx="8"/><text class="bt" x="684" y="66">Servidor de FTMO</text><text class="bd" x="684" y="86">cTrader</text>
+            <rect class="box core" x="670" y="132" width="222" height="64" rx="8"/><text class="bt" x="684" y="158">Servidor del bróker</text><text class="bd" x="684" y="178">cTrader</text>
+
+            <text class="zone" x="670" y="256">NUBE EUROPEA</text>
+            <rect class="box" x="670" y="270" width="222" height="64" rx="8"/><text class="bt" x="684" y="296">Plano de control</text><text class="bd" x="684" y="316">Panel, configuración, cerrojos</text>
+            <rect class="box" x="670" y="350" width="222" height="64" rx="8"/><text class="bt" x="684" y="376">Almacén de copias</text><text class="bd" x="684" y="396">Diarios y datos, cifrados</text>
+
+            <line class="ln acc" x1="600" y1="72" x2="660" y2="72"/><path class="hd acc" d="M670,72l-9,-5v10z"/>
+            <line class="ln acc" x1="600" y1="164" x2="660" y2="164"/><path class="hd acc" d="M670,164l-9,-5v10z"/>
+
+            <path class="ln dot" d="M600,100H636M600,190H636M600,318H636M600,398H636M636,100V398M636,302H662M636,382H662"/>
+            <path class="hd" d="M670,302l-8,-4.5v9z"/><path class="hd" d="M670,382l-8,-4.5v9z"/>
+
+            <path class="ln ro" d="M230,78H264M264,78V398M264,78H292M264,170H292M264,302H292M264,382H292"/>
+            <path class="hd" d="M300,78l-8,-4.5v9z"/><path class="hd" d="M300,170l-8,-4.5v9z"/><path class="hd" d="M300,302l-8,-4.5v9z"/><path class="hd" d="M300,382l-8,-4.5v9z"/>
+
+            <path class="ln dot" d="M119,216V450H781V422"/><path class="hd" d="M781,414l-4.5,8h9z"/>
+            <text class="lab" x="300" y="444">copias del diario para el gemelo y los backtests</text>
+          </svg>
+        </div>
+      </figure>
+      <div class="legend"><span><i style="--k:var(--accent-ink)"></i>Órdenes, solo desde la célula principal</span><span><i class="dash" style="--k:var(--ink-2)"></i>Túnel privado de administración (discontinuo)</span><span><i class="dot" style="--k:var(--ink-2)"></i>Estado, avisos y copias (punteado)</span></div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Sitio</th><th>Qué corre</th><th>Qué credenciales tiene</th><th>Si se cae</th></tr></thead>
+          <tbody>
+            <tr><td>Célula principal</td><td>Motor, guardián y agente de vigilancia</td><td>Las de su cuenta, con permiso para operar</td><td>Sus posiciones siguen protegidas por los stops del bróker; la reserva toma el relevo</td></tr>
+            <tr><td>Reserva</td><td>Lo mismo, apagado para operar</td><td>Las mismas, bloqueadas por el cerrojo</td><td>Nada, mientras la principal funcione; se repara sin prisa</td></tr>
+            <tr><td>Plano de control</td><td>Panel, avisos, configuración y cerrojos</td><td>Ninguna para operar; solo puede pedir pausas</td><td>Las células siguen operando; pierdes el panel y los avisos pasan al vigilante externo</td></tr>
+            <tr><td>Almacén de copias</td><td>Diarios, datos y copias de seguridad</td><td>Solo escritura desde las células</td><td>Las células guardan en local y reenvían al volver</td></tr>
+            <tr><td>Laboratorio</td><td>Backtests, gemelo, mejoras y Jev a la sombra</td><td>Solo lectura de datos</td><td>No afecta a la operativa</td></tr>
+            <tr><td>Tus dispositivos</td><td>Panel y administración</td><td>Una llave por dispositivo, sin contraseñas guardadas</td><td>Se revoca la llave del dispositivo perdido</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Una regla de las firmas de fondeo encaja aquí: FTMO limita a 400.000&nbsp;$ el capital de una misma persona o estrategia entre todas sus cuentas, y ninguna firma permite posiciones contrarias entre cuentas. El plano de control suma la exposición de todas las células y avisa antes de rozar esos límites.</p>
     </section>
 
-    <section class="sec" id="elegir">
-      <p class="kicker">Antes de pagar</p>
-      <h2 data-short="Cómo elegir">Cómo elegir una firma</h2>
-      <ul class="checklist">
-        <li>Varios años operando y pagos que puedan comprobar terceros.</li>
-        <li>Reglas completas y publicadas, sin cláusulas vagas.</li>
-        <li>Empresa identificable, con registro mercantil y cuentas anuales accesibles.</li>
-        <li>Plataforma y proveedor de precios conocidos.</li>
-        <li>Un historial razonable de cambios de reglas y de cómo trata las denegaciones.</li>
-        <li>Sin cursos caros obligatorios para acceder a la cuenta.</li>
-        <li>Pagos frecuentes, para no acumular saldo pendiente.</li>
+    <section class="sec" id="latencia">
+      <p class="kicker">Latencia</p>
+      <h2 data-short="Cuánto importa estar cerca">Cuánto importa estar cerca</h2>
+      <p class="lead">Los tiempos de red se miden en milisegundos; los de nuestras estrategias, en minutos, horas o días. Por eso la ubicación decide la fiabilidad, no el resultado.</p>
+      <figure class="fig" id="fig-lat">
+        <p class="fig-title">Tiempos de red frente a horizontes de las estrategias</p>
+        <p class="fig-sub">Escala logarítmica: cada marca multiplica el tiempo. Valores orientativos; mide los tuyos con marcas de tiempo en cada orden.</p>
+        <div class="chart" id="lat"></div>
+        <div class="legend"><span><i class="box" style="--k:var(--accent)"></i>Red y proceso</span><span><i class="box" style="--k:var(--c7)"></i>Horizonte de las estrategias</span></div>
+        <p class="fig-note">Londres–bróker: VPS en Londres hasta Equinix LD5. Bilbao–Londres: el mínimo físico ronda los 9 ms y la ruta real, más (documento 7). Nueva York–Londres: cable transatlántico. Horizontes: estrategias del documento 10.</p>
+      </figure>
+      <p>Cuándo sí importa la ubicación: si una cuenta está en un bróker de Nueva York y otra en uno de Londres, cada célula debe estar junto a su bróker. Y en los momentos de noticias, cuando el precio salta en segundos, unos milisegundos pueden valer algún pip; nuestras estrategias evitan esos momentos a propósito.</p>
+    </section>
+
+    <section class="sec" id="aislar">
+      <p class="kicker">Aislamiento</p>
+      <h2 data-short="Aislar de verdad">Aislar de verdad</h2>
+      <p class="lead">Aislar no es poner cada cosa en un ordenador distinto: es que un fallo o un intruso en una pieza no pueda llegar a las demás. Se consigue con siete capas.</p>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Capa</th><th>Qué se separa</th><th>Cómo</th></tr></thead>
+          <tbody>
+            <tr><td>Máquinas y proveedores</td><td>Cada célula en su servidor; principal y reserva en proveedores distintos</td><td>Una cuenta de proveedor por entorno y facturación separada</td></tr>
+            <tr><td>Red e IP</td><td>Cada célula con su IP fija y dedicada; nada abierto a internet</td><td>Solo conexiones de salida al bróker, al almacén y al plano de control; la administración, por túnel</td></tr>
+            <tr><td>Credenciales</td><td>Un token por cuenta y por pieza</td><td>El permiso para operar solo existe en la célula de esa cuenta; el resto solo lee</td></tr>
+            <tr><td>Procesos</td><td>Motor, guardián y vigilancia en contenedores separados</td><td>Usuarios sin privilegios, disco de solo lectura y recursos limitados</td></tr>
+            <tr><td>Datos</td><td>Cada célula con su diario</td><td>Las copias se cifran antes de salir y el almacén no deja borrar</td></tr>
+            <tr><td>Personas</td><td>Quién puede entrar y desde dónde</td><td>Una llave por dispositivo, llaves físicas y registro de cada acceso</td></tr>
+            <tr><td>Órdenes remotas</td><td>Qué se puede pedir desde fuera</td><td>Desde fuera solo se puede pausar, cancelar o cerrar; abrir posiciones, nunca</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h3>Qué pasa si…</h3>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Si pasa esto</th><th>Qué le pasa al resto</th></tr></thead>
+          <tbody>
+            <tr><td>Roban el token de la célula 1</td><td>Solo esa cuenta está expuesta. Se revoca en cTrader, se pulsa la parada y las demás siguen</td></tr>
+            <tr><td>Cae el proveedor A entero</td><td>Las reservas del proveedor B toman el relevo de sus células</td></tr>
+            <tr><td>Alguien entra en el plano de control</td><td>No puede abrir posiciones: como mucho, pedir pausas, que quedan registradas y te avisan</td></tr>
+            <tr><td>Una versión nueva tiene un error</td><td>Se despliega primero en una sola célula y en sombra; si falla, vuelta atrás en un minuto</td></tr>
+            <tr><td>Jev se equivoca</td><td>El validador lo frena y, en sus primeras fases, solo puede reducir</td></tr>
+            <tr><td>Te roban el portátil</td><td>No lleva credenciales de trading: se revoca su llave y listo</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="sec" id="relevo">
+      <p class="kicker">Relevo</p>
+      <h2 data-short="Uno opera, otro espera">Uno opera, otro espera</h2>
+      <p class="lead">La reserva solo puede operar si tiene el cerrojo, un permiso con caducidad guardado fuera de las dos máquinas. La principal lo renueva cada 10 segundos; si deja de hacerlo, caduca a los 30.</p>
+      <figure class="diagram">
+        <p class="scroll-hint">Desliza hacia los lados para ver la secuencia completa.</p>
+        <div class="scroll">
+          <svg class="arch" viewBox="0 0 900 262" role="img" aria-label="Secuencia de un relevo. La principal renueva el cerrojo por última vez en el segundo 0 y cae en el segundo 3. Si siguiera viva pero aislada, dejaría de enviar órdenes en el segundo 20. El cerrojo caduca en el segundo 30. La reserva espera 10 segundos más de silencio, toma el cerrojo con un turno nuevo en el segundo 40, concilia con el bróker y opera desde el segundo 46.">
+            <text class="bt" x="8" y="62">Principal</text>
+            <text class="bt" x="8" y="122">Cerrojo</text>
+            <text class="bt" x="8" y="182">Reserva</text>
+            <rect class="bar" x="120" y="48" width="38" height="18" rx="3"/>
+            <path class="gm" d="M120,40l7,7l-7,7l-7,-7z"/>
+            <text class="lab" x="166" y="61">cae en el segundo 3</text>
+            <line class="vl" x1="373" y1="30" x2="373" y2="80"/>
+            <text class="lab" x="381" y="44">si siguiera viva pero aislada,</text>
+            <text class="lab" x="381" y="60">deja de enviar órdenes aquí</text>
+            <rect class="bar soft" x="120" y="108" width="380" height="18" rx="3"/>
+            <text class="lab" x="128" y="100">válido 30 s desde la última renovación</text>
+            <rect class="bar off" x="500" y="108" width="380" height="18" rx="3"/>
+            <text class="lab" x="508" y="100">caducado</text>
+            <rect class="bar off" x="120" y="168" width="380" height="18" rx="3"/>
+            <text class="lab" x="128" y="160">espera</text>
+            <rect class="bar soft" x="500" y="168" width="127" height="18" rx="3"/>
+            <text class="lab" x="508" y="160">silencio</text>
+            <path class="gm" d="M627,160l7,7l-7,7l-7,-7z"/>
+            <rect class="bar soft" x="630" y="168" width="73" height="18" rx="3"/>
+            <text class="lab" x="598" y="208">turno 8</text>
+            <text class="lab" x="640" y="160">concilia</text>
+            <rect class="bar" x="707" y="168" width="173" height="18" rx="3"/>
+            <text class="lab" x="715" y="160">opera</text>
+            <line class="axis" x1="120" y1="226" x2="880" y2="226"/>
+            <text class="tick" x="120" y="248" text-anchor="middle">0 s</text>
+            <text class="tick" x="247" y="248" text-anchor="middle">10 s</text>
+            <text class="tick" x="373" y="248" text-anchor="middle">20 s</text>
+            <text class="tick" x="500" y="248" text-anchor="middle">30 s</text>
+            <text class="tick" x="627" y="248" text-anchor="middle">40 s</text>
+            <text class="tick" x="753" y="248" text-anchor="middle">50 s</text>
+            <text class="tick" x="880" y="248" text-anchor="end">60 s</text>
+          </svg>
+        </div>
+      </figure>
+      <p>Durante el relevo, que dura menos de un minuto, no salen órdenes nuevas, pero las posiciones abiertas siguen protegidas por sus stops en el servidor del bróker. Para estrategias de horas o días, un minuto sin operar no cambia nada.</p>
+      <h3>Cuatro barreras para que nunca operen dos a la vez</h3>
+      <ul class="principles">
+        <li><b>El cerrojo.</b> Solo quien lo tiene puede operar, y se guarda en un servicio externo que no acepta dos dueños.</li>
+        <li><b>La autocensura de la principal.</b> Si no consigue renovar durante 20 segundos, deja de enviar órdenes antes de que el cerrojo caduque, aunque siga viva.</li>
+        <li><b>El número de turno.</b> Cada toma del cerrojo sube un número que va dentro de cada orden. El sistema rechaza cualquier orden de un turno antiguo.</li>
+        <li><b>El guardián.</b> Si ve en la cuenta una orden de un turno que no es el actual, avisa y cierra lo duplicado.</li>
       </ul>
-      <div class="callout crit">
-        <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="10" cy="10" r="8.25" stroke="currentColor" stroke-width="1.5"/><path d="M7 7l6 6M13 7l-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-        <div><span class="ct">Señales de alarma</span><p>Financiación garantizada, cuentas enormes por cuotas mínimas, presión para pagar rápido, cursos obligatorios de varios miles de euros y reglas que cambian de un día para otro.</p></div>
+      <div class="callout">
+        <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="10" cy="10" r="8.25" stroke="currentColor" stroke-width="1.5"/><path d="M10 9v5M10 6.2v.1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        <div><span class="ct">Primero, relevo manual</span><p>El relevo automático es lo último que se construye. Al principio basta con una reserva preparada que tú enciendes con una orden, siguiendo un manual de cinco pasos. Se automatiza cuando el manual se ha practicado varias veces sin sorpresas.</p></div>
       </div>
     </section>
 
-    <section class="sec" id="veredicto">
-      <p class="kicker">Veredicto</p>
-      <h2 data-short="¿Merece la pena?">¿Merece la pena?</h2>
-      <div class="split">
-        <div class="yes"><h3><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 10.5l4 4 8-9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Puede tener sentido si</h3>
-          <ul>
-            <li>Tienes una estrategia probada y la disciplina de arriesgar poco por operación.</li>
-            <li>Tratas la cuota como el precio de una opción, no como una inversión.</li>
-            <li>Repartes entre dos o tres firmas serias y cobras a menudo.</li>
-          </ul></div>
-        <div class="no"><h3><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5 5l10 10M15 5L5 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>No lo tiene si</h3>
-          <ul>
-            <li>Buscas aprender a operar o un sueldo estable.</li>
-            <li>Necesitas arriesgar mucho para llegar al objetivo.</li>
-            <li>Tu estrategia depende de noticias, de la latencia o de las rendijas del entorno demo.</li>
-          </ul></div>
+    <section class="sec" id="fabricar">
+      <p class="kicker">Fabricar</p>
+      <h2 data-short="Fabricar un nodo">Fabricar un nodo nuevo</h2>
+      <p class="lead">Misma receta, distintos ingredientes. El software viaja como una imagen cerrada, la instalación es una receta automática y lo único propio de cada célula son su configuración y sus credenciales.</p>
+      <ol class="steps">
+        <li><div><b>Crear el servidor</b><span>En el proveedor y la ciudad que toquen, con IP fija y dedicada. Unos minutos.</span></div></li>
+        <li><div><b>Ejecutar la receta</b><span>Un programa de instalación endurece el sistema, cierra todo lo que no hace falta, pone la hora exacta y conecta la máquina al túnel privado.</span></div></li>
+        <li><div><b>Cargar la configuración de la célula</b><span>Qué cuenta, qué estrategias, qué límites. Sale del repositorio, revisada y firmada.</span></div></li>
+        <li><div><b>Cargar las credenciales</b><span>Los tokens de esa cuenta, cifrados, que solo esa máquina puede abrir.</span></div></li>
+        <li><div><b>Arrancar en sombra</b><span>La célula recibe precios y decide, pero no envía órdenes. Las comprobaciones automáticas miran conexión, hora, datos y diario.</span></div></li>
+        <li><div><b>Pasar a real</b><span>Cuando todo está en verde, se le da el cerrojo. Unos 30 minutos en total, 10 de ellos tuyos.</span></div></li>
+      </ol>
+      <h3>¿Máquinas propias o alquiladas?</h3>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Opción</th><th>Para qué</th><th class="num">Coste al mes</th><th>Veredicto</th></tr></thead>
+          <tbody>
+            <tr><td>Servidor alquilado en un centro de datos</td><td>Células principales y reservas</td><td class="num">20–80&nbsp;€</td><td>Lo recomendado para operar: energía, red y personal las 24 horas</td></tr>
+            <tr><td>Mini PC propio, «fabricado» con la receta</td><td>Laboratorio, supervisión o una reserva fría en casa</td><td class="num">≈ 2&nbsp;€ de luz</td><td>Útil fuera del camino de las órdenes; en casa hay cortes de luz y de red</td></tr>
+            <tr><td>Servidor propio en el centro de datos del bróker</td><td>Estrategias en las que cada milisegundo cuenta</td><td class="num">Cientos de euros</td><td>No compensa para nuestros horizontes</td></tr>
+          </tbody>
+        </table>
       </div>
-      <p class="pull">El modelo funciona porque <b>la mayoría arriesga demasiado</b>. Si eres disciplinado juegas con ventaja, y si eres rentable de verdad acabarás queriendo algo más grande.</p>
+      <p>Un mini PC fabricado con la misma receta es una buena idea para el laboratorio y para tener una reserva «de repuesto» en otra casa u oficina: si todo lo demás falla, se enciende y se le da el cerrojo. Lo que no conviene es que opere a diario desde una casa.</p>
+    </section>
+
+    <section class="sec" id="programar">
+      <p class="kicker">Programar</p>
+      <h2 data-short="Cómo se programa">Cómo se programa, sin tecnicismos</h2>
+      <p class="lead">Cinco ideas ordenan todo el desarrollo. Si se respetan desde el primer día, el sistema se puede probar, repetir, copiar y mejorar; si no, cada problema se vuelve un misterio.</p>
+      <h3>1 · Un solo motor, cuatro modos</h3>
+      <div class="cards quad modes">
+        <article class="card"><span class="tag">Backtest</span><h3 class="ct">El pasado, simulado</h3><dl><dt>Datos</dt><dd>Históricos guardados</dd><dt>Órdenes</dt><dd>A un bróker simulado con costes</dd></dl></article>
+        <article class="card"><span class="tag">Repetición</span><h3 class="ct">Un día real, otra vez</h3><dl><dt>Datos</dt><dd>El diario de ese día</dd><dt>Órdenes</dt><dd>A un bróker simulado: sale el gemelo</dd></dl></article>
+        <article class="card"><span class="tag">Sombra</span><h3 class="ct">En directo, sin dinero</h3><dl><dt>Datos</dt><dd>Precios reales en vivo</dd><dt>Órdenes</dt><dd>Se anotan pero no se envían</dd></dl></article>
+        <article class="card"><span class="tag">Real</span><h3 class="ct">En directo, con dinero</h3><dl><dt>Datos</dt><dd>Precios reales en vivo</dd><dt>Órdenes</dt><dd>Al bróker de verdad</dd></dl></article>
+      </div>
+      <p>La lógica de las estrategias, del tamaño y del riesgo es la misma en los cuatro. Por eso lo que funciona en el backtest se comporta igual en real, salvo lo que el mercado añade, y esa diferencia es justo lo que mide el gemelo.</p>
+      <h3>2 · Todo pasa por el diario</h3>
+      <p>Cada cosa que llega (un precio, una ejecución, una orden tuya, el paso del tiempo) se anota antes de procesarse. El motor no mira el reloj del ordenador ni nada que no esté en el diario. Así, repetir un día da exactamente el mismo resultado, y si no, hay un error.</p>
+      <h3>3 · Piezas pequeñas con contrato</h3>
+      <p>Cada pieza recibe y entrega mensajes con un formato fijo. Una estrategia no sabe nada del bróker; el riesgo no sabe qué estrategia pide. Así cada pieza se prueba sola y se cambia sin tocar las demás, que es lo que permite aislar variables como pide el documento 11.</p>
+      <h3>4 · Primero lo que protege</h3>
+      <p>Antes de la primera estrategia bonita van el riesgo, el control de órdenes, la conciliación con el bróker, el botón de parada y el guardián. Una estrategia mediocre con buenas protecciones sobrevive; una buena sin ellas, no.</p>
+      <h3>5 · Cada cambio con su prueba</h3>
+      <p>Ninguna pieza se da por terminada sin pruebas automáticas que la rompan a propósito: cortes de conexión, órdenes rechazadas, precios imposibles, relojes desajustados. Claude Code escribe buena parte de ese código y esas pruebas; tú decides qué se construye y revisas antes de desplegar.</p>
+      <h3>Qué se programa y cuándo</h3>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Bloque</th><th>Qué es</th><th>Cuándo</th><th>Terminado cuando</th></tr></thead>
+          <tbody>
+            <tr><td>Cimientos</td><td>Repositorio, tipos, unidades, reloj, configuración y registro</td><td class="nw">Semana 0</td><td>Las pruebas pasan en cada cambio</td></tr>
+            <tr><td>Datos</td><td>Descarga, limpieza, velas y calendario de sesiones</td><td class="nw">Semanas 0–1</td><td>Dos descargas dan lo mismo</td></tr>
+            <tr><td>Motor y diario</td><td>El bucle de eventos, la caja negra y la repetición exacta</td><td class="nw">Semana 1</td><td>Un día repetido da el mismo resultado</td></tr>
+            <tr><td>Bróker simulado</td><td>Ejecuciones con spread, comisión, swaps y deslizamiento</td><td class="nw">Semana 1</td><td>Coincide con un caso calculado a mano</td></tr>
+            <tr><td>Estrategias</td><td>Las tres del documento 10</td><td class="nw">Semana 2</td><td>Ficha y resultado fuera de muestra</td></tr>
+            <tr><td>Riesgo</td><td>Los controles previos y los estados de riesgo</td><td class="nw">Semana 3</td><td>Rechaza toda la batería de órdenes erróneas</td></tr>
+            <tr><td>Órdenes y cTrader</td><td>El gestor de órdenes y la conexión con la Open API</td><td class="nw">Semana 3</td><td>Sobrevive a cortes sin duplicar ni perder órdenes</td></tr>
+            <tr><td>Guardián y parada</td><td>El vigilante independiente y los comandos de pausa</td><td class="nw">Semanas 3–4</td><td>Cierra todo en menos de 10 segundos en demo</td></tr>
+            <tr><td>Despliegue y vigilancia</td><td>Receta, imagen, túnel, panel y avisos</td><td class="nw">Semana 4</td><td>Una célula nueva sale de la receta sin tocar nada a mano</td></tr>
+            <tr><td>Gemelo</td><td>Conciliación diaria y la cascada del documento 11</td><td class="nw">Semanas 4–5</td><td>Explica cada diferencia de un día de demo</td></tr>
+            <tr><td>Laboratorio</td><td>Registro de intentos, validación y Sharpe deflactado</td><td class="nw">Semana 2 en adelante</td><td>Todo backtest queda anotado solo</td></tr>
+            <tr><td>Jev</td><td>Lectores, parte y decisión a la sombra</td><td class="nw">Noviembre</td><td>Un parte diario con fecha y la decisión registrada</td></tr>
+            <tr><td>Plano de control</td><td>Panel común, comandos y exposición total</td><td class="nw">Noviembre–diciembre</td><td>Ve todas las células y las pausa</td></tr>
+            <tr><td>Varias células</td><td>Reserva, cerrojo y relevo</td><td class="nw">Enero–marzo de 2027</td><td>Relevo practicado en demo sin órdenes dobles</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>El detalle de cada bloque, con sus tareas, está en el <a href="14-especificacion-operacion.html">documento 14</a>. La especificación de cada pieza del núcleo, en el <a href="13-especificacion-nucleo.html">documento 13</a>.</p>
+    </section>
+
+    <section class="sec" id="decisiones">
+      <p class="kicker">Decisiones</p>
+      <h2 data-short="Decisiones de diseño">Las decisiones de diseño</h2>
+      <p class="lead">Cada decisión tiene alternativas razonables. Estas son las elegidas y por qué, pensando en un equipo de una o dos personas con Claude Code.</p>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Decisión</th><th>Elegimos</th><th>Alternativa</th><th>Por qué</th></tr></thead>
+          <tbody>
+            <tr><td>Lenguaje</td><td>Python para todo</td><td>C# con cBots</td><td>Un solo lenguaje para el laboratorio y la operación, con el mejor ecosistema de análisis. La velocidad sobra para nuestros horizontes</td></tr>
+            <tr><td>Conexión con cTrader</td><td>Cliente propio sobre los mensajes oficiales</td><td>La librería de ejemplo de Spotware</td><td>Control total de reconexión, latidos y errores, sin depender de un marco de red antiguo</td></tr>
+            <tr><td>Dónde se guarda</td><td>Diario en ficheros y base de datos pequeña en cada célula</td><td>Un servidor de base de datos central</td><td>Cada célula funciona sola aunque caiga todo lo demás</td></tr>
+            <tr><td>Cómo se instala</td><td>Contenedores y receta automática</td><td>Instalar a mano en cada máquina</td><td>Todas las células son idénticas y una nueva sale en minutos</td></tr>
+            <tr><td>Configuración</td><td>En el repositorio, revisada y con versión</td><td>Ficheros editados en cada máquina</td><td>Cada cambio queda registrado y se puede deshacer</td></tr>
+            <tr><td>Red privada</td><td>Túnel WireGuard</td><td>Puertos abiertos con contraseña</td><td>Nada queda expuesto a internet</td></tr>
+            <tr><td>Cerrojo</td><td>Un servicio gestionado que no acepta dos dueños</td><td>Montar un clúster propio</td><td>Más fiable y más barato para un equipo pequeño</td></tr>
+            <tr><td>Vigilancia</td><td>Prometheus y Grafana, con avisos al móvil</td><td>Mirar el panel de cTrader</td><td>Métricas de cada pieza y avisos antes de que duela</td></tr>
+            <tr><td>Claude</td><td>Fuera del camino de las órdenes</td><td>Un agente que opera</td><td>Aporta en código, lectura y decisiones lentas; en la ejecución solo añadiría riesgo</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="sec" id="costes">
+      <p class="kicker">Costes</p>
+      <h2 data-short="Cuánto cuesta">Cuánto cuesta cada célula</h2>
+      <p class="lead">Una célula más es sobre todo un servidor más. Lo caro de verdad sigue siendo operar, como mostró el documento 7.</p>
+      <figure class="fig" id="fig-cost">
+        <p class="fig-title">Coste mensual de la plataforma</p>
+        <p class="fig-sub">Ajusta el número de células y el tipo de reserva. Precios orientativos de septiembre de 2026, con impuestos.</p>
+        <div class="controls two">
+          <div class="ctl"><label for="cc-n">Células <output id="cc-n-out" for="cc-n"></output></label><input id="cc-n" type="range" min="1" max="6" step="1" value="2"></div>
+          <div class="ctl"><label for="cc-v">Servidor de cada célula, al mes</label><select id="cc-v"><option value="20">Básico · 20 €</option><option value="40" selected>Recomendado · 40 €</option><option value="80">Holgado · 80 €</option></select></div>
+          <div class="ctl"><label for="cc-r">Reserva de cada célula</label><select id="cc-r"><option value="0">Sin reserva</option><option value="3">En frío · lista para arrancar</option><option value="1" selected>En caliente · encendida</option></select></div>
+          <div class="ctl"><label for="cc-p">Plano de control, al mes</label><select id="cc-p"><option value="0">En casa · 0 €</option><option value="10" selected>Servidor pequeño · 10 €</option></select></div>
+        </div>
+        <div class="stats">
+          <div class="stat"><span class="v" id="cc-tot">–</span><span class="l">al mes en total</span></div>
+          <div class="stat"><span class="v" id="cc-per">–</span><span class="l">por célula</span></div>
+          <div class="stat"><span class="v" id="cc-year">–</span><span class="l">al año</span></div>
+        </div>
+        <div class="chart" id="cost"></div>
+        <p class="readout" id="cc-read" aria-live="polite"></p>
+        <p class="fig-note">Incluye almacén de copias (5&nbsp;€), vigilancia externa (5&nbsp;€) y cerrojo gestionado (menos de 1&nbsp;€). La reserva en frío es una copia lista para arrancar que solo paga almacenamiento. No incluye la conexión de casa ni las cuotas de fondeo.</p>
+      </figure>
+    </section>
+
+    <section class="sec" id="cuidado">
+      <p class="kicker">Cuidado</p>
+      <h2 data-short="Lo que complica">Lo que complica tener varias células</h2>
+      <p class="lead">Cada célula añadida multiplica algo: máquinas que mantener, configuraciones que pueden desviarse y maneras de equivocarse. Estas son las trampas y su respuesta.</p>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Riesgo</th><th>Cómo se nota</th><th>Respuesta</th></tr></thead>
+          <tbody>
+            <tr><td>Dos operando a la vez</td><td>Órdenes dobles en una cuenta</td><td>Las cuatro barreras del relevo y el simulacro mensual</td></tr>
+            <tr><td>Configuraciones que se desvían</td><td>Dos células con reglas distintas sin que nadie lo decidiera</td><td>Configuración solo desde el repositorio; cada célula informa de la versión que usa</td></tr>
+            <tr><td>Más superficie de ataque</td><td>Más máquinas, más llaves</td><td>Las siete capas de aislamiento y la revisión trimestral de accesos</td></tr>
+            <tr><td>Reglas de las firmas</td><td>Misma estrategia en varias cuentas por encima del límite, o posiciones contrarias entre cuentas</td><td>El plano de control suma la exposición y avisa; lee las reglas de cada firma</td></tr>
+            <tr><td>Carga de trabajo</td><td>Más avisos, más actualizaciones</td><td>Todo automático y los avisos, con prioridad clara</td></tr>
+            <tr><td>Coste</td><td>Servidores que no aportan</td><td>Una célula solo se abre cuando hay una cuenta que la necesita</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h3>Empieza con una célula</h3>
+      <ol class="steps">
+        <li><div><b>Nivel 1 · Una célula</b><span>Sin reserva. Si cae, los stops del bróker protegen y la reparas. Es el objetivo del mes de desarrollo.</span></div></li>
+        <li><div><b>Nivel 2 · Reserva manual</b><span>Una copia preparada en otro proveedor que enciendes tú siguiendo el manual.</span></div></li>
+        <li><div><b>Nivel 3 · Relevo automático</b><span>Cerrojo, turnos y guardián. Solo después de practicar el relevo manual.</span></div></li>
+        <li><div><b>Nivel 4 · Varias células</b><span>Una por cuenta, con el plano de control sumando la exposición de todas.</span></div></li>
+      </ol>
+      <p class="pull">La plataforma crece por <b>copias idénticas</b>, no por piezas cada vez más complicadas.</p>
     </section>
 
     <section class="sec" id="fuentes">
       <p class="kicker">Fuentes</p>
       <h2 data-short="Fuentes">Fuentes y lecturas</h2>
       <ol class="refs">
-        <li>Finance Magnates (2024). Only 7% of 300,000 Prop Trading Accounts Achieved Payouts (datos de FPFX Tech). <a href="https://www.financemagnates.com/forex/analysis/exclusive-only-7-of-300000-prop-trading-accounts-achieved-payouts/" target="_blank" rel="noopener">Artículo</a></li>
-        <li>FTMO. How it works; Scaling and Reward Growth Plan; How does an FTMO Account work from the technical side. <a href="https://ftmo.com/en/how-it-works/" target="_blank" rel="noopener">Programa</a> · <a href="https://ftmo.com/en/reward-growth-and-scaling-plan/" target="_blank" rel="noopener">Escalado</a> · <a href="https://ftmo.com/en/faq/how-does-an-ftmo-account-work-from-the-technical-side/" target="_blank" rel="noopener">Preguntas frecuentes</a></li>
-        <li>Finance Magnates (2025). FTMO's Parent Netted Over $62 Million on $329M Revenue in 2024. <a href="https://www.financemagnates.com/forex/ftmos-parent-netted-over-62-million-on-329m-revenue-in-2024/" target="_blank" rel="noopener">Artículo</a></li>
-        <li>Finance Magnates (2025). FTMO Announces Over $450 Million Paid Out as Prop Trading Firm Turns 10. <a href="https://www.financemagnates.com/forex/ftmo-announces-over-450-million-paid-out-as-prop-trading-firm-turns-10/" target="_blank" rel="noopener">Artículo</a></li>
-        <li>FTMO (2025). FTMO completes acquisition of OANDA from CVC. <a href="https://ftmo.com/en/press-release/ftmo-completes-acquisition-of-oanda-from-cvc/" target="_blank" rel="noopener">Nota de prensa</a></li>
-        <li>Finance Magnates (2025). In a Blow to the CFTC, US Court Throws Out My Forex Funds Lawsuit. <a href="https://www.financemagnates.com/forex/my-forex-funds-parent-defeats-cftc-in-court-as-judge-imposes-sanctions/" target="_blank" rel="noopener">Artículo</a></li>
-        <li>Finance Magnates (2024). The Funded Trader «Pauses All Operations». <a href="https://www.financemagnates.com/forex/breaking-prop-trading-firm-the-funded-trader-pauses-all-operations/" target="_blank" rel="noopener">Artículo</a></li>
-        <li>Finance Magnates (2024). Prop Trading Firms' Renaissance: Cutting US Clients, Integrating New Trading Platforms. <a href="https://www.financemagnates.com/forex/prop-trading-firms-renaissance-cutting-us-clients-integrating-new-trading-platforms/" target="_blank" rel="noopener">Artículo</a></li>
-        <li>CNMV (2019). La CNMV advierte sobre las páginas web de cuentas de trading financiadas ligadas a cursos de formación. <a href="https://www.cnmv.es/portal/verDoc.axd?t=%7B304c66da-fafb-4000-be53-0eee33017f3d%7D" target="_blank" rel="noopener">PDF</a></li>
-        <li>Dirección General de Tributos. Consulta vinculante V1722-23, de 15 de junio de 2023. <a href="https://www.iberley.es/resoluciones/resolucion-vinculante-direccion-general-tributos-v1722-23-15-06-2023-11639388" target="_blank" rel="noopener">Texto</a></li>
+        <li>Spotware. cTrader Open API: endpoints y proxies, autenticación, límites de peticiones y mensajes. <a href="https://help.ctrader.com/open-api/proxies-endpoints/" target="_blank" rel="noopener">Endpoints</a> · <a href="https://help.ctrader.com/open-api/account-authentication/" target="_blank" rel="noopener">Autenticación</a> · <a href="https://github.com/spotware/openapi-proto-messages" target="_blank" rel="noopener">Mensajes oficiales</a></li>
+        <li>FTMO. Capital máximo por persona o estrategia y cuentas múltiples. <a href="https://ftmo.com/en/faq/how-many-accounts-can-i-have/" target="_blank" rel="noopener">Preguntas frecuentes</a></li>
+        <li>Kleppmann, M. (2016). How to do distributed locking (cerrojos con caducidad y números de turno). <a href="https://martin.kleppmann.com/2016/02/08/how-to-do-distributed-locking.html" target="_blank" rel="noopener">Artículo</a></li>
+        <li>Amazon Web Services. Arquitecturas por células para limitar el alcance de los fallos. <a href="https://docs.aws.amazon.com/wellarchitected/latest/reducing-scope-of-impact-with-cell-based-architecture/reducing-scope-of-impact-with-cell-based-architecture.html" target="_blank" rel="noopener">Guía</a></li>
+        <li>Documentos 5, 6, 7, 9, 10 y 11 de esta serie; la especificación técnica completa está en los documentos 13 y 14.</li>
       </ol>
     </section>
   </main>
 </div>
-<footer class="foot wrap"><h2 class="foot-h" id="serie">La serie completa</h2><nav aria-labelledby="serie"><ol class="series-index"><li><a href="01-trading-algoritmico.html"><span class="n" style="--k:var(--k1)">1</span><span class="t">Trading algorítmico</span><span class="d">Qué puede hacer un algoritmo, quién paga cada ganancia y dónde están sus límites.</span></a></li><li><a href="02-forex-algoritmico.html"><span class="n" style="--k:var(--k2)">2</span><span class="t">Forex algorítmico</span><span class="d">El mercado de divisas visto por un algoritmo: estructura, costes y estrategias con evidencia.</span></a></li><li><a href="03-agentes-claude-trading.html"><span class="n" style="--k:var(--k3)">3</span><span class="t">Agentes Claude</span><span class="d">Dónde aporta un agente de IA a un sistema de trading, dónde es un riesgo y cuánto cuesta.</span></a></li><li><a href="#top" aria-current="page"><span class="n" style="--k:var(--k4)">4</span><span class="t">Cuentas de fondeo</span><span class="d">Cómo ganan dinero las firmas de fondeo, quién cobra de verdad y qué pasa si eres rentable.</span><span class="here">Estás aquí</span></a></li><li><a href="05-ctrader-api-mcp.html"><span class="n" style="--k:var(--k5)">5</span><span class="t">cTrader: API y MCP</span><span class="d">Qué es cTrader y cómo conectar un sistema por Open API, FIX, cBots o MCP, y qué vigilar.</span></a></li><li><a href="06-gestion-del-riesgo.html"><span class="n" style="--k:var(--k6)">6</span><span class="t">Gestión del riesgo</span><span class="d">Tamaño de posición, límites, caídas y controles para que el sistema sobreviva.</span></a></li><li><a href="07-infraestructura-y-costes.html"><span class="n" style="--k:var(--k7)">7</span><span class="t">Infraestructura y costes</span><span class="d">Seguridad, redundancia, latencia y costes de la infraestructura final, desde Bilbao.</span></a></li><li><a href="08-atlas-de-estrategias.html"><span class="n" style="--k:var(--k8)">8</span><span class="t">Atlas de estrategias</span><span class="d">Estrategias algorítmicas por sector y dificultad: qué detectan, quién paga y cómo se montan.</span></a></li><li><a href="09-jev-el-decisor.html"><span class="n" style="--k:var(--k9)">9</span><span class="t">Jev, el decisor</span><span class="d">Cómo un decisor enciende y apaga estrategias según el mercado, sin poner en riesgo el sistema.</span></a></li><li><a href="10-plan-hasta-diciembre.html"><span class="n" style="--k:var(--k10)">10</span><span class="t">El plan hasta diciembre</span><span class="d">Un mes de desarrollo, las pruebas de fondeo, cuándo pasar a capital propio y cuánto dinero hace falta.</span></a></li><li><a href="11-mejora-continua.html"><span class="n" style="--k:var(--k11)">11</span><span class="t">Mejora continua</span><span class="d">Cómo separar cada variable del resultado, probar un cambio cada vez y saber si una mejora es real.</span></a></li><li><a href="12-la-plataforma.html"><span class="n" style="--k:var(--k12)">12</span><span class="t">La plataforma</span><span class="d">El sistema completo en varios ordenadores y sitios, explicado sin tecnicismos y con gráficos.</span></a></li><li><a href="13-especificacion-nucleo.html"><span class="n" style="--k:var(--k13)">13</span><span class="t">Especificación del núcleo</span><span class="d">El motor, los datos, las estrategias, el riesgo, las órdenes y cTrader, especificados para programar.</span></a></li><li><a href="14-especificacion-operacion.html"><span class="n" style="--k:var(--k14)">14</span><span class="t">Especificación de la operación</span><span class="d">Guardián, gemelo, laboratorio, Jev, varias células, despliegue, seguridad, pruebas y plan de trabajo.</span></a></li></ol></nav><p>Contenido educativo. No es asesoramiento financiero ni una recomendación de inversión. Las cifras proceden de las fuentes citadas; las simulaciones usan datos aleatorios y solo ilustran ideas.</p><p>Serie «Máquinas y mercados» · Septiembre de 2026</p></footer>
+<footer class="foot wrap"><h2 class="foot-h" id="serie">La serie completa</h2><nav aria-labelledby="serie"><ol class="series-index"><li><a href="01-trading-algoritmico.html"><span class="n" style="--k:var(--k1)">1</span><span class="t">Trading algorítmico</span><span class="d">Qué puede hacer un algoritmo, quién paga cada ganancia y dónde están sus límites.</span></a></li><li><a href="02-forex-algoritmico.html"><span class="n" style="--k:var(--k2)">2</span><span class="t">Forex algorítmico</span><span class="d">El mercado de divisas visto por un algoritmo: estructura, costes y estrategias con evidencia.</span></a></li><li><a href="03-agentes-claude-trading.html"><span class="n" style="--k:var(--k3)">3</span><span class="t">Agentes Claude</span><span class="d">Dónde aporta un agente de IA a un sistema de trading, dónde es un riesgo y cuánto cuesta.</span></a></li><li><a href="04-verdad-cuentas-fondeo.html"><span class="n" style="--k:var(--k4)">4</span><span class="t">Cuentas de fondeo</span><span class="d">Cómo ganan dinero las firmas de fondeo, quién cobra de verdad y qué pasa si eres rentable.</span></a></li><li><a href="05-ctrader-api-mcp.html"><span class="n" style="--k:var(--k5)">5</span><span class="t">cTrader: API y MCP</span><span class="d">Qué es cTrader y cómo conectar un sistema por Open API, FIX, cBots o MCP, y qué vigilar.</span></a></li><li><a href="06-gestion-del-riesgo.html"><span class="n" style="--k:var(--k6)">6</span><span class="t">Gestión del riesgo</span><span class="d">Tamaño de posición, límites, caídas y controles para que el sistema sobreviva.</span></a></li><li><a href="07-infraestructura-y-costes.html"><span class="n" style="--k:var(--k7)">7</span><span class="t">Infraestructura y costes</span><span class="d">Seguridad, redundancia, latencia y costes de la infraestructura final, desde Bilbao.</span></a></li><li><a href="08-atlas-de-estrategias.html"><span class="n" style="--k:var(--k8)">8</span><span class="t">Atlas de estrategias</span><span class="d">Estrategias algorítmicas por sector y dificultad: qué detectan, quién paga y cómo se montan.</span></a></li><li><a href="09-jev-el-decisor.html"><span class="n" style="--k:var(--k9)">9</span><span class="t">Jev, el decisor</span><span class="d">Cómo un decisor enciende y apaga estrategias según el mercado, sin poner en riesgo el sistema.</span></a></li><li><a href="10-plan-hasta-diciembre.html"><span class="n" style="--k:var(--k10)">10</span><span class="t">El plan hasta diciembre</span><span class="d">Un mes de desarrollo, las pruebas de fondeo, cuándo pasar a capital propio y cuánto dinero hace falta.</span></a></li><li><a href="11-mejora-continua.html"><span class="n" style="--k:var(--k11)">11</span><span class="t">Mejora continua</span><span class="d">Cómo separar cada variable del resultado, probar un cambio cada vez y saber si una mejora es real.</span></a></li><li><a href="#top" aria-current="page"><span class="n" style="--k:var(--k12)">12</span><span class="t">La plataforma</span><span class="d">El sistema completo en varios ordenadores y sitios, explicado sin tecnicismos y con gráficos.</span><span class="here">Estás aquí</span></a></li><li><a href="13-especificacion-nucleo.html"><span class="n" style="--k:var(--k13)">13</span><span class="t">Especificación del núcleo</span><span class="d">El motor, los datos, las estrategias, el riesgo, las órdenes y cTrader, especificados para programar.</span></a></li><li><a href="14-especificacion-operacion.html"><span class="n" style="--k:var(--k14)">14</span><span class="t">Especificación de la operación</span><span class="d">Guardián, gemelo, laboratorio, Jev, varias células, despliegue, seguridad, pruebas y plan de trabajo.</span></a></li></ol></nav><p>Contenido educativo. No es asesoramiento financiero ni una recomendación de inversión. Las cifras proceden de las fuentes citadas; las simulaciones usan datos aleatorios y solo ilustran ideas.</p><p>Serie «Máquinas y mercados» · Septiembre de 2026</p></footer>
 <script>
 (function () {
   "use strict";
@@ -1314,181 +1553,50 @@ details.rules summary{cursor:pointer;font:500 12.5px/1.4 var(--f-mono);color:var
 (function () {
   var M = window.MM;
   function $(id) { return document.getElementById(id); }
-  var usd = function (v) { return M.fmt(v, 0) + " $"; };
-  var pct1 = function (v) { return M.fmt(v, 1) + " %"; };
+  function eur(v) { return M.fmt(v, 0) + " €"; }
 
-  /* Cómo funciona */
-  M.flow($("how"), {
-    aria: "Recorrido de una cuenta de fondeo: cuota, fase 1, fase 2, cuenta financiada y escalado",
-    nodes: [
-      { t: "Cuota", d: "≈ 540 € por una cuenta de 100.000 $" },
-      { t: "Fase 1", d: "+10 % sin perder un 5 % en un día ni un 10 % en total" },
-      { t: "Fase 2", d: "+5 % con los mismos límites" },
-      { t: "Cuenta financiada", d: "Simulada. Cobras el 80 % de lo que ganes" },
-      { t: "Escalado", d: "+25 % de saldo cada 4 meses, hasta 2 M$" }
-    ],
-    edges: ["compras", "superas", "superas", "si cumples"],
-    hl: [3]
-  });
-
-  /* Embudo real de FPFX */
-  var fp = [
-    { label: "Compran una prueba", value: 100, color: "var(--o1)" },
-    { label: "Llegan a cuenta financiada", value: 14, color: "var(--o3)" },
-    { label: "Cobran al menos una vez", value: 7, color: "var(--o5)" }
+  /* ---------- Latencias ---------- */
+  var LAT = [
+    { label: "VPS en Londres hasta el bróker", segs: [[0.5, 3]], color: "var(--accent)", t: "0,5–3 ms" },
+    { label: "Proceso de una señal en el motor", segs: [[1, 10]], color: "var(--accent)", t: "1–10 ms" },
+    { label: "Bilbao hasta Londres", segs: [[20, 40]], color: "var(--accent)", t: "20–40 ms" },
+    { label: "Nueva York hasta Londres", segs: [[65, 80]], color: "var(--accent)", t: "65–80 ms" },
+    { label: "Una vela de un minuto", segs: [[60000, 60000 * 1.08]], color: "var(--c7)", t: "60.000 ms" },
+    { label: "Operación de reversión intradía", segs: [[1.8e6, 3.6e6]], color: "var(--c7)", t: "30–60 minutos" },
+    { label: "Operación de tendencia", segs: [[2.6e8, 2.6e9]], color: "var(--c7)", t: "3–30 días" }
   ];
-  M.hbar($("fpfx"), { aria: "De cada 100 compradores de una prueba, 14 llegan a cuenta financiada y 7 cobran", rows: fp, domain: [0, 100], labelW: 210, fmt: function (v) { return M.fmt(v, 0) + " de 100"; } });
-  M.dataTable($("fig-fpfx"), ["Etapa", "De cada 100"], fp.map(function (r) { return [r.label, M.fmt(r.value, 0)]; }), [1]);
-
-  /* Simulador */
-  var PRE = {
-    sin: { p: 40, r: 1.5, risk: 1, tpd: 2, cost: 0.05 },
-    modesta: { p: 43, r: 1.5, risk: 1, tpd: 2, cost: 0.05 },
-    solida: { p: 45, r: 1.5, risk: 1, tpd: 2, cost: 0.05 },
-    apostador: { p: 40, r: 1.5, risk: 3, tpd: 4, cost: 0.05 }
-  };
-  var seed = 7, N = 4000;
-  function num(id, d) { var v = parseFloat($(id).value); return isFinite(v) ? v : d; }
-  function params() {
-    return {
-      p: num("q-p", 40) / 100, R: num("q-r", 1.5), risk: num("q-risk", 1), tpd: Math.round(num("q-tpd", 2)), cost: num("q-cost", 0.05),
-      split: num("q-split", 80) / 100, fee: Math.max(0, num("q-fee", 570)), fundedDays: num("q-months", 6) * 21,
-      t1: Math.max(0.5, num("q-t1", 10)), t2: Math.max(0.5, num("q-t2", 5)), daily: Math.max(0.5, num("q-daily", 5)), maxLoss: Math.max(1, num("q-max", 10)),
-      maxDays: 120, cycle: 10, acct: 100000
-    };
-  }
-  function run(P, n, sd) {
-    var r = M.rng(sd), win = P.R * P.risk - P.cost * P.risk, loss = -P.risk - P.cost * P.risk;
-    function phase(target) {
-      var bal = 0;
-      for (var d = 1; d <= P.maxDays; d++) {
-        var start = bal;
-        for (var k = 0; k < P.tpd; k++) {
-          bal += (r() < P.p) ? win : loss;
-          if (start - bal >= P.daily - 1e-9 || bal <= -P.maxLoss + 1e-9) return -d;
-          if (bal >= target) return d;
-        }
-      }
-      return 0;
-    }
-    var s = { p1: 0, p2: 0, paid1: 0, paid3: 0, sumPaid: 0, sumRefund: 0, d1: [] };
-    for (var i = 0; i < n; i++) {
-      var d1 = phase(P.t1); if (d1 <= 0) continue; s.p1++; s.d1.push(d1);
-      var d2 = phase(P.t2); if (d2 <= 0) continue; s.p2++;
-      var bal = 0, paid = 0, cnt = 0;
-      for (var d = 1; d <= P.fundedDays; d++) {
-        var start = bal, dead = false;
-        for (var k = 0; k < P.tpd; k++) { bal += (r() < P.p) ? win : loss; if (start - bal >= P.daily - 1e-9 || bal <= -P.maxLoss + 1e-9) { dead = true; break; } }
-        if (dead) break;
-        if (d % P.cycle === 0 && bal > 0) { paid += P.split * bal / 100 * P.acct; cnt++; bal = 0; }
-      }
-      if (cnt >= 1) { s.paid1++; s.sumRefund += P.fee; }
-      if (cnt >= 3) s.paid3++;
-      s.sumPaid += paid;
-    }
-    s.d1.sort(function (a, b) { return a - b; });
-    return {
-      p1: s.p1 / n * 100, p2: s.p2 / n * 100, paid1: s.paid1 / n * 100, paid3: s.paid3 / n * 100,
-      avg: s.paid1 ? s.sumPaid / s.paid1 : 0, ev: (s.sumPaid + s.sumRefund) / n - P.fee,
-      keep: P.fee > 0 ? (1 - (s.sumPaid + s.sumRefund) / (n * P.fee)) * 100 : 0, med: s.d1.length ? s.d1[Math.floor(s.d1.length / 2)] : null
-    };
-  }
-  function paths(P, n, sd, days) {
-    var r = M.rng(sd), win = P.R * P.risk - P.cost * P.risk, loss = -P.risk - P.cost * P.risk, out = [];
-    for (var i = 0; i < n; i++) {
-      var bal = 0, vals = [0], state = 0, end = null;
-      for (var d = 1; d <= days; d++) {
-        if (state !== 0) { vals.push(null); continue; }
-        var start = bal;
-        for (var k = 0; k < P.tpd; k++) {
-          bal += (r() < P.p) ? win : loss;
-          if (start - bal >= P.daily - 1e-9 || bal <= -P.maxLoss + 1e-9) { state = -1; break; }
-          if (bal >= P.t1) { state = 1; break; }
-        }
-        vals.push(bal);
-        if (state !== 0) end = d;
-      }
-      out.push({ vals: vals, state: state, end: end });
-    }
-    return out;
-  }
-  var funnelChart = null, pathChart = null;
-  function sharpeOf(P) { var m = (P.p * P.R - (1 - P.p) - P.cost) * P.risk, sd = (P.R + 1) * P.risk * Math.sqrt(P.p * (1 - P.p)); return sd > 0 ? m * P.tpd / (sd * Math.sqrt(P.tpd)) * Math.sqrt(252) : 0; }
-  function labels() {
-    $("q-p-out").textContent = M.fmt(num("q-p", 40), 0) + " %";
-    $("q-r-out").textContent = M.fmt(num("q-r", 1.5), 1) + " R";
-    $("q-risk-out").textContent = M.fmt(num("q-risk", 1), 2).replace(/,?0+$/, "") + " %";
-    $("q-tpd-out").textContent = M.fmt(num("q-tpd", 2), 0);
-    $("q-cost-out").textContent = M.fmt(num("q-cost", 0.05), 2) + " R";
-    $("q-split-out").textContent = M.fmt(num("q-split", 80), 0) + " %";
-  }
-  function render() {
-    labels();
-    var P = params(), res = run(P, N, seed);
-    var edgeR = P.p * P.R - (1 - P.p) - P.cost, sh = sharpeOf(P);
-    $("sim-edge").textContent = "Ventaja por operación: " + (edgeR > 0 ? "+" : "") + M.fmt(edgeR, 3) + " R (" + (edgeR > 0 ? "+" : "") + M.fmt(edgeR * P.risk, 3) + " % de la cuenta). Equivale a un Sharpe anual de " + M.fmt(sh, 2) + ".";
-    var rows = [
-      { label: "Compran la prueba", value: 100, color: "var(--o1)" },
-      { label: "Superan la fase 1", value: res.p1, color: "var(--o2)" },
-      { label: "Superan la fase 2", value: res.p2, color: "var(--o3)", ref: { value: 14, label: "Dato real: 14 %", tip: "Estudio FPFX Tech" } },
-      { label: "Cobran al menos una vez", value: res.paid1, color: "var(--o4)", ref: { value: 7, label: "Dato real: 7 %", tip: "Estudio FPFX Tech" } },
-      { label: "Cobran 3 veces o más", value: res.paid3, color: "var(--o5)" }
-    ];
-    var fcfg = { aria: "Porcentaje de traders simulados que llega a cada etapa", rows: rows, domain: [0, 100], labelW: 200, fmt: pct1, unitLabel: "de los compradores" };
-    if (funnelChart) funnelChart.update(fcfg); else funnelChart = M.hbar($("sim-funnel"), fcfg);
-    var card = $("sim-ev-card"), badge = $("sim-ev-badge"), good = res.ev > 0;
-    $("sim-ev").textContent = (good ? "+" : "") + usd(res.ev);
-    card.classList.toggle("is-good", good); card.classList.toggle("is-bad", !good);
-    badge.replaceChildren();
-    var ns = "http://www.w3.org/2000/svg", sv = document.createElementNS(ns, "svg"); sv.setAttribute("viewBox", "0 0 12 12"); sv.setAttribute("aria-hidden", "true");
-    var pth = document.createElementNS(ns, "path"); pth.setAttribute("d", good ? "M6 2l4 6H2z" : "M6 10L2 4h8z"); pth.setAttribute("fill", "currentColor"); sv.appendChild(pth);
-    badge.appendChild(sv); badge.appendChild(document.createTextNode(good ? "A tu favor" : "En contra"));
-    $("sim-avg").textContent = res.paid1 > 0 ? usd(res.avg) : "–";
-    if (res.keep >= 0) { $("sim-firm").textContent = pct1(res.keep); $("sim-firm-l").textContent = "de las cuotas se queda en la firma"; }
-    else { $("sim-firm").textContent = "+" + pct1(-res.keep); $("sim-firm-l").textContent = "más de lo que ingresa en cuotas paga la firma a estos traders"; }
-    $("sim-days").textContent = res.med ? M.fmt(res.med, 0) : "–";
-    var txt = "De cada 100 personas con este perfil, " + M.fmt(res.paid1, 1) + " cobran al menos una vez. ";
-    if (res.ev > 0 && edgeR <= 0) txt += "Aunque cada operación pierde dinero de media, el valor esperado del intento es positivo: la cuota es fija y la firma asume las pérdidas de la cuenta financiada. Las firmas compensan esta asimetría con más reglas y revisiones, y con clientes que arriesgan demasiado.";
-    else if (res.ev > 0) txt += "Con una ventaja real y riesgo controlado, cada intento vale de media " + usd(res.ev) + ". Es el perfil que las firmas vigilan más de cerca.";
-    else txt += "Con este perfil, la cuota es dinero perdido en promedio. Así es como ganan las firmas.";
-    $("sim-read").textContent = txt;
-    var ps = paths(P, 30, seed * 31 + 5, 60), xs = []; for (var d = 0; d <= 60; d++) xs.push(d);
-    var ctxs = ps.map(function (p) { return { values: p.vals, color: p.state === 1 ? "var(--accent)" : "var(--deemph)", width: p.state === 1 ? 1.6 : 1, opacity: 0.95 }; });
-    ctxs.sort(function (a, b) { return (a.width > b.width) - (b.width > a.width); });
-    var pcfg = {
-      aria: "Treinta trayectorias simuladas de la fase 1 entre el objetivo y el límite de pérdidas",
-      x: xs, series: [], context: ctxs, yDomain: [-(P.maxLoss + 2), P.t1 + 2], height: 280,
-      yFmt: function (v) { return (v > 0 ? "+" : "") + M.fmt(v, 0) + " %"; },
-      hlines: [{ y: P.t1, label: "Objetivo +" + M.fmt(P.t1, 1).replace(/,0$/, "") + " %", color: "var(--accent)" }, { y: -P.maxLoss, label: "Límite −" + M.fmt(P.maxLoss, 1).replace(/,0$/, "") + " %", color: "var(--crit-mark)", below: true }],
-      xTicks: [{ v: 0, label: "Día 0", anchor: "start" }, { v: 10, label: "10", minor: true }, { v: 20, label: "20" }, { v: 30, label: "30", minor: true }, { v: 40, label: "40" }, { v: 50, label: "50", minor: true }, { v: 60, label: "60 sesiones", anchor: "end" }],
-      tipTitle: function (i) { return "Sesión " + i; },
-      tipExtra: function (i) {
-        var alive = 0, pass = 0, out = 0;
-        ps.forEach(function (p) { if (p.end !== null && p.end <= i) { if (p.state === 1) pass++; else out++; } else alive++; });
-        return [{ value: String(alive), label: "siguen en juego" }, { value: String(pass), label: "han aprobado", color: "var(--accent)" }, { value: String(out), label: "eliminados", color: "var(--deemph)" }];
-      }
-    };
-    if (pathChart) pathChart.update(pcfg); else pathChart = M.line($("sim-paths"), pcfg);
-    M.dataTable($("fig-sim"), ["Resultado", "Valor"], rows.map(function (r) { return [r.label, pct1(r.value)]; }).concat([
-      ["Valor esperado por intento", (good ? "+" : "") + usd(res.ev)], ["Pago medio de quien cobra", res.paid1 > 0 ? usd(res.avg) : "–"],
-      ["Parte de las cuotas que retiene la firma", pct1(res.keep)], ["Sesiones medianas para superar la fase 1", res.med ? String(res.med) : "–"]
-    ]), [1]);
-  }
-  var pend = 0;
-  function later() { labels(); clearTimeout(pend); pend = setTimeout(render, 140); }
-  function markCustom() { document.querySelectorAll("[data-preset]").forEach(function (b) { b.setAttribute("aria-pressed", "false"); }); }
-  ["q-p", "q-r", "q-risk", "q-tpd", "q-cost", "q-split"].forEach(function (id) { $(id).addEventListener("input", function () { markCustom(); later(); }); });
-  ["q-fee", "q-months", "q-t1", "q-t2", "q-daily", "q-max"].forEach(function (id) { $(id).addEventListener("input", later); $(id).addEventListener("change", later); });
-  document.querySelectorAll("[data-preset]").forEach(function (b) {
-    b.addEventListener("click", function () {
-      var pr = PRE[b.getAttribute("data-preset")];
-      $("q-p").value = pr.p; $("q-r").value = pr.r; $("q-risk").value = pr.risk; $("q-tpd").value = pr.tpd; $("q-cost").value = pr.cost;
-      document.querySelectorAll("[data-preset]").forEach(function (o) { o.setAttribute("aria-pressed", o === b ? "true" : "false"); });
-      render();
-    });
+  M.range($("lat"), {
+    aria: "Tiempos de red y de proceso frente a la duración de las operaciones, en escala logarítmica", rows: LAT, scale: "log", domain: [0.1, 4e9], labelW: 230,
+    ticks: [{ v: 0.1, label: "0,1 ms", minor: true }, { v: 1, label: "1 ms" }, { v: 100, label: "100 ms", minor: true }, { v: 1000, label: "1 s" }, { v: 60000, label: "1 min" }, { v: 3.6e6, label: "1 h", minor: true }, { v: 8.64e7, label: "1 día" }, { v: 2.6e9, label: "1 mes", minor: true }],
+    describe: function (r) { return r.t; }
   });
-  $("sim-again").addEventListener("click", function () { seed = (seed * 48271 + 11) % 2147483647; render(); });
-  render();
+  M.dataTable($("fig-lat"), ["Qué", "Tiempo"], LAT.map(function (r) { return [r.label, r.t]; }));
+
+  /* ---------- Coste de la plataforma ---------- */
+  var costChart = null;
+  function cost() {
+    var n = +$("cc-n").value, v = +$("cc-v").value, rk = +$("cc-r").value, pc = +$("cc-p").value;
+    $("cc-n-out").textContent = String(n);
+    var res = rk === 0 ? 0 : rk === 3 ? 3 : v;
+    var items = [
+      { label: "Servidores de las células", value: n * v, note: n + " × " + eur(v) },
+      { label: "Reservas", value: n * res, note: rk === 0 ? "Sin reserva" : rk === 3 ? "Copia lista para arrancar, " + eur(3) + " por célula" : "Encendidas, " + eur(v) + " por célula" },
+      { label: "Plano de control", value: pc, note: pc ? "Servidor pequeño en la nube europea" : "En un equipo de casa" },
+      { label: "Almacén de copias", value: 5, note: "Diarios y datos cifrados" },
+      { label: "Vigilancia externa", value: 5, note: "Avisa si una célula deja de dar señales" },
+      { label: "Cerrojo gestionado", value: 1, note: "Menos de 1 € al mes" }
+    ];
+    var tot = items.reduce(function (a, it) { return a + it.value; }, 0);
+    $("cc-tot").textContent = eur(tot); $("cc-per").textContent = eur(tot / n); $("cc-year").textContent = eur(tot * 12);
+    var rows = items.filter(function (it) { return it.value > 0; }).sort(function (a, b) { return b.value - a.value; });
+    var cfg = { aria: "Coste mensual de la plataforma por partida", rows: rows, labelW: 190, valW: 70, fmt: function (x) { return M.fmt(x, 0) + " €"; }, unitLabel: "al mes", color: "var(--accent)" };
+    if (costChart) costChart.update(cfg); else costChart = M.hbar($("cost"), cfg);
+    $("cc-read").textContent = "Con " + n + (n === 1 ? " célula" : " células") + (rk === 1 ? " y sus reservas encendidas" : rk === 3 ? " y reservas en frío" : " sin reserva") + ", la plataforma cuesta unos " + eur(tot) + " al mes. " + (rk === 1 ? "Las reservas en caliente doblan el coste de servidores a cambio de un relevo en menos de un minuto; en frío, el relevo tarda unos minutos y cuesta casi nada." : rk === 3 ? "El relevo tarda unos minutos, lo que dura arrancar la copia, y cuesta casi nada." : "Sin reserva, si cae una célula sus posiciones siguen protegidas por los stops, pero no opera hasta que la repares.");
+    M.dataTable($("fig-cost"), ["Partida", "€ al mes", "Detalle"], items.map(function (it) { return [it.label, M.fmt(it.value, 0), it.note]; }).concat([["Total", M.fmt(tot, 0), ""]]), [1]);
+  }
+  $("cc-n").addEventListener("input", cost);
+  ["cc-v", "cc-r", "cc-p"].forEach(function (id) { $(id).addEventListener("change", cost); });
+  cost();
 })();
 </script>
 </body>
