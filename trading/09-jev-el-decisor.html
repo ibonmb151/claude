@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>La verdad del fondeo</title>
-<meta name="description" content="Cómo ganan dinero las firmas de cuentas de fondeo, qué dicen los datos sobre quién cobra y qué pasa si eres rentable, con un simulador de probabilidades.">
+<title>Jev, el decisor</title>
+<meta name="description" content="Cómo un decisor, agente de IA o persona, puede encender y apagar estrategias según el estado del mercado: arquitectura con todo separado, cinco opciones para leer y decidir, un simulador y las reglas para que no haga daño.">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..800;1,6..96,400..800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap">
 <style>
 /* ============================================================
@@ -355,36 +355,57 @@ code:not(pre code){font:.88em var(--f-mono);background:var(--surface-2);border:1
 .fig .stats{margin-top:16px}
 
 /* página */
-:root{--accent:var(--c4);--accent-ink:#4a3aa7}
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--accent-ink:#B3AAF3}}
-:root[data-theme="dark"]{--accent-ink:#B3AAF3}
-details.rules{margin-top:14px;border-top:1px solid var(--rule);padding-top:10px}
-details.rules summary{cursor:pointer;font:500 12.5px/1.4 var(--f-mono);color:var(--ink-2);width:max-content;max-width:100%}
-.sim-sub{font:600 15px/1.35 var(--f-sans);color:var(--ink);margin-top:22px}
+:root{--accent:var(--c9);--accent-ink:var(--k9)}
+.arch{min-width:760px}
+.arch .zone{font:500 11px var(--f-mono);letter-spacing:.14em;fill:var(--muted)}
+.arch .box{fill:var(--surface);stroke:var(--rule-strong)}
+.arch .box.me{fill:var(--wash);stroke:var(--accent)}
+.arch .box.core{fill:var(--surface-2);stroke:var(--rule-strong)}
+.arch .bt{fill:var(--ink);font-size:14px;font-weight:600}
+.arch .bd{fill:var(--ink-2);font-size:12px}
+.arch .ln{stroke:var(--ink-2);stroke-width:1.3;fill:none}
+.arch .ln.ro{stroke-dasharray:5 4}
+.arch .hd{fill:var(--ink-2)}
+.arch .lab{fill:var(--ink-2);font:11.5px var(--f-mono)}
+.principles{list-style:none;padding:0!important;display:grid;gap:10px}
+.principles li{padding-left:22px;position:relative}
+.principles li::before{content:"";position:absolute;left:2px;top:.55em;width:7px;height:7px;background:var(--accent);transform:rotate(45deg)}
+.opt .ct{font-size:17px}
+.opt .tag b{font:600 13px var(--f-sans);color:var(--ink);margin-right:6px;letter-spacing:0}
+.opt .pc{margin:0;padding:0;list-style:none;font-size:14.5px;line-height:1.5;color:var(--ink-2)}
+.opt .pc li{position:relative;padding-left:18px}
+.opt .pc li + li{margin-top:4px}
+.opt .pc li::before{position:absolute;left:0;top:0;font-weight:600}
+.opt .pc li.plus::before{content:"+";color:var(--good)}
+.opt .pc li.minus::before{content:"−";color:var(--crit)}
+.opt.rec{border-color:var(--accent);background:var(--wash)}
+.ev .who{font:500 11.5px/1.3 var(--f-mono);color:var(--muted)}
+.chip{display:inline-flex;align-items:center;gap:6px;font:500 12px/1 var(--f-sans);padding:5px 9px;border-radius:999px;border:1px solid var(--rule-strong);color:var(--ink-2)}
 .checklist{list-style:none;padding:0!important;display:grid;gap:10px}
 .checklist li{position:relative;padding-left:26px}
 .checklist li::before{content:"";position:absolute;left:2px;top:.35em;width:13px;height:13px;border:1.5px solid var(--accent-ink);border-radius:3px}
 .checklist li::after{content:"";position:absolute;left:6px;top:.52em;width:5px;height:8px;border:solid var(--accent-ink);border-width:0 1.8px 1.8px 0;transform:rotate(45deg)}
+.sim-sub{font:600 15px/1.35 var(--f-sans);color:var(--ink);margin-top:22px}
 </style>
 </head>
 <body>
-<header class="series wrap" id="top"><span class="brand">Máquinas y mercados</span><nav aria-label="Documentos de la serie"><ol class="series-nav"><li><a href="01-trading-algoritmico.html" title="1 · Trading algorítmico" aria-label="Documento 1 · Trading algorítmico"><span class="dot" style="--c:var(--c1)"></span>1</a></li><li><a href="02-forex-algoritmico.html" title="2 · Forex algorítmico" aria-label="Documento 2 · Forex algorítmico"><span class="dot" style="--c:var(--c2)"></span>2</a></li><li><a href="03-agentes-claude-trading.html" title="3 · Agentes Claude" aria-label="Documento 3 · Agentes Claude"><span class="dot" style="--c:var(--c3)"></span>3</a></li><li><a href="#top" aria-current="page"><span class="dot" style="--c:var(--c4)"></span>4 · Cuentas de fondeo</a></li><li><a href="05-ctrader-api-mcp.html" title="5 · cTrader: API y MCP" aria-label="Documento 5 · cTrader: API y MCP"><span class="dot" style="--c:var(--c5)"></span>5</a></li><li><a href="06-gestion-del-riesgo.html" title="6 · Gestión del riesgo" aria-label="Documento 6 · Gestión del riesgo"><span class="dot" style="--c:var(--c6)"></span>6</a></li><li><a href="07-infraestructura-y-costes.html" title="7 · Infraestructura y costes" aria-label="Documento 7 · Infraestructura y costes"><span class="dot" style="--c:var(--c7)"></span>7</a></li><li><a href="08-atlas-de-estrategias.html" title="8 · Atlas de estrategias" aria-label="Documento 8 · Atlas de estrategias"><span class="dot" style="--c:var(--c8)"></span>8</a></li><li><a href="09-jev-el-decisor.html" title="9 · Jev, el decisor" aria-label="Documento 9 · Jev, el decisor"><span class="dot" style="--c:var(--c9)"></span>9</a></li></ol></nav></header>
+<header class="series wrap" id="top"><span class="brand">Máquinas y mercados</span><nav aria-label="Documentos de la serie"><ol class="series-nav"><li><a href="01-trading-algoritmico.html" title="1 · Trading algorítmico" aria-label="Documento 1 · Trading algorítmico"><span class="dot" style="--c:var(--c1)"></span>1</a></li><li><a href="02-forex-algoritmico.html" title="2 · Forex algorítmico" aria-label="Documento 2 · Forex algorítmico"><span class="dot" style="--c:var(--c2)"></span>2</a></li><li><a href="03-agentes-claude-trading.html" title="3 · Agentes Claude" aria-label="Documento 3 · Agentes Claude"><span class="dot" style="--c:var(--c3)"></span>3</a></li><li><a href="04-verdad-cuentas-fondeo.html" title="4 · Cuentas de fondeo" aria-label="Documento 4 · Cuentas de fondeo"><span class="dot" style="--c:var(--c4)"></span>4</a></li><li><a href="05-ctrader-api-mcp.html" title="5 · cTrader: API y MCP" aria-label="Documento 5 · cTrader: API y MCP"><span class="dot" style="--c:var(--c5)"></span>5</a></li><li><a href="06-gestion-del-riesgo.html" title="6 · Gestión del riesgo" aria-label="Documento 6 · Gestión del riesgo"><span class="dot" style="--c:var(--c6)"></span>6</a></li><li><a href="07-infraestructura-y-costes.html" title="7 · Infraestructura y costes" aria-label="Documento 7 · Infraestructura y costes"><span class="dot" style="--c:var(--c7)"></span>7</a></li><li><a href="08-atlas-de-estrategias.html" title="8 · Atlas de estrategias" aria-label="Documento 8 · Atlas de estrategias"><span class="dot" style="--c:var(--c8)"></span>8</a></li><li><a href="#top" aria-current="page"><span class="dot" style="--c:var(--c9)"></span>9 · Jev, el decisor</a></li></ol></nav></header>
 <section class="hero wrap">
   <div class="hero-text">
-    <p class="eyebrow"><span>Máquinas y mercados</span><b>Documento 4 de 9</b></p>
-    <h1>La verdad <em>del fondeo</em></h1>
-    <p class="dek">Cómo ganan dinero las firmas de cuentas de fondeo, qué dicen los datos sobre quién cobra y qué pasa cuando eres rentable de verdad. Con un simulador para calcular tus probabilidades.</p>
-    <p class="meta">Septiembre de 2026 · 17 minutos de lectura</p>
+    <p class="eyebrow"><span>Máquinas y mercados</span><b>Documento 9 de 9</b></p>
+    <h1>Jev, <em>el decisor</em></h1>
+    <p class="dek">Cómo Jev, un agente de IA o una persona, puede decidir qué estrategias encender y cuáles apagar según el mercado. Una arquitectura con todo separado, cinco formas de leer el mercado y decidir, un simulador y las reglas para que el decisor no haga daño.</p>
+    <p class="meta">Septiembre de 2026 · 16 minutos de lectura</p>
   </div>
-  <div class="emblem" aria-hidden="true"><canvas></canvas><span class="numeral">4</span><span class="serial">MM · 04 · 2026</span></div>
+  <div class="emblem" aria-hidden="true"><canvas></canvas><span class="numeral">9</span><span class="serial">MM · 09 · 2026</span></div>
 </section>
-<div class="wrap"><div class="microprint" aria-hidden="true" data-text="CUENTAS DE FONDEO · FASE 1 · FASE 2 · PAGO"></div>
+<div class="wrap"><div class="microprint" aria-hidden="true" data-text="LEER · DECIDIR · VALIDAR · APLICAR · ENCENDER · APAGAR · HISTÉRESIS"></div>
   <div class="tldr">
     <h2>En corto</h2>
     <ul>
-      <li>Operas en una cuenta demo. FTMO, la firma más grande, lo explica en sus condiciones: todas sus cuentas usan capital ficticio y puede copiar tus operaciones en su propia cuenta real.</li>
-      <li>Cobra poca gente. En el mayor estudio público, con 300.000 cuentas de 10 firmas, el 14&nbsp;% superó la prueba y solo el 7&nbsp;% del total recibió algún pago.</li>
-      <li>El negocio vive de las cuotas y de que la mayoría arriesgue demasiado. Si eres rentable, en una firma seria cobrarás, pero con techo, más vigilancia y riesgo de que la firma cierre.</li>
+      <li>Decidir qué estrategia encender es una estrategia más, y de las difíciles: el régimen se reconoce tarde, cada cambio cuesta y la evidencia de acertar el momento es pobre. Lo mejor documentado es modesto: dar más peso a lo que viene funcionando y menos cuando el mercado se agita.</li>
+      <li>La opción que recomendamos separa leer de decidir. Código que mide el mercado y escribe un parte con fecha; Jev elige entre acciones permitidas; un validador aplica reglas fijas; y el control de riesgo queda fuera de su alcance.</li>
+      <li>Apagar puede ser automático; encender necesita más pruebas o tu visto bueno. Jev empieza a la sombra, decidiendo sin tocar nada, y solo gana autoridad si bate a la alternativa de dejarlo todo encendido.</li>
     </ul>
   </div>
 </div>
@@ -393,219 +414,339 @@ details.rules summary{cursor:pointer;font:500 12.5px/1.4 var(--f-mono);color:var
   <aside class="toc" aria-label="Índice"></aside>
   <main class="content">
 
-    <section class="sec" id="como-funciona">
-      <p class="kicker">Mecánica</p>
-      <h2 data-short="Cómo funciona">Cómo funciona una cuenta de fondeo</h2>
-      <p class="lead">Pagas una cuota por una prueba en una cuenta simulada. Si cumples unas reglas, pasas a otra cuenta simulada y cobras una parte de lo que ganes en ella.</p>
-      <figure class="diagram">
-        <div class="flowchart" id="how"></div>
-        <figcaption class="fig-note">Parámetros del programa de dos fases de FTMO, la firma más conocida. Otras firmas cambian objetivos, límites y reparto: pruebas de una sola fase, financiación inmediata o pérdidas máximas que siguen a tu saldo más alto.</figcaption>
-      </figure>
-      <p>FTMO devuelve la cuota con el primer pago. El reparto parte del 80&nbsp;% y sube al 90&nbsp;% con su plan de escalado, que añade un 25&nbsp;% de saldo cada cuatro meses si ganas al menos un 10&nbsp;% en ese periodo y cobras dos veces, hasta 2 millones de dólares entre todas tus cuentas.</p>
-    </section>
-
-    <section class="sec" id="datos">
-      <p class="kicker">Los números</p>
-      <h2 data-short="Qué dicen los datos">Qué dicen los datos</h2>
-      <p class="lead">Las firmas no publican cuántos clientes aprueban ni cuántos cobran. El dato público más sólido procede de un proveedor de tecnología para estas firmas.</p>
-      <figure class="fig" id="fig-fpfx">
-        <p class="fig-title">De cada 100 compradores de una prueba</p>
-        <p class="fig-sub">Datos de FPFX Tech sobre más de 300.000 cuentas de 100.000 traders en 10 firmas, publicados en septiembre de 2024.</p>
-        <div class="chart" id="fpfx"></div>
-        <p class="fig-note">Fuente: FPFX Tech, vía Finance Magnates. El 45&nbsp;% de quienes llegaron a una cuenta financiada cobró al menos una vez.</p>
-      </figure>
-      <div class="stats quad">
-        <div class="stat"><span class="v">4&nbsp;%</span><span class="l">del tamaño de la cuenta fue el pago medio de quien cobró: unos 4.000&nbsp;$ en una de 100.000&nbsp;$.</span><span class="s">FPFX Tech, 2024</span></div>
-        <div class="stat"><span class="v">≈800&nbsp;$</span><span class="l">gastó de media cada cuenta en pruebas a lo largo de su vida, normalmente en tres intentos.</span><span class="s">FPFX Tech, 2024</span></div>
-        <div class="stat"><span class="v">329<small>M$</small></span><span class="l">ingresó el grupo de FTMO en 2024, con un beneficio neto de 62,5 millones de dólares.</span><span class="s">Finance Magnates, 2025</span></div>
-        <div class="stat"><span class="v">450<small>M$</small></span><span class="l">pagados por FTMO a sus traders en sus diez primeros años.</span><span class="s">FTMO, septiembre de 2025</span></div>
-      </div>
-      <p>Las dos cosas son ciertas a la vez: las firmas serias pagan mucho dinero en total y la mayoría de sus clientes nunca cobra. Como las cuentas son simuladas, los pagos salen de los ingresos de la firma, que proceden sobre todo de las cuotas, y de lo que gane si copia en real a sus mejores traders. FTMO no desglosa qué parte de sus gastos son pagos a traders.</p>
-    </section>
-
-    <section class="sec" id="dinero-real">
-      <p class="kicker">Transparencia</p>
-      <h2 data-short="¿Es dinero real?">¿Es dinero real?</h2>
-      <p class="lead">No. En casi todas las firmas de forex y CFD, la cuenta financiada es una cuenta demo con precios reales.</p>
-      <div class="callout">
-        <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="10" cy="10" r="8.25" stroke="currentColor" stroke-width="1.5"/><path d="M10 9v5M10 6.2v.1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-        <div><span class="ct">Lo que dice FTMO</span><p>En sus preguntas frecuentes explica que todas sus cuentas, incluida la financiada, son demo con capital ficticio y cotizaciones reales de proveedores de liquidez. Puede analizar tus operaciones y replicar algunas en su propia cuenta real, sin que eso cambie tu resultado ni tu recompensa.</p></div>
-      </div>
-      <p>En la práctica, la firma funciona como un bróker B-book. Tus beneficios simulados son un gasto para ella, y tus pérdidas no le aportan nada más allá de la cuota. Para cubrirse puede copiar en real a quienes ganan de forma constante. Eso explica dos cosas que verás si te va bien: el capital que te asignan tiene techo y tus operaciones reciben más atención.</p>
-      <h3>El caso My Forex Funds</h3>
-      <p>En agosto de 2023, la CFTC demandó a su matriz, Traders Global Group, por cobrar al menos 310 millones de dólares en cuotas a más de 135.000 clientes, a los que presuntamente hacía creer que operaban en cuentas reales. En mayo de 2025, un juez federal archivó el caso de forma definitiva y sancionó a la propia CFTC por engañar al tribunal, con más de 3,1 millones de dólares en costas. Mientras tanto, la firma pasó casi dos años cerrada y con los fondos congelados.</p>
-      <p>La lección para el cliente: el modelo demo es legal si está bien explicado. Lo que importa es que las reglas sean claras y que la firma pague lo que promete.</p>
-      <div class="callout warn">
-        <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 2.8l8 14H2l8-14z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M10 8v4.2M10 14.6v.1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-        <div><span class="ct">En España</span><p>La CNMV advirtió en 2019 del riesgo de fraude en las cuentas de trading financiadas ligadas a cursos de pago, y recordó que esa actividad queda fuera de su supervisión. No hay fondo de garantía ni supervisor que te proteja: tienes un contrato con una empresa, a menudo extranjera.</p></div>
-      </div>
-    </section>
-
-    <section class="sec" id="reglas">
-      <p class="kicker">Letra pequeña</p>
-      <h2 data-short="Las reglas">Las reglas que deciden si cobras</h2>
+    <section class="sec" id="problema">
+      <p class="kicker">Punto de partida</p>
+      <h2 data-short="El problema">Por qué no basta con la tabla</h2>
+      <p class="lead">La tabla «Cuándo funciona cada una» del <a href="08-atlas-de-estrategias.html">atlas</a> dice en qué entorno gana cada estrategia. Usarla para encender y apagar parece inmediato, pero tiene cinco trampas.</p>
       <div class="tbl-wrap">
         <table>
-          <thead><tr><th>Regla</th><th>Qué significa</th><th>Cómo te afecta</th></tr></thead>
+          <thead><tr><th>Trampa</th><th>Qué pasa</th><th>Cómo se mitiga</th></tr></thead>
           <tbody>
-            <tr><td>Pérdida máxima diaria</td><td>Normalmente un 5&nbsp;% del saldo, contando también la pérdida de las posiciones abiertas</td><td>Una mala tarde con posiciones abiertas basta para perder la cuenta</td></tr>
-            <tr><td>Pérdida máxima total</td><td>Un 10&nbsp;% fijo, o un límite que sube con tu saldo máximo (trailing)</td><td>El trailing, habitual en futuros, castiga devolver parte de lo ganado</td></tr>
-            <tr><td>Objetivo de beneficio</td><td>+10&nbsp;% en la fase 1 y +5&nbsp;% en la fase 2</td><td>Empuja a arriesgar más de lo sensato para llegar antes</td></tr>
-            <tr><td>Días mínimos</td><td>Operar un número mínimo de días, según la firma</td><td>Impide aprobar con una sola apuesta afortunada</td></tr>
-            <tr><td>Consistencia</td><td>Ningún día puede aportar más de cierto porcentaje del beneficio</td><td>Penaliza las ganancias concentradas en pocas sesiones</td></tr>
-            <tr><td>Noticias y fin de semana</td><td>En algunas cuentas se prohíbe operar alrededor de noticias fuertes o mantener posiciones el fin de semana</td><td>Invalida estrategias que viven de esos momentos</td></tr>
-            <tr><td>Estrategias prohibidas</td><td>Arbitraje de latencia, aprovechar precios retrasados, cubrirse entre cuentas o firmas, copiar señales de terceros, apuestas a todo o nada</td><td>Es el motivo más citado en las denegaciones de pago</td></tr>
-            <tr><td>Verificación de identidad</td><td>KYC antes del primer pago</td><td>Retrasos y denegaciones si algo no cuadra</td></tr>
+            <tr><td>El régimen se ve tarde</td><td>Cuando las lecturas confirman una crisis o una tendencia, parte del movimiento ya ha pasado</td><td>Mover pesos poco a poco y dejar que cada estrategia se proteja sola con su stop</td></tr>
+            <tr><td>Los regímenes se mezclan</td><td>Casi nunca hay un entorno puro: tendencia en divisas y lateral en índices, calma con tipos al alza</td><td>Trabajar con probabilidades y pesos, no con interruptores</td></tr>
+            <tr><td>Cambiar cuesta</td><td>Cada encendido y apagado paga spread y puede entrar y salir en el peor momento</td><td>Histéresis, confirmación y un número máximo de cambios</td></tr>
+            <tr><td>Pocas observaciones</td><td>En veinte años hay un puñado de crisis; es fácil ajustar las reglas a ellas</td><td>Reglas sencillas, pocas lecturas y pruebas fuera de muestra</td></tr>
+            <tr><td>El decisor también es una estrategia</td><td>Jev puede empeorar el resultado respecto a dejarlo todo encendido</td><td>Compararlo siempre con esa alternativa y apagarlo si no la bate</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h3>Lo que dice la evidencia</h3>
+      <div class="cards two">
+        <article class="card ev"><span class="tag">Difícil</span><h3 class="ct">Acertar el momento de cada estrategia</h3><p>Intentar entrar y salir de los factores de bolsa según lo baratos o caros que están da resultados débiles; diversificar entre ellos funciona mejor.</p><p class="ex who">Asness, Chandra, Ilmanen e Israel, 2017</p></article>
+        <article class="card ev"><span class="tag">Funciona</span><h3 class="ct">Seguir a lo que viene funcionando</h3><p>Tras un año positivo, el factor medio ganó un 0,51&nbsp;% al mes; tras un año negativo, un 0,06&nbsp;%. Las estrategias tienen su propio momentum.</p><p class="ex who">Ehsani y Linnainmaa, 2022</p></article>
+        <article class="card ev"><span class="tag">Con matices</span><h3 class="ct">Reducir cuando sube la volatilidad</h3><p>Escalar la exposición según la volatilidad reciente mejora el Sharpe en muestra. Fuera de muestra no lo mejora de forma sistemática, aunque sí en momentum, rentabilidad y beta baja.</p><p class="ex who">Moreira y Muir, 2017; Cederburg y otros, 2020</p></article>
+        <article class="card ev"><span class="tag">Prometedor</span><h3 class="ct">Modelos de régimen para evitar grandes pérdidas</h3><p>Modelos de Markov sobre turbulencia, inflación y crecimiento mejoraron en backtest una asignación estática, sobre todo para quien quiere evitar caídas grandes.</p><p class="ex who">Kritzman, Page y Turkington, 2012</p></article>
+      </div>
+      <p class="pull">Jev no debe adivinar el próximo régimen. Su trabajo es <b>mover pesos con prudencia</b> y apagar a tiempo lo que el entorno castiga.</p>
+    </section>
+
+    <section class="sec" id="arquitectura">
+      <p class="kicker">Todo separado</p>
+      <h2 data-short="Arquitectura">La arquitectura: leer, decidir, validar, aplicar</h2>
+      <p class="lead">Cada pieza hace una sola cosa y no puede hacer la de las demás. Jev solo produce una decisión escrita; nunca toca órdenes ni límites de riesgo.</p>
+      <figure class="diagram">
+        <p class="scroll-hint">Desliza hacia los lados para ver el diagrama completo.</p>
+        <div class="scroll">
+          <svg class="arch" viewBox="0 0 900 412" role="img" aria-label="Arquitectura. Los lectores de código escriben un parte del mercado; Jev lo lee y decide el estado de cada estrategia; un validador comprueba la decisión con reglas fijas; el orquestador aplica los pesos a las estrategias, que son módulos separados. El control de riesgo actúa sobre las estrategias sin pasar por Jev. Los resultados vuelven a Jev y tú apruebas los encendidos.">
+            <text class="zone" x="16" y="34">LEER Y DECIDIR</text>
+            <text class="zone" x="16" y="226">APLICAR Y CONTROLAR</text>
+
+            <rect class="box" x="16" y="48" width="196" height="116" rx="8"/>
+            <text class="bt" x="30" y="74">Lectores</text>
+            <text class="bd" x="30" y="96">Código que mide tendencia,</text>
+            <text class="bd" x="30" y="114">volatilidad, turbulencia,</text>
+            <text class="bd" x="30" y="132">tipos, costes y calendario</text>
+
+            <rect class="box" x="236" y="48" width="196" height="116" rx="8"/>
+            <text class="bt" x="250" y="74">Parte del mercado</text>
+            <text class="bd" x="250" y="96">Un JSON con fecha:</text>
+            <text class="bd" x="250" y="114">lecturas, percentiles</text>
+            <text class="bd" x="250" y="132">y avisos</text>
+
+            <rect class="box me" x="456" y="48" width="196" height="116" rx="8"/>
+            <text class="bt" x="470" y="74">Jev, el decisor</text>
+            <text class="bd" x="470" y="96">Enciende, deja en base</text>
+            <text class="bd" x="470" y="114">o apaga cada estrategia</text>
+            <text class="bd" x="470" y="132">y explica por qué</text>
+
+            <rect class="box" x="676" y="48" width="196" height="116" rx="8"/>
+            <text class="bt" x="690" y="74">Validador</text>
+            <text class="bd" x="690" y="96">Reglas fijas: estados</text>
+            <text class="bd" x="690" y="114">permitidos, ritmo,</text>
+            <text class="bd" x="690" y="132">histéresis y riesgo total</text>
+
+            <rect class="box" x="676" y="240" width="196" height="100" rx="8"/>
+            <text class="bt" x="690" y="266">Orquestador</text>
+            <text class="bd" x="690" y="288">Aplica los pesos poco</text>
+            <text class="bd" x="690" y="306">a poco y lo registra</text>
+
+            <rect class="box core" x="456" y="240" width="196" height="100" rx="8"/>
+            <text class="bt" x="470" y="266">Estrategias</text>
+            <text class="bd" x="470" y="288">Módulos separados, cada</text>
+            <text class="bd" x="470" y="306">uno con su stop y límites</text>
+
+            <rect class="box" x="236" y="240" width="196" height="100" rx="8"/>
+            <text class="bt" x="250" y="266">Control de riesgo</text>
+            <text class="bd" x="250" y="288">Independiente de Jev.</text>
+            <text class="bd" x="250" y="306">Puede apagarlo todo;</text>
+            <text class="bd" x="250" y="324">solo tú reactivas</text>
+
+            <rect class="box" x="16" y="240" width="196" height="100" rx="8"/>
+            <text class="bt" x="30" y="266">Tú</text>
+            <text class="bd" x="30" y="288">Apruebas los encendidos</text>
+            <text class="bd" x="30" y="306">y revisas cada semana</text>
+
+            <line class="ln" x1="212" y1="106" x2="228" y2="106"/><path class="hd" d="M236,106l-8,-4.5v9z"/>
+            <line class="ln" x1="432" y1="106" x2="448" y2="106"/><path class="hd" d="M456,106l-8,-4.5v9z"/>
+            <line class="ln" x1="652" y1="106" x2="668" y2="106"/><path class="hd" d="M676,106l-8,-4.5v9z"/>
+            <line class="ln" x1="774" y1="164" x2="774" y2="232"/><path class="hd" d="M774,240l-4.5,-8h9z"/>
+            <text class="lab" x="782" y="206">decisión válida</text>
+            <line class="ln" x1="676" y1="290" x2="660" y2="290"/><path class="hd" d="M652,290l8,-4.5v9z"/>
+            <line class="ln" x1="432" y1="290" x2="448" y2="290"/><path class="hd" d="M456,290l-8,-4.5v9z"/>
+            <path class="ln ro" d="M554,240V172"/><path class="hd" d="M554,164l-4.5,8h9z"/>
+            <text class="lab" x="562" y="206">resultados</text>
+            <path class="ln ro" d="M114,340V384H774V348"/><path class="hd" d="M774,340l-4.5,8h9z"/>
+            <text class="lab" x="300" y="378">apruebas los encendidos</text>
+          </svg>
+        </div>
+      </figure>
+      <ul class="principles">
+        <li><b>Estrategias aisladas.</b> Cada una corre por separado, en su propio proceso o subcuenta, con su stop y sus límites. Jev solo cambia su estado: encendida, base o apagada.</li>
+        <li><b>Lectura con fecha.</b> Los lectores escriben el parte a una hora fija. Jev decide con ese parte y con nada más, así cada decisión se puede reconstruir.</li>
+        <li><b>Decisión con esquema fijo.</b> Si la salida de Jev no cumple el esquema o no cita las lecturas que la justifican, se descarta y no cambia nada.</li>
+        <li><b>El riesgo manda sobre Jev.</b> El control de riesgo del <a href="06-gestion-del-riesgo.html">documento 6</a> puede apagarlo todo y Jev no puede reactivar lo que él ha parado.</li>
+      </ul>
+      <div class="callout">
+        <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="10" cy="10" r="8.25" stroke="currentColor" stroke-width="1.5"/><path d="M10 9v5M10 6.2v.1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        <div><span class="ct">¿Y si Jev es una persona?</span><p>La arquitectura es la misma. El parte se convierte en un panel semanal, el validador en una lista de comprobación que se cumple antes de pulsar nada y el orquestador sigue siendo automático. La ventaja de un agente de IA es la constancia y la velocidad para leer texto; la de una persona, el criterio ante lo que nunca ha pasado.</p></div>
+      </div>
+    </section>
+
+    <section class="sec" id="opciones">
+      <p class="kicker">Opciones</p>
+      <h2 data-short="Cinco opciones">Cinco formas de leer el mercado y decidir</h2>
+      <p class="lead">De la más libre a la más rígida. La diferencia está en quién lee el mercado y cuánta libertad tiene quien decide.</p>
+      <div class="cards two">
+        <article class="card opt"><span class="tag"><b>A</b>Jev lo hace todo</span><h3 class="ct">Jev lee el mercado y decide</h3><p>Recibe precios, noticias y calendario en bruto, y decide qué encender.</p>
+          <ul class="pc"><li class="plus">Entiende contexto y situaciones nuevas.</li><li class="minus">No es reproducible ni se puede probar con históricos: el modelo ya sabe qué pasó.</li><li class="minus">Expuesto a noticias manipuladas y a cifras inventadas.</li></ul><p class="ex">Solo como segunda opinión, nunca solo.</p></article>
+        <article class="card opt rec"><span class="tag"><b>B</b>Recomendada como objetivo</span><h3 class="ct">Lectores de código y Jev decide</h3><p>Código que mide el mercado escribe un parte con fecha; Jev decide dentro de unas reglas y un validador lo comprueba.</p>
+          <ul class="pc"><li class="plus">Lecturas auditables y comprobables con históricos.</li><li class="plus">Jev aporta criterio con los eventos y el texto.</li><li class="minus">Jev solo se puede evaluar hacia delante, a la sombra.</li></ul><p class="ex">El equilibrio entre criterio y control.</p></article>
+        <article class="card opt"><span class="tag"><b>C</b>Para empezar y como red</span><h3 class="ct">Reglas fijas; Jev supervisa</h3><p>Una tabla de política decide los pesos a partir del parte. Jev explica, vigila anomalías y propone cambios a la tabla, que tú apruebas.</p>
+          <ul class="pc"><li class="plus">Todo se puede probar con históricos.</li><li class="plus">Coste y riesgo mínimos.</li><li class="minus">Se adapta mal a lo que nunca ha pasado.</li></ul><p class="ex">Lo que muestra el simulador de más abajo.</p></article>
+        <article class="card opt"><span class="tag"><b>D</b>Más adelante</span><h3 class="ct">Comité de lectores y Jev arbitra</h3><p>Varios agentes especializados, en bancos centrales, volatilidad, tendencia, noticias y costes, escriben informes; Jev los sopesa, con un abogado del diablo.</p>
+          <ul class="pc"><li class="plus">Varias perspectivas y más texto leído.</li><li class="minus">Caro, complejo y con errores correlacionados si todos son el mismo modelo.</li></ul><p class="ex">Solo si B ya aporta valor.</p></article>
+        <article class="card opt"><span class="tag"><b>E</b>Referencia obligatoria</span><h3 class="ct">Sin decisor: todo encendido</h3><p>Todas las estrategias con el mismo riesgo, sin cambios salvo las paradas del control de riesgo.</p>
+          <ul class="pc"><li class="plus">Lo más simple y robusto.</li><li class="minus">Aguanta los malos entornos de cada estrategia sin reaccionar.</li></ul><p class="ex">Jev tiene que batir esto; si no, sobra.</p></article>
+      </div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Opción</th><th>Quién lee</th><th>Quién decide</th><th>Reproducible</th><th>Se prueba con históricos</th><th>Se adapta a lo nuevo</th><th>Coste</th></tr></thead>
+          <tbody>
+            <tr><td>A</td><td>Jev</td><td>Jev</td><td>No</td><td>No</td><td>Mucho</td><td>Alto</td></tr>
+            <tr><td>B</td><td>Código, más un lector de texto</td><td>Jev con reglas</td><td>Las lecturas sí</td><td>Las lecturas sí; Jev, a la sombra</td><td>Bastante</td><td>Medio</td></tr>
+            <tr><td>C</td><td>Código</td><td>Reglas fijas</td><td>Sí</td><td>Sí</td><td>Poco</td><td>Bajo</td></tr>
+            <tr><td>D</td><td>Varios agentes</td><td>Jev arbitra</td><td>No</td><td>No</td><td>Mucho</td><td>Alto</td></tr>
+            <tr><td>E</td><td>Nadie</td><td>Nadie</td><td>Sí</td><td>Sí</td><td>Nada</td><td>Mínimo</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="sec" id="leer">
+      <p class="kicker">Lectores</p>
+      <h2 data-short="Cómo leer el mercado">Cómo leer el mercado sin un modelo de lenguaje</h2>
+      <p class="lead">La mayor parte del parte se calcula con código sencillo y datos que ya tienes del bróker. El modelo de lenguaje entra solo donde hay texto.</p>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Lectura</th><th>Cómo se mide</th><th>Qué entorno señala</th><th>A quién afecta</th></tr></thead>
+          <tbody>
+            <tr><td>Fuerza de tendencia</td><td>Rendimiento de 3 a 12 meses dividido por su volatilidad; porcentaje de mercados con tendencia clara</td><td>Tendencias largas o mercado lateral</td><td>Tendencia, rupturas, reversión</td></tr>
+            <tr><td>Volatilidad</td><td>Volatilidad de 20 días frente a su percentil de cinco años; implícita si la hay</td><td>Calma o estrés</td><td>Carry, reversión, venta de volatilidad</td></tr>
+            <tr><td>Turbulencia</td><td>Índice de turbulencia (distancia de Mahalanobis de los rendimientos) y correlación media entre mercados</td><td>Crisis</td><td>Todo lo de sesgo negativo</td></tr>
+            <tr><td>Apetito por el riesgo</td><td>Rendimiento reciente de una cesta de carry de divisas</td><td>Calma o huida hacia la seguridad</td><td>Carry</td></tr>
+            <tr><td>Tipos e inflación</td><td>Cambio del tipo a dos años en tres meses; inflación reciente</td><td>Subidas de tipos</td><td>Carry de bonos, value, tendencia</td></tr>
+            <tr><td>Costes reales</td><td>Spread y deslizamiento medios de tus propias órdenes</td><td>Liquidez</td><td>Todo lo intradía</td></tr>
+            <tr><td>Calendario</td><td>Bancos centrales, datos clave, festivos y fines de mes</td><td>Eventos</td><td>Reglas de calendario, estrategias de noticias</td></tr>
+            <tr><td>Rendimiento de cada estrategia</td><td>Resultado de los últimos 12 meses, ajustado por riesgo</td><td>Qué está funcionando</td><td>Todas: es la lectura con más evidencia</td></tr>
+            <tr><td>Texto</td><td>Tono de los bancos centrales y noticias, con un modelo de lenguaje y esquema fijo, como en el <a href="03-agentes-claude-trading.html">documento 3</a></td><td>Giros de política y sorpresas</td><td>Carry, macro, tendencia</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Para combinar las lecturas en un régimen hay tres caminos, de menos a más complejo: umbrales sobre cada lectura; modelos de Markov con estados ocultos, que estiman la probabilidad de estar en cada régimen; y métodos de detección de cambios, que avisan cuando la estadística del mercado se rompe. Los modelos complejos también se sobreajustan: empieza por los umbrales.</p>
+    </section>
+
+    <section class="sec" id="parte">
+      <p class="kicker">Contrato</p>
+      <h2 data-short="El parte y la decisión">El parte que recibe Jev y la decisión que devuelve</h2>
+      <p class="lead">Dos documentos con formato fijo. Lo que no esté en el parte no existe para Jev, y lo que no esté en la decisión no se aplica.</p>
+      <div class="codeblock" data-lang="json"><span class="lang">Parte del mercado · entrada</span><pre class="code"><code>{
+  "fecha": "2026-09-25T21:00:00Z",
+  "lecturas": {
+    "tendencia":   { "valor": 0.62, "percentil": 78, "cambio_4_semanas": 0.10 },
+    "volatilidad": { "valor_anual": 0.071, "percentil": 35 },
+    "turbulencia": { "percentil": 22 },
+    "carry_12m":   { "valor": 0.034 },
+    "tipos_2a_cambio_3m": { "valor": -0.25 },
+    "coste_medio_pips":   { "real": 0.9, "supuesto": 0.8 }
+  },
+  "eventos_7_dias": [
+    { "tipo": "banco_central", "quien": "BCE", "dia": "jueves" },
+    { "tipo": "dato", "quien": "empleo EE. UU.", "dia": "viernes" }
+  ],
+  "texto": { "tono_fed": "neutral", "fuente": "último comunicado" },
+  "estrategias": {
+    "tendencia":          { "rend_12m": 0.08,  "estado": "encendida", "dias_en_estado": 64 },
+    "carry_fx":           { "rend_12m": -0.02, "estado": "base",      "dias_en_estado": 20 },
+    "reversion_intradia": { "rend_12m": -0.05, "estado": "base",      "dias_en_estado": 41 }
+  }
+}</code></pre></div>
+      <div class="codeblock" data-lang="json"><span class="lang">Decisión de Jev · salida</span><pre class="code"><code>{
+  "fecha_parte": "2026-09-25T21:00:00Z",
+  "decisiones": [
+    { "estrategia": "tendencia", "estado": "encendida",
+      "motivo": "tendencia en el percentil 78 y 12 meses positivos" },
+    { "estrategia": "reversion_intradia", "estado": "apagada",
+      "motivo": "tendencia fuerte, entorno que la castiga, y 12 meses negativos" },
+    { "estrategia": "carry_fx", "estado": "base",
+      "motivo": "volatilidad normal, pero 12 meses negativos" }
+  ],
+  "confianza": "media",
+  "requiere_aprobacion": false
+}</code></pre></div>
+      <p>El validador comprueba que cada estrategia exista, que el estado esté permitido, que se respeten el tiempo mínimo en cada estado y el número máximo de cambios, y que el riesgo total quede dentro del presupuesto. Si una decisión enciende algo, la marca para tu aprobación.</p>
+    </section>
+
+    <section class="sec" id="simulador">
+      <p class="kicker">Simulador</p>
+      <h2 data-short="Simulador">Qué encendería una regla fija</h2>
+      <p class="lead">La opción C en pequeño. Describe el mercado con cinco pesos, uno por entorno, y la regla puntúa cada estrategia con la tabla del atlas: más de +0,5 la enciende, menos de −0,5 la apaga y el resto la deja en su riesgo base.</p>
+      <figure class="fig" id="fig-sim">
+        <p class="fig-title">Estado de diez estrategias viables en cTrader según el entorno</p>
+        <div class="btns" role="group" aria-label="Entornos de ejemplo" id="presets"></div>
+        <div class="controls">
+          <div class="ctl"><label for="w0">Tendencias largas <output id="w0-out" for="w0"></output></label><input id="w0" type="range" min="0" max="100" step="5" value="60"></div>
+          <div class="ctl"><label for="w1">Mercado lateral <output id="w1-out" for="w1"></output></label><input id="w1" type="range" min="0" max="100" step="5" value="10"></div>
+          <div class="ctl"><label for="w2">Crisis y pánico <output id="w2-out" for="w2"></output></label><input id="w2" type="range" min="0" max="100" step="5" value="10"></div>
+          <div class="ctl"><label for="w3">Calma y volatilidad baja <output id="w3-out" for="w3"></output></label><input id="w3" type="range" min="0" max="100" step="5" value="10"></div>
+          <div class="ctl"><label for="w4">Subidas de tipos e inflación <output id="w4-out" for="w4"></output></label><input id="w4" type="range" min="0" max="100" step="5" value="10"></div>
+        </div>
+        <div class="chart" id="sim"></div>
+        <div class="legend"><span><i class="box" style="--k:var(--pos)"></i>El entorno la favorece</span><span><i class="box" style="--k:var(--neg)"></i>El entorno la castiga</span></div>
+        <div class="stats quad">
+          <div class="stat"><span class="v" id="s-on">–</span><span class="l">encendidas, al 100&nbsp;% de su riesgo</span></div>
+          <div class="stat"><span class="v" id="s-base">–</span><span class="l">en base, al 50&nbsp;%</span></div>
+          <div class="stat"><span class="v" id="s-off">–</span><span class="l">apagadas</span></div>
+          <div class="stat"><span class="v" id="s-clar">–</span><span class="l">claridad de la lectura</span><span class="s">Peso del entorno dominante</span></div>
+        </div>
+        <p class="readout" id="sim-read" aria-live="polite"></p>
+        <p class="fig-note">Puntuaciones cualitativas de la tabla de regímenes del <a href="08-atlas-de-estrategias.html">documento 8</a>, ponderadas por los pesos normalizados. Una regla real añadiría el rendimiento reciente de cada estrategia, histéresis y límites de cambio.</p>
+      </figure>
+    </section>
+
+    <section class="sec" id="ritmo">
+      <p class="kicker">Ritmo</p>
+      <h2 data-short="Histéresis">Cambiar poco: histéresis y confirmación</h2>
+      <p class="lead">Una lectura con ruido cruza su umbral muchas veces. Si Jev enciende y apaga en cada cruce, se come la ventaja en costes. La solución es exigir más para cambiar que para quedarse.</p>
+      <figure class="fig" id="fig-hys">
+        <p class="fig-title">Una lectura de régimen con ruido durante 500 sesiones</p>
+        <p class="fig-sub">Se enciende por encima de la banda superior y se apaga por debajo de la inferior; entre medias, no cambia.</p>
+        <div class="controls">
+          <div class="ctl"><label for="h-band">Banda de histéresis <output id="h-band-out" for="h-band"></output></label><input id="h-band" type="range" min="0" max="0.5" step="0.05" value="0.2"></div>
+          <div class="ctl"><label for="h-conf">Sesiones de confirmación <output id="h-conf-out" for="h-conf"></output></label><input id="h-conf" type="range" min="1" max="10" step="1" value="3"></div>
+        </div>
+        <div class="chart" id="hys"></div>
+        <div class="legend"><span><i style="--k:var(--accent)"></i>Lectura</span><span><i style="--k:var(--pos)"></i>Umbral para encender</span><span><i style="--k:var(--neg)"></i>Umbral para apagar</span><span><i style="--k:var(--deemph)"></i>Estado: arriba encendida, abajo apagada</span></div>
+        <div class="stats">
+          <div class="stat"><span class="v" id="h-raw">–</span><span class="l">cambios con un umbral simple en cero</span></div>
+          <div class="stat"><span class="v" id="h-rule">–</span><span class="l">cambios con estas reglas</span></div>
+          <div class="stat"><span class="v" id="h-lag">–</span><span class="l">sesiones de retraso medio frente a los cambios reales de régimen</span></div>
+        </div>
+        <p class="readout" id="h-read" aria-live="polite"></p>
+        <div class="btns"><button class="btn ghost" id="h-again" type="button">Otra serie</button></div>
+        <p class="fig-note">Serie simulada: cuatro regímenes de distinta duración más ruido persistente. Ilustra el equilibrio entre cambiar poco y reaccionar tarde; no es un dato de mercado.</p>
+      </figure>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Regla de ritmo</th><th>Valor de partida</th><th>Para qué</th></tr></thead>
+          <tbody>
+            <tr><td>Frecuencia de decisión</td><td>Una vez por semana, con el parte del viernes</td><td>Evitar reaccionar al ruido diario</td></tr>
+            <tr><td>Tiempo mínimo en cada estado</td><td>Cuatro semanas</td><td>No encender y apagar lo mismo seguido</td></tr>
+            <tr><td>Cambio gradual</td><td>Un 25&nbsp;% del peso por día</td><td>No entrar ni salir de golpe</td></tr>
+            <tr><td>Cambios por semana</td><td>Dos como máximo</td><td>Limitar el coste y el daño de una mala lectura</td></tr>
+            <tr><td>Excepción</td><td>Apagar por turbulencia extrema, en cualquier momento</td><td>Reducir riesgo nunca espera</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="sec" id="limites">
+      <p class="kicker">Reglas</p>
+      <h2 data-short="Límites para Jev">Los límites de Jev</h2>
+      <p class="lead">Sobre todo si Jev es un modelo de lenguaje, su autoridad se define por lo que no puede hacer.</p>
+      <ul class="checklist">
+        <li>Solo elige entre los estados permitidos de cada estrategia; no cambia límites de riesgo ni toca órdenes.</li>
+        <li>Apagar o reducir se aplica tras validarlo; encender o subir necesita tu aprobación, o dos partes seguidos que lo confirmen.</li>
+        <li>Nunca reactiva una estrategia que haya parado el control de riesgo.</li>
+        <li>Cada decisión cita las lecturas del parte que la justifican; si no puede, se descarta.</li>
+        <li>Si el parte falta o llega incompleto, no cambia nada.</li>
+        <li>Con un modelo de lenguaje: versión del modelo fijada, tres ejecuciones con el mismo parte y manda la mayoría.</li>
+        <li>No navega ni lee noticias directamente: el texto le llega resumido por un lector con esquema fijo, para evitar la inyección de instrucciones.</li>
+        <li>Todo queda registrado: parte, decisión, validación, aprobación y resultado.</li>
+      </ul>
+    </section>
+
+    <section class="sec" id="evaluar">
+      <p class="kicker">Evaluación</p>
+      <h2 data-short="Cómo evaluar a Jev">Cómo saber si Jev aporta</h2>
+      <p class="lead">Jev se compara siempre con la opción E, todo encendido con el mismo riesgo, y con la opción C, las reglas fijas. Gana autoridad por fases.</p>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Fase</th><th>Autoridad de Jev</th><th>Para pasar a la siguiente</th></tr></thead>
+          <tbody>
+            <tr><td>1 · A la sombra, 3 meses o más</td><td>Ninguna: decide y se registra, sin aplicar nada</td><td>Decisiones estables ante partes parecidos y mejor resultado hipotético que E y C, sobre todo en caída máxima</td></tr>
+            <tr><td>2 · Solo reducir, 3 meses</td><td>Puede apagar o dejar en base</td><td>Sus apagados evitan más pérdidas de lo que cuestan</td></tr>
+            <tr><td>3 · Proponer encendidos</td><td>Enciende con tu aprobación</td><td>La mayoría de sus propuestas resultan acertadas</td></tr>
+            <tr><td>4 · Autonomía acotada</td><td>Decide dentro de las reglas, con revisión semanal</td><td>Seguir batiendo a E; si deja de hacerlo seis meses, vuelve a la fase 1</td></tr>
           </tbody>
         </table>
       </div>
       <div class="callout warn">
         <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 2.8l8 14H2l8-14z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M10 8v4.2M10 14.6v.1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-        <div><span class="ct">Lee los términos completos</span><p>Las cláusulas vagas, del tipo «prácticas contrarias al espíritu del programa», dejan a la firma la última palabra sobre si cobras.</p></div>
+        <div><span class="ct">El backtest de un modelo de lenguaje no vale</span><p>Un modelo sabe lo que pasó en los años con los que se entrenó, así que decidir sobre el pasado es hacer trampa sin querer. Las lecturas y las reglas sí se prueban con históricos; Jev solo se evalúa con datos posteriores a su fecha de corte o a la sombra, en directo.</p></div>
       </div>
+      <p>Métricas que conviene seguir: rentabilidad ajustada al riesgo, caída máxima, número de cambios y su coste, y si apagó a tiempo las estrategias antes de sus peores rachas.</p>
     </section>
 
-    <section class="sec" id="simulador">
-      <p class="kicker">Simulador</p>
-      <h2 data-short="Simulador">¿Qué probabilidad tienes de cobrar?</h2>
-      <p class="lead">Este simulador enfrenta a miles de traders virtuales con las reglas de dos fases de FTMO. Cada operación gana o pierde según tu tasa de acierto y tu relación entre beneficio y riesgo. Elige un perfil o mueve los controles.</p>
-      <figure class="fig" id="fig-sim">
-        <p class="fig-title">Simulador de una prueba de dos fases</p>
-        <p class="fig-sub">4.000 traders virtuales por simulación, con una cuenta de 100.000&nbsp;$. Todo se calcula en tu navegador.</p>
-        <div class="btns" role="group" aria-label="Perfiles de ejemplo">
-          <button class="btn" type="button" data-preset="sin" aria-pressed="true">Sin ventaja</button>
-          <button class="btn" type="button" data-preset="modesta" aria-pressed="false">Ventaja modesta</button>
-          <button class="btn" type="button" data-preset="solida" aria-pressed="false">Ventaja sólida</button>
-          <button class="btn" type="button" data-preset="apostador" aria-pressed="false">Apostador</button>
-        </div>
-        <div class="controls four">
-          <div class="ctl"><label for="q-p">Tasa de acierto <output id="q-p-out" for="q-p"></output></label><input id="q-p" type="range" min="25" max="65" step="1" value="40"></div>
-          <div class="ctl"><label for="q-r">Beneficio / riesgo <output id="q-r-out" for="q-r"></output></label><input id="q-r" type="range" min="0.5" max="3" step="0.1" value="1.5"></div>
-          <div class="ctl"><label for="q-risk">Riesgo por operación <output id="q-risk-out" for="q-risk"></output></label><input id="q-risk" type="range" min="0.25" max="4" step="0.25" value="1"></div>
-          <div class="ctl"><label for="q-tpd">Operaciones al día <output id="q-tpd-out" for="q-tpd"></output></label><input id="q-tpd" type="range" min="1" max="8" step="1" value="2"></div>
-          <div class="ctl"><label for="q-cost">Coste por operación <output id="q-cost-out" for="q-cost"></output></label><input id="q-cost" type="range" min="0" max="0.2" step="0.01" value="0.05"><span class="hint">0,05 R ≈ 1,25 pips con un stop de 25 pips</span></div>
-          <div class="ctl"><label for="q-split">Reparto para ti <output id="q-split-out" for="q-split"></output></label><input id="q-split" type="range" min="50" max="90" step="5" value="80"></div>
-          <div class="ctl"><label for="q-fee">Cuota ($)</label><input id="q-fee" type="number" min="0" max="5000" step="10" value="570"><span class="hint">≈ 540 € en FTMO para 100.000 $</span></div>
-          <div class="ctl"><label for="q-months">Meses en cuenta financiada</label><select id="q-months"><option value="3">3 meses</option><option value="6" selected>6 meses</option><option value="12">12 meses</option></select></div>
-        </div>
-        <details class="rules"><summary>Cambiar las reglas de la prueba</summary>
-          <div class="controls four">
-            <div class="ctl"><label for="q-t1">Objetivo fase 1 (%)</label><input id="q-t1" type="number" min="1" max="30" step="0.5" value="10"></div>
-            <div class="ctl"><label for="q-t2">Objetivo fase 2 (%)</label><input id="q-t2" type="number" min="1" max="30" step="0.5" value="5"></div>
-            <div class="ctl"><label for="q-daily">Pérdida diaria máx. (%)</label><input id="q-daily" type="number" min="1" max="20" step="0.5" value="5"></div>
-            <div class="ctl"><label for="q-max">Pérdida total máx. (%)</label><input id="q-max" type="number" min="2" max="30" step="0.5" value="10"></div>
-          </div>
-        </details>
-        <p class="readout" id="sim-edge" aria-live="polite"></p>
-        <p class="sim-sub">Qué parte de los compradores llega a cada etapa</p>
-        <div class="chart" id="sim-funnel"></div>
-        <div class="stats quad">
-          <div class="stat" id="sim-ev-card"><span class="v" id="sim-ev">–</span><span class="l">de valor esperado por intento, contando la devolución de la cuota</span><span class="badge" id="sim-ev-badge"></span></div>
-          <div class="stat"><span class="v" id="sim-avg">–</span><span class="l">cobra de media, en total, quien cobra alguna vez</span></div>
-          <div class="stat"><span class="v" id="sim-firm">–</span><span class="l" id="sim-firm-l">de las cuotas se queda en la firma</span></div>
-          <div class="stat"><span class="v" id="sim-days">–</span><span class="l">sesiones tarda la mitad de quienes superan la fase 1</span></div>
-        </div>
-        <p class="sim-sub">Treinta trayectorias en la fase 1</p>
-        <div class="chart" id="sim-paths"></div>
-        <div class="legend"><span><i style="--k:var(--accent)"></i>Superan la fase 1</span><span><i style="--k:var(--deemph)"></i>Eliminados o sin terminar</span></div>
-        <p class="readout" id="sim-read" aria-live="polite"></p>
-        <div class="btns"><button class="btn ghost" id="sim-again" type="button">Repetir con otros traders</button></div>
-        <p class="fig-note">Supuestos del modelo: operaciones independientes con resultado fijo en R; el riesgo se calcula sobre la cuenta inicial; la pérdida diaria se mide con operaciones cerradas; cada fase dura como máximo 120 sesiones; en la cuenta financiada se cobra cada 10 sesiones si hay beneficio, y el saldo vuelve al inicial; la cuota se devuelve con el primer pago. No incluye días mínimos, reglas de consistencia, límites de pago, deslizamiento extra, denegaciones ni cierres de la firma.</p>
-      </figure>
-      <p>El resultado más llamativo aparece con el perfil sin ventaja. Con disciplina y costes bajos, el valor esperado sale positivo aunque cada operación pierda dinero de media, porque pagas una cuota fija y la firma asume las pérdidas de la cuenta financiada: es como comprar una opción barata. Con el perfil de apostador, el mismo trader lo pierde todo. El dato real, un 7&nbsp;% que cobra con un pago medio del 4&nbsp;% de la cuenta, está por debajo de lo que da el modelo sin ventaja. Una explicación plausible es que muchos compradores arriesgan demasiado o incumplen reglas, y que las firmas añaden reglas y revisiones que el modelo no recoge. Cómo dimensionar el riesgo para no rozar esos límites lo explica el <a href="06-gestion-del-riesgo.html">documento 6</a>.</p>
-    </section>
-
-    <section class="sec" id="rentable">
-      <p class="kicker">La pregunta</p>
-      <h2 data-short="Si eres rentable">Qué pasa si eres rentable de verdad</h2>
-      <p class="lead">Si tu ventaja es real, una firma seria te pagará. Lo que cambia es tu relación con la firma y el tipo de riesgo que corres.</p>
-      <div class="cards two">
-        <article class="card"><span class="tag">Cobras</span><h3 class="ct">En una firma seria, sí</h3><p>FTMO dice haber pagado más de 450 millones de dólares en diez años. Con el primer pago te devuelve la cuota, y el reparto sube del 80&nbsp;% al 90&nbsp;% con el plan de escalado.</p></article>
-        <article class="card"><span class="tag">Coste</span><h3 class="ct">Pasas a ser un gasto para la firma</h3><p>Como tu cuenta es simulada, cada euro que ganas lo paga la firma con sus ingresos. Por eso le interesa copiar en real a los mejores y vigilar a quien gana de forma constante.</p></article>
-        <article class="card"><span class="tag">Techo</span><h3 class="ct">Creces, pero hasta un límite</h3><p>En FTMO, un 25&nbsp;% más de saldo cada cuatro meses si cumples las condiciones, hasta 2 millones de dólares entre todas tus cuentas. Otras firmas limitan además lo que puedes retirar en cada periodo.</p></article>
-        <article class="card"><span class="tag">Escrutinio</span><h3 class="ct">Más revisión de cómo ganas</h3><p>The Funded Trader denegó más de 2 millones de dólares en pagos en enero y febrero de 2024, alegando KYC, fraude y estrategias prohibidas, mientras pagaba 17 millones. Semanas después suspendió su actividad.</p></article>
-        <article class="card"><span class="tag">Contraparte</span><h3 class="ct">Tu saldo pendiente no está protegido</h3><p>En 2024, MetaQuotes retiró licencias de MetaTrader a firmas de fondeo y True Forex Funds dejó de operar. Según estimaciones del sector, entre 80 y 100 firmas desaparecieron entre 2024 y finales de 2025. Cobra a menudo y no acumules saldo.</p></article>
-        <article class="card"><span class="tag">Hacienda</span><h3 class="ct">Tributa como actividad profesional</h3><p>La Dirección General de Tributos (consulta vinculante V1722-23) considera estos cobros rendimientos de una actividad económica profesional, que tributan en la base general del IRPF. Según tu caso, puede obligarte a darte de alta en Hacienda y como autónomo. Consulta con un asesor.</p></article>
-      </div>
-      <div class="callout good">
-        <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="10" cy="10" r="8.25" stroke="currentColor" stroke-width="1.5"/><path d="M6.5 10.3l2.3 2.3 4.7-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        <div><span class="ct">El siguiente paso lógico</span><p>Si tu ventaja es real y la has medido bien (<a href="01-trading-algoritmico.html">documento 1</a>), la cuenta de fondeo funciona mejor como una opción barata que como un sueldo. Úsala para ganar capital y experiencia mientras construyes un historial verificable con tu propio dinero y poco apalancamiento, que es lo que te abre la puerta a una mesa de trading de verdad.</p></div>
-      </div>
-    </section>
-
-    <section class="sec" id="cronologia">
-      <p class="kicker">Contexto</p>
-      <h2 data-short="Cronología">Cronología del sector</h2>
-      <ol class="timeline">
-        <li><time>2015</time><b>Nace FTMO en Praga</b><span>Se convierte en la referencia del modelo de prueba en dos fases.</span></li>
-        <li><time>Junio de 2019</time><b>Aviso de la CNMV</b><span>Advierte del riesgo de fraude en las cuentas de trading financiadas ligadas a cursos de formación.</span></li>
-        <li><time>Agosto de 2023</time><b>La CFTC contra My Forex Funds</b><span>Un juez congela sus fondos a petición del regulador estadounidense.</span></li>
-        <li><time>Febrero de 2024</time><b>MetaQuotes corta el grifo</b><span>Retira licencias de MetaTrader a firmas de fondeo. True Forex Funds deja de operar y otras migran a cTrader, DXtrade o Match-Trader.</span></li>
-        <li><time>Marzo de 2024</time><b>The Funded Trader se detiene</b><span>Suspende su actividad tras semanas de quejas por pagos denegados.</span></li>
-        <li><time>Septiembre de 2024</time><b>El estudio de FPFX Tech</b><span>El 14&nbsp;% de los traders supera la prueba y el 7&nbsp;% cobra alguna vez.</span></li>
-        <li><time>Mayo de 2025</time><b>Archivado el caso My Forex Funds</b><span>El juez sanciona a la CFTC por engañar al tribunal.</span></li>
-        <li><time>Septiembre de 2025</time><b>FTMO cumple diez años</b><span>Anuncia más de 450 millones de dólares pagados a traders.</span></li>
-        <li><time>Diciembre de 2025</time><b>FTMO compra OANDA</b><span>Completa la adquisición del bróker regulado, con entidades en EE.&nbsp;UU., Reino Unido, Japón y otros mercados.</span></li>
+    <section class="sec" id="recomendacion">
+      <p class="kicker">Propuesta</p>
+      <h2 data-short="Lo que haríamos">Lo que haríamos</h2>
+      <ol class="steps">
+        <li><div><b>Separar las estrategias</b><span>Cada una como módulo independiente con estado encendida, base o apagada, sus propios límites y su registro.</span></div></li>
+        <li><div><b>Montar la referencia</b><span>La opción E, todo encendido con el mismo riesgo, y la opción C, reglas fijas con la tabla de regímenes y el rendimiento de 12 meses de cada estrategia.</span></div></li>
+        <li><div><b>Construir los lectores y el parte</b><span>Tendencia, volatilidad, turbulencia, carry, tipos, costes y calendario, con fecha y a hora fija. Probarlos con históricos.</span></div></li>
+        <li><div><b>Poner a Jev a la sombra</b><span>Opción B: decide cada semana con el parte, sin aplicar nada, y se compara con E y C.</span></div></li>
+        <li><div><b>Darle autoridad por fases</b><span>Primero solo reducir; después proponer encendidos con tu aprobación. El comité de la opción D, solo si B demuestra valor.</span></div></li>
       </ol>
-    </section>
-
-    <section class="sec" id="elegir">
-      <p class="kicker">Antes de pagar</p>
-      <h2 data-short="Cómo elegir">Cómo elegir una firma</h2>
-      <ul class="checklist">
-        <li>Varios años operando y pagos que puedan comprobar terceros.</li>
-        <li>Reglas completas y publicadas, sin cláusulas vagas.</li>
-        <li>Empresa identificable, con registro mercantil y cuentas anuales accesibles.</li>
-        <li>Plataforma y proveedor de precios conocidos.</li>
-        <li>Un historial razonable de cambios de reglas y de cómo trata las denegaciones.</li>
-        <li>Sin cursos caros obligatorios para acceder a la cuenta.</li>
-        <li>Pagos frecuentes, para no acumular saldo pendiente.</li>
-      </ul>
-      <div class="callout crit">
-        <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="10" cy="10" r="8.25" stroke="currentColor" stroke-width="1.5"/><path d="M7 7l6 6M13 7l-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-        <div><span class="ct">Señales de alarma</span><p>Financiación garantizada, cuentas enormes por cuotas mínimas, presión para pagar rápido, cursos obligatorios de varios miles de euros y reglas que cambian de un día para otro.</p></div>
-      </div>
-    </section>
-
-    <section class="sec" id="veredicto">
-      <p class="kicker">Veredicto</p>
-      <h2 data-short="¿Merece la pena?">¿Merece la pena?</h2>
-      <div class="split">
-        <div class="yes"><h3><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 10.5l4 4 8-9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Puede tener sentido si</h3>
-          <ul>
-            <li>Tienes una estrategia probada y la disciplina de arriesgar poco por operación.</li>
-            <li>Tratas la cuota como el precio de una opción, no como una inversión.</li>
-            <li>Repartes entre dos o tres firmas serias y cobras a menudo.</li>
-          </ul></div>
-        <div class="no"><h3><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5 5l10 10M15 5L5 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>No lo tiene si</h3>
-          <ul>
-            <li>Buscas aprender a operar o un sueldo estable.</li>
-            <li>Necesitas arriesgar mucho para llegar al objetivo.</li>
-            <li>Tu estrategia depende de noticias, de la latencia o de las rendijas del entorno demo.</li>
-          </ul></div>
-      </div>
-      <p class="pull">El modelo funciona porque <b>la mayoría arriesga demasiado</b>. Si eres disciplinado juegas con ventaja, y si eres rentable de verdad acabarás queriendo algo más grande.</p>
+      <p class="pull">El mejor Jev no es el que más acierta el mercado: es el que <b>apaga a tiempo</b>, cambia poco y deja que la diversificación haga el resto.</p>
     </section>
 
     <section class="sec" id="fuentes">
       <p class="kicker">Fuentes</p>
       <h2 data-short="Fuentes">Fuentes y lecturas</h2>
       <ol class="refs">
-        <li>Finance Magnates (2024). Only 7% of 300,000 Prop Trading Accounts Achieved Payouts (datos de FPFX Tech). <a href="https://www.financemagnates.com/forex/analysis/exclusive-only-7-of-300000-prop-trading-accounts-achieved-payouts/" target="_blank" rel="noopener">Artículo</a></li>
-        <li>FTMO. How it works; Scaling and Reward Growth Plan; How does an FTMO Account work from the technical side. <a href="https://ftmo.com/en/how-it-works/" target="_blank" rel="noopener">Programa</a> · <a href="https://ftmo.com/en/reward-growth-and-scaling-plan/" target="_blank" rel="noopener">Escalado</a> · <a href="https://ftmo.com/en/faq/how-does-an-ftmo-account-work-from-the-technical-side/" target="_blank" rel="noopener">Preguntas frecuentes</a></li>
-        <li>Finance Magnates (2025). FTMO's Parent Netted Over $62 Million on $329M Revenue in 2024. <a href="https://www.financemagnates.com/forex/ftmos-parent-netted-over-62-million-on-329m-revenue-in-2024/" target="_blank" rel="noopener">Artículo</a></li>
-        <li>Finance Magnates (2025). FTMO Announces Over $450 Million Paid Out as Prop Trading Firm Turns 10. <a href="https://www.financemagnates.com/forex/ftmo-announces-over-450-million-paid-out-as-prop-trading-firm-turns-10/" target="_blank" rel="noopener">Artículo</a></li>
-        <li>FTMO (2025). FTMO completes acquisition of OANDA from CVC. <a href="https://ftmo.com/en/press-release/ftmo-completes-acquisition-of-oanda-from-cvc/" target="_blank" rel="noopener">Nota de prensa</a></li>
-        <li>Finance Magnates (2025). In a Blow to the CFTC, US Court Throws Out My Forex Funds Lawsuit. <a href="https://www.financemagnates.com/forex/my-forex-funds-parent-defeats-cftc-in-court-as-judge-imposes-sanctions/" target="_blank" rel="noopener">Artículo</a></li>
-        <li>Finance Magnates (2024). The Funded Trader «Pauses All Operations». <a href="https://www.financemagnates.com/forex/breaking-prop-trading-firm-the-funded-trader-pauses-all-operations/" target="_blank" rel="noopener">Artículo</a></li>
-        <li>Finance Magnates (2024). Prop Trading Firms' Renaissance: Cutting US Clients, Integrating New Trading Platforms. <a href="https://www.financemagnates.com/forex/prop-trading-firms-renaissance-cutting-us-clients-integrating-new-trading-platforms/" target="_blank" rel="noopener">Artículo</a></li>
-        <li>CNMV (2019). La CNMV advierte sobre las páginas web de cuentas de trading financiadas ligadas a cursos de formación. <a href="https://www.cnmv.es/portal/verDoc.axd?t=%7B304c66da-fafb-4000-be53-0eee33017f3d%7D" target="_blank" rel="noopener">PDF</a></li>
-        <li>Dirección General de Tributos. Consulta vinculante V1722-23, de 15 de junio de 2023. <a href="https://www.iberley.es/resoluciones/resolucion-vinculante-direccion-general-tributos-v1722-23-15-06-2023-11639388" target="_blank" rel="noopener">Texto</a></li>
+        <li>Asness, C., Chandra, S., Ilmanen, A. e Israel, R. (2017). Contrarian Factor Timing is Deceptively Difficult. Journal of Portfolio Management, 43(5).</li>
+        <li>Ehsani, S. y Linnainmaa, J. (2022). Factor Momentum and the Momentum Factor. Journal of Finance, 77(3). <a href="https://onlinelibrary.wiley.com/doi/abs/10.1111/jofi.13131" target="_blank" rel="noopener">Artículo</a></li>
+        <li>Moreira, A. y Muir, T. (2017). Volatility-Managed Portfolios. Journal of Finance, 72(4). Cederburg, S., O'Doherty, M., Wang, F. y Yan, X. (2020). On the Performance of Volatility-Managed Portfolios. Journal of Financial Economics, 138(1). <a href="https://econpapers.repec.org/RePEc:eee:jfinec:v:138:y:2020:i:1:p:95-117" target="_blank" rel="noopener">Resumen</a></li>
+        <li>Kritzman, M., Page, S. y Turkington, D. (2012). Regime Shifts: Implications for Dynamic Strategies. Financial Analysts Journal, 68(3). <a href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2066848" target="_blank" rel="noopener">SSRN</a></li>
+        <li>Kritzman, M. y Li, Y. (2010). Skulls, Financial Turbulence, and Risk Management. Financial Analysts Journal, 66(5).</li>
+        <li>Hamilton, J. (1989). A New Approach to the Economic Analysis of Nonstationary Time Series and the Business Cycle. Econometrica, 57(2). Ang, A. y Timmermann, A. (2012). Regime Changes and Financial Markets. Annual Review of Financial Economics, 4.</li>
+        <li>Adams, R. y MacKay, D. (2007). Bayesian Online Changepoint Detection. arXiv:0710.3742.</li>
+        <li>Documentos 3, 6 y 8 de esta serie: agentes de IA, gestión del riesgo y atlas de estrategias.</li>
       </ol>
     </section>
   </main>
 </div>
-<footer class="foot wrap"><h2 class="foot-h" id="serie">La serie completa</h2><nav aria-labelledby="serie"><ol class="series-index"><li><a href="01-trading-algoritmico.html"><span class="n" style="--k:var(--k1)">1</span><span class="t">Trading algorítmico</span><span class="d">Qué puede hacer un algoritmo, quién paga cada ganancia y dónde están sus límites.</span></a></li><li><a href="02-forex-algoritmico.html"><span class="n" style="--k:var(--k2)">2</span><span class="t">Forex algorítmico</span><span class="d">El mercado de divisas visto por un algoritmo: estructura, costes y estrategias con evidencia.</span></a></li><li><a href="03-agentes-claude-trading.html"><span class="n" style="--k:var(--k3)">3</span><span class="t">Agentes Claude</span><span class="d">Dónde aporta un agente de IA a un sistema de trading, dónde es un riesgo y cuánto cuesta.</span></a></li><li><a href="#top" aria-current="page"><span class="n" style="--k:var(--k4)">4</span><span class="t">Cuentas de fondeo</span><span class="d">Cómo ganan dinero las firmas de fondeo, quién cobra de verdad y qué pasa si eres rentable.</span><span class="here">Estás aquí</span></a></li><li><a href="05-ctrader-api-mcp.html"><span class="n" style="--k:var(--k5)">5</span><span class="t">cTrader: API y MCP</span><span class="d">Qué es cTrader y cómo conectar un sistema por Open API, FIX, cBots o MCP, y qué vigilar.</span></a></li><li><a href="06-gestion-del-riesgo.html"><span class="n" style="--k:var(--k6)">6</span><span class="t">Gestión del riesgo</span><span class="d">Tamaño de posición, límites, caídas y controles para que el sistema sobreviva.</span></a></li><li><a href="07-infraestructura-y-costes.html"><span class="n" style="--k:var(--k7)">7</span><span class="t">Infraestructura y costes</span><span class="d">Seguridad, redundancia, latencia y costes de la infraestructura final, desde Bilbao.</span></a></li><li><a href="08-atlas-de-estrategias.html"><span class="n" style="--k:var(--k8)">8</span><span class="t">Atlas de estrategias</span><span class="d">Estrategias algorítmicas por sector y dificultad: qué detectan, quién paga y cómo se montan.</span></a></li><li><a href="09-jev-el-decisor.html"><span class="n" style="--k:var(--k9)">9</span><span class="t">Jev, el decisor</span><span class="d">Cómo un decisor enciende y apaga estrategias según el mercado, sin poner en riesgo el sistema.</span></a></li></ol></nav><p>Contenido educativo. No es asesoramiento financiero ni una recomendación de inversión. Las cifras proceden de las fuentes citadas; las simulaciones usan datos aleatorios y solo ilustran ideas.</p><p>Serie «Máquinas y mercados» · Septiembre de 2026</p></footer>
+<footer class="foot wrap"><h2 class="foot-h" id="serie">La serie completa</h2><nav aria-labelledby="serie"><ol class="series-index"><li><a href="01-trading-algoritmico.html"><span class="n" style="--k:var(--k1)">1</span><span class="t">Trading algorítmico</span><span class="d">Qué puede hacer un algoritmo, quién paga cada ganancia y dónde están sus límites.</span></a></li><li><a href="02-forex-algoritmico.html"><span class="n" style="--k:var(--k2)">2</span><span class="t">Forex algorítmico</span><span class="d">El mercado de divisas visto por un algoritmo: estructura, costes y estrategias con evidencia.</span></a></li><li><a href="03-agentes-claude-trading.html"><span class="n" style="--k:var(--k3)">3</span><span class="t">Agentes Claude</span><span class="d">Dónde aporta un agente de IA a un sistema de trading, dónde es un riesgo y cuánto cuesta.</span></a></li><li><a href="04-verdad-cuentas-fondeo.html"><span class="n" style="--k:var(--k4)">4</span><span class="t">Cuentas de fondeo</span><span class="d">Cómo ganan dinero las firmas de fondeo, quién cobra de verdad y qué pasa si eres rentable.</span></a></li><li><a href="05-ctrader-api-mcp.html"><span class="n" style="--k:var(--k5)">5</span><span class="t">cTrader: API y MCP</span><span class="d">Qué es cTrader y cómo conectar un sistema por Open API, FIX, cBots o MCP, y qué vigilar.</span></a></li><li><a href="06-gestion-del-riesgo.html"><span class="n" style="--k:var(--k6)">6</span><span class="t">Gestión del riesgo</span><span class="d">Tamaño de posición, límites, caídas y controles para que el sistema sobreviva.</span></a></li><li><a href="07-infraestructura-y-costes.html"><span class="n" style="--k:var(--k7)">7</span><span class="t">Infraestructura y costes</span><span class="d">Seguridad, redundancia, latencia y costes de la infraestructura final, desde Bilbao.</span></a></li><li><a href="08-atlas-de-estrategias.html"><span class="n" style="--k:var(--k8)">8</span><span class="t">Atlas de estrategias</span><span class="d">Estrategias algorítmicas por sector y dificultad: qué detectan, quién paga y cómo se montan.</span></a></li><li><a href="#top" aria-current="page"><span class="n" style="--k:var(--k9)">9</span><span class="t">Jev, el decisor</span><span class="d">Cómo un decisor enciende y apaga estrategias según el mercado, sin poner en riesgo el sistema.</span><span class="here">Estás aquí</span></a></li></ol></nav><p>Contenido educativo. No es asesoramiento financiero ni una recomendación de inversión. Las cifras proceden de las fuentes citadas; las simulaciones usan datos aleatorios y solo ilustran ideas.</p><p>Serie «Máquinas y mercados» · Septiembre de 2026</p></footer>
 <script>
 (function () {
   "use strict";
@@ -1232,181 +1373,131 @@ details.rules summary{cursor:pointer;font:500 12.5px/1.4 var(--f-mono);color:var
 (function () {
   var M = window.MM;
   function $(id) { return document.getElementById(id); }
-  var usd = function (v) { return M.fmt(v, 0) + " $"; };
-  var pct1 = function (v) { return M.fmt(v, 1) + " %"; };
-
-  /* Cómo funciona */
-  M.flow($("how"), {
-    aria: "Recorrido de una cuenta de fondeo: cuota, fase 1, fase 2, cuenta financiada y escalado",
-    nodes: [
-      { t: "Cuota", d: "≈ 540 € por una cuenta de 100.000 $" },
-      { t: "Fase 1", d: "+10 % sin perder un 5 % en un día ni un 10 % en total" },
-      { t: "Fase 2", d: "+5 % con los mismos límites" },
-      { t: "Cuenta financiada", d: "Simulada. Cobras el 80 % de lo que ganes" },
-      { t: "Escalado", d: "+25 % de saldo cada 4 meses, hasta 2 M$" }
-    ],
-    edges: ["compras", "superas", "superas", "si cumples"],
-    hl: [3]
-  });
-
-  /* Embudo real de FPFX */
-  var fp = [
-    { label: "Compran una prueba", value: 100, color: "var(--o1)" },
-    { label: "Llegan a cuenta financiada", value: 14, color: "var(--o3)" },
-    { label: "Cobran al menos una vez", value: 7, color: "var(--o5)" }
-  ];
-  M.hbar($("fpfx"), { aria: "De cada 100 compradores de una prueba, 14 llegan a cuenta financiada y 7 cobran", rows: fp, domain: [0, 100], labelW: 210, fmt: function (v) { return M.fmt(v, 0) + " de 100"; } });
-  M.dataTable($("fig-fpfx"), ["Etapa", "De cada 100"], fp.map(function (r) { return [r.label, M.fmt(r.value, 0)]; }), [1]);
-
-  /* Simulador */
-  var PRE = {
-    sin: { p: 40, r: 1.5, risk: 1, tpd: 2, cost: 0.05 },
-    modesta: { p: 43, r: 1.5, risk: 1, tpd: 2, cost: 0.05 },
-    solida: { p: 45, r: 1.5, risk: 1, tpd: 2, cost: 0.05 },
-    apostador: { p: 40, r: 1.5, risk: 3, tpd: 4, cost: 0.05 }
-  };
-  var seed = 7, N = 4000;
   function num(id, d) { var v = parseFloat($(id).value); return isFinite(v) ? v : d; }
-  function params() {
-    return {
-      p: num("q-p", 40) / 100, R: num("q-r", 1.5), risk: num("q-risk", 1), tpd: Math.round(num("q-tpd", 2)), cost: num("q-cost", 0.05),
-      split: num("q-split", 80) / 100, fee: Math.max(0, num("q-fee", 570)), fundedDays: num("q-months", 6) * 21,
-      t1: Math.max(0.5, num("q-t1", 10)), t2: Math.max(0.5, num("q-t2", 5)), daily: Math.max(0.5, num("q-daily", 5)), maxLoss: Math.max(1, num("q-max", 10)),
-      maxDays: 120, cycle: 10, acct: 100000
-    };
-  }
-  function run(P, n, sd) {
-    var r = M.rng(sd), win = P.R * P.risk - P.cost * P.risk, loss = -P.risk - P.cost * P.risk;
-    function phase(target) {
-      var bal = 0;
-      for (var d = 1; d <= P.maxDays; d++) {
-        var start = bal;
-        for (var k = 0; k < P.tpd; k++) {
-          bal += (r() < P.p) ? win : loss;
-          if (start - bal >= P.daily - 1e-9 || bal <= -P.maxLoss + 1e-9) return -d;
-          if (bal >= target) return d;
-        }
-      }
-      return 0;
-    }
-    var s = { p1: 0, p2: 0, paid1: 0, paid3: 0, sumPaid: 0, sumRefund: 0, d1: [] };
-    for (var i = 0; i < n; i++) {
-      var d1 = phase(P.t1); if (d1 <= 0) continue; s.p1++; s.d1.push(d1);
-      var d2 = phase(P.t2); if (d2 <= 0) continue; s.p2++;
-      var bal = 0, paid = 0, cnt = 0;
-      for (var d = 1; d <= P.fundedDays; d++) {
-        var start = bal, dead = false;
-        for (var k = 0; k < P.tpd; k++) { bal += (r() < P.p) ? win : loss; if (start - bal >= P.daily - 1e-9 || bal <= -P.maxLoss + 1e-9) { dead = true; break; } }
-        if (dead) break;
-        if (d % P.cycle === 0 && bal > 0) { paid += P.split * bal / 100 * P.acct; cnt++; bal = 0; }
-      }
-      if (cnt >= 1) { s.paid1++; s.sumRefund += P.fee; }
-      if (cnt >= 3) s.paid3++;
-      s.sumPaid += paid;
-    }
-    s.d1.sort(function (a, b) { return a - b; });
-    return {
-      p1: s.p1 / n * 100, p2: s.p2 / n * 100, paid1: s.paid1 / n * 100, paid3: s.paid3 / n * 100,
-      avg: s.paid1 ? s.sumPaid / s.paid1 : 0, ev: (s.sumPaid + s.sumRefund) / n - P.fee,
-      keep: P.fee > 0 ? (1 - (s.sumPaid + s.sumRefund) / (n * P.fee)) * 100 : 0, med: s.d1.length ? s.d1[Math.floor(s.d1.length / 2)] : null
-    };
-  }
-  function paths(P, n, sd, days) {
-    var r = M.rng(sd), win = P.R * P.risk - P.cost * P.risk, loss = -P.risk - P.cost * P.risk, out = [];
-    for (var i = 0; i < n; i++) {
-      var bal = 0, vals = [0], state = 0, end = null;
-      for (var d = 1; d <= days; d++) {
-        if (state !== 0) { vals.push(null); continue; }
-        var start = bal;
-        for (var k = 0; k < P.tpd; k++) {
-          bal += (r() < P.p) ? win : loss;
-          if (start - bal >= P.daily - 1e-9 || bal <= -P.maxLoss + 1e-9) { state = -1; break; }
-          if (bal >= P.t1) { state = 1; break; }
-        }
-        vals.push(bal);
-        if (state !== 0) end = d;
-      }
-      out.push({ vals: vals, state: state, end: end });
-    }
-    return out;
-  }
-  var funnelChart = null, pathChart = null;
-  function sharpeOf(P) { var m = (P.p * P.R - (1 - P.p) - P.cost) * P.risk, sd = (P.R + 1) * P.risk * Math.sqrt(P.p * (1 - P.p)); return sd > 0 ? m * P.tpd / (sd * Math.sqrt(P.tpd)) * Math.sqrt(252) : 0; }
-  function labels() {
-    $("q-p-out").textContent = M.fmt(num("q-p", 40), 0) + " %";
-    $("q-r-out").textContent = M.fmt(num("q-r", 1.5), 1) + " R";
-    $("q-risk-out").textContent = M.fmt(num("q-risk", 1), 2).replace(/,?0+$/, "") + " %";
-    $("q-tpd-out").textContent = M.fmt(num("q-tpd", 2), 0);
-    $("q-cost-out").textContent = M.fmt(num("q-cost", 0.05), 2) + " R";
-    $("q-split-out").textContent = M.fmt(num("q-split", 80), 0) + " %";
-  }
-  function render() {
-    labels();
-    var P = params(), res = run(P, N, seed);
-    var edgeR = P.p * P.R - (1 - P.p) - P.cost, sh = sharpeOf(P);
-    $("sim-edge").textContent = "Ventaja por operación: " + (edgeR > 0 ? "+" : "") + M.fmt(edgeR, 3) + " R (" + (edgeR > 0 ? "+" : "") + M.fmt(edgeR * P.risk, 3) + " % de la cuenta). Equivale a un Sharpe anual de " + M.fmt(sh, 2) + ".";
-    var rows = [
-      { label: "Compran la prueba", value: 100, color: "var(--o1)" },
-      { label: "Superan la fase 1", value: res.p1, color: "var(--o2)" },
-      { label: "Superan la fase 2", value: res.p2, color: "var(--o3)", ref: { value: 14, label: "Dato real: 14 %", tip: "Estudio FPFX Tech" } },
-      { label: "Cobran al menos una vez", value: res.paid1, color: "var(--o4)", ref: { value: 7, label: "Dato real: 7 %", tip: "Estudio FPFX Tech" } },
-      { label: "Cobran 3 veces o más", value: res.paid3, color: "var(--o5)" }
-    ];
-    var fcfg = { aria: "Porcentaje de traders simulados que llega a cada etapa", rows: rows, domain: [0, 100], labelW: 200, fmt: pct1, unitLabel: "de los compradores" };
-    if (funnelChart) funnelChart.update(fcfg); else funnelChart = M.hbar($("sim-funnel"), fcfg);
-    var card = $("sim-ev-card"), badge = $("sim-ev-badge"), good = res.ev > 0;
-    $("sim-ev").textContent = (good ? "+" : "") + usd(res.ev);
-    card.classList.toggle("is-good", good); card.classList.toggle("is-bad", !good);
-    badge.replaceChildren();
-    var ns = "http://www.w3.org/2000/svg", sv = document.createElementNS(ns, "svg"); sv.setAttribute("viewBox", "0 0 12 12"); sv.setAttribute("aria-hidden", "true");
-    var pth = document.createElementNS(ns, "path"); pth.setAttribute("d", good ? "M6 2l4 6H2z" : "M6 10L2 4h8z"); pth.setAttribute("fill", "currentColor"); sv.appendChild(pth);
-    badge.appendChild(sv); badge.appendChild(document.createTextNode(good ? "A tu favor" : "En contra"));
-    $("sim-avg").textContent = res.paid1 > 0 ? usd(res.avg) : "–";
-    if (res.keep >= 0) { $("sim-firm").textContent = pct1(res.keep); $("sim-firm-l").textContent = "de las cuotas se queda en la firma"; }
-    else { $("sim-firm").textContent = "+" + pct1(-res.keep); $("sim-firm-l").textContent = "más de lo que ingresa en cuotas paga la firma a estos traders"; }
-    $("sim-days").textContent = res.med ? M.fmt(res.med, 0) : "–";
-    var txt = "De cada 100 personas con este perfil, " + M.fmt(res.paid1, 1) + " cobran al menos una vez. ";
-    if (res.ev > 0 && edgeR <= 0) txt += "Aunque cada operación pierde dinero de media, el valor esperado del intento es positivo: la cuota es fija y la firma asume las pérdidas de la cuenta financiada. Las firmas compensan esta asimetría con más reglas y revisiones, y con clientes que arriesgan demasiado.";
-    else if (res.ev > 0) txt += "Con una ventaja real y riesgo controlado, cada intento vale de media " + usd(res.ev) + ". Es el perfil que las firmas vigilan más de cerca.";
-    else txt += "Con este perfil, la cuota es dinero perdido en promedio. Así es como ganan las firmas.";
-    $("sim-read").textContent = txt;
-    var ps = paths(P, 30, seed * 31 + 5, 60), xs = []; for (var d = 0; d <= 60; d++) xs.push(d);
-    var ctxs = ps.map(function (p) { return { values: p.vals, color: p.state === 1 ? "var(--accent)" : "var(--deemph)", width: p.state === 1 ? 1.6 : 1, opacity: 0.95 }; });
-    ctxs.sort(function (a, b) { return (a.width > b.width) - (b.width > a.width); });
-    var pcfg = {
-      aria: "Treinta trayectorias simuladas de la fase 1 entre el objetivo y el límite de pérdidas",
-      x: xs, series: [], context: ctxs, yDomain: [-(P.maxLoss + 2), P.t1 + 2], height: 280,
-      yFmt: function (v) { return (v > 0 ? "+" : "") + M.fmt(v, 0) + " %"; },
-      hlines: [{ y: P.t1, label: "Objetivo +" + M.fmt(P.t1, 1).replace(/,0$/, "") + " %", color: "var(--accent)" }, { y: -P.maxLoss, label: "Límite −" + M.fmt(P.maxLoss, 1).replace(/,0$/, "") + " %", color: "var(--crit-mark)", below: true }],
-      xTicks: [{ v: 0, label: "Día 0", anchor: "start" }, { v: 10, label: "10", minor: true }, { v: 20, label: "20" }, { v: 30, label: "30", minor: true }, { v: 40, label: "40" }, { v: 50, label: "50", minor: true }, { v: 60, label: "60 sesiones", anchor: "end" }],
-      tipTitle: function (i) { return "Sesión " + i; },
-      tipExtra: function (i) {
-        var alive = 0, pass = 0, out = 0;
-        ps.forEach(function (p) { if (p.end !== null && p.end <= i) { if (p.state === 1) pass++; else out++; } else alive++; });
-        return [{ value: String(alive), label: "siguen en juego" }, { value: String(pass), label: "han aprobado", color: "var(--accent)" }, { value: String(out), label: "eliminados", color: "var(--deemph)" }];
-      }
-    };
-    if (pathChart) pathChart.update(pcfg); else pathChart = M.line($("sim-paths"), pcfg);
-    M.dataTable($("fig-sim"), ["Resultado", "Valor"], rows.map(function (r) { return [r.label, pct1(r.value)]; }).concat([
-      ["Valor esperado por intento", (good ? "+" : "") + usd(res.ev)], ["Pago medio de quien cobra", res.paid1 > 0 ? usd(res.avg) : "–"],
-      ["Parte de las cuotas que retiene la firma", pct1(res.keep)], ["Sesiones medianas para superar la fase 1", res.med ? String(res.med) : "–"]
-    ]), [1]);
-  }
-  var pend = 0;
-  function later() { labels(); clearTimeout(pend); pend = setTimeout(render, 140); }
-  function markCustom() { document.querySelectorAll("[data-preset]").forEach(function (b) { b.setAttribute("aria-pressed", "false"); }); }
-  ["q-p", "q-r", "q-risk", "q-tpd", "q-cost", "q-split"].forEach(function (id) { $(id).addEventListener("input", function () { markCustom(); later(); }); });
-  ["q-fee", "q-months", "q-t1", "q-t2", "q-daily", "q-max"].forEach(function (id) { $(id).addEventListener("input", later); $(id).addEventListener("change", later); });
-  document.querySelectorAll("[data-preset]").forEach(function (b) {
+
+  /* ---------- Simulador de la regla fija ---------- */
+  var REG = ["Tendencias largas", "Mercado lateral", "Crisis y pánico", "Calma y volatilidad baja", "Subidas de tipos e inflación"];
+  var ST = [
+    { n: "Tendencia", l: "tendencia", r: [2, -2, 1, -1, 2] },
+    { n: "Rupturas", l: "rupturas", r: [2, -2, 1, -2, 1] },
+    { n: "Carry + tendencia", l: "carry con tendencia", r: [2, 0, -1, 1, 1] },
+    { n: "Carry FX", l: "carry de divisas", r: [1, 1, -2, 2, 1] },
+    { n: "Valor FX", l: "valor en divisas", r: [-1, 1, 0, 0, 1] },
+    { n: "Reversión intradía", l: "reversión intradía", r: [-2, 2, -2, 2, -1] },
+    { n: "Momentum intradía", l: "momentum intradía", r: [1, -1, 1, -1, 0] },
+    { n: "Cambio de mes", l: "cambio de mes", r: [0, 0, 0, 0, 0] },
+    { n: "Víspera Fed", l: "víspera de la Fed", r: [0, 0, 0, 0, -1] },
+    { n: "Fixing 16 h", l: "fixing de las 16 h", r: [0, 0, 1, 0, 0] }
+  ];
+  var PRE = [
+    { t: "Tendencias claras", w: [70, 0, 10, 10, 10] },
+    { t: "Mercado lateral", w: [0, 70, 0, 30, 0] },
+    { t: "Crisis", w: [25, 0, 75, 0, 0] },
+    { t: "Calma", w: [10, 30, 0, 60, 0] },
+    { t: "Subidas de tipos", w: [45, 0, 15, 0, 40] },
+    { t: "Lectura confusa", w: [20, 20, 20, 20, 20] }
+  ];
+  var pres = $("presets"), simChart = null;
+  PRE.forEach(function (p, i) {
+    var b = document.createElement("button"); b.className = "btn"; b.type = "button"; b.textContent = p.t; b.setAttribute("aria-pressed", "false");
     b.addEventListener("click", function () {
-      var pr = PRE[b.getAttribute("data-preset")];
-      $("q-p").value = pr.p; $("q-r").value = pr.r; $("q-risk").value = pr.risk; $("q-tpd").value = pr.tpd; $("q-cost").value = pr.cost;
-      document.querySelectorAll("[data-preset]").forEach(function (o) { o.setAttribute("aria-pressed", o === b ? "true" : "false"); });
-      render();
+      p.w.forEach(function (v, k) { $("w" + k).value = v; });
+      pres.querySelectorAll("button").forEach(function (o) { o.setAttribute("aria-pressed", o === b ? "true" : "false"); });
+      sim();
     });
+    pres.appendChild(b);
   });
-  $("sim-again").addEventListener("click", function () { seed = (seed * 48271 + 11) % 2147483647; render(); });
-  render();
+  function state(sc) { return sc > 0.5 ? "Encendida" : sc < -0.5 ? "Apagada" : "Base"; }
+  function sim() {
+    var raw = [0, 1, 2, 3, 4].map(function (k) { var v = Math.max(0, num("w" + k, 0)); $("w" + k + "-out").textContent = M.fmt(v, 0); return v; });
+    var sum = raw.reduce(function (a, b) { return a + b; }, 0) || 1, w = raw.map(function (v) { return v / sum; });
+    var rows = ST.map(function (s) {
+      var sc = 0; for (var k = 0; k < 5; k++) sc += w[k] * s.r[k];
+      return { label: s.n, low: s.l, value: sc, st: state(sc) };
+    }).sort(function (a, b) { return b.value - a.value; });
+    rows.forEach(function (r) { r.note = r.st === "Encendida" ? "Al 100 % de su riesgo" : r.st === "Apagada" ? "Sin posiciones nuevas" : "Al 50 % de su riesgo"; });
+    var cfg = {
+      aria: "Puntuación de cada estrategia en el entorno elegido, de −2 a +2", rows: rows, domain: [-2, 2], diverging: true, labelW: 170, valW: 120,
+      fmt: function (v) { return (v > 0.005 ? "+" : "") + M.fmt(v, 2); },
+      valueLabel: function (r) { return (r.value > 0.005 ? "+" : "") + M.fmt(r.value, 2) + " · " + r.st; },
+      unitLabel: "puntuación"
+    };
+    if (simChart) simChart.update(cfg); else simChart = M.hbar($("sim"), cfg);
+    var on = rows.filter(function (r) { return r.st === "Encendida"; }), off = rows.filter(function (r) { return r.st === "Apagada"; });
+    $("s-on").textContent = on.length; $("s-base").textContent = rows.length - on.length - off.length; $("s-off").textContent = off.length;
+    var mx = Math.max.apply(null, w), dom = w.indexOf(mx);
+    $("s-clar").textContent = M.fmt(mx * 100, 0) + " %";
+    var txt;
+    if (mx < 0.4) txt = "Lectura confusa: ningún entorno domina, así que casi todo queda en su riesgo base. Es justo lo que debe hacer un buen decisor cuando no sabe: no apostar.";
+    else {
+      txt = "Domina «" + REG[dom].toLowerCase() + "». ";
+      function list(a) { var n = a.map(function (r) { return r.low; }); return n.length > 1 ? n.slice(0, -1).join(", ") + " y " + n[n.length - 1] : n[0]; }
+      txt += on.length ? "La regla encendería " + list(on) + ". " : "No enciende nada. ";
+      txt += off.length ? "Apagaría " + list(off) + ". " : "No apaga nada. ";
+      txt += "Jev añadiría lo que la tabla no ve: el rendimiento reciente de cada estrategia, los eventos de la semana y el tono de los bancos centrales.";
+    }
+    $("sim-read").textContent = txt;
+    M.dataTable($("fig-sim"), ["Estrategia", "Puntuación", "Estado"], rows.map(function (r) { return [r.label, (r.value > 0.005 ? "+" : "") + M.fmt(r.value, 2), r.st]; }), [1]);
+  }
+  [0, 1, 2, 3, 4].forEach(function (k) { $("w" + k).addEventListener("input", function () { pres.querySelectorAll("button").forEach(function (o) { o.setAttribute("aria-pressed", "false"); }); sim(); }); });
+  sim();
+
+  /* ---------- Histéresis ---------- */
+  var hSeed = 3, hChart = null;
+  function series(seed) {
+    var r = M.rng(seed), N = 500, segs = [[0, 120, 0.55], [120, 270, -0.45], [270, 370, 0.5], [370, 500, -0.5]];
+    var xs = [], ys = [], truth = [], e = 0;
+    for (var t = 0; t < N; t++) {
+      var m = 0; segs.forEach(function (s) { if (t >= s[0] && t < s[1]) m = s[2]; });
+      e = 0.88 * e + 0.2 * M.normal(r);
+      xs.push(t); ys.push(m + e); truth.push(m > 0 ? 1 : 0);
+    }
+    return { xs: xs, ys: ys, truth: truth, changes: segs.slice(1).map(function (s) { return s[0]; }) };
+  }
+  function run(ys, band, conf) {
+    var st = ys[0] > 0 ? 1 : 0, out = [], cnt = 0, up = 0, dn = 0;
+    for (var t = 0; t < ys.length; t++) {
+      var y = ys[t];
+      if (y > band) { up++; dn = 0; } else if (y < -band) { dn++; up = 0; } else { up = 0; dn = 0; }
+      if (st === 0 && up >= conf) { st = 1; cnt++; }
+      else if (st === 1 && dn >= conf) { st = 0; cnt++; }
+      out.push(st);
+    }
+    return { st: out, cnt: cnt };
+  }
+  function hys() {
+    var band = num("h-band", 0.2), conf = Math.round(num("h-conf", 3));
+    $("h-band-out").textContent = "± " + M.fmt(band, 2);
+    $("h-conf-out").textContent = String(conf);
+    var S = series(hSeed), raw = run(S.ys, 0, 1), rule = run(S.ys, band, conf);
+    var lags = S.changes.map(function (c) {
+      var target = S.truth[c];
+      for (var t = c; t < S.ys.length; t++) if (rule.st[t] === target) return t - c;
+      return S.ys.length - c;
+    });
+    var lag = lags.reduce(function (a, b) { return a + b; }, 0) / lags.length;
+    var stateLine = rule.st.map(function (s) { return s ? 1.75 : -1.75; });
+    var shown = S.ys.map(function (v) { return Math.max(-1.95, Math.min(1.95, v)); });
+    var cfg = {
+      aria: "Lectura de régimen simulada con los umbrales de encendido y apagado y el estado resultante",
+      x: S.xs, series: [{ name: "Lectura", color: "var(--accent)", values: shown, width: 1.6 }],
+      context: [{ values: stateLine, color: "var(--deemph)", width: 2, opacity: 1 }],
+      yDomain: [-2, 2], yFmt: function (v) { return (v > 0 ? "+" : "") + M.fmt(v, 1); }, zeroBase: true, height: 280, endDots: false,
+      hlines: [{ y: band, label: "", color: "var(--pos)" }, { y: -band, label: "", color: "var(--neg)" }],
+      xTicks: [{ v: 0, label: "0", anchor: "start" }, { v: 100, label: "100", minor: true }, { v: 200, label: "200" }, { v: 300, label: "300", minor: true }, { v: 400, label: "400" }, { v: 499, label: "500 sesiones", anchor: "end" }],
+      tipTitle: function (i) { return "Sesión " + i; },
+      tipFmt: function (v) { return (v > 0 ? "+" : "") + M.fmt(v, 2); },
+      tipExtra: function (i) { return [{ value: rule.st[i] ? "Encendida" : "Apagada", label: "estado", color: "var(--deemph)" }]; }
+    };
+    if (hChart) hChart.update(cfg); else hChart = M.line($("hys"), cfg);
+    $("h-raw").textContent = String(raw.cnt);
+    $("h-rule").textContent = String(rule.cnt);
+    $("h-lag").textContent = M.fmt(lag, 0);
+    $("h-read").textContent = "Con un umbral simple, el estado cambia " + raw.cnt + " veces en 500 sesiones; con una banda de ± " + M.fmt(band, 2) + " y " + conf + " sesiones de confirmación, " + rule.cnt + " veces. El precio es reaccionar unas " + M.fmt(lag, 0) + " sesiones tarde de media ante los tres cambios reales de régimen. Más banda y más confirmación: menos cambios y más retraso.";
+  }
+  ["h-band", "h-conf"].forEach(function (id) { $(id).addEventListener("input", hys); });
+  $("h-again").addEventListener("click", function () { hSeed = (hSeed * 16807 + 11) % 2147483647; hys(); });
+  hys();
 })();
 </script>
 </body>

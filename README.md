@@ -1,6 +1,6 @@
 # Máquinas y mercados
 
-Serie de ocho documentos HTML interactivos sobre trading algorítmico, escritos en español en septiembre de 2026.
+Serie de nueve documentos HTML interactivos sobre trading algorítmico, escritos en español en septiembre de 2026.
 
 | Nº | Documento | Qué contiene |
 |---|---|---|
@@ -12,6 +12,7 @@ Serie de ocho documentos HTML interactivos sobre trading algorítmico, escritos 
 | 6 | [Gestión del riesgo](trading/06-gestion-del-riesgo.html) | Los siete riesgos de un sistema, tamaño de posición y criterio de Kelly, simulador de caídas, límites en capas, botón de parada, presupuesto para fondeo, eventos extremos y cuándo apagar una estrategia |
 | 7 | [Infraestructura y costes](trading/07-infraestructura-y-costes.html) | La infraestructura final desde Bilbao: arquitectura, latencia, operadores de internet, seguridad, segregación de IP, redundancia, calculadora de costes, dónde recortar y la luz |
 | 8 | [Atlas de estrategias](trading/08-atlas-de-estrategias.html) | 41 estrategias por mercado, familia y dificultad, con filtros: qué detectan, quién paga, micro y macro, cómo se montan, cuándo funcionan y qué encaja con cTrader |
+| 9 | [Jev, el decisor](trading/09-jev-el-decisor.html) | Cómo un decisor, agente de IA o persona, enciende y apaga estrategias según el mercado: arquitectura con todo separado, cinco opciones para leer y decidir, simulador de una regla fija, histéresis, límites y evaluación por fases |
 
 ## Cómo abrirlos
 
