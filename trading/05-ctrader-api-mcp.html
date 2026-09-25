@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Forex algorítmico</title>
-<meta name="description" content="Cómo funciona el mercado de divisas por dentro, qué lo hace distinto para un algoritmo, qué estrategias tienen evidencia y cuánto cuestan de verdad, con calculadoras.">
+<title>cTrader por API y MCP</title>
+<meta name="description" content="Cómo conectar un sistema de trading o un agente de IA a cTrader por Open API, FIX, cBots o MCP: explicado sin tecnicismos y con la implementación correcta.">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..800;1,6..96,400..800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap">
 <style>
 /* ============================================================
@@ -355,47 +355,54 @@ code:not(pre code){font:.88em var(--f-mono);background:var(--surface-2);border:1
 .fig .stats{margin-top:16px}
 
 /* página */
-:root{--accent:var(--c2);--accent-ink:#AE4A1D}
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--accent-ink:#F29A6B}}
-:root[data-theme="dark"]{--accent-ink:#F29A6B}
-.tiers{display:grid;background:var(--surface);border:1px solid var(--rule);border-radius:12px;padding:18px clamp(14px,2.4vw,22px)}
-.tier{border:1px solid var(--rule-strong);border-radius:8px;padding:12px 14px;background:var(--surface)}
-.tier .tl{display:block;font:500 11px/1.2 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--accent-ink);margin-bottom:4px}
-.tier p{font-size:15px;line-height:1.5;color:var(--ink-2);max-width:none}
-.tier.you{background:var(--wash);border-color:var(--accent)}
-.tier .two{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));margin-top:8px}
-.tier .two > div{border:1px dashed var(--rule-strong);border-radius:6px;padding:10px 12px}
-.tier .two b{display:block;font-size:15px;color:var(--ink)}
-.tlink{position:relative;height:44px;margin-left:28px;border-left:1.5px solid var(--ink-2)}
-.tlink::before,.tlink::after{content:"";position:absolute;left:-5.75px;border:5px solid transparent}
-.tlink::before{top:-1px;border-bottom:7px solid var(--ink-2);border-top:0}
-.tlink::after{bottom:-1px;border-top:7px solid var(--ink-2);border-bottom:0}
-.tlink span{position:absolute;left:14px;top:50%;transform:translateY(-50%);font:11.5px/1.2 var(--f-mono);color:var(--muted);white-space:nowrap}
-.calc{display:grid;gap:18px}
-.checklist{list-style:none;padding:0!important;display:grid;gap:10px}
-.checklist li{position:relative;padding-left:26px}
-.checklist li::before{content:"";position:absolute;left:2px;top:.35em;width:13px;height:13px;border:1.5px solid var(--accent-ink);border-radius:3px}
-.checklist li::after{content:"";position:absolute;left:6px;top:.52em;width:5px;height:8px;border:solid var(--accent-ink);border-width:0 1.8px 1.8px 0;transform:rotate(45deg)}
+:root{--accent:var(--c5);--accent-ink:var(--k5)}
+.gloss{display:grid;gap:0;grid-template-columns:1fr;border-top:1px solid var(--rule);margin:0}
+@media (min-width:720px){.gloss{grid-template-columns:repeat(2,minmax(0,1fr));column-gap:32px}}
+.gloss > div{padding:14px 0;border-bottom:1px solid var(--rule)}
+.gloss dt{font:600 15.5px/1.3 var(--f-sans);color:var(--ink)}
+.gloss dd{margin:4px 0 0;font-size:15px;line-height:1.5;color:var(--ink-2)}
+.arch{min-width:760px}
+.arch .zbg{fill:none;stroke:var(--rule-strong);stroke-dasharray:2 4}
+.arch .zone{font:500 11px var(--f-mono);letter-spacing:.14em;fill:var(--muted)}
+.arch .box{fill:var(--surface);stroke:var(--rule-strong)}
+.arch .box.me{fill:var(--wash);stroke:var(--accent)}
+.arch .box.core{fill:var(--surface-2);stroke:var(--rule-strong)}
+.arch .bt{fill:var(--ink);font-size:14px;font-weight:600}
+.arch .bd{fill:var(--ink-2);font-size:12px}
+.arch .ln{stroke:var(--ink-2);stroke-width:1.3;fill:none}
+.arch .ln.ro{stroke-dasharray:5 4}
+.arch .hd{fill:var(--ink-2)}
+.arch .lab{fill:var(--ink-2);font:11.5px var(--f-mono)}
+.arch .front{stroke:var(--crit-mark);stroke-width:1.5;stroke-dasharray:7 5}
+.arch .front-l{fill:var(--crit);font:500 12px var(--f-sans)}
+.principles{list-style:none;padding:0!important;display:grid;gap:10px}
+.principles li{padding-left:22px;position:relative}
+.principles li::before{content:"";position:absolute;left:2px;top:.55em;width:7px;height:7px;background:var(--accent);transform:rotate(45deg)}
+#fig-units .stat .v{font-size:clamp(22px,2.3vw,27px)}
+.stat .v.mono{font-family:var(--f-mono);font-weight:500;letter-spacing:0}
+.stat .l code{font-size:.92em}
+.door .ex{font-family:var(--f-mono);font-size:12.5px}
+.sub-h{font:600 17px/1.35 var(--f-sans);color:var(--ink)}
 </style>
 </head>
 <body>
-<header class="series wrap" id="top"><span class="brand">Máquinas y mercados</span><nav aria-label="Documentos de la serie"><ol class="series-nav"><li><a href="01-trading-algoritmico.html" title="1 · Trading algorítmico" aria-label="Documento 1 · Trading algorítmico"><span class="dot" style="--c:var(--c1)"></span>1</a></li><li><a href="#top" aria-current="page"><span class="dot" style="--c:var(--c2)"></span>2 · Forex algorítmico</a></li><li><a href="03-agentes-claude-trading.html" title="3 · Agentes Claude" aria-label="Documento 3 · Agentes Claude"><span class="dot" style="--c:var(--c3)"></span>3</a></li><li><a href="04-verdad-cuentas-fondeo.html" title="4 · Cuentas de fondeo" aria-label="Documento 4 · Cuentas de fondeo"><span class="dot" style="--c:var(--c4)"></span>4</a></li><li><a href="05-ctrader-api-mcp.html" title="5 · cTrader: API y MCP" aria-label="Documento 5 · cTrader: API y MCP"><span class="dot" style="--c:var(--c5)"></span>5</a></li><li><a href="06-gestion-del-riesgo.html" title="6 · Gestión del riesgo" aria-label="Documento 6 · Gestión del riesgo"><span class="dot" style="--c:var(--c6)"></span>6</a></li><li><a href="07-infraestructura-y-costes.html" title="7 · Infraestructura y costes" aria-label="Documento 7 · Infraestructura y costes"><span class="dot" style="--c:var(--c7)"></span>7</a></li><li><a href="08-atlas-de-estrategias.html" title="8 · Atlas de estrategias" aria-label="Documento 8 · Atlas de estrategias"><span class="dot" style="--c:var(--c8)"></span>8</a></li></ol></nav></header>
+<header class="series wrap" id="top"><span class="brand">Máquinas y mercados</span><nav aria-label="Documentos de la serie"><ol class="series-nav"><li><a href="01-trading-algoritmico.html" title="1 · Trading algorítmico" aria-label="Documento 1 · Trading algorítmico"><span class="dot" style="--c:var(--c1)"></span>1</a></li><li><a href="02-forex-algoritmico.html" title="2 · Forex algorítmico" aria-label="Documento 2 · Forex algorítmico"><span class="dot" style="--c:var(--c2)"></span>2</a></li><li><a href="03-agentes-claude-trading.html" title="3 · Agentes Claude" aria-label="Documento 3 · Agentes Claude"><span class="dot" style="--c:var(--c3)"></span>3</a></li><li><a href="04-verdad-cuentas-fondeo.html" title="4 · Cuentas de fondeo" aria-label="Documento 4 · Cuentas de fondeo"><span class="dot" style="--c:var(--c4)"></span>4</a></li><li><a href="#top" aria-current="page"><span class="dot" style="--c:var(--c5)"></span>5 · cTrader: API y MCP</a></li><li><a href="06-gestion-del-riesgo.html" title="6 · Gestión del riesgo" aria-label="Documento 6 · Gestión del riesgo"><span class="dot" style="--c:var(--c6)"></span>6</a></li><li><a href="07-infraestructura-y-costes.html" title="7 · Infraestructura y costes" aria-label="Documento 7 · Infraestructura y costes"><span class="dot" style="--c:var(--c7)"></span>7</a></li><li><a href="08-atlas-de-estrategias.html" title="8 · Atlas de estrategias" aria-label="Documento 8 · Atlas de estrategias"><span class="dot" style="--c:var(--c8)"></span>8</a></li></ol></nav></header>
 <section class="hero wrap">
   <div class="hero-text">
-    <p class="eyebrow"><span>Máquinas y mercados</span><b>Documento 2 de 8</b></p>
-    <h1>Forex <em>algorítmico</em></h1>
-    <p class="dek">Cómo funciona por dentro el mayor mercado del mundo, qué lo hace distinto para un algoritmo y qué estrategias tienen evidencia detrás. Con calculadoras de costes y de tamaño de posición.</p>
-    <p class="meta">Septiembre de 2026 · 18 minutos de lectura</p>
+    <p class="eyebrow"><span>Máquinas y mercados</span><b>Documento 5 de 8</b></p>
+    <h1>Conectar con <em>cTrader</em></h1>
+    <p class="dek">Qué es cTrader y cuatro formas de que un programa, o un agente de IA como Claude, hable con tu cuenta. Primero, cómo funciona sin tecnicismos. Después, la implementación correcta y lo que hay que vigilar.</p>
+    <p class="meta">Septiembre de 2026 · 12 minutos de lectura</p>
   </div>
-  <div class="emblem" aria-hidden="true"><canvas></canvas><span class="numeral">2</span><span class="serial">MM · 02 · 2026</span></div>
+  <div class="emblem" aria-hidden="true"><canvas></canvas><span class="numeral">5</span><span class="serial">MM · 05 · 2026</span></div>
 </section>
-<div class="wrap"><div class="microprint" aria-hidden="true" data-text="FOREX ALGORÍTMICO · EUR/USD · USD/JPY · GBP/USD"></div>
+<div class="wrap"><div class="microprint" aria-hidden="true" data-text="OPEN API · FIX 4.4 · CBOTS · MCP · 5035 · 5036"></div>
   <div class="tldr">
     <h2>En corto</h2>
     <ul>
-      <li>Se negocian 9,6 billones de dólares al día (BIS, abril de 2025). Es un mercado descentralizado, sin un precio ni un volumen únicos.</li>
-      <li>Los enemigos de un particular son los costes, el apalancamiento y los eventos extremos, mucho más que la falta de un buen indicador.</li>
-      <li>Las estrategias con evidencia (carry, momentum, value) son de medio plazo y se reparten entre muchas divisas. El scalping y la martingala juegan en terreno hostil.</li>
+      <li>cTrader es una plataforma de trading que Spotware licencia a brókeres y firmas de fondeo. Tiene cuatro puertas: la Open API para programas propios, FIX para sistemas institucionales, los cBots que viven dentro de la plataforma y MCP para agentes de IA como Claude Code.</li>
+      <li>La combinación sensata: estrategia y límites de riesgo en código determinista, con un cBot o un servicio sobre la Open API, y el agente de IA conectado por MCP para leer y analizar, sin permiso para operar.</li>
+      <li>Los sistemas se rompen por las reconexiones, las órdenes duplicadas, las unidades mal convertidas y los permisos caducados, más que por la estrategia. Todo eso tiene solución conocida.</li>
     </ul>
   </div>
 </div>
@@ -404,300 +411,381 @@ code:not(pre code){font:.88em var(--f-mono);background:var(--surface-2);border:1
   <aside class="toc" aria-label="Índice"></aside>
   <main class="content">
 
-    <section class="sec" id="mercado">
-      <p class="kicker">Tamaño</p>
-      <h2 data-short="El mercado en cifras">El mercado más grande del mundo</h2>
-      <p class="lead">Cada tres años, los bancos centrales miden el mercado de divisas en la encuesta trienal del Banco de Pagos Internacionales (BIS). La última, de abril de 2025, dejó estas cifras.</p>
-      <div class="stats quad">
-        <div class="stat"><span class="v">9,6<small>billones de $</small></span><span class="l">negociados cada día, un 28&nbsp;% más que en 2022.</span><span class="s">BIS, encuesta trienal 2025</span></div>
-        <div class="stat"><span class="v">3<small>billones de $</small></span><span class="l">al día en contado (spot), el 31&nbsp;% del total. Las permutas de divisas suman 4 billones.</span><span class="s">BIS, 2025</span></div>
-        <div class="stat"><span class="v">89&nbsp;%</span><span class="l">de las operaciones tienen el dólar en uno de sus lados.</span><span class="s">BIS, 2025</span></div>
-        <div class="stat"><span class="v">38&nbsp;%</span><span class="l">del volumen se negocia desde Reino Unido. Con EE.&nbsp;UU., Singapur y Hong Kong, el 75&nbsp;%.</span><span class="s">BIS, 2025</span></div>
+    <section class="sec" id="que-es">
+      <p class="kicker">Punto de partida</p>
+      <h2 data-short="Qué es cTrader">Qué es cTrader</h2>
+      <p class="lead">cTrader es una plataforma de trading: el programa con el que ves precios y gráficos, envías órdenes y automatizas estrategias. La desarrolla Spotware Systems, una empresa fundada en 2010 en Limasol (Chipre), que lanzó la primera versión en 2011.</p>
+      <p>La plataforma no es el bróker. Spotware licencia cTrader a brókeres como IC Markets, Pepperstone o FxPro y a firmas de fondeo, que la ofrecen a sus clientes. Tu dinero, los precios que te dan y lo que te cobran dependen del bróker; el programa es el mismo en todos. Pasa como con los cajeros automáticos: la máquina puede ser idéntica en varios bancos, pero la cuenta y las comisiones son de cada banco.</p>
+      <div class="cards quad">
+        <article class="card"><span class="tag">Aplicaciones</span><h3 class="ct">Windows, Mac, web y móvil</h3><p>Todas con el mismo usuario, el cTID, para cualquier cuenta y cualquier bróker.</p></article>
+        <article class="card"><span class="tag">Servidores</span><h3 class="ct">cServer</h3><p>El servidor de cTrader de cada bróker, donde viven las cuentas y las órdenes. La infraestructura de Spotware está en los centros de datos Equinix LD5, en Londres, y NY2, en Nueva York.</p></article>
+        <article class="card"><span class="tag">Automatización</span><h3 class="ct">cTrader Algo</h3><p>Robots (cBots), indicadores y plugins en C# o Python, con backtest y optimizador. Nació en 2011 con el nombre de cAlgo.</p></article>
+        <article class="card"><span class="tag">Copia y tienda</span><h3 class="ct">cTrader Copy y cTrader Store</h3><p>Copy trading integrado desde 2018 y, desde diciembre de 2025, una tienda de cBots, indicadores y plugins de terceros.</p></article>
       </div>
-      <p class="fig-note">En español, un billón es un millón de millones (10<sup>12</sup>). En inglés sería <i>trillion</i>.</p>
-      <figure class="fig" id="fig-ccy">
-        <p class="fig-title">Presencia de cada divisa en las operaciones</p>
-        <p class="fig-sub">Porcentaje de operaciones en las que aparece cada divisa. Suma 200&nbsp;% porque cada operación tiene dos.</p>
-        <div class="chart" id="ccy"></div>
-        <p class="fig-note">Fuente: BIS, encuesta trienal de abril de 2025.</p>
-      </figure>
-      <p>El 46&nbsp;% del volumen se cruza entre grandes intermediarios, y otro 50&nbsp;% entre intermediarios y otras instituciones financieras, como fondos, bancos pequeños y creadores de mercado no bancarios. El particular llega a este mercado a través de su bróker y representa una parte pequeña del total.</p>
+      <p>Lo que puedes operar depende del bróker: divisas y CFD sobre índices, materias primas, acciones o criptomonedas. Usar cTrader es gratis; pagas los spreads, las comisiones y los swaps del bróker. Su gran competidor es MetaTrader 4 y 5, de MetaQuotes, que se programa en su propio lenguaje, MQL. cTrader usa C# y Python, y ganó terreno entre las firmas de fondeo cuando MetaQuotes les retiró licencias en 2024, como cuenta el <a href="04-verdad-cuentas-fondeo.html">documento 4</a>.</p>
     </section>
 
-    <section class="sec" id="estructura">
-      <p class="kicker">Estructura</p>
-      <h2 data-short="Quién está al otro lado">Quién está al otro lado de tu orden</h2>
-      <p class="lead">En forex no hay una bolsa central. Es una red de intermediarios que se cotizan precios entre sí, y tu orden recorre varias capas antes de encontrar contrapartida, o se queda en tu bróker.</p>
-      <figure class="tiers" aria-label="Capas del mercado de divisas, de los proveedores de liquidez al trader particular">
-        <div class="tier"><span class="tl">Proveedores de liquidez</span><p>Grandes bancos y creadores de mercado no bancarios como XTX, Citadel Securities, Jump o HC Tech. Cotizan precios a todo el mercado.</p></div>
-        <div class="tlink"><span>cotizaciones y órdenes</span></div>
-        <div class="tier"><span class="tl">Plataformas</span><p>Interbancarias (EBS, LSEG Matching) y redes electrónicas o ECN (Cboe FX, Currenex, LMAX). Casan órdenes de muchos participantes.</p></div>
-        <div class="tlink"><span>acceso con crédito</span></div>
-        <div class="tier"><span class="tl">Prime brokers y agregadores</span><p>Dan crédito a los intermediarios pequeños y combinan precios de varios proveedores en un solo flujo.</p></div>
-        <div class="tlink"><span>precios agregados</span></div>
-        <div class="tier"><span class="tl">Tu bróker</span>
-          <div class="two">
-            <div><b>A-book</b><p>Envía tu orden al mercado y cobra una comisión o parte del diferencial.</p></div>
-            <div><b>B-book</b><p>Se queda con el otro lado de tu operación. Gana lo que tú pierdes.</p></div>
-          </div></div>
-        <div class="tlink"><span>MT5, cTrader o API</span></div>
-        <div class="tier you"><span class="tl">Tú</span><p>Tu algoritmo, en tu ordenador o en un servidor cercano al del bróker.</p></div>
+    <section class="sec" id="como-funciona">
+      <p class="kicker">Sin tecnicismos</p>
+      <h2 data-short="Cómo funciona">Cómo funciona una conexión</h2>
+      <p class="lead">Una API es una ventanilla para máquinas. En lugar de pulsar botones, tu programa envía peticiones escritas, como «compra 0,1 lotes de EURUSD con un stop a 20 pips», y recibe avisos, como «orden ejecutada a 1,1025».</p>
+      <figure class="diagram">
+        <div class="flowchart" id="how"></div>
+        <figcaption class="fig-note">El recorrido es el mismo con cualquiera de las cuatro puertas. Lo que cambia es el idioma de los mensajes y quién escribe las peticiones: tu código, la plataforma o un agente de IA.</figcaption>
       </figure>
-      <p>Muchos proveedores aplican <i>last look</i>: tras recibir tu orden, disponen de unos milisegundos para aceptarla o rechazarla si el precio se ha movido. El Código Global de Divisas (principio 17) les exige explicarlo. Para una estrategia rápida significa rechazos justo cuando más importa.</p>
+      <p>Para usar la ventanilla hacen falta tres cosas. Tu programa se registra, como una empresa que pide una tarjeta de acceso. Tú, como titular de la cuenta, le das permiso para ver o para operar, igual que autorizas una aplicación en tu banco. Y la línea se mantiene abierta: cada diez segundos tu programa dice «sigo aquí» para que no le cuelguen.</p>
+      <p>MCP es otra cosa: un enchufe estándar para agentes de IA. El agente ve un menú de herramientas, como «consultar saldo», «ver precio» o «abrir posición», y decide cuál usar a partir de lo que le pides con palabras. cTrader ya incluye su propio servidor MCP, dentro de lo que llama AI Agent Connect.</p>
+      <h3>Seis palabras que vas a ver</h3>
+      <dl class="gloss">
+        <div><dt>cTID</dt><dd>Tu usuario de cTrader, el mismo para todas tus cuentas y brókeres.</dd></div>
+        <div><dt>Aplicación</dt><dd>El registro de tu programa en cTrader. Recibe un identificador y un secreto, que funcionan como el usuario y la contraseña del programa.</dd></div>
+        <div><dt>Token de acceso</dt><dd>El permiso que das a esa aplicación para ver tus cuentas o para operar en ellas. Caduca a los 30 días y se renueva.</dd></div>
+        <div><dt>Protobuf y JSON</dt><dd>Dos formatos para escribir los mensajes: uno compacto, pensado para máquinas, y otro que una persona puede leer.</dd></div>
+        <div><dt>Latido</dt><dd>El «sigo aquí» que tu programa envía cada diez segundos. Sin él, cTrader cierra la conexión.</dd></div>
+        <div><dt>MCP</dt><dd>Model Context Protocol, un estándar abierto para conectar agentes de IA con herramientas externas.</dd></div>
+      </dl>
+    </section>
+
+    <section class="sec" id="puertas">
+      <p class="kicker">Las opciones</p>
+      <h2 data-short="Las cuatro puertas">Las cuatro puertas</h2>
+      <div class="cards quad">
+        <article class="card door"><span class="tag">Programas propios</span><h3 class="ct">Open API</h3><p>Una ventanilla para programas escritos en cualquier lenguaje. Tu programa recibe precios, consulta el historial y envía órdenes a una o varias cuentas.</p><p class="ex">Protobuf o JSON · TCP o WebSocket con TLS · OAuth 2.0</p></article>
+        <article class="card door"><span class="tag">Estándar institucional</span><h3 class="ct">FIX API</h3><p>El idioma de bancos y fondos desde los años noventa. Dos líneas: una para precios y otra para órdenes. Sin gráficos ni historial.</p><p class="ex">FIX 4.4 · sesiones QUOTE y TRADE · puertos 5211 y 5212 con TLS</p></article>
+        <article class="card door"><span class="tag">Robots en la plataforma</span><h3 class="ct">cBots</h3><p>Programas que viven dentro de cTrader, con backtest y optimizador. Corren en tu ordenador, en la nube gratuita de cTrader o en un servidor Linux.</p><p class="ex">C# o Python (desde cTrader 5.4) · cTrader Cloud · CLI en Docker</p></article>
+        <article class="card door"><span class="tag">Agentes de IA</span><h3 class="ct">MCP</h3><p>Un enchufe para que Claude Code u otro agente consulte tu cuenta, los precios y el historial, y opere si se lo permites.</p><p class="ex">Local: cTrader Windows o Mac · Remoto: cTrader Web</p></article>
+      </div>
       <div class="tbl-wrap">
         <table>
-          <thead><tr><th>Modelo de bróker</th><th>Cómo gana</th><th>Qué implica para tu algoritmo</th></tr></thead>
+          <thead><tr><th>Vía</th><th>Dónde corre</th><th>¿Opera?</th><th>Datos</th><th>Límites y puntos débiles</th></tr></thead>
           <tbody>
-            <tr><td>Creador de mercado (B-book)</td><td>Con el diferencial y con lo que pierden sus clientes</td><td>Puede limitar el scalping, recotizar o retrasar órdenes en noticias. Vigila si las condiciones cambian cuando empiezas a ganar.</td></tr>
-            <tr><td>STP o ECN (A-book)</td><td>Con una comisión por lote o un margen sobre el diferencial</td><td>Precios más cercanos al mercado real, con diferenciales variables que se abren en las noticias.</td></tr>
-            <tr><td>Híbrido</td><td>Clasifica a los clientes: A-book para los que ganan, B-book para el resto</td><td>Muy extendido entre los brókeres minoristas. Tus ejecuciones pueden empeorar si pasas de un libro a otro.</td></tr>
+            <tr><td>Open API</td><td>Tu ordenador o tu servidor, en cualquier lenguaje</td><td>Sí, con permiso «trading»</td><td>Precios en directo, barras y ticks históricos</td><td>50 peticiones por segundo, 5 para históricos, hasta 14.000 barras por petición. Reconexión, estado y límites corren de tu cuenta</td></tr>
+            <tr><td>FIX API</td><td>Tu servidor</td><td>Sí</td><td>Precios en directo</td><td>Sin historial de precios y con pocos datos de la cuenta. Disponible según el bróker</td></tr>
+            <tr><td>cBots</td><td>cTrader Windows o Mac, cTrader Cloud o Docker en Linux</td><td>Sí</td><td>Todo lo de la plataforma, con backtest</td><td>Cloud gratuito: hasta 10 instancias en cuentas reales 24/7; en demo, 1 instancia durante 7 días como máximo</td></tr>
+            <tr><td>MCP local</td><td>Junto a cTrader Windows o Mac, que debe estar abierto</td><td>Solo si lo activas</td><td>Cuenta, precios, historial, indicadores y gráficos</td><td>Un modelo de lenguaje decide qué herramienta usar. Responde en segundos, no en milisegundos</td></tr>
+            <tr><td>MCP remoto</td><td>Nube, a través de cTrader Web</td><td>Según la configuración</td><td>Cuenta, órdenes y precios</td><td>Un token por cuenta. La sesión de cTrader Web debe seguir activa</td></tr>
           </tbody>
         </table>
       </div>
     </section>
 
-    <section class="sec" id="reloj">
-      <p class="kicker">Horario</p>
-      <h2 data-short="El reloj del forex">El reloj del forex</h2>
-      <p class="lead">El mercado abre el domingo por la noche y cierra el viernes por la noche, pero la liquidez cambia mucho según la hora del día.</p>
-      <figure class="fig" id="fig-ses">
-        <p class="fig-title">Sesiones en hora de la España peninsular</p>
-        <p class="fig-sub">Horas aproximadas de invierno. Pasa el cursor por cada sesión.</p>
-        <div class="chart" id="ses"></div>
-        <p class="fig-note">Londres abre siempre a las 9:00 en España y Nueva York a las 14:00, salvo unas semanas de marzo y noviembre en que EE.&nbsp;UU. y Europa cambian la hora en fechas distintas. Tokio y Sídney se desplazan una hora según la época del año.</p>
-      </figure>
-      <p>Tres citas marcan el día de un algoritmo: los datos macro de EE.&nbsp;UU. (empleo, inflación) salen a las 14:30; el BCE anuncia sus tipos a las 14:15; la Reserva Federal, a las 20:00. A las 23:00 llega el cambio de día (<i>rollover</i>), con diferenciales más anchos y el cobro o pago de los intereses de las posiciones abiertas.</p>
+    <section class="sec" id="elegir">
+      <p class="kicker">Decisión</p>
+      <h2 data-short="Cuál elegir">Qué puerta elegir</h2>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Si quieres…</th><th>Usa</th><th>Por qué</th></tr></thead>
+          <tbody>
+            <tr><td>Automatizar una estrategia sin mantener servidores</td><td>Un cBot en cTrader Cloud</td><td>Gratis y 24/7 en cuentas reales, sin VPS. Menos piezas que puedan fallar</td></tr>
+            <tr><td>Un servicio propio en Python, con varias cuentas y tus propios datos</td><td>Open API con Protobuf, en un servidor en Londres</td><td>Control total y cerca del servidor del bróker. Lo ves en el <a href="07-infraestructura-y-costes.html">documento 7</a></td></tr>
+            <tr><td>Conectar un motor que ya habla FIX</td><td>FIX API</td><td>Estándar y con pocas capas, a cambio de menos funciones</td></tr>
+            <tr><td>Que Claude analice tu cuenta y proponga mejoras</td><td>MCP local con el trading desactivado</td><td>Lo lee todo y no puede tocar nada</td></tr>
+            <tr><td>Que un agente de IA opere solo</td><td>Mejor no. Si lo pruebas, en demo y con límites en código</td><td>El mismo texto puede dar respuestas distintas y cada una tarda segundos. Lo explica el <a href="03-agentes-claude-trading.html">documento 3</a></td></tr>
+          </tbody>
+        </table>
+      </div>
     </section>
 
-    <section class="sec" id="diferente">
-      <p class="kicker">Particularidades</p>
-      <h2 data-short="Lo que cambia">Lo que cambia para un algoritmo</h2>
-      <p class="lead">Un sistema que funciona en acciones no se traslada tal cual al forex. Estas ocho diferencias son las que más backtests rompen.</p>
-      <div class="cards two">
-        <article class="card"><h3 class="ct">Sin precio ni volumen únicos</h3><p>Cada bróker tiene su propio flujo de precios. El volumen de MetaTrader cuenta cambios de precio (ticks) en tu bróker, no contratos negociados en el mercado.</p></article>
-        <article class="card"><h3 class="ct">Diferenciales que respiran</h3><p>Se abren en el cambio de día, con las noticias y en las horas de poca liquidez. Un backtest con diferencial fijo te está mintiendo.</p></article>
-        <article class="card"><h3 class="ct">Intereses cada noche</h3><p>Mantener una posición al cierre cobra o paga la diferencia de tipos de interés (swap). El miércoles se aplica triple para cubrir el fin de semana.</p></article>
-        <article class="card"><h3 class="ct">Huecos de fin de semana</h3><p>El mercado cierra el viernes a las 23:00 y reabre el domingo por la noche. Un stop no te protege si el precio abre más allá.</p></article>
-        <article class="card"><h3 class="ct">Bancos centrales</h3><p>Las decisiones de tipos y las intervenciones mueven más que cualquier indicador. Japón intervino para sostener el yen en 2022 y en 2024.</p></article>
-        <article class="card"><h3 class="ct">Apalancamiento regulado</h3><p>En la UE, un cliente minorista puede apalancarse como máximo 30 veces en los pares principales y 20 veces en el resto.</p></article>
-        <article class="card"><h3 class="ct">Rechazos por last look</h3><p>Algunos proveedores pueden rechazar tu orden unos milisegundos después de recibirla. Las estrategias rápidas lo sufren más.</p></article>
-        <article class="card"><h3 class="ct">Correlación escondida</h3><p>Comprar EUR/USD, GBP/USD y AUD/USD a la vez es, en la práctica, una sola apuesta grande contra el dólar.</p></article>
-      </div>
-      <h3>Cuando el mercado se rompe</h3>
-      <ol class="timeline">
-        <li><time>2014–2015</time><b>El escándalo de los fixings</b><span>Los reguladores de Reino Unido, EE.&nbsp;UU. y Suiza multaron a grandes bancos con más de 10.000 millones de dólares por manipular las fijaciones de referencia del mercado de divisas.</span></li>
-        <li><time>15 de enero de 2015</time><b>Suiza abandona el suelo del franco</b><span>El EUR/CHF cayó de 1,20 a cerca de 0,85 en minutos. FXCM necesitó un préstamo de rescate de 300 millones de dólares y Alpari UK quebró.</span></li>
-        <li><time>7 de octubre de 2016</time><b>Desplome relámpago de la libra</b><span>La libra cayó en torno a un 9&nbsp;% frente al dólar en segundos, durante la madrugada asiática, y recuperó buena parte después (BIS).</span></li>
-        <li><time>3 de enero de 2019</time><b>Desplome relámpago del yen</b><span>El yen se apreció un 3&nbsp;% frente al dólar en unos 30 segundos y el AUD/JPY cayó un 7&nbsp;% en minutos (Banco de la Reserva de Australia).</span></li>
-        <li><time>5 de agosto de 2024</time><b>Cierre masivo del carry con el yen</b><span>Tras la subida de tipos en Japón y un mal dato de empleo en EE.&nbsp;UU., la salida en bloque de las posiciones de carry contribuyó a que el Nikkei cayera un 12&nbsp;% en una sesión.</span></li>
+    <section class="sec" id="arquitectura">
+      <p class="kicker">Diseño</p>
+      <h2 data-short="Arquitectura">La arquitectura correcta</h2>
+      <p class="lead">Una sola pieza envía órdenes, y solo después de pasar un control de riesgo escrito en código. El agente de IA mira, analiza y propone desde fuera.</p>
+      <figure class="diagram">
+        <p class="scroll-hint">Desliza hacia los lados para ver el diagrama completo.</p>
+        <div class="scroll">
+          <svg class="arch" viewBox="0 0 900 420" role="img" aria-label="Arquitectura recomendada. En un servidor en Londres, la estrategia envía señales al control de riesgo, que aprueba y pasa las órdenes al ejecutor; el ejecutor las envía al servidor de cTrader y lo registra todo. Claude Code, en tu equipo, lee el registro y la cuenta por MCP sin permiso para operar, y te propone cambios que tú revisas y despliegas. Ninguna orden cruza la frontera entre la supervisión y la ejecución.">
+            <rect class="zbg" x="8" y="32" width="236" height="380" rx="10"/>
+            <rect class="zbg" x="268" y="32" width="372" height="380" rx="10"/>
+            <rect class="zbg" x="664" y="32" width="228" height="380" rx="10"/>
+            <text class="zone" x="22" y="54">SUPERVISIÓN · TU EQUIPO</text>
+            <text class="zone" x="282" y="54">EJECUCIÓN · VPS EN LONDRES</text>
+            <text class="zone" x="678" y="54">CTRADER · LD5</text>
+
+            <line class="front" x1="256" y1="32" x2="256" y2="412"/>
+            <text class="front-l" x="282" y="356">Ninguna orden cruza la línea roja</text>
+
+            <rect class="box" x="24" y="72" width="204" height="100" rx="8"/>
+            <text class="bt" x="38" y="98">Claude Code</text>
+            <text class="bd" x="38" y="120">Lee el registro y la cuenta,</text>
+            <text class="bd" x="38" y="138">analiza y propone</text>
+            <text class="bd" x="38" y="156">cambios. No opera.</text>
+
+            <rect class="box" x="24" y="214" width="204" height="84" rx="8"/>
+            <text class="bt" x="38" y="240">Tú</text>
+            <text class="bd" x="38" y="262">Revisas, apruebas y</text>
+            <text class="bd" x="38" y="280">despliegas los cambios</text>
+
+            <rect class="box" x="284" y="72" width="148" height="100" rx="8"/>
+            <text class="bt" x="298" y="98">Estrategia</text>
+            <text class="bd" x="298" y="120">Señales con reglas</text>
+            <text class="bd" x="298" y="138">fijas y probadas</text>
+
+            <rect class="box me" x="476" y="72" width="148" height="100" rx="8"/>
+            <text class="bt" x="490" y="98">Control de riesgo</text>
+            <text class="bd" x="490" y="120">Límites en código</text>
+            <text class="bd" x="490" y="138">y botón de parada</text>
+
+            <rect class="box core" x="476" y="214" width="148" height="100" rx="8"/>
+            <text class="bt" x="490" y="240">Ejecutor</text>
+            <text class="bd" x="490" y="262">Open API. Un ID</text>
+            <text class="bd" x="490" y="280">propio por orden;</text>
+            <text class="bd" x="490" y="298">reconcilia al volver</text>
+
+            <rect class="box" x="284" y="214" width="148" height="100" rx="8"/>
+            <text class="bt" x="298" y="240">Registro</text>
+            <text class="bd" x="298" y="262">Cada mensaje con</text>
+            <text class="bd" x="298" y="280">su hora; avisos</text>
+            <text class="bd" x="298" y="298">al móvil</text>
+
+            <rect class="box core" x="680" y="150" width="196" height="130" rx="8"/>
+            <text class="bt" x="694" y="176">cServer del bróker</text>
+            <text class="bd" x="694" y="198">Tus cuentas, órdenes</text>
+            <text class="bd" x="694" y="216">y stops. Los stops</text>
+            <text class="bd" x="694" y="234">siguen activos aunque</text>
+            <text class="bd" x="694" y="252">tu sistema se caiga.</text>
+
+            <line class="ln" x1="432" y1="122" x2="468" y2="122"/><path class="hd" d="M476,122l-8,-4.5v9z"/>
+            <text class="lab" x="454" y="114" text-anchor="middle">señal</text>
+            <line class="ln" x1="550" y1="172" x2="550" y2="206"/><path class="hd" d="M550,214l-4.5,-8h9z"/>
+            <text class="lab" x="558" y="196">aprobada</text>
+            <line class="ln" x1="624" y1="250" x2="672" y2="250"/><path class="hd" d="M680,250l-8,-4.5v9z"/>
+            <text class="lab" x="652" y="242" text-anchor="middle">orden</text>
+            <line class="ln" x1="476" y1="264" x2="440" y2="264"/><path class="hd" d="M432,264l8,-4.5v9z"/>
+            <text class="lab" x="454" y="256" text-anchor="middle">todo</text>
+            <path class="ln ro" d="M778,150V64H358"/><path class="hd" d="M358,72l-4.5,-8h9z"/>
+            <text class="lab" x="786" y="100">precios y</text>
+            <text class="lab" x="786" y="116">ejecuciones</text>
+            <path class="ln ro" d="M284,284H240V122H236"/><path class="hd" d="M228,122l8,-4.5v9z"/>
+            <text class="lab" x="234" y="198" text-anchor="end">lee</text>
+            <line class="ln" x1="126" y1="172" x2="126" y2="206"/><path class="hd" d="M126,214l-4.5,-8h9z"/>
+            <text class="lab" x="134" y="196">propone</text>
+            <path class="ln ro" d="M24,160H16V396H778V288"/><path class="hd" d="M778,280l-4.5,8h9z"/>
+            <text class="lab" x="282" y="388">MCP con el trading desactivado: solo lee</text>
+          </svg>
+        </div>
+      </figure>
+      <ul class="principles">
+        <li><b>Stop en el servidor desde el primer instante.</b> La orden de mercado lleva su stop, así un corte de tu sistema no deja la posición sin protección.</li>
+        <li><b>La verdad es la del bróker.</b> Al arrancar y tras cada reconexión, el ejecutor pide las posiciones y órdenes abiertas y las compara con lo que cree tener.</li>
+        <li><b>Permisos mínimos.</b> La aplicación que solo lee usa el permiso «accounts»; solo el ejecutor tiene «trading».</li>
+        <li><b>Un botón de parada que no dependa de la estrategia.</b> Cancela las órdenes pendientes, cierra posiciones y bloquea nuevas entradas. El <a href="06-gestion-del-riesgo.html">documento 6</a> detalla qué límites ponerle.</li>
+      </ul>
+    </section>
+
+    <section class="sec" id="open-api">
+      <p class="kicker">Implementación</p>
+      <h2 data-short="Open API paso a paso">Open API, paso a paso</h2>
+      <ol class="steps">
+        <li><div><b>Registra la aplicación</b><span>En el portal de Open API, con tu cTID. Recibes un client ID y un secreto. Spotware revisa la solicitud y te responde por correo.</span></div></li>
+        <li><div><b>Autoriza tus cuentas con OAuth 2.0</b><span>El titular inicia sesión en la página de cTrader y concede «accounts» (solo lectura) o «trading». El token de acceso dura unos 30 días; el de renovación vale hasta que lo usas.</span></div></li>
+        <li><div><b>Conecta con TLS</b><span><code>live.ctraderapi.com</code> o <code>demo.ctraderapi.com</code>, puerto 5035 para Protobuf o 5036 para JSON, por TCP o WebSocket. Demo y real están separados: abre una conexión para cada entorno; cada una admite cuentas ilimitadas.</span></div></li>
+        <li><div><b>Autentica en orden</b><span>ProtoOAApplicationAuthReq, después ProtoOAGetAccountListByAccessTokenReq y ProtoOAAccountAuthReq para cada cuenta. Cualquier otro mensaje antes de eso devuelve un error.</span></div></li>
+        <li><div><b>Mantén la línea viva</b><span>Un ProtoHeartbeatEvent cada 10 segundos.</span></div></li>
+        <li><div><b>Carga la ficha de cada símbolo</b><span>ProtoOASymbolsListReq y ProtoOASymbolByIdReq: identificador, dígitos, tamaño de lote, volumen mínimo y paso. Cambian de un bróker a otro.</span></div></li>
+        <li><div><b>Recibe precios e historial</b><span>ProtoOASubscribeSpotsReq para los precios en directo y ProtoOAGetTrendbarsReq para las barras, con un máximo de 14.000 por petición y 5 peticiones por segundo.</span></div></li>
+        <li><div><b>Envía órdenes con tu propio identificador</b><span>ProtoOANewOrderReq con clientOrderId y stop relativo. El resultado llega como ProtoOAExecutionEvent o ProtoOAOrderErrorEvent.</span></div></li>
+        <li><div><b>Reconcilia y renueva</b><span>ProtoOAReconcileReq al arrancar y tras cada reconexión; ProtoOARefreshTokenReq antes de que caduque el token.</span></div></li>
       </ol>
-    </section>
 
-    <section class="sec" id="estrategias">
-      <p class="kicker">Estrategias</p>
-      <h2 data-short="Estrategias">Qué funciona en forex y qué no</h2>
-      <p class="lead">Las estrategias de divisas con respaldo académico son pocas, de medio plazo, y funcionan mejor repartidas entre muchos pares.</p>
-      <div class="tbl-wrap">
-        <table>
-          <thead><tr><th>Estrategia</th><th>Idea</th><th>Evidencia</th><th>Riesgo principal</th></tr></thead>
-          <tbody>
-            <tr><td>Carry</td><td>Comprar divisas con tipos de interés altos y vender las de tipos bajos</td><td>Prima documentada durante décadas (Lustig, Roussanov y Verdelhan, 2011; Menkhoff y otros, 2012)</td><td>Caídas bruscas en las crisis (Brunnermeier, Nagel y Pedersen, 2008)</td></tr>
-            <tr><td>Momentum y tendencia</td><td>Seguir a las divisas que más han subido en los últimos meses</td><td>Rentable en estudios amplios (Menkhoff y otros, 2012; Moskowitz, Ooi y Pedersen, 2012)</td><td>Mercados laterales, giros y costes altos en divisas poco líquidas</td></tr>
-            <tr><td>Value</td><td>Comprar divisas baratas según su poder adquisitivo (PPA)</td><td>Funciona en horizontes de años (Asness, Moskowitz y Pedersen, 2013)</td><td>Puede tardar años en converger</td></tr>
-            <tr><td>Reversión en cruces</td><td>Operar pares que suelen moverse en un rango, como AUD/NZD</td><td>Depende mucho del par y del periodo</td><td>Rupturas de régimen, como el franco suizo en 2015</td></tr>
-            <tr><td>Noticias</td><td>Reaccionar a datos macro y a los bancos centrales</td><td>Ventaja reservada a los más rápidos</td><td>Diferenciales, deslizamiento y rechazos justo en el momento clave</td></tr>
-            <tr><td>Rupturas de sesión</td><td>Operar la salida del rango asiático en la apertura de Londres</td><td>Resultados mixtos y muy sensibles a los costes</td><td>Falsas rupturas</td></tr>
-            <tr><td>Martingala y rejilla</td><td>Doblar la posición tras cada pérdida o promediar a intervalos fijos</td><td>Ninguna. No crean ventaja</td><td>Una ruina ocasional que borra meses de ganancias</td></tr>
-          </tbody>
-        </table>
-      </div>
-      <p>Neely, Weller y Ulrich (2009) mostraron que las reglas técnicas sencillas que ganaban dinero en divisas en los años setenta y ochenta dejaron de hacerlo después, a medida que el mercado aprendía. Es la ventaja que se agota del <a href="01-trading-algoritmico.html">documento 1</a>, aplicada al forex.</p>
-      <figure class="fig" id="fig-mart">
-        <p class="fig-title">La martingala en una imagen</p>
-        <p class="fig-sub">Dos cuentas de 10.000&nbsp;$ juegan exactamente las mismas 700 operaciones a cara o cruz, con 10 pips de objetivo y de stop. El eje horizontal cuenta operaciones. Una dobla la posición tras cada pérdida; la otra arriesga siempre el 1&nbsp;%.</p>
-        <div class="chart" id="mart"></div>
-        <div class="legend"><span><i style="--k:var(--c1)"></i>Riesgo fijo del 1&nbsp;%</span><span><i style="--k:var(--c2)"></i>Martingala</span></div>
-        <p class="fig-note">Simulación ilustrativa, sin costes ni límites de margen. Con los límites europeos de apalancamiento la martingala se cortaría antes, pero las pérdidas llegarían igual.</p>
-      </figure>
-    </section>
-
-    <section class="sec" id="calculadoras">
-      <p class="kicker">Números</p>
-      <h2 data-short="Calculadoras">Costes y tamaño de posición</h2>
-      <p class="lead">Dos cálculos que conviene hacer antes de programar una sola línea: cuánto se comen los costes y cuánto arriesgas de verdad en cada operación.</p>
-      <figure class="fig" id="fig-cost">
-        <p class="fig-title">¿Cuánto se comen los costes?</p>
-        <p class="fig-sub">Para EUR/USD y pares cotizados en dólares, donde un pip vale 10&nbsp;$ por lote estándar. Los valores iniciales son un ejemplo.</p>
+      <h3>Las unidades que rompen sistemas</h3>
+      <p>La Open API no habla en lotes ni en pips. El volumen va en centésimas de unidad, los precios en cienmilésimas y el stop de una orden de mercado solo se admite como distancia relativa. Un error aquí multiplica tu posición por cien.</p>
+      <figure class="fig" id="fig-units">
+        <p class="fig-title">Conversor a unidades del protocolo</p>
+        <p class="fig-sub">Escribe la orden como la pensarías en la plataforma y mira qué hay que enviar.</p>
         <div class="controls four">
-          <div class="ctl"><label for="c-n">Operaciones al mes <output id="c-n-out" for="c-n">80</output></label><input id="c-n" type="range" min="5" max="400" step="5" value="80"></div>
-          <div class="ctl"><label for="c-cost">Coste por operación (pips)</label><input id="c-cost" type="number" min="0" max="20" step="0.1" value="1.2"><span class="hint">Diferencial más comisión, ida y vuelta</span></div>
-          <div class="ctl"><label for="c-edge">Ventaja bruta media por operación (pips)</label><input id="c-edge" type="number" min="0.1" max="100" step="0.1" value="2"><span class="hint">Lo que ganarías de media sin costes</span></div>
-          <div class="ctl"><label for="c-lots">Tamaño (lotes)</label><input id="c-lots" type="number" min="0.01" max="100" step="0.01" value="1"></div>
-        </div>
-        <div class="stats">
-          <div class="stat"><span class="v" id="c-costs">–</span><span class="l">pagas en costes al mes</span></div>
-          <div class="stat"><span class="v" id="c-gross">–</span><span class="l">de ganancia bruta esperada al mes</span></div>
-          <div class="stat" id="c-net-card"><span class="v" id="c-net">–</span><span class="l">de resultado neto esperado al mes</span><span class="badge" id="c-badge"></span></div>
-        </div>
-        <div class="readout" id="c-read" aria-live="polite"></div>
-        <div class="meter" id="c-meter" role="img" aria-label="Parte de la ventaja que se comen los costes"><i id="c-meter-i"></i></div>
-      </figure>
-      <figure class="fig" id="fig-size">
-        <p class="fig-title">Tamaño de posición por riesgo</p>
-        <p class="fig-sub">Lotes = (capital × riesgo por operación) ÷ (stop en pips × valor del pip). Ejemplo con una cuenta en dólares operando EUR/USD.</p>
-        <div class="controls four">
-          <div class="ctl"><label for="s-cap">Capital ($)</label><input id="s-cap" type="number" min="100" step="100" value="10000"></div>
-          <div class="ctl"><label for="s-risk">Riesgo por operación <output id="s-risk-out" for="s-risk">1 %</output></label><input id="s-risk" type="range" min="0.25" max="5" step="0.25" value="1"></div>
-          <div class="ctl"><label for="s-stop">Stop (pips)</label><input id="s-stop" type="number" min="1" max="1000" step="1" value="25"></div>
-          <div class="ctl"><label for="s-px">Precio EUR/USD (ejemplo)</label><input id="s-px" type="number" min="0.5" max="2" step="0.0001" value="1.1000"></div>
+          <div class="ctl"><label for="u-sym">Símbolo</label><select id="u-sym"><option value="EURUSD">EURUSD</option><option value="GBPUSD">GBPUSD</option><option value="USDJPY">USDJPY</option><option value="EURJPY">EURJPY</option></select></div>
+          <div class="ctl"><label for="u-lots">Lotes</label><input id="u-lots" type="number" min="0.01" max="100" step="0.01" value="0.1"><span class="hint">1 lote = 100.000 unidades</span></div>
+          <div class="ctl"><label for="u-sl">Stop (pips)</label><input id="u-sl" type="number" min="0.1" max="2000" step="0.1" value="20"></div>
+          <div class="ctl"><label for="u-px">Precio de ejemplo</label><input id="u-px" type="number" min="0.0001" step="0.00001" value="1.10250"></div>
         </div>
         <div class="stats quad">
-          <div class="stat"><span class="v" id="s-lots">–</span><span class="l">lotes estándar</span></div>
-          <div class="stat"><span class="v" id="s-money">–</span><span class="l">en riesgo si salta el stop</span></div>
-          <div class="stat"><span class="v" id="s-nom">–</span><span class="l">de tamaño nominal</span></div>
-          <div class="stat"><span class="v" id="s-lev">–</span><span class="l">de apalancamiento efectivo</span><span class="s" id="s-margin"></span></div>
+          <div class="stat"><span class="v mono" id="u-vol">–</span><span class="l"><code>volume</code></span><span class="s">lotes × 100.000 × 100</span></div>
+          <div class="stat"><span class="v mono" id="u-rsl">–</span><span class="l"><code>relativeStopLoss</code></span><span class="s">pips × tamaño del pip × 100.000</span></div>
+          <div class="stat"><span class="v mono" id="u-pxp">–</span><span class="l">precio en <code>ProtoOASpotEvent</code></span><span class="s">precio × 100.000</span></div>
+          <div class="stat"><span class="v" id="u-risk">–</span><span class="l">se pierden si salta el stop, sin contar deslizamiento</span><span class="s" id="u-risk-s">en la divisa de cotización</span></div>
         </div>
-        <div class="meter" id="s-meter" role="img" aria-label="Apalancamiento efectivo frente al máximo europeo de 30 veces"><i id="s-meter-i"></i></div>
-        <p class="fig-note">La barra compara tu apalancamiento efectivo con el máximo de 30 veces que permite la UE a un minorista en pares principales. Que la regla lo permita no significa que sea prudente.</p>
+        <p class="fig-note">Fórmulas de la referencia de mensajes de la Open API. El tamaño del lote y el del pip salen de la ficha del símbolo; aquí se usan los habituales en forex.</p>
       </figure>
+
+      <h3>Un esqueleto en Python</h3>
+      <p>Con la librería oficial, OpenApiPy (<code>pip install ctrader-open-api==0.9.2</code>). Conecta a demo, autentica, reconcilia, se suscribe a precios y deja lista una función de compra con stop en el servidor.</p>
+      <div class="codeblock" data-lang="python"><span class="lang">Python · OpenApiPy</span><pre class="code"><code>import os
+import uuid
+
+from twisted.internet import reactor, task
+from ctrader_open_api import Client, EndPoints, Protobuf, TcpProtocol
+from ctrader_open_api.messages.OpenApiCommonMessages_pb2 import ProtoHeartbeatEvent
+from ctrader_open_api.messages.OpenApiMessages_pb2 import (
+    ProtoOAAccountAuthReq, ProtoOAApplicationAuthReq, ProtoOANewOrderReq,
+    ProtoOAReconcileReq, ProtoOASubscribeSpotsReq)
+from ctrader_open_api.messages.OpenApiModelMessages_pb2 import (
+    ProtoOAOrderType, ProtoOATradeSide)
+
+CUENTA = int(os.environ["CTRADER_CUENTA"])  # ctidTraderAccountId
+EURUSD = 1  # symbolId: cámbialo por el que devuelva ProtoOASymbolsListReq
+
+client = Client(EndPoints.PROTOBUF_DEMO_HOST, EndPoints.PROTOBUF_PORT, TcpProtocol)
+
+
+def ok(respuesta):
+    """Extrae el mensaje y convierte las respuestas de error en excepciones."""
+    m = Protobuf.extract(respuesta)
+    if type(m).__name__ == "ProtoOAErrorRes":
+        raise RuntimeError(f"{m.errorCode}: {m.description}")
+    return m
+
+
+def pedir(req, siguiente):
+    client.send(req).addCallback(ok).addCallbacks(siguiente, fallo)
+
+
+def al_conectar(_):
+    req = ProtoOAApplicationAuthReq()
+    req.clientId = os.environ["CTRADER_CLIENT_ID"]
+    req.clientSecret = os.environ["CTRADER_CLIENT_SECRET"]
+    pedir(req, autorizar_cuenta)
+
+
+def autorizar_cuenta(_):
+    pedir(ProtoOAAccountAuthReq(ctidTraderAccountId=CUENTA,
+                                accessToken=os.environ["CTRADER_ACCESS_TOKEN"]),
+          reconciliar)
+
+
+def reconciliar(_):
+    # Antes de operar, la verdad del bróker: posiciones y órdenes abiertas
+    pedir(ProtoOAReconcileReq(ctidTraderAccountId=CUENTA), suscribir)
+
+
+def suscribir(estado):
+    print("Posiciones abiertas:", len(estado.position))
+    pedir(ProtoOASubscribeSpotsReq(ctidTraderAccountId=CUENTA, symbolId=[EURUSD]),
+          lambda _: print("Suscrito a EURUSD"))
+
+
+def comprar(lotes, stop_pips):
+    """Llámala solo después de que el control de riesgo apruebe la orden."""
+    req = ProtoOANewOrderReq(
+        ctidTraderAccountId=CUENTA, symbolId=EURUSD,
+        orderType=ProtoOAOrderType.Value("MARKET"),
+        tradeSide=ProtoOATradeSide.Value("BUY"),
+        volume=round(lotes * 100_000 * 100),                   # centésimas de unidad
+        relativeStopLoss=round(stop_pips * 0.0001 * 100_000),  # cienmilésimas de precio
+        clientOrderId=uuid.uuid4().hex,                        # evita duplicados al reintentar
+        label="tendencia-v1")
+    client.send(req).addErrback(fallo)  # la ejecución llega como evento
+
+
+def al_recibir(_, mensaje):
+    if mensaje.payloadType == ProtoHeartbeatEvent().payloadType:
+        return
+    print(Protobuf.extract(mensaje))  # precios, ejecuciones y errores de orden
+
+
+def fallo(error):
+    print("ERROR:", error)  # en producción: alerta y parar la estrategia
+
+
+def al_desconectar(_, motivo):
+    print("Desconectado:", motivo)  # al volver se autentica y reconcilia de nuevo
+
+
+def latido():  # cTrader pide uno cada 10 s; no tiene respuesta
+    client.send(ProtoHeartbeatEvent()).addErrback(lambda _: None)
+
+
+client.setConnectedCallback(al_conectar)
+client.setDisconnectedCallback(al_desconectar)
+client.setMessageReceivedCallback(al_recibir)
+task.LoopingCall(latido).start(10, now=False)
+client.startService()
+reactor.run()</code></pre></div>
+      <p class="fig-note">Código educativo. Faltan piezas imprescindibles en real: el control de riesgo, la renovación del token, la cola que respeta los límites de peticiones y el registro. Las credenciales se leen del entorno; guárdalas en un gestor de secretos, nunca en el código.</p>
     </section>
 
-    <section class="sec" id="backtest">
-      <p class="kicker">Método</p>
-      <h2 data-short="Datos y tecnología">Datos, backtest y tecnología</h2>
-      <h3>Un backtest de forex honesto</h3>
-      <ul class="checklist">
-        <li>Datos tick con el diferencial real. Dukascopy ofrece históricos gratuitos; mejor aún, los de tu propio bróker.</li>
-        <li>Diferencial variable, comisión, deslizamiento y swaps, incluido el triple del miércoles.</li>
-        <li>Huecos de fin de semana y días festivos.</li>
-        <li>Zona horaria del servidor. Muchos brókeres usan GMT+2 o GMT+3 para que la vela diaria cierre a las 17:00 de Nueva York y haya cinco velas diarias por semana.</li>
-        <li>En el probador de MetaTrader 5, el modo «cada tick basado en ticks reales».</li>
-        <li>Walk-forward y Monte Carlo: reordena las operaciones y empeora los costes para ver si la estrategia sobrevive.</li>
-        <li>Cuidado con el optimizador. Miles de combinaciones garantizan un resultado brillante por azar, como muestra el laboratorio del <a href="01-trading-algoritmico.html">documento 1</a>.</li>
-      </ul>
-      <h3>La pila tecnológica</h3>
-      <figure class="diagram">
-        <div class="flowchart" id="stack"></div>
-        <figcaption class="fig-note">La capa de riesgo va en código propio, separada de la estrategia, y puede cerrar todo aunque la estrategia falle.</figcaption>
-      </figure>
+    <section class="sec" id="mcp">
+      <p class="kicker">Agentes de IA</p>
+      <h2 data-short="MCP con Claude">MCP con Claude, bien configurado</h2>
+      <p class="lead">Es la vía más fácil de montar y la más delicada, porque un modelo de lenguaje elige qué herramienta usar a partir de tu texto.</p>
+      <h3>Servidor local, en tu ordenador</h3>
+      <ol class="steps">
+        <li><div><b>Abre cTrader Windows o Mac con tu cTID</b><span>Ve a Configuración y después a MCP Server. La aplicación tiene que estar abierta antes que el agente.</span></div></li>
+        <li><div><b>Activa «Enable MCP server»</b><span>Deja «Allow trading via MCP» desactivado mientras lo uses para analizar. Si algún día lo activas, activa también «Require confirmation for trading operations».</span></div></li>
+        <li><div><b>Añádelo a Claude Code</b><span>Con el comando de abajo, o pegando en la configuración de tu cliente el bloque JSON que muestra cTrader.</span></div></li>
+      </ol>
+      <div class="codeblock" data-lang="shell"><span class="lang">Terminal</span><pre class="code"><code>claude mcp add --transport http ctrader http://127.0.0.1:9876/mcp/</code></pre></div>
+      <div class="codeblock" data-lang="json"><span class="lang">JSON · otros clientes</span><pre class="code"><code>{
+  "mcpServers": {
+    "ctrader": { "type": "http", "url": "http://127.0.0.1:9876/mcp/" }
+  }
+}</code></pre></div>
+      <h3>Servidor remoto, a través de cTrader Web</h3>
+      <p>En cTrader Web, Configuración y después Remote MCP. cTrader genera un token para cada cuenta y te da la configuración lista para copiar. Funciona mientras tu sesión de cTrader Web siga activa. Además de Claude Code, cTrader cita como clientes compatibles Codex, Cursor, Windsurf, Gemini CLI y GitHub Copilot.</p>
+      <div class="callout crit">
+        <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="10" cy="10" r="8.25" stroke="currentColor" stroke-width="1.5"/><path d="M7 7l6 6M13 7l-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        <div><span class="ct">Lo que no hay que hacer</span><p>Publicar el puerto 9876 fuera de tu equipo, guardar el token remoto en un repositorio o en un chat, y dejar que el mismo agente lea webs o noticias y pueda operar. Un texto malicioso puede colar instrucciones: es la inyección de instrucciones, el riesgo que más señalan los investigadores de seguridad en el protocolo MCP.</p></div>
+      </div>
+      <div class="split">
+        <div class="yes"><h3><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 10.5l4 4 8-9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Buenos usos</h3>
+          <ul>
+            <li>Diario y resúmenes de la cuenta, con costes incluidos.</li>
+            <li>Revisar exposición por divisa y margen antes de las noticias.</li>
+            <li>Comparar lo que dice tu registro con lo que hay en la cuenta.</li>
+            <li>Ayuda para escribir y depurar cBots en C# o Python.</li>
+          </ul></div>
+        <div class="no"><h3><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5 5l10 10M15 5L5 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>Malos usos</h3>
+          <ul>
+            <li>Operar por impulsos desde el chat.</li>
+            <li>Dejarle operar sin confirmación, o en una cuenta con mucho saldo.</li>
+            <li>Usarlo como motor de ejecución: tarda segundos y no responde siempre igual.</li>
+            <li>Mezclar en la misma sesión la lectura de fuentes externas y el permiso para operar.</li>
+          </ul></div>
+      </div>
+      <p class="sub-h">Un encargo bien planteado</p>
+      <div class="prompt"><span class="who">Tú, a Claude Code con el MCP de cTrader</span>Analiza mis operaciones cerradas de los últimos 90 días en esta cuenta. Agrúpalas por hora de entrada y por símbolo, y dime en qué franjas pierdo más después de comisiones y swaps. Solo lectura: no abras, cierres ni modifiques nada.</div>
+    </section>
+
+    <section class="sec" id="fallos">
+      <p class="kicker">Lista de comprobación</p>
+      <h2 data-short="Lo que rompe sistemas">Lo que rompe los sistemas</h2>
       <div class="tbl-wrap">
         <table>
-          <thead><tr><th>Plataforma</th><th>Lenguaje</th><th>Para qué</th></tr></thead>
+          <thead><tr><th>Fallo</th><th>Qué pasa</th><th>Cómo se evita</th></tr></thead>
           <tbody>
-            <tr><td>MetaTrader 5</td><td>MQL5, y Python en Windows</td><td>La más extendida en brókeres minoristas y firmas de fondeo, con probador integrado</td></tr>
-            <tr><td>MetaTrader 4</td><td>MQL4</td><td>Veterana y en retirada en favor de MetaTrader 5</td></tr>
-            <tr><td>cTrader</td><td>C# (cTrader Algo)</td><td>Alternativa moderna a MetaTrader</td></tr>
-            <tr><td>NinjaTrader</td><td>C#</td><td>Futuros de divisas en el CME</td></tr>
-            <tr><td>APIs REST y FIX</td><td>Python o cualquier lenguaje</td><td>OANDA, Interactive Brokers y redes ECN, con el máximo control</td></tr>
+            <tr><td>Reconectar sin reconciliar</td><td>El programa cree que no tiene posiciones y abre otra</td><td>ProtoOAReconcileReq al arrancar y tras cada corte. Manda lo que diga el bróker</td></tr>
+            <tr><td>Reintentar una orden a ciegas</td><td>Una orden que sí llegó se ejecuta dos veces</td><td>clientOrderId propio y comprobar las ejecuciones antes de reintentar</td></tr>
+            <tr><td>Unidades mal convertidas</td><td>Posiciones cien veces mayores de lo previsto</td><td>Una sola función de conversión, con tests, y un volumen máximo en el control de riesgo</td></tr>
+            <tr><td>Token caducado</td><td>El sistema deja de operar a los 30 días sin avisar</td><td>Renovar con antelación y alertar si falla</td></tr>
+            <tr><td>Exceso de peticiones</td><td>Errores 429 y datos que faltan</td><td>Cola propia que respete 50 peticiones por segundo y 5 para históricos</td></tr>
+            <tr><td>Stop solo en tu programa</td><td>Un corte deja la posición sin protección</td><td>Stop relativo en la propia orden, guardado en el servidor</td></tr>
+            <tr><td>Silencio</td><td>La conexión cae y nadie se entera</td><td>Latido cada 10 segundos y alerta si pasan N segundos sin precios</td></tr>
+            <tr><td>Símbolos distintos por bróker</td><td>El identificador, los dígitos o el lote no coinciden</td><td>Cargar la ficha de cada símbolo al arrancar; nada fijado a mano</td></tr>
+            <tr><td>Demo y real con configuraciones distintas</td><td>Lo probado no es lo que opera</td><td>Mismo código y configuración; solo cambian el servidor y las credenciales</td></tr>
+            <tr><td>Reglas del bróker o de la firma de fondeo</td><td>Estrategias prohibidas o conexiones no permitidas</td><td>Leer sus condiciones antes de conectar nada. El <a href="04-verdad-cuentas-fondeo.html">documento 4</a> repasa las habituales</td></tr>
           </tbody>
         </table>
       </div>
-      <p>Si tu estrategia opera en horizontes de minutos o más, la latencia importa poco. Si es más rápida, un servidor virtual en el mismo centro de datos que tu bróker (Equinix LD4 en Londres, NY4 en Nueva York o TY3 en Tokio) baja la latencia de decenas de milisegundos a uno o dos.</p>
-    </section>
-
-    <section class="sec" id="regulacion">
-      <p class="kicker">Reglas</p>
-      <h2 data-short="Regulación">Regulación en España y la UE</h2>
-      <p class="lead">Desde 2018, ESMA limita el apalancamiento de los CFD que se venden a minoristas, incluido el forex al contado con apalancamiento que ofrecen los brókeres.</p>
-      <div class="tbl-wrap">
-        <table>
-          <thead><tr><th>Subyacente</th><th class="num">Apalancamiento máximo</th><th class="num">Garantía mínima</th></tr></thead>
-          <tbody>
-            <tr><td>Pares de divisas principales<span class="sub">Combinaciones de USD, EUR, JPY, GBP, CAD y CHF</span></td><td class="num">30 : 1</td><td class="num">3,33&nbsp;%</td></tr>
-            <tr><td>Otros pares, oro e índices principales</td><td class="num">20 : 1</td><td class="num">5&nbsp;%</td></tr>
-            <tr><td>Materias primas salvo el oro e índices no principales</td><td class="num">10 : 1</td><td class="num">10&nbsp;%</td></tr>
-            <tr><td>Acciones individuales y otros</td><td class="num">5 : 1</td><td class="num">20&nbsp;%</td></tr>
-            <tr><td>Criptoactivos</td><td class="num">2 : 1</td><td class="num">50&nbsp;%</td></tr>
-          </tbody>
-        </table>
-      </div>
-      <ul>
-        <li>El bróker cierra tus posiciones cuando tu margen cae al 50&nbsp;% del mínimo exigido.</li>
-        <li>Protección de saldo negativo: no puedes perder más de lo que has depositado.</li>
-        <li>Advertencia estandarizada con el porcentaje de cuentas que pierden. ESMA observó entre el 74&nbsp;% y el 89&nbsp;%.</li>
-        <li>En España, una resolución de la CNMV de 11 de julio de 2023 prohíbe la publicidad de CFD dirigida a minoristas y limita el apalancamiento de otros productos, como futuros y opciones.</li>
-        <li>Comprueba que tu bróker está autorizado en los registros de la CNMV o de su supervisor europeo y que no aparece en la lista de advertencias.</li>
-        <li>Si quiebra un bróker español, el FOGAIN cubre hasta 100.000 euros por inversor. Los de otros países de la UE tienen su propio fondo, con un mínimo europeo de 20.000 euros.</li>
-      </ul>
-    </section>
-
-    <section class="sec" id="sistema">
-      <p class="kicker">Plantilla</p>
-      <h2 data-short="Sistema de ejemplo">Un sistema sensato para empezar</h2>
-      <p class="lead">Este esqueleto combina dos de las primas con más evidencia, reparte el riesgo y opera poco. Sirve para aprender el proceso completo antes de buscar nada más ambicioso.</p>
-      <div class="cards">
-        <article class="card"><span class="tag">Universo</span><p>Entre 7 y 9 pares frente al dólar: EUR, GBP, JPY, CHF, AUD, CAD, NZD…</p></article>
-        <article class="card"><span class="tag">Señales</span><p>Tendencia de 12 meses sin el último, y carry según el diferencial de tipos.</p></article>
-        <article class="card"><span class="tag">Tamaño</span><p>Cada par aporta un riesgo parecido, con una volatilidad objetivo del 8&nbsp;% al 10&nbsp;% anual.</p></article>
-        <article class="card"><span class="tag">Frecuencia</span><p>Revisión semanal. Pocas operaciones y pocos costes.</p></article>
-        <article class="card"><span class="tag">Límites</span><p>Pérdida máxima diaria y total escritas en el código, y parada de emergencia.</p></article>
-        <article class="card"><span class="tag">Validación</span><p>Walk-forward, costes pesimistas y cuenta demo antes del dinero real.</p></article>
-      </div>
-      <div class="codeblock" data-lang="python"><span class="lang">Python · educativo</span><pre class="code"><code>import numpy as np
-import pandas as pd
-
-
-def backtest_fx(precios, tipos, vol_objetivo=0.10, coste_pb=1.5):
-    """Tendencia + carry en pares frente al dólar, con datos diarios.
-
-    precios:  cierres diarios en dólares por unidad de cada divisa
-              (invierte USDJPY, USDCHF y USDCAD para que todo apunte igual).
-    tipos:    tipo a corto de cada divisa menos el del dólar, en % anual.
-    coste_pb: coste por operación, en puntos básicos del nominal negociado.
-    """
-    rets = precios.pct_change()
-
-    # Señal 1: tendencia de 12 meses, saltándose el último mes
-    tendencia = np.sign(precios.shift(21) / precios.shift(252) - 1)
-    # Señal 2: carry, comprar si la divisa paga más interés que el dólar
-    carry = np.sign(tipos)
-    senal = (tendencia + carry) / 2   # -1, -0.5, 0, 0.5 o 1
-
-    # Cada par aporta un riesgo parecido (aproximación: ignora correlaciones)
-    vol = rets.rolling(63).std() * np.sqrt(252)
-    peso = senal * vol_objetivo / (vol * np.sqrt(precios.shape[1]))
-
-    # Rebalanceo semanal y ejecución al día siguiente: nunca mira el futuro
-    peso = peso.resample("W-FRI").last().reindex(precios.index).ffill().shift(1)
-
-    precio_mov = (peso * rets).sum(axis=1)
-    intereses = (peso * tipos.shift(1) / 100 / 252).sum(axis=1)
-    costes = peso.diff().abs().sum(axis=1) * coste_pb / 10_000
-    valido = peso.notna().any(axis=1)
-    neto = (precio_mov + intereses - costes)[valido]
-
-    anual = neto.mean() * 252
-    vol_real = neto.std() * np.sqrt(252)
-    curva = (1 + neto).cumprod()
-    caida_max = (curva / curva.cummax() - 1).min()
-    print(f"Rentabilidad anual {anual:.1%} · volatilidad {vol_real:.1%} · "
-          f"Sharpe {anual / vol_real:.2f} · caída máxima {caida_max:.1%}")
-    return neto</code></pre></div>
-      <p class="fig-note">Código educativo, no una recomendación. Necesitas tus propios datos de precios y de tipos de interés, por ejemplo de los bancos centrales. Antes de fiarte del resultado, aplica los pasos del <a href="01-trading-algoritmico.html">documento 1</a>. Si quieres que un agente de IA te ayude a construirlo y vigilarlo, sigue con <a href="03-agentes-claude-trading.html">el documento 3</a>; para conectarlo a cTrader, con <a href="05-ctrader-api-mcp.html">el 5</a>.</p>
     </section>
 
     <section class="sec" id="fuentes">
       <p class="kicker">Fuentes</p>
-      <h2 data-short="Fuentes">Fuentes y lecturas</h2>
+      <h2 data-short="Fuentes">Fuentes y documentación</h2>
       <ol class="refs">
-        <li>BIS (2025). OTC foreign exchange turnover in April 2025. <a href="https://www.bis.org/statistics/rpfx25_fx.htm" target="_blank" rel="noopener">Datos</a> · <a href="https://www.bis.org/press/p250930.htm" target="_blank" rel="noopener">Nota de prensa</a></li>
-        <li>BIS Markets Committee (2017). The sterling «flash event» of 7 October 2016. <a href="https://www.bis.org/publ/mktc09.htm" target="_blank" rel="noopener">Informe</a></li>
-        <li>Reserve Bank of Australia (2019). The Recent Japanese Yen Flash Event. <a href="https://www.rba.gov.au/publications/smp/2019/feb/box-b-the-recent-japanese-yen-flash-event.html" target="_blank" rel="noopener">Recuadro B</a></li>
-        <li>FCA (2014). Multas a cinco bancos por fallos en el mercado de divisas. <a href="https://www.fca.org.uk/news/press-releases/fca-fines-five-banks-%C2%A311-billion-fx-failings-and-announces-industry-wide-remediation-programme" target="_blank" rel="noopener">Nota de prensa</a></li>
-        <li>Global Foreign Exchange Committee. FX Global Code, principio 17 (last look).</li>
-        <li>Lustig, H., Roussanov, N. y Verdelhan, A. (2011). Common Risk Factors in Currency Markets. <i>Review of Financial Studies</i>.</li>
-        <li>Menkhoff, L., Sarno, L., Schmeling, M. y Schrimpf, A. (2012). Carry Trades and Global Foreign Exchange Volatility (<i>Journal of Finance</i>) y Currency Momentum Strategies (<i>Journal of Financial Economics</i>).</li>
-        <li>Brunnermeier, M., Nagel, S. y Pedersen, L. (2008). Carry Trades and Currency Crashes. <i>NBER Macroeconomics Annual</i>.</li>
-        <li>Moskowitz, T., Ooi, Y. H. y Pedersen, L. (2012). Time Series Momentum. <i>Journal of Financial Economics</i>.</li>
-        <li>Asness, C., Moskowitz, T. y Pedersen, L. (2013). Value and Momentum Everywhere. <i>Journal of Finance</i>.</li>
-        <li>Neely, C., Weller, P. y Ulrich, J. (2009). The Adaptive Markets Hypothesis: Evidence from the Foreign Exchange Market. <i>Journal of Financial and Quantitative Analysis</i>.</li>
-        <li>ESMA (2018). Medidas de intervención sobre CFD para clientes minoristas.</li>
-        <li>CNMV (2023). Resolución de 11 de julio de 2023 sobre CFD y otros productos apalancados. <a href="https://www.cnmv.es/docportal/aldia/Resolucion_CFD.pdf" target="_blank" rel="noopener">PDF</a></li>
+        <li>cTrader Help Centre. Open API: Getting started; Proxies and endpoints; Establish a connection; App and account authentication; Messages; FAQ. <a href="https://help.ctrader.com/open-api/" target="_blank" rel="noopener">Open API</a> · <a href="https://help.ctrader.com/open-api/proxies-endpoints/" target="_blank" rel="noopener">Endpoints</a> · <a href="https://help.ctrader.com/open-api/account-authentication/" target="_blank" rel="noopener">Autenticación</a> · <a href="https://help.ctrader.com/open-api/messages/" target="_blank" rel="noopener">Mensajes</a></li>
+        <li>cTrader Help Centre. cTrader MCP servers (AI Agent Connect): visión general, servidor local y servidor remoto. <a href="https://help.ctrader.com/ctrader-ai-agent-connect/" target="_blank" rel="noopener">MCP</a> · <a href="https://help.ctrader.com/ctrader-ai-agent-connect/local-mcp/setup/" target="_blank" rel="noopener">Local</a> · <a href="https://help.ctrader.com/ctrader-ai-agent-connect/remote-mcp/setup/" target="_blank" rel="noopener">Remoto</a></li>
+        <li>cTrader. Open API / MCP, preguntas frecuentes. <a href="https://ctrader.com/faq/open-api" target="_blank" rel="noopener">FAQ</a></li>
+        <li>cTrader Help Centre. cTrader Algo: Cloud features; cTrader CLI: setup y gestión de cBots. <a href="https://help.ctrader.com/ctrader-algo/documentation/cloud-features/" target="_blank" rel="noopener">Cloud</a> · <a href="https://help.ctrader.com/ctrader-cli/setup/" target="_blank" rel="noopener">CLI</a></li>
+        <li>Spotware. OpenApiPy, librería oficial de Python (versión 0.9.2) y su código fuente. <a href="https://pypi.org/project/ctrader_open_api/" target="_blank" rel="noopener">PyPI</a> · <a href="https://github.com/spotware/OpenApiPy" target="_blank" rel="noopener">GitHub</a></li>
+        <li>Spotware. cTrader Console Docker Image y ejemplo de FIX API. <a href="https://github.com/spotware/ctrader-console-docker" target="_blank" rel="noopener">Docker</a> · <a href="https://github.com/spotware/FIX-API-Sample" target="_blank" rel="noopener">FIX</a></li>
+        <li>Spotware. About Spotware (fundación en 2010 en Limasol) y la entrada «cTrader» de Wikipedia (lanzamiento en 2011, cAlgo, cTrader Copy y cTrader Store). <a href="https://www.spotware.com/company/" target="_blank" rel="noopener">Spotware</a> · <a href="https://en.wikipedia.org/wiki/CTrader" target="_blank" rel="noopener">Wikipedia</a></li>
+        <li>Spotware. World-class infrastructure of cTrader (centros de datos Equinix LD5 y NY2). <a href="https://www.spotware.com/ctrader/brokers/server/" target="_blank" rel="noopener">Infraestructura</a></li>
+        <li>FX News Group (2025). Spotware releases cTrader 5.4 with native Python support. <a href="https://fxnewsgroup.com/forex-news/platforms/spotware-releases-ctrader-5-4-with-native-python-support-webview-plugins-advanced-risk-reward-tool/" target="_blank" rel="noopener">Artículo</a></li>
+        <li>Finance Magnates, vía TradingView (2026). Spotware Opens cTrader to AI Agents as MCP Wave Catches Up With Retail Trading. <a href="https://www.tradingview.com/news/financemagnates:62df8d04a094b:0-spotware-opens-ctrader-to-ai-agents-as-mcp-wave-catches-up-with-retail-trading/" target="_blank" rel="noopener">Artículo</a></li>
       </ol>
     </section>
   </main>
 </div>
-<footer class="foot wrap"><h2 class="foot-h" id="serie">La serie completa</h2><nav aria-labelledby="serie"><ol class="series-index"><li><a href="01-trading-algoritmico.html"><span class="n" style="--k:var(--k1)">1</span><span class="t">Trading algorítmico</span><span class="d">Qué puede hacer un algoritmo, quién paga cada ganancia y dónde están sus límites.</span></a></li><li><a href="#top" aria-current="page"><span class="n" style="--k:var(--k2)">2</span><span class="t">Forex algorítmico</span><span class="d">El mercado de divisas visto por un algoritmo: estructura, costes y estrategias con evidencia.</span><span class="here">Estás aquí</span></a></li><li><a href="03-agentes-claude-trading.html"><span class="n" style="--k:var(--k3)">3</span><span class="t">Agentes Claude</span><span class="d">Dónde aporta un agente de IA a un sistema de trading, dónde es un riesgo y cuánto cuesta.</span></a></li><li><a href="04-verdad-cuentas-fondeo.html"><span class="n" style="--k:var(--k4)">4</span><span class="t">Cuentas de fondeo</span><span class="d">Cómo ganan dinero las firmas de fondeo, quién cobra de verdad y qué pasa si eres rentable.</span></a></li><li><a href="05-ctrader-api-mcp.html"><span class="n" style="--k:var(--k5)">5</span><span class="t">cTrader: API y MCP</span><span class="d">Qué es cTrader y cómo conectar un sistema por Open API, FIX, cBots o MCP, y qué vigilar.</span></a></li><li><a href="06-gestion-del-riesgo.html"><span class="n" style="--k:var(--k6)">6</span><span class="t">Gestión del riesgo</span><span class="d">Tamaño de posición, límites, caídas y controles para que el sistema sobreviva.</span></a></li><li><a href="07-infraestructura-y-costes.html"><span class="n" style="--k:var(--k7)">7</span><span class="t">Infraestructura y costes</span><span class="d">Seguridad, redundancia, latencia y costes de la infraestructura final, desde Bilbao.</span></a></li><li><a href="08-atlas-de-estrategias.html"><span class="n" style="--k:var(--k8)">8</span><span class="t">Atlas de estrategias</span><span class="d">Estrategias algorítmicas por sector y dificultad: qué detectan, quién paga y cómo se montan.</span></a></li></ol></nav><p>Contenido educativo. No es asesoramiento financiero ni una recomendación de inversión. Las cifras proceden de las fuentes citadas; las simulaciones usan datos aleatorios y solo ilustran ideas.</p><p>Serie «Máquinas y mercados» · Septiembre de 2026</p></footer>
+<footer class="foot wrap"><h2 class="foot-h" id="serie">La serie completa</h2><nav aria-labelledby="serie"><ol class="series-index"><li><a href="01-trading-algoritmico.html"><span class="n" style="--k:var(--k1)">1</span><span class="t">Trading algorítmico</span><span class="d">Qué puede hacer un algoritmo, quién paga cada ganancia y dónde están sus límites.</span></a></li><li><a href="02-forex-algoritmico.html"><span class="n" style="--k:var(--k2)">2</span><span class="t">Forex algorítmico</span><span class="d">El mercado de divisas visto por un algoritmo: estructura, costes y estrategias con evidencia.</span></a></li><li><a href="03-agentes-claude-trading.html"><span class="n" style="--k:var(--k3)">3</span><span class="t">Agentes Claude</span><span class="d">Dónde aporta un agente de IA a un sistema de trading, dónde es un riesgo y cuánto cuesta.</span></a></li><li><a href="04-verdad-cuentas-fondeo.html"><span class="n" style="--k:var(--k4)">4</span><span class="t">Cuentas de fondeo</span><span class="d">Cómo ganan dinero las firmas de fondeo, quién cobra de verdad y qué pasa si eres rentable.</span></a></li><li><a href="#top" aria-current="page"><span class="n" style="--k:var(--k5)">5</span><span class="t">cTrader: API y MCP</span><span class="d">Qué es cTrader y cómo conectar un sistema por Open API, FIX, cBots o MCP, y qué vigilar.</span><span class="here">Estás aquí</span></a></li><li><a href="06-gestion-del-riesgo.html"><span class="n" style="--k:var(--k6)">6</span><span class="t">Gestión del riesgo</span><span class="d">Tamaño de posición, límites, caídas y controles para que el sistema sobreviva.</span></a></li><li><a href="07-infraestructura-y-costes.html"><span class="n" style="--k:var(--k7)">7</span><span class="t">Infraestructura y costes</span><span class="d">Seguridad, redundancia, latencia y costes de la infraestructura final, desde Bilbao.</span></a></li><li><a href="08-atlas-de-estrategias.html"><span class="n" style="--k:var(--k8)">8</span><span class="t">Atlas de estrategias</span><span class="d">Estrategias algorítmicas por sector y dificultad: qué detectan, quién paga y cómo se montan.</span></a></li></ol></nav><p>Contenido educativo. No es asesoramiento financiero ni una recomendación de inversión. Las cifras proceden de las fuentes citadas; las simulaciones usan datos aleatorios y solo ilustran ideas.</p><p>Serie «Máquinas y mercados» · Septiembre de 2026</p></footer>
 <script>
 (function () {
   "use strict";
@@ -1323,115 +1411,46 @@ def backtest_fx(precios, tipos, vol_objetivo=0.10, coste_pb=1.5):
 <script>
 (function () {
   var M = window.MM;
-  var pc = function (v) { return M.fmt(v, 1) + " %"; };
+  function $(id) { return document.getElementById(id); }
 
-  /* Divisas */
-  var ccy = [
-    { label: "Dólar estadounidense (USD)", value: 89.2 }, { label: "Euro (EUR)", value: 28.9 }, { label: "Yen (JPY)", value: 16.8 },
-    { label: "Libra (GBP)", value: 10.2 }, { label: "Renminbi (CNY)", value: 8.5 }, { label: "Franco suizo (CHF)", value: 6.4 }, { label: "Dólar de Hong Kong (HKD)", value: 3.8 }
-  ];
-  M.hbar(document.getElementById("ccy"), { aria: "Porcentaje de operaciones de divisas en que aparece cada moneda, abril de 2025", rows: ccy, domain: [0, 100], fmt: pc, labelW: 200, unitLabel: "de las operaciones" });
-  M.dataTable(document.getElementById("fig-ccy"), ["Divisa", "% de operaciones"], ccy.map(function (r) { return [r.label, pc(r.value)]; }), [1]);
-
-  /* Sesiones */
-  function hh(h) { return String(h % 24).padStart(2, "0") + ":00"; }
-  var ses = [
-    { label: "Sídney", segs: [[23, 24], [0, 8]], txt: "23:00 a 08:00" },
-    { label: "Tokio", segs: [[1, 10]], txt: "01:00 a 10:00" },
-    { label: "Londres", segs: [[9, 18]], txt: "09:00 a 18:00", strong: true },
-    { label: "Nueva York", segs: [[14, 23]], txt: "14:00 a 23:00", strong: true }
-  ];
-  var tk = []; for (var h = 0; h <= 24; h += 3) tk.push({ v: h, label: hh(h === 24 ? 0 : h), minor: h % 6 !== 0, anchor: h === 24 ? "end" : undefined });
-  M.range(document.getElementById("ses"), {
-    aria: "Sesiones del mercado de divisas a lo largo del día en hora de España",
-    rows: ses, scale: "lin", domain: [0, 24], labelW: 110, ticks: tk,
-    bands: [{ from: 14, to: 18, label: "Solape Londres–Nueva York", short: "Solape", level: 1 }],
-    markers: [{ v: 20, label: "Fed", anchor: "end", hideNarrow: true }, { v: 23, label: "Rollover", anchor: "end" }],
-    describe: function (r) { return r.txt; }
-  });
-  M.dataTable(document.getElementById("fig-ses"), ["Sesión", "Horario aproximado (España)"], ses.map(function (r) { return [r.label, r.txt]; }));
-
-  /* Martingala frente a riesgo fijo: mismas tiradas */
-  function mart(seed, N) {
-    var r = M.rng(seed), eqM = 10000, eqF = 10000, k = 0, bust = -1, Mv = [eqM], Fv = [eqF];
-    for (var i = 1; i <= N; i++) {
-      var win = r() < 0.5;
-      if (bust < 0) { var stake = 10 * Math.pow(2, k); if (win) { eqM += stake; k = 0; } else { eqM -= stake; k++; } if (10 * Math.pow(2, k) > eqM) bust = i; }
-      var risk = eqF * 0.01; eqF += win ? risk : -risk;
-      Mv.push(eqM); Fv.push(eqF);
-    }
-    return { M: Mv, F: Fv, bust: bust };
-  }
-  var mt = mart(302, 700), idx = mt.M.map(function (_, i) { return i; });
-  var usd = function (v) { return M.fmt(v, 0) + " $"; };
-  M.line(document.getElementById("mart"), {
-    aria: "Evolución de una cuenta con martingala frente a una con riesgo fijo del 1 por ciento",
-    x: idx, series: [{ name: "Riesgo fijo del 1 %", color: "var(--c1)", values: mt.F }, { name: "Martingala", color: "var(--c2)", values: mt.M }],
-    yFmt: usd, yDomain: [0, 14000],
-    xTicks: [{ v: 0, label: "0", anchor: "start" }, { v: 100, label: "100", minor: true }, { v: 200, label: "200" }, { v: 300, label: "300", minor: true }, { v: 400, label: "400" }, { v: 500, label: "500", minor: true }, { v: 600, label: "600" }, { v: 700, label: "700", anchor: "end" }],
-    vlines: [{ x: mt.bust, label: "La martingala ya no puede doblar", anchor: "end" }],
-    tipTitle: function (i) { return "Operación " + i; }
-  });
-  var mrows = []; for (var q = 0; q <= 700; q += 50) mrows.push(["Operación " + q, usd(mt.F[q]), usd(mt.M[q])]);
-  M.dataTable(document.getElementById("fig-mart"), ["Momento", "Riesgo fijo 1 %", "Martingala"], mrows, [1, 2]);
-
-  /* Calculadora de costes */
-  function num(id) { var v = parseFloat(document.getElementById(id).value); return isFinite(v) ? v : 0; }
-  function costs() {
-    var n = num("c-n"), c = num("c-cost"), e = num("c-edge"), l = num("c-lots");
-    document.getElementById("c-n-out").textContent = M.fmt(n);
-    var cost = n * c * l * 10, gross = n * e * l * 10, net = gross - cost, share = e > 0 ? c / e * 100 : 100;
-    document.getElementById("c-costs").textContent = usd(cost);
-    document.getElementById("c-gross").textContent = usd(gross);
-    document.getElementById("c-net").textContent = (net > 0 ? "+" : "") + usd(net);
-    var card = document.getElementById("c-net-card"), badge = document.getElementById("c-badge");
-    card.classList.toggle("is-good", net > 0); card.classList.toggle("is-bad", net <= 0);
-    badge.replaceChildren();
-    var ns = "http://www.w3.org/2000/svg", sv = document.createElementNS(ns, "svg"); sv.setAttribute("viewBox", "0 0 12 12"); sv.setAttribute("aria-hidden", "true");
-    var pth = document.createElementNS(ns, "path"); pth.setAttribute("d", net > 0 ? "M6 2l4 6H2z" : "M6 10L2 4h8z"); pth.setAttribute("fill", "currentColor"); sv.appendChild(pth);
-    badge.appendChild(sv); badge.appendChild(document.createTextNode(net > 0 ? "A tu favor" : "En contra"));
-    var mi = document.getElementById("c-meter-i"), mb = document.getElementById("c-meter");
-    mi.style.width = Math.min(100, share) + "%";
-    mb.className = "meter" + (share >= 80 ? " crit" : share >= 50 ? " warn" : "");
-    mb.setAttribute("aria-label", "Los costes se comen el " + M.fmt(share, 0) + " % de la ventaja");
-    document.getElementById("c-read").textContent = share >= 100
-      ? "Los costes (" + M.fmt(c, 1) + " pips) superan tu ventaja bruta (" + M.fmt(e, 1) + " pips). Cuantas más operaciones hagas, más pierdes."
-      : "Los costes se comen el " + M.fmt(share, 0) + " % de tu ventaja. Con " + M.fmt(n) + " operaciones al mes pagas " + usd(cost) + " para ganar, en teoría, " + usd(net) + " netos.";
-  }
-  ["c-n", "c-cost", "c-edge", "c-lots"].forEach(function (id) { document.getElementById(id).addEventListener("input", costs); });
-  costs();
-
-  /* Tamaño de posición */
-  function size() {
-    var cap = num("s-cap"), r = num("s-risk"), stop = Math.max(1, num("s-stop")), px = num("s-px") || 1.1;
-    document.getElementById("s-risk-out").textContent = M.fmt(r, 2).replace(/,?0+$/, "") + " %";
-    var money = cap * r / 100, lots = money / (stop * 10), nom = lots * 100000 * px, lev = cap > 0 ? nom / cap : 0;
-    document.getElementById("s-lots").textContent = M.fmt(lots, 2);
-    document.getElementById("s-money").textContent = usd(money);
-    document.getElementById("s-nom").textContent = usd(nom);
-    document.getElementById("s-lev").textContent = M.fmt(lev, 1) + "×";
-    document.getElementById("s-margin").textContent = "Garantía necesaria a 30:1: " + usd(nom / 30);
-    var mi = document.getElementById("s-meter-i"), mb = document.getElementById("s-meter"), sh = Math.min(100, lev / 30 * 100);
-    mi.style.width = sh + "%";
-    mb.className = "meter" + (lev > 30 ? " crit" : lev > 10 ? " warn" : "");
-    mb.setAttribute("aria-label", "Apalancamiento efectivo de " + M.fmt(lev, 1) + " veces frente a un máximo de 30");
-  }
-  ["s-cap", "s-risk", "s-stop", "s-px"].forEach(function (id) { document.getElementById(id).addEventListener("input", size); });
-  size();
-
-  /* Pila tecnológica */
-  M.flow(document.getElementById("stack"), {
-    aria: "Pila tecnológica de un sistema de forex: datos, estrategia, riesgo, ejecución y bróker",
+  M.flow($("how"), {
+    aria: "Recorrido de una petición: tu programa o agente, la puerta de entrada, el servidor de cTrader y tu cuenta",
     nodes: [
-      { t: "Datos", d: "Flujo de precios del bróker o de un proveedor" },
-      { t: "Estrategia", d: "Python, MQL5 o C#" },
-      { t: "Riesgo", d: "Límites duros y parada de emergencia" },
-      { t: "Ejecución", d: "MT5, cTrader, FIX o REST" },
-      { t: "Bróker", d: "Cuenta real o demo" }
+      { t: "Tu programa o tu agente", d: "Decide qué pedir: un precio, tu saldo o una orden" },
+      { t: "La puerta de entrada", d: "Open API, FIX, cBot o MCP. Comprueba quién eres y qué permisos tienes" },
+      { t: "cServer, en Londres", d: "El servidor de cTrader de tu bróker, en el centro de datos Equinix LD5" },
+      { t: "Tu cuenta", d: "Se ejecuta la orden y te llega el resultado" }
     ],
-    edges: ["precios", "posición\ndeseada", "orden\npermitida", "órdenes"],
-    hl: [2]
+    edges: ["pide", "valida", "ejecuta"],
+    hl: [1]
   });
+
+  /* Conversor de unidades */
+  var SYM = {
+    EURUSD: { pip: 0.0001, quote: "USD", px: 1.1025 },
+    GBPUSD: { pip: 0.0001, quote: "USD", px: 1.305 },
+    USDJPY: { pip: 0.01, quote: "JPY", px: 148.25 },
+    EURJPY: { pip: 0.01, quote: "JPY", px: 162.5 }
+  };
+  function num(id, d) { var v = parseFloat($(id).value); return isFinite(v) && v > 0 ? v : d; }
+  function units() {
+    var s = SYM[$("u-sym").value], lots = num("u-lots", 0.1), sl = num("u-sl", 20), px = num("u-px", s.px);
+    var vol = Math.round(lots * 100000 * 100), rsl = Math.round(sl * s.pip * 100000), pxp = Math.round(px * 100000);
+    $("u-vol").textContent = String(vol);
+    $("u-rsl").textContent = String(rsl);
+    $("u-pxp").textContent = String(pxp);
+    var loss = lots * 100000 * sl * s.pip;
+    $("u-risk").textContent = M.fmt(loss, s.quote === "JPY" ? 0 : 2) + " " + s.quote;
+    $("u-risk-s").textContent = s.quote === "JPY" ? "en yenes, la divisa de cotización" : "en dólares, la divisa de cotización";
+  }
+  $("u-sym").addEventListener("change", function () {
+    var s = SYM[$("u-sym").value];
+    $("u-px").value = s.px.toFixed(s.pip < 0.001 ? 5 : 3);
+    $("u-px").step = s.pip < 0.001 ? "0.00001" : "0.001";
+    units();
+  });
+  ["u-lots", "u-sl", "u-px"].forEach(function (id) { $(id).addEventListener("input", units); });
+  units();
 })();
 </script>
 </body>

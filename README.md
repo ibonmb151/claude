@@ -1,6 +1,6 @@
 # Máquinas y mercados
 
-Serie de cuatro documentos HTML interactivos sobre trading algorítmico, escritos en español en septiembre de 2026.
+Serie de ocho documentos HTML interactivos sobre trading algorítmico, escritos en español en septiembre de 2026.
 
 | Nº | Documento | Qué contiene |
 |---|---|---|
@@ -8,6 +8,10 @@ Serie de cuatro documentos HTML interactivos sobre trading algorítmico, escrito
 | 2 | [Forex algorítmico](trading/02-forex-algoritmico.html) | Estructura del mercado de divisas, sesiones, particularidades para un algoritmo, estrategias con evidencia, calculadoras de costes y de tamaño de posición, regulación en España y la UE |
 | 3 | [Agentes Claude en trading](trading/03-agentes-claude-trading.html) | Dónde aporta un agente de IA y dónde no, arquitectura segura, evidencia publicada, riesgos, costes y un ejemplo de código |
 | 4 | [La verdad del fondeo](trading/04-verdad-cuentas-fondeo.html) | Cuentas de fondeo: datos de pagos, reglas, simulador de probabilidades y qué pasa si eres rentable |
+| 5 | [cTrader por API y MCP](trading/05-ctrader-api-mcp.html) | Qué es cTrader, cómo funciona una conexión explicado sin tecnicismos, Open API, FIX, cBots y MCP comparados, arquitectura correcta, conversor de unidades, esqueleto en Python y lista de fallos |
+| 6 | [Gestión del riesgo](trading/06-gestion-del-riesgo.html) | Los siete riesgos de un sistema, tamaño de posición y criterio de Kelly, simulador de caídas, límites en capas, botón de parada, presupuesto para fondeo, eventos extremos y cuándo apagar una estrategia |
+| 7 | [Infraestructura y costes](trading/07-infraestructura-y-costes.html) | La infraestructura final desde Bilbao: arquitectura, latencia, operadores de internet, seguridad, segregación de IP, redundancia, calculadora de costes, dónde recortar y la luz |
+| 8 | [Atlas de estrategias](trading/08-atlas-de-estrategias.html) | 41 estrategias por mercado, familia y dificultad, con filtros: qué detectan, quién paga, micro y macro, cómo se montan, cuándo funcionan y qué encaja con cTrader |
 
 ## Cómo abrirlos
 

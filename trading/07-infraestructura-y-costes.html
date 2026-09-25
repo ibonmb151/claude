@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Forex algorítmico</title>
-<meta name="description" content="Cómo funciona el mercado de divisas por dentro, qué lo hace distinto para un algoritmo, qué estrategias tienen evidencia y cuánto cuestan de verdad, con calculadoras.">
+<title>Infraestructura y costes</title>
+<meta name="description" content="La infraestructura final de un sistema de trading algorítmico montado desde Bilbao: arquitectura, latencia, operadores de internet, seguridad, segregación de IP, redundancia y costes, con una calculadora.">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..800;1,6..96,400..800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap">
 <style>
 /* ============================================================
@@ -355,23 +355,20 @@ code:not(pre code){font:.88em var(--f-mono);background:var(--surface-2);border:1
 .fig .stats{margin-top:16px}
 
 /* página */
-:root{--accent:var(--c2);--accent-ink:#AE4A1D}
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--accent-ink:#F29A6B}}
-:root[data-theme="dark"]{--accent-ink:#F29A6B}
-.tiers{display:grid;background:var(--surface);border:1px solid var(--rule);border-radius:12px;padding:18px clamp(14px,2.4vw,22px)}
-.tier{border:1px solid var(--rule-strong);border-radius:8px;padding:12px 14px;background:var(--surface)}
-.tier .tl{display:block;font:500 11px/1.2 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--accent-ink);margin-bottom:4px}
-.tier p{font-size:15px;line-height:1.5;color:var(--ink-2);max-width:none}
-.tier.you{background:var(--wash);border-color:var(--accent)}
-.tier .two{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));margin-top:8px}
-.tier .two > div{border:1px dashed var(--rule-strong);border-radius:6px;padding:10px 12px}
-.tier .two b{display:block;font-size:15px;color:var(--ink)}
-.tlink{position:relative;height:44px;margin-left:28px;border-left:1.5px solid var(--ink-2)}
-.tlink::before,.tlink::after{content:"";position:absolute;left:-5.75px;border:5px solid transparent}
-.tlink::before{top:-1px;border-bottom:7px solid var(--ink-2);border-top:0}
-.tlink::after{bottom:-1px;border-top:7px solid var(--ink-2);border-bottom:0}
-.tlink span{position:absolute;left:14px;top:50%;transform:translateY(-50%);font:11.5px/1.2 var(--f-mono);color:var(--muted);white-space:nowrap}
-.calc{display:grid;gap:18px}
+:root{--accent:var(--c7);--accent-ink:var(--k7)}
+.zones{display:grid;gap:14px;grid-template-columns:1fr}
+@media (min-width:900px){.zones{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.zone{background:var(--surface);border:1px solid var(--rule);border-radius:12px;padding:16px 16px 12px;min-width:0}
+.zone.hl{border-color:var(--accent);background:var(--wash)}
+.zone .zh{font:500 26px/1.1 var(--f-display);color:var(--ink)}
+.zone .zs{font:500 11.5px/1.4 var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-top:4px}
+.zc{border-top:1px solid var(--rule);padding:10px 0 8px;margin-top:10px}
+.zone.hl .zc{border-top-color:color-mix(in oklab,var(--accent) 35%,var(--rule))}
+.zc b{display:block;font:600 15px/1.35 var(--f-sans);color:var(--ink)}
+.zc span{display:block;font-size:14px;line-height:1.5;color:var(--ink-2);margin-top:2px}
+.links{display:grid;gap:6px;margin-top:14px;font:12.5px/1.5 var(--f-mono);color:var(--ink-2)}
+.links b{color:var(--ink);font-weight:500}
+#fig-cost .stat .v{font-size:clamp(24px,2.4vw,30px);white-space:nowrap}
 .checklist{list-style:none;padding:0!important;display:grid;gap:10px}
 .checklist li{position:relative;padding-left:26px}
 .checklist li::before{content:"";position:absolute;left:2px;top:.35em;width:13px;height:13px;border:1.5px solid var(--accent-ink);border-radius:3px}
@@ -379,23 +376,23 @@ code:not(pre code){font:.88em var(--f-mono);background:var(--surface-2);border:1
 </style>
 </head>
 <body>
-<header class="series wrap" id="top"><span class="brand">Máquinas y mercados</span><nav aria-label="Documentos de la serie"><ol class="series-nav"><li><a href="01-trading-algoritmico.html" title="1 · Trading algorítmico" aria-label="Documento 1 · Trading algorítmico"><span class="dot" style="--c:var(--c1)"></span>1</a></li><li><a href="#top" aria-current="page"><span class="dot" style="--c:var(--c2)"></span>2 · Forex algorítmico</a></li><li><a href="03-agentes-claude-trading.html" title="3 · Agentes Claude" aria-label="Documento 3 · Agentes Claude"><span class="dot" style="--c:var(--c3)"></span>3</a></li><li><a href="04-verdad-cuentas-fondeo.html" title="4 · Cuentas de fondeo" aria-label="Documento 4 · Cuentas de fondeo"><span class="dot" style="--c:var(--c4)"></span>4</a></li><li><a href="05-ctrader-api-mcp.html" title="5 · cTrader: API y MCP" aria-label="Documento 5 · cTrader: API y MCP"><span class="dot" style="--c:var(--c5)"></span>5</a></li><li><a href="06-gestion-del-riesgo.html" title="6 · Gestión del riesgo" aria-label="Documento 6 · Gestión del riesgo"><span class="dot" style="--c:var(--c6)"></span>6</a></li><li><a href="07-infraestructura-y-costes.html" title="7 · Infraestructura y costes" aria-label="Documento 7 · Infraestructura y costes"><span class="dot" style="--c:var(--c7)"></span>7</a></li><li><a href="08-atlas-de-estrategias.html" title="8 · Atlas de estrategias" aria-label="Documento 8 · Atlas de estrategias"><span class="dot" style="--c:var(--c8)"></span>8</a></li></ol></nav></header>
+<header class="series wrap" id="top"><span class="brand">Máquinas y mercados</span><nav aria-label="Documentos de la serie"><ol class="series-nav"><li><a href="01-trading-algoritmico.html" title="1 · Trading algorítmico" aria-label="Documento 1 · Trading algorítmico"><span class="dot" style="--c:var(--c1)"></span>1</a></li><li><a href="02-forex-algoritmico.html" title="2 · Forex algorítmico" aria-label="Documento 2 · Forex algorítmico"><span class="dot" style="--c:var(--c2)"></span>2</a></li><li><a href="03-agentes-claude-trading.html" title="3 · Agentes Claude" aria-label="Documento 3 · Agentes Claude"><span class="dot" style="--c:var(--c3)"></span>3</a></li><li><a href="04-verdad-cuentas-fondeo.html" title="4 · Cuentas de fondeo" aria-label="Documento 4 · Cuentas de fondeo"><span class="dot" style="--c:var(--c4)"></span>4</a></li><li><a href="05-ctrader-api-mcp.html" title="5 · cTrader: API y MCP" aria-label="Documento 5 · cTrader: API y MCP"><span class="dot" style="--c:var(--c5)"></span>5</a></li><li><a href="06-gestion-del-riesgo.html" title="6 · Gestión del riesgo" aria-label="Documento 6 · Gestión del riesgo"><span class="dot" style="--c:var(--c6)"></span>6</a></li><li><a href="#top" aria-current="page"><span class="dot" style="--c:var(--c7)"></span>7 · Infraestructura y costes</a></li><li><a href="08-atlas-de-estrategias.html" title="8 · Atlas de estrategias" aria-label="Documento 8 · Atlas de estrategias"><span class="dot" style="--c:var(--c8)"></span>8</a></li></ol></nav></header>
 <section class="hero wrap">
   <div class="hero-text">
-    <p class="eyebrow"><span>Máquinas y mercados</span><b>Documento 2 de 8</b></p>
-    <h1>Forex <em>algorítmico</em></h1>
-    <p class="dek">Cómo funciona por dentro el mayor mercado del mundo, qué lo hace distinto para un algoritmo y qué estrategias tienen evidencia detrás. Con calculadoras de costes y de tamaño de posición.</p>
-    <p class="meta">Septiembre de 2026 · 18 minutos de lectura</p>
+    <p class="eyebrow"><span>Máquinas y mercados</span><b>Documento 7 de 8</b></p>
+    <h1>La infraestructura <em>final</em></h1>
+    <p class="dek">Cómo sería el sistema completo montado desde Bilbao: dónde corre cada pieza, cómo se protege, qué pasa cuando algo falla y cuánto cuesta cada mes. Con una sorpresa en la factura: lo caro no son los servidores.</p>
+    <p class="meta">Septiembre de 2026 · 15 minutos de lectura</p>
   </div>
-  <div class="emblem" aria-hidden="true"><canvas></canvas><span class="numeral">2</span><span class="serial">MM · 02 · 2026</span></div>
+  <div class="emblem" aria-hidden="true"><canvas></canvas><span class="numeral">7</span><span class="serial">MM · 07 · 2026</span></div>
 </section>
-<div class="wrap"><div class="microprint" aria-hidden="true" data-text="FOREX ALGORÍTMICO · EUR/USD · USD/JPY · GBP/USD"></div>
+<div class="wrap"><div class="microprint" aria-hidden="true" data-text="BILBAO · LONDRES LD5 · WIREGUARD · SAI · 2.0TD · VPS"></div>
   <div class="tldr">
     <h2>En corto</h2>
     <ul>
-      <li>Se negocian 9,6 billones de dólares al día (BIS, abril de 2025). Es un mercado descentralizado, sin un precio ni un volumen únicos.</li>
-      <li>Los enemigos de un particular son los costes, el apalancamiento y los eventos extremos, mucho más que la falta de un buen indicador.</li>
-      <li>Las estrategias con evidencia (carry, momentum, value) son de medio plazo y se reparten entre muchas divisas. El scalping y la martingala juegan en terreno hostil.</li>
+      <li>El motor que opera vive en un servidor en Londres, cerca del de cTrader. Desde Bilbao se investiga y se supervisa, sin credenciales para operar.</li>
+      <li>La seguridad y la redundancia se resuelven con piezas baratas: túneles en lugar de puertos abiertos, IP y permisos separados por función, dos redes de fibra distintas, un SAI y un servidor de reserva en otro proveedor.</li>
+      <li>La infraestructura final cuesta entre 80 y 200&nbsp;€ al mes. Operar cuesta mucho más: con 100 lotes al mes en una cuenta raw, comisiones, spread y deslizamiento suman unos 900&nbsp;€. Ahí está el ahorro.</li>
     </ul>
   </div>
 </div>
@@ -404,300 +401,266 @@ code:not(pre code){font:.88em var(--f-mono);background:var(--surface-2);border:1
   <aside class="toc" aria-label="Índice"></aside>
   <main class="content">
 
-    <section class="sec" id="mercado">
-      <p class="kicker">Tamaño</p>
-      <h2 data-short="El mercado en cifras">El mercado más grande del mundo</h2>
-      <p class="lead">Cada tres años, los bancos centrales miden el mercado de divisas en la encuesta trienal del Banco de Pagos Internacionales (BIS). La última, de abril de 2025, dejó estas cifras.</p>
-      <div class="stats quad">
-        <div class="stat"><span class="v">9,6<small>billones de $</small></span><span class="l">negociados cada día, un 28&nbsp;% más que en 2022.</span><span class="s">BIS, encuesta trienal 2025</span></div>
-        <div class="stat"><span class="v">3<small>billones de $</small></span><span class="l">al día en contado (spot), el 31&nbsp;% del total. Las permutas de divisas suman 4 billones.</span><span class="s">BIS, 2025</span></div>
-        <div class="stat"><span class="v">89&nbsp;%</span><span class="l">de las operaciones tienen el dólar en uno de sus lados.</span><span class="s">BIS, 2025</span></div>
-        <div class="stat"><span class="v">38&nbsp;%</span><span class="l">del volumen se negocia desde Reino Unido. Con EE.&nbsp;UU., Singapur y Hong Kong, el 75&nbsp;%.</span><span class="s">BIS, 2025</span></div>
+    <section class="sec" id="mapa">
+      <p class="kicker">Arquitectura</p>
+      <h2 data-short="El sistema final">El sistema final, en tres lugares</h2>
+      <p class="lead">Cada pieza está donde mejor hace su trabajo y con los permisos justos para hacerlo. La única que puede operar está en Londres.</p>
+      <div class="zones">
+        <div class="zone">
+          <p class="zh">Bilbao</p><p class="zs">Casa u oficina</p>
+          <div class="zc"><b>Investigación</b><span>Backtests, datos históricos y Claude Code. Sin credenciales para operar.</span></div>
+          <div class="zc"><b>Supervisión</b><span>Panel de solo lectura, avisos en el móvil y botón de parada.</span></div>
+          <div class="zc"><b>Conexión</b><span>Dos fibras de redes físicas distintas, 5G de reserva y un SAI.</span></div>
+        </div>
+        <div class="zone hl">
+          <p class="zh">Londres</p><p class="zs">Cerca del servidor del bróker</p>
+          <div class="zc"><b>VPS principal</b><span>Estrategia, control de riesgo y ejecutor. La única pieza con permiso para operar.</span></div>
+          <div class="zc"><b>VPS en espera</b><span>En otro proveedor y otro centro de datos. Toma el relevo solo si el principal deja de dar señales de vida.</span></div>
+          <div class="zc"><b>cBot de emergencia</b><span>En cTrader Cloud, gratis. Solo protege y cierra posiciones si todo lo demás falla.</span></div>
+        </div>
+        <div class="zone">
+          <p class="zh">Fuera</p><p class="zs">Servicios de terceros</p>
+          <div class="zc"><b>cServer del bróker</b><span>En Equinix LD5, en Slough. Cuentas, órdenes y stops.</span></div>
+          <div class="zc"><b>Vigilancia externa</b><span>Espera un latido cada minuto y te avisa si falta.</span></div>
+          <div class="zc"><b>Copias cifradas</b><span>Configuración y registros, fuera de los servidores.</span></div>
+          <div class="zc"><b>API de Claude</b><span>Para investigar y supervisar, nunca en el camino de las órdenes.</span></div>
+        </div>
       </div>
-      <p class="fig-note">En español, un billón es un millón de millones (10<sup>12</sup>). En inglés sería <i>trillion</i>.</p>
-      <figure class="fig" id="fig-ccy">
-        <p class="fig-title">Presencia de cada divisa en las operaciones</p>
-        <p class="fig-sub">Porcentaje de operaciones en las que aparece cada divisa. Suma 200&nbsp;% porque cada operación tiene dos.</p>
-        <div class="chart" id="ccy"></div>
-        <p class="fig-note">Fuente: BIS, encuesta trienal de abril de 2025.</p>
-      </figure>
-      <p>El 46&nbsp;% del volumen se cruza entre grandes intermediarios, y otro 50&nbsp;% entre intermediarios y otras instituciones financieras, como fondos, bancos pequeños y creadores de mercado no bancarios. El particular llega a este mercado a través de su bróker y representa una parte pequeña del total.</p>
-    </section>
-
-    <section class="sec" id="estructura">
-      <p class="kicker">Estructura</p>
-      <h2 data-short="Quién está al otro lado">Quién está al otro lado de tu orden</h2>
-      <p class="lead">En forex no hay una bolsa central. Es una red de intermediarios que se cotizan precios entre sí, y tu orden recorre varias capas antes de encontrar contrapartida, o se queda en tu bróker.</p>
-      <figure class="tiers" aria-label="Capas del mercado de divisas, de los proveedores de liquidez al trader particular">
-        <div class="tier"><span class="tl">Proveedores de liquidez</span><p>Grandes bancos y creadores de mercado no bancarios como XTX, Citadel Securities, Jump o HC Tech. Cotizan precios a todo el mercado.</p></div>
-        <div class="tlink"><span>cotizaciones y órdenes</span></div>
-        <div class="tier"><span class="tl">Plataformas</span><p>Interbancarias (EBS, LSEG Matching) y redes electrónicas o ECN (Cboe FX, Currenex, LMAX). Casan órdenes de muchos participantes.</p></div>
-        <div class="tlink"><span>acceso con crédito</span></div>
-        <div class="tier"><span class="tl">Prime brokers y agregadores</span><p>Dan crédito a los intermediarios pequeños y combinan precios de varios proveedores en un solo flujo.</p></div>
-        <div class="tlink"><span>precios agregados</span></div>
-        <div class="tier"><span class="tl">Tu bróker</span>
-          <div class="two">
-            <div><b>A-book</b><p>Envía tu orden al mercado y cobra una comisión o parte del diferencial.</p></div>
-            <div><b>B-book</b><p>Se queda con el otro lado de tu operación. Gana lo que tú pierdes.</p></div>
-          </div></div>
-        <div class="tlink"><span>MT5, cTrader o API</span></div>
-        <div class="tier you"><span class="tl">Tú</span><p>Tu algoritmo, en tu ordenador o en un servidor cercano al del bróker.</p></div>
-      </figure>
-      <p>Muchos proveedores aplican <i>last look</i>: tras recibir tu orden, disponen de unos milisegundos para aceptarla o rechazarla si el precio se ha movido. El Código Global de Divisas (principio 17) les exige explicarlo. Para una estrategia rápida significa rechazos justo cuando más importa.</p>
+      <div class="links">
+        <p><b>Bilbao → Londres</b> · túnel WireGuard, solo para administrar</p>
+        <p><b>Londres → LD5</b> · Open API con TLS, la única ruta de las órdenes</p>
+        <p><b>Londres → fuera</b> · latidos, avisos y copias de seguridad</p>
+      </div>
+      <h3>Cuatro niveles para llegar</h3>
       <div class="tbl-wrap">
         <table>
-          <thead><tr><th>Modelo de bróker</th><th>Cómo gana</th><th>Qué implica para tu algoritmo</th></tr></thead>
+          <thead><tr><th>Nivel</th><th>Qué incluye</th><th class="num">Coste al mes</th><th>Para quién</th></tr></thead>
           <tbody>
-            <tr><td>Creador de mercado (B-book)</td><td>Con el diferencial y con lo que pierden sus clientes</td><td>Puede limitar el scalping, recotizar o retrasar órdenes en noticias. Vigila si las condiciones cambian cuando empiezas a ganar.</td></tr>
-            <tr><td>STP o ECN (A-book)</td><td>Con una comisión por lote o un margen sobre el diferencial</td><td>Precios más cercanos al mercado real, con diferenciales variables que se abren en las noticias.</td></tr>
-            <tr><td>Híbrido</td><td>Clasifica a los clientes: A-book para los que ganan, B-book para el resto</td><td>Muy extendido entre los brókeres minoristas. Tus ejecuciones pueden empeorar si pasas de un libro a otro.</td></tr>
+            <tr><td>1 · Mínimo</td><td>Un cBot en cTrader Cloud y tu ordenador para investigar</td><td class="num">0&nbsp;€</td><td>Estrategias de horas o días; para empezar</td></tr>
+            <tr><td>2 · Serio</td><td>VPS en Londres con el motor y el control de riesgo; avisos al móvil; copias</td><td class="num">20–60&nbsp;€</td><td>Sistemas propios sobre la Open API</td></tr>
+            <tr><td>3 · Final</td><td>Nivel 2, más VPS en espera en otro proveedor, vigilancia externa, segunda fibra, 5G y SAI</td><td class="num">80–200&nbsp;€<span class="sub">y 150–300&nbsp;€ de equipos</span></td><td>Capital relevante o varias cuentas de fondeo</td></tr>
+            <tr><td>4 · Profesional</td><td>Servidor en el mismo centro de datos que el bróker, FIX y datos de pago</td><td class="num">Cientos de euros o más</td><td>Solo si la velocidad es tu ventaja, algo raro para un particular</td></tr>
           </tbody>
         </table>
       </div>
     </section>
 
-    <section class="sec" id="reloj">
-      <p class="kicker">Horario</p>
-      <h2 data-short="El reloj del forex">El reloj del forex</h2>
-      <p class="lead">El mercado abre el domingo por la noche y cierra el viernes por la noche, pero la liquidez cambia mucho según la hora del día.</p>
-      <figure class="fig" id="fig-ses">
-        <p class="fig-title">Sesiones en hora de la España peninsular</p>
-        <p class="fig-sub">Horas aproximadas de invierno. Pasa el cursor por cada sesión.</p>
-        <div class="chart" id="ses"></div>
-        <p class="fig-note">Londres abre siempre a las 9:00 en España y Nueva York a las 14:00, salvo unas semanas de marzo y noviembre en que EE.&nbsp;UU. y Europa cambian la hora en fechas distintas. Tokio y Sídney se desplazan una hora según la época del año.</p>
+    <section class="sec" id="latencia">
+      <p class="kicker">Latencia</p>
+      <h2 data-short="Latencia">Cuánto importa la latencia</h2>
+      <p class="lead">Desde Bilbao, una orden tarda en ir y volver a Londres unas decenas de milisegundos. Para una estrategia que mantiene posiciones horas, es irrelevante; para una que vive de segundos, lo decide todo.</p>
+      <figure class="fig" id="fig-lat">
+        <p class="fig-title">Tiempos de ida y vuelta, en escala logarítmica</p>
+        <p class="fig-sub">Cada marca de la escala multiplica por diez la anterior.</p>
+        <div class="chart" id="lat"></div>
+        <p class="fig-note">Mínimo físico: unos 930&nbsp;km entre Bilbao y Slough a dos tercios de la velocidad de la luz, que es la de la fibra. Madrid–Londres entre centros de datos: tabla pública de Zenlayer. El resto son estimaciones orientativas; mide tu caso con marcas de tiempo desde que envías una orden hasta que recibes la ejecución. La Open API entra por AWS Global Accelerator, que te lleva al punto de acceso más cercano, así que un ping al servidor no mide lo que tarda una orden.</p>
       </figure>
-      <p>Tres citas marcan el día de un algoritmo: los datos macro de EE.&nbsp;UU. (empleo, inflación) salen a las 14:30; el BCE anuncia sus tipos a las 14:15; la Reserva Federal, a las 20:00. A las 23:00 llega el cambio de día (<i>rollover</i>), con diferenciales más anchos y el cobro o pago de los intereses de las posiciones abiertas.</p>
+      <div class="split">
+        <div class="yes"><h3><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 10.5l4 4 8-9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Da igual desde Bilbao</h3>
+          <ul><li>Tendencia y carry, con posiciones de horas, días o semanas.</li><li>Reversión a la media con barras de 15 minutos o más.</li><li>Cualquier estrategia cuya ventaja por operación sea de varios pips.</li></ul></div>
+        <div class="no"><h3><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5 5l10 10M15 5L5 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>Necesita Londres</h3>
+          <ul><li>Scalping de segundos o de fracciones de pip.</li><li>Reaccionar a noticias o a saltos de precio.</li><li>Todo lo que dependa de llegar antes que otros, que además suele estar prohibido en brókeres minoristas y firmas de fondeo.</li></ul></div>
+      </div>
+      <p>La razón para llevar el motor a Londres no es tanto la velocidad como la fiabilidad. Un centro de datos tiene energía redundante, varias conexiones y personal las 24 horas. El 28 de abril de 2025, la península ibérica perdió 15&nbsp;GW, el 60&nbsp;% de la demanda, en cinco segundos y pasó horas sin luz y, en muchas zonas, sin internet ni cobertura móvil. Un sistema en Londres habría seguido funcionando.</p>
     </section>
 
-    <section class="sec" id="diferente">
-      <p class="kicker">Particularidades</p>
-      <h2 data-short="Lo que cambia">Lo que cambia para un algoritmo</h2>
-      <p class="lead">Un sistema que funciona en acciones no se traslada tal cual al forex. Estas ocho diferencias son las que más backtests rompen.</p>
+    <section class="sec" id="internet">
+      <p class="kicker">Conexión</p>
+      <h2 data-short="Internet en Bilbao">Internet en Bilbao: dos redes, no dos facturas</h2>
+      <p class="lead">Contratar dos operadores no sirve de nada si los dos usan la misma fibra. Lo que cuenta es la red física por la que llega cada línea.</p>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Red física</th><th>Quién la usa</th><th>Para qué sirve aquí</th></tr></thead>
+          <tbody>
+            <tr><td>Movistar</td><td>Movistar y operadores que alquilan su fibra, como Digi en muchas zonas</td><td>Una de las dos redes principales de Bilbao</td></tr>
+            <tr><td>Euskaltel, hoy en MásOrange</td><td>Euskaltel y otras marcas del grupo; es la red con más cobertura de Euskadi</td><td>La segunda red, físicamente distinta de la de Movistar</td></tr>
+            <tr><td>Redes móviles 4G y 5G</td><td>Movistar, Vodafone, Orange y sus marcas</td><td>Reserva automática; mejor en una red distinta de la de tus fibras</td></tr>
+          </tbody>
+        </table>
+      </div>
       <div class="cards two">
-        <article class="card"><h3 class="ct">Sin precio ni volumen únicos</h3><p>Cada bróker tiene su propio flujo de precios. El volumen de MetaTrader cuenta cambios de precio (ticks) en tu bróker, no contratos negociados en el mercado.</p></article>
-        <article class="card"><h3 class="ct">Diferenciales que respiran</h3><p>Se abren en el cambio de día, con las noticias y en las horas de poca liquidez. Un backtest con diferencial fijo te está mintiendo.</p></article>
-        <article class="card"><h3 class="ct">Intereses cada noche</h3><p>Mantener una posición al cierre cobra o paga la diferencia de tipos de interés (swap). El miércoles se aplica triple para cubrir el fin de semana.</p></article>
-        <article class="card"><h3 class="ct">Huecos de fin de semana</h3><p>El mercado cierra el viernes a las 23:00 y reabre el domingo por la noche. Un stop no te protege si el precio abre más allá.</p></article>
-        <article class="card"><h3 class="ct">Bancos centrales</h3><p>Las decisiones de tipos y las intervenciones mueven más que cualquier indicador. Japón intervino para sostener el yen en 2022 y en 2024.</p></article>
-        <article class="card"><h3 class="ct">Apalancamiento regulado</h3><p>En la UE, un cliente minorista puede apalancarse como máximo 30 veces en los pares principales y 20 veces en el resto.</p></article>
-        <article class="card"><h3 class="ct">Rechazos por last look</h3><p>Algunos proveedores pueden rechazar tu orden unos milisegundos después de recibirla. Las estrategias rápidas lo sufren más.</p></article>
-        <article class="card"><h3 class="ct">Correlación escondida</h3><p>Comprar EUR/USD, GBP/USD y AUD/USD a la vez es, en la práctica, una sola apuesta grande contra el dólar.</p></article>
+        <article class="card"><span class="tag">La combinación</span><h3 class="ct">Movistar más Euskaltel, con 5G de reserva</h3><p>Dos fibras de redes distintas en un router con doble salida que cambie solo de una a otra, y una tarjeta 5G de un tercer operador. Movistar más Digi suele ser la misma fibra con dos contratos.</p></article>
+        <article class="card"><span class="tag">Compruébalo</span><h3 class="ct">Pregunta por tu edificio</h3><p>Las marcas cambian de red según la zona y los acuerdos. Mira la cobertura de cada operador para tu dirección y pregunta al instalador qué red usa. Si puede ser, que las fibras entren por sitios distintos.</p></article>
+        <article class="card"><span class="tag">IP</span><h3 class="ct">CG-NAT no es un problema</h3><p>Muchos operadores baratos comparten una IP pública entre varios clientes. Si tu casa solo inicia conexiones hacia el VPS, como hace un túnel WireGuard, da igual. No abras puertos en casa.</p></article>
+        <article class="card"><span class="tag">Energía</span><h3 class="ct">Un SAI para lo que importa</h3><p>El ONT, el router y el equipo de supervisión en un SAI pequeño, de 80 a 200&nbsp;€. Con el motor en Londres, no necesitas horas de autonomía: basta con avisar y cerrar bien.</p></article>
       </div>
-      <h3>Cuando el mercado se rompe</h3>
-      <ol class="timeline">
-        <li><time>2014–2015</time><b>El escándalo de los fixings</b><span>Los reguladores de Reino Unido, EE.&nbsp;UU. y Suiza multaron a grandes bancos con más de 10.000 millones de dólares por manipular las fijaciones de referencia del mercado de divisas.</span></li>
-        <li><time>15 de enero de 2015</time><b>Suiza abandona el suelo del franco</b><span>El EUR/CHF cayó de 1,20 a cerca de 0,85 en minutos. FXCM necesitó un préstamo de rescate de 300 millones de dólares y Alpari UK quebró.</span></li>
-        <li><time>7 de octubre de 2016</time><b>Desplome relámpago de la libra</b><span>La libra cayó en torno a un 9&nbsp;% frente al dólar en segundos, durante la madrugada asiática, y recuperó buena parte después (BIS).</span></li>
-        <li><time>3 de enero de 2019</time><b>Desplome relámpago del yen</b><span>El yen se apreció un 3&nbsp;% frente al dólar en unos 30 segundos y el AUD/JPY cayó un 7&nbsp;% en minutos (Banco de la Reserva de Australia).</span></li>
-        <li><time>5 de agosto de 2024</time><b>Cierre masivo del carry con el yen</b><span>Tras la subida de tipos en Japón y un mal dato de empleo en EE.&nbsp;UU., la salida en bloque de las posiciones de carry contribuyó a que el Nikkei cayera un 12&nbsp;% en una sesión.</span></li>
-      </ol>
     </section>
 
-    <section class="sec" id="estrategias">
-      <p class="kicker">Estrategias</p>
-      <h2 data-short="Estrategias">Qué funciona en forex y qué no</h2>
-      <p class="lead">Las estrategias de divisas con respaldo académico son pocas, de medio plazo, y funcionan mejor repartidas entre muchos pares.</p>
-      <div class="tbl-wrap">
-        <table>
-          <thead><tr><th>Estrategia</th><th>Idea</th><th>Evidencia</th><th>Riesgo principal</th></tr></thead>
-          <tbody>
-            <tr><td>Carry</td><td>Comprar divisas con tipos de interés altos y vender las de tipos bajos</td><td>Prima documentada durante décadas (Lustig, Roussanov y Verdelhan, 2011; Menkhoff y otros, 2012)</td><td>Caídas bruscas en las crisis (Brunnermeier, Nagel y Pedersen, 2008)</td></tr>
-            <tr><td>Momentum y tendencia</td><td>Seguir a las divisas que más han subido en los últimos meses</td><td>Rentable en estudios amplios (Menkhoff y otros, 2012; Moskowitz, Ooi y Pedersen, 2012)</td><td>Mercados laterales, giros y costes altos en divisas poco líquidas</td></tr>
-            <tr><td>Value</td><td>Comprar divisas baratas según su poder adquisitivo (PPA)</td><td>Funciona en horizontes de años (Asness, Moskowitz y Pedersen, 2013)</td><td>Puede tardar años en converger</td></tr>
-            <tr><td>Reversión en cruces</td><td>Operar pares que suelen moverse en un rango, como AUD/NZD</td><td>Depende mucho del par y del periodo</td><td>Rupturas de régimen, como el franco suizo en 2015</td></tr>
-            <tr><td>Noticias</td><td>Reaccionar a datos macro y a los bancos centrales</td><td>Ventaja reservada a los más rápidos</td><td>Diferenciales, deslizamiento y rechazos justo en el momento clave</td></tr>
-            <tr><td>Rupturas de sesión</td><td>Operar la salida del rango asiático en la apertura de Londres</td><td>Resultados mixtos y muy sensibles a los costes</td><td>Falsas rupturas</td></tr>
-            <tr><td>Martingala y rejilla</td><td>Doblar la posición tras cada pérdida o promediar a intervalos fijos</td><td>Ninguna. No crean ventaja</td><td>Una ruina ocasional que borra meses de ganancias</td></tr>
-          </tbody>
-        </table>
-      </div>
-      <p>Neely, Weller y Ulrich (2009) mostraron que las reglas técnicas sencillas que ganaban dinero en divisas en los años setenta y ochenta dejaron de hacerlo después, a medida que el mercado aprendía. Es la ventaja que se agota del <a href="01-trading-algoritmico.html">documento 1</a>, aplicada al forex.</p>
-      <figure class="fig" id="fig-mart">
-        <p class="fig-title">La martingala en una imagen</p>
-        <p class="fig-sub">Dos cuentas de 10.000&nbsp;$ juegan exactamente las mismas 700 operaciones a cara o cruz, con 10 pips de objetivo y de stop. El eje horizontal cuenta operaciones. Una dobla la posición tras cada pérdida; la otra arriesga siempre el 1&nbsp;%.</p>
-        <div class="chart" id="mart"></div>
-        <div class="legend"><span><i style="--k:var(--c1)"></i>Riesgo fijo del 1&nbsp;%</span><span><i style="--k:var(--c2)"></i>Martingala</span></div>
-        <p class="fig-note">Simulación ilustrativa, sin costes ni límites de margen. Con los límites europeos de apalancamiento la martingala se cortaría antes, pero las pérdidas llegarían igual.</p>
-      </figure>
-    </section>
-
-    <section class="sec" id="calculadoras">
-      <p class="kicker">Números</p>
-      <h2 data-short="Calculadoras">Costes y tamaño de posición</h2>
-      <p class="lead">Dos cálculos que conviene hacer antes de programar una sola línea: cuánto se comen los costes y cuánto arriesgas de verdad en cada operación.</p>
-      <figure class="fig" id="fig-cost">
-        <p class="fig-title">¿Cuánto se comen los costes?</p>
-        <p class="fig-sub">Para EUR/USD y pares cotizados en dólares, donde un pip vale 10&nbsp;$ por lote estándar. Los valores iniciales son un ejemplo.</p>
-        <div class="controls four">
-          <div class="ctl"><label for="c-n">Operaciones al mes <output id="c-n-out" for="c-n">80</output></label><input id="c-n" type="range" min="5" max="400" step="5" value="80"></div>
-          <div class="ctl"><label for="c-cost">Coste por operación (pips)</label><input id="c-cost" type="number" min="0" max="20" step="0.1" value="1.2"><span class="hint">Diferencial más comisión, ida y vuelta</span></div>
-          <div class="ctl"><label for="c-edge">Ventaja bruta media por operación (pips)</label><input id="c-edge" type="number" min="0.1" max="100" step="0.1" value="2"><span class="hint">Lo que ganarías de media sin costes</span></div>
-          <div class="ctl"><label for="c-lots">Tamaño (lotes)</label><input id="c-lots" type="number" min="0.01" max="100" step="0.01" value="1"></div>
-        </div>
-        <div class="stats">
-          <div class="stat"><span class="v" id="c-costs">–</span><span class="l">pagas en costes al mes</span></div>
-          <div class="stat"><span class="v" id="c-gross">–</span><span class="l">de ganancia bruta esperada al mes</span></div>
-          <div class="stat" id="c-net-card"><span class="v" id="c-net">–</span><span class="l">de resultado neto esperado al mes</span><span class="badge" id="c-badge"></span></div>
-        </div>
-        <div class="readout" id="c-read" aria-live="polite"></div>
-        <div class="meter" id="c-meter" role="img" aria-label="Parte de la ventaja que se comen los costes"><i id="c-meter-i"></i></div>
-      </figure>
-      <figure class="fig" id="fig-size">
-        <p class="fig-title">Tamaño de posición por riesgo</p>
-        <p class="fig-sub">Lotes = (capital × riesgo por operación) ÷ (stop en pips × valor del pip). Ejemplo con una cuenta en dólares operando EUR/USD.</p>
-        <div class="controls four">
-          <div class="ctl"><label for="s-cap">Capital ($)</label><input id="s-cap" type="number" min="100" step="100" value="10000"></div>
-          <div class="ctl"><label for="s-risk">Riesgo por operación <output id="s-risk-out" for="s-risk">1 %</output></label><input id="s-risk" type="range" min="0.25" max="5" step="0.25" value="1"></div>
-          <div class="ctl"><label for="s-stop">Stop (pips)</label><input id="s-stop" type="number" min="1" max="1000" step="1" value="25"></div>
-          <div class="ctl"><label for="s-px">Precio EUR/USD (ejemplo)</label><input id="s-px" type="number" min="0.5" max="2" step="0.0001" value="1.1000"></div>
-        </div>
-        <div class="stats quad">
-          <div class="stat"><span class="v" id="s-lots">–</span><span class="l">lotes estándar</span></div>
-          <div class="stat"><span class="v" id="s-money">–</span><span class="l">en riesgo si salta el stop</span></div>
-          <div class="stat"><span class="v" id="s-nom">–</span><span class="l">de tamaño nominal</span></div>
-          <div class="stat"><span class="v" id="s-lev">–</span><span class="l">de apalancamiento efectivo</span><span class="s" id="s-margin"></span></div>
-        </div>
-        <div class="meter" id="s-meter" role="img" aria-label="Apalancamiento efectivo frente al máximo europeo de 30 veces"><i id="s-meter-i"></i></div>
-        <p class="fig-note">La barra compara tu apalancamiento efectivo con el máximo de 30 veces que permite la UE a un minorista en pares principales. Que la regla lo permita no significa que sea prudente.</p>
-      </figure>
-    </section>
-
-    <section class="sec" id="backtest">
-      <p class="kicker">Método</p>
-      <h2 data-short="Datos y tecnología">Datos, backtest y tecnología</h2>
-      <h3>Un backtest de forex honesto</h3>
-      <ul class="checklist">
-        <li>Datos tick con el diferencial real. Dukascopy ofrece históricos gratuitos; mejor aún, los de tu propio bróker.</li>
-        <li>Diferencial variable, comisión, deslizamiento y swaps, incluido el triple del miércoles.</li>
-        <li>Huecos de fin de semana y días festivos.</li>
-        <li>Zona horaria del servidor. Muchos brókeres usan GMT+2 o GMT+3 para que la vela diaria cierre a las 17:00 de Nueva York y haya cinco velas diarias por semana.</li>
-        <li>En el probador de MetaTrader 5, el modo «cada tick basado en ticks reales».</li>
-        <li>Walk-forward y Monte Carlo: reordena las operaciones y empeora los costes para ver si la estrategia sobrevive.</li>
-        <li>Cuidado con el optimizador. Miles de combinaciones garantizan un resultado brillante por azar, como muestra el laboratorio del <a href="01-trading-algoritmico.html">documento 1</a>.</li>
-      </ul>
-      <h3>La pila tecnológica</h3>
-      <figure class="diagram">
-        <div class="flowchart" id="stack"></div>
-        <figcaption class="fig-note">La capa de riesgo va en código propio, separada de la estrategia, y puede cerrar todo aunque la estrategia falle.</figcaption>
-      </figure>
-      <div class="tbl-wrap">
-        <table>
-          <thead><tr><th>Plataforma</th><th>Lenguaje</th><th>Para qué</th></tr></thead>
-          <tbody>
-            <tr><td>MetaTrader 5</td><td>MQL5, y Python en Windows</td><td>La más extendida en brókeres minoristas y firmas de fondeo, con probador integrado</td></tr>
-            <tr><td>MetaTrader 4</td><td>MQL4</td><td>Veterana y en retirada en favor de MetaTrader 5</td></tr>
-            <tr><td>cTrader</td><td>C# (cTrader Algo)</td><td>Alternativa moderna a MetaTrader</td></tr>
-            <tr><td>NinjaTrader</td><td>C#</td><td>Futuros de divisas en el CME</td></tr>
-            <tr><td>APIs REST y FIX</td><td>Python o cualquier lenguaje</td><td>OANDA, Interactive Brokers y redes ECN, con el máximo control</td></tr>
-          </tbody>
-        </table>
-      </div>
-      <p>Si tu estrategia opera en horizontes de minutos o más, la latencia importa poco. Si es más rápida, un servidor virtual en el mismo centro de datos que tu bróker (Equinix LD4 en Londres, NY4 en Nueva York o TY3 en Tokio) baja la latencia de decenas de milisegundos a uno o dos.</p>
-    </section>
-
-    <section class="sec" id="regulacion">
-      <p class="kicker">Reglas</p>
-      <h2 data-short="Regulación">Regulación en España y la UE</h2>
-      <p class="lead">Desde 2018, ESMA limita el apalancamiento de los CFD que se venden a minoristas, incluido el forex al contado con apalancamiento que ofrecen los brókeres.</p>
-      <div class="tbl-wrap">
-        <table>
-          <thead><tr><th>Subyacente</th><th class="num">Apalancamiento máximo</th><th class="num">Garantía mínima</th></tr></thead>
-          <tbody>
-            <tr><td>Pares de divisas principales<span class="sub">Combinaciones de USD, EUR, JPY, GBP, CAD y CHF</span></td><td class="num">30 : 1</td><td class="num">3,33&nbsp;%</td></tr>
-            <tr><td>Otros pares, oro e índices principales</td><td class="num">20 : 1</td><td class="num">5&nbsp;%</td></tr>
-            <tr><td>Materias primas salvo el oro e índices no principales</td><td class="num">10 : 1</td><td class="num">10&nbsp;%</td></tr>
-            <tr><td>Acciones individuales y otros</td><td class="num">5 : 1</td><td class="num">20&nbsp;%</td></tr>
-            <tr><td>Criptoactivos</td><td class="num">2 : 1</td><td class="num">50&nbsp;%</td></tr>
-          </tbody>
-        </table>
-      </div>
-      <ul>
-        <li>El bróker cierra tus posiciones cuando tu margen cae al 50&nbsp;% del mínimo exigido.</li>
-        <li>Protección de saldo negativo: no puedes perder más de lo que has depositado.</li>
-        <li>Advertencia estandarizada con el porcentaje de cuentas que pierden. ESMA observó entre el 74&nbsp;% y el 89&nbsp;%.</li>
-        <li>En España, una resolución de la CNMV de 11 de julio de 2023 prohíbe la publicidad de CFD dirigida a minoristas y limita el apalancamiento de otros productos, como futuros y opciones.</li>
-        <li>Comprueba que tu bróker está autorizado en los registros de la CNMV o de su supervisor europeo y que no aparece en la lista de advertencias.</li>
-        <li>Si quiebra un bróker español, el FOGAIN cubre hasta 100.000 euros por inversor. Los de otros países de la UE tienen su propio fondo, con un mínimo europeo de 20.000 euros.</li>
-      </ul>
-    </section>
-
-    <section class="sec" id="sistema">
-      <p class="kicker">Plantilla</p>
-      <h2 data-short="Sistema de ejemplo">Un sistema sensato para empezar</h2>
-      <p class="lead">Este esqueleto combina dos de las primas con más evidencia, reparte el riesgo y opera poco. Sirve para aprender el proceso completo antes de buscar nada más ambicioso.</p>
+    <section class="sec" id="seguridad">
+      <p class="kicker">Seguridad</p>
+      <h2 data-short="Seguridad">Seguridad por capas</h2>
+      <p class="lead">El objetivo es que robar un portátil, una contraseña o engañar a un agente de IA no baste para operar en tu cuenta.</p>
       <div class="cards">
-        <article class="card"><span class="tag">Universo</span><p>Entre 7 y 9 pares frente al dólar: EUR, GBP, JPY, CHF, AUD, CAD, NZD…</p></article>
-        <article class="card"><span class="tag">Señales</span><p>Tendencia de 12 meses sin el último, y carry según el diferencial de tipos.</p></article>
-        <article class="card"><span class="tag">Tamaño</span><p>Cada par aporta un riesgo parecido, con una volatilidad objetivo del 8&nbsp;% al 10&nbsp;% anual.</p></article>
-        <article class="card"><span class="tag">Frecuencia</span><p>Revisión semanal. Pocas operaciones y pocos costes.</p></article>
-        <article class="card"><span class="tag">Límites</span><p>Pérdida máxima diaria y total escritas en el código, y parada de emergencia.</p></article>
-        <article class="card"><span class="tag">Validación</span><p>Walk-forward, costes pesimistas y cuenta demo antes del dinero real.</p></article>
+        <article class="card"><span class="tag">Identidades</span><h3 class="ct">Doble factor en todo</h3><p>Correo, bróker, cTID, proveedor del VPS y repositorio de código. Llaves físicas para el correo y la nube: el correo es la llave que recupera todas las demás.</p></article>
+        <article class="card"><span class="tag">Secretos</span><h3 class="ct">Permisos mínimos</h3><p>La aplicación que solo lee usa el permiso «accounts»; solo el ejecutor tiene «trading». Secretos en un gestor, nunca en el código, y un escáner que lo compruebe antes de cada commit.</p></article>
+        <article class="card"><span class="tag">Red</span><h3 class="ct">Nada abierto a internet</h3><p>Cortafuegos que niega todo por defecto. SSH y escritorio remoto solo a través del túnel. Salidas limitadas a cTrader, la hora, las actualizaciones y los avisos.</p></article>
+        <article class="card"><span class="tag">Sistema</span><h3 class="ct">Mínimo y reproducible</h3><p>Actualizaciones de seguridad automáticas, imagen mínima y librerías con versión fija. El mismo contenedor en demo y en real.</p></article>
+        <article class="card"><span class="tag">Registro</span><h3 class="ct">Todo queda escrito fuera</h3><p>Accesos, órdenes y cambios de configuración, copiados a otro sitio donde el servidor no pueda borrarlos.</p></article>
+        <article class="card"><span class="tag">Agentes de IA</span><h3 class="ct">En otra máquina</h3><p>Sin credenciales de trading y con el MCP de cTrader sin permiso para operar. Todo lo que leen de fuera es texto no fiable. Lo explica el <a href="05-ctrader-api-mcp.html">documento 5</a>.</p></article>
       </div>
-      <div class="codeblock" data-lang="python"><span class="lang">Python · educativo</span><pre class="code"><code>import numpy as np
-import pandas as pd
+    </section>
 
+    <section class="sec" id="ips">
+      <p class="kicker">Segregación</p>
+      <h2 data-short="Segregación de IP">Una IP y unos permisos para cada función</h2>
+      <p class="lead">Separar máquinas, redes e IP limita lo que puede hacer un intruso y evita problemas con las reglas de las firmas de fondeo.</p>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Zona</th><th>IP</th><th>Entradas</th><th>Salidas</th><th>Credenciales</th></tr></thead>
+          <tbody>
+            <tr><td>VPS principal</td><td>Pública, fija y dedicada</td><td>Solo el túnel</td><td>cTrader, hora, actualizaciones y avisos</td><td>Permiso «trading»</td></tr>
+            <tr><td>VPS en espera</td><td>Otra IP, en otro proveedor</td><td>Solo el túnel</td><td>Las mismas</td><td>Permiso «trading», bloqueado hasta el relevo</td></tr>
+            <tr><td>Investigación y agentes</td><td>La de casa u otro VPS</td><td>Ninguna</td><td>Internet</td><td>Permiso «accounts» o ninguno</td></tr>
+            <tr><td>Administración</td><td>Tus dispositivos</td><td>Ninguna</td><td>Túnel hacia los VPS</td><td>Una clave por dispositivo, sin contraseñas</td></tr>
+            <tr><td>Red de casa</td><td>Red separada para los equipos de trading, aparte de invitados y domótica</td><td>Ninguna</td><td>Internet</td><td>—</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout warn">
+        <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 2.8l8 14H2l8-14z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M10 8v4.2M10 14.6v.1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        <div><span class="ct">Firmas de fondeo</span><p>Vigilan IP y lugares de conexión para detectar cuentas compartidas y operaciones coordinadas entre cuentas. FTMO, por ejemplo, prohíbe VPN y proxies y admite un VPS solo si tiene IP dedicada. Opera siempre desde la misma IP propia y lee las reglas de tu firma antes de cambiar nada.</p></div>
+      </div>
+    </section>
 
-def backtest_fx(precios, tipos, vol_objetivo=0.10, coste_pb=1.5):
-    """Tendencia + carry en pares frente al dólar, con datos diarios.
+    <section class="sec" id="redundancia">
+      <p class="kicker">Redundancia</p>
+      <h2 data-short="Redundancia">Qué pasa cuando algo falla</h2>
+      <p class="lead">Cada fallo tiene preparada su respuesta antes de que ocurra. Los stops guardados en el servidor del bróker son la última red.</p>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Fallo</th><th>Qué le pasa al sistema</th><th>Respuesta</th></tr></thead>
+          <tbody>
+            <tr><td>Se corta la fibra de casa</td><td>Nada: el motor está en Londres. Pierdes la supervisión</td><td>La segunda fibra o el 5G entran solos</td></tr>
+            <tr><td>Apagón en casa</td><td>Nada en Londres</td><td>El SAI mantiene el router; los avisos llegan al móvil</td></tr>
+            <tr><td>Cae el VPS principal</td><td>No salen órdenes nuevas; los stops siguen en el servidor del bróker</td><td>El de espera toma el relevo tras varios latidos perdidos, y antes reconcilia las posiciones</td></tr>
+            <tr><td>Cae un proveedor entero</td><td>Lo mismo</td><td>El de espera está en otro proveedor</td></tr>
+            <tr><td>Cae cTrader o el bróker</td><td>No puedes operar ni cerrar</td><td>Stops en el servidor, tamaños pensados para aguantar y el teléfono de la mesa del bróker a mano</td></tr>
+            <tr><td>Roban una credencial</td><td>Alguien podría operar o leer tu cuenta</td><td>Revocar los permisos en cTrader, cambiar los secretos y pulsar el botón de parada</td></tr>
+            <tr><td>Un despliegue sale mal</td><td>Órdenes erróneas</td><td>Controles previos a cada orden y vuelta a la versión anterior en un minuto</td></tr>
+            <tr><td>Falla la API de Claude</td><td>Nada: no está en el camino de las órdenes</td><td>Seguir sin ella</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout crit">
+        <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="10" cy="10" r="8.25" stroke="currentColor" stroke-width="1.5"/><path d="M7 7l6 6M13 7l-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        <div><span class="ct">Nunca dos motores a la vez</span><p>Si el principal y el de espera operan al mismo tiempo, duplican cada orden. El de espera solo actúa si consigue un cerrojo con caducidad que el principal ha dejado de renovar, y lo primero que hace es reconciliar con el bróker. Prueba el relevo cada mes, en demo.</p></div>
+      </div>
+    </section>
 
-    precios:  cierres diarios en dólares por unidad de cada divisa
-              (invierte USDJPY, USDCHF y USDCAD para que todo apunte igual).
-    tipos:    tipo a corto de cada divisa menos el del dólar, en % anual.
-    coste_pb: coste por operación, en puntos básicos del nominal negociado.
-    """
-    rets = precios.pct_change()
+    <section class="sec" id="costes">
+      <p class="kicker">Costes</p>
+      <h2 data-short="Cuánto cuesta">Cuánto cuesta al mes</h2>
+      <p class="lead">Los servidores son la parte barata. Lo que decide la factura es cuánto operas y a qué precio.</p>
+      <figure class="fig" id="fig-cost">
+        <p class="fig-title">Calculadora de coste mensual</p>
+        <p class="fig-sub">Ejemplo inicial: una cuenta de fondeo de 100.000&nbsp;$ que mueve unos 100 lotes al mes en EURUSD, con una cuenta raw de cTrader y la infraestructura final.</p>
+        <div class="controls four">
+          <div class="ctl"><label for="c-lots">Lotes al mes <output id="c-lots-out" for="c-lots"></output></label><input id="c-lots" type="range" min="5" max="500" step="5" value="100"><span class="hint">Cada lote se abre y se cierra</span></div>
+          <div class="ctl"><label for="c-spread">Spread medio (pips)</label><input id="c-spread" type="number" min="0" max="5" step="0.05" value="0.2"></div>
+          <div class="ctl"><label for="c-comm">Comisión por lote y lado ($)</label><input id="c-comm" type="number" min="0" max="10" step="0.25" value="3.5"><span class="hint">3 en IC Markets y 3,5 en Pepperstone, en cTrader</span></div>
+          <div class="ctl"><label for="c-slip">Deslizamiento medio (pips)</label><input id="c-slip" type="number" min="0" max="5" step="0.05" value="0.1"></div>
+          <div class="ctl"><label for="c-tier">Infraestructura</label><select id="c-tier"><option value="0">Nivel 1 · 0 €</option><option value="40">Nivel 2 · 40 €</option><option value="140" selected>Nivel 3 · 140 €</option></select></div>
+          <div class="ctl"><label for="c-ai">API de Claude (€/mes)</label><input id="c-ai" type="number" min="0" max="2000" step="5" value="20"></div>
+          <div class="ctl"><label for="c-watts">Equipos en casa (vatios)</label><input id="c-watts" type="number" min="0" max="2000" step="5" value="60"><span class="hint">Mini PC, router y ONT, 24 horas</span></div>
+          <div class="ctl"><label for="c-kwh">Precio de la luz (€/kWh)</label><input id="c-kwh" type="number" min="0" max="1" step="0.01" value="0.18"></div>
+        </div>
+        <div class="chart" id="cost"></div>
+        <div class="legend"><span><i class="box" style="--k:var(--c1)"></i>Costes de operar</span><span><i class="box" style="--k:var(--deemph)"></i>Infraestructura y servicios</span></div>
+        <div class="stats quad">
+          <div class="stat"><span class="v" id="c-total">–</span><span class="l">al mes en total</span></div>
+          <div class="stat"><span class="v" id="c-share">–</span><span class="l">del total es el coste de operar</span></div>
+          <div class="stat"><span class="v" id="c-perlot">–</span><span class="l">cuesta cada lote, ida y vuelta</span><span class="s" id="c-perlot-s"></span></div>
+          <div class="stat"><span class="v" id="c-year">–</span><span class="l">al año</span></div>
+        </div>
+        <p class="readout" id="c-read" aria-live="polite"></p>
+        <p class="fig-note">Conversión a 1&nbsp;€ = 1,10&nbsp;$; un pip de EURUSD vale 10&nbsp;$ por lote. No incluye swaps, impuestos ni la cuota de internet que ya pagas. Comisiones publicadas por IC Markets y Pepperstone para cTrader; precio de la luz: media reciente del PVPC.</p>
+      </figure>
+    </section>
 
-    # Señal 1: tendencia de 12 meses, saltándose el último mes
-    tendencia = np.sign(precios.shift(21) / precios.shift(252) - 1)
-    # Señal 2: carry, comprar si la divisa paga más interés que el dólar
-    carry = np.sign(tipos)
-    senal = (tendencia + carry) / 2   # -1, -0.5, 0, 0.5 o 1
+    <section class="sec" id="recortar">
+      <p class="kicker">Ahorro</p>
+      <h2 data-short="Dónde recortar">Dónde recortar, de más a menos</h2>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Palanca</th><th>Qué hacer</th><th>Efecto</th></tr></thead>
+          <tbody>
+            <tr><td>Operar menos</td><td>Filtrar las señales débiles y alargar el horizonte</td><td>Cada lote que no operas ahorra de 0,7 a 1 pip en una cuenta raw</td></tr>
+            <tr><td>Comisión</td><td>Comparar brókeres de cTrader y preguntar por descuentos por volumen</td><td>De 3,5 a 3&nbsp;$ por lado es un 14&nbsp;% menos</td></tr>
+            <tr><td>Horario</td><td>Operar en horas líquidas, como el solape de Londres y Nueva York, y evitar el cambio de día</td><td>Spreads más estrechos y menos deslizamiento</td></tr>
+            <tr><td>Tipo de orden</td><td>Órdenes límite cuando la estrategia lo permita</td><td>Te ahorras el spread y el deslizamiento, a cambio de no entrar a veces</td></tr>
+            <tr><td>Swaps</td><td>Vigilar el coste de mantener posiciones de noche, que en divisas suele cobrarse triple la noche del miércoles</td><td>Decisivo en estrategias de días o semanas</td></tr>
+            <tr><td>Divisa de la cuenta</td><td>La misma en la que operas o cobras</td><td>Evitas comisiones de conversión</td></tr>
+            <tr><td>Servidores</td><td>cTrader Cloud cuando baste; VPS del tamaño justo, con pago anual</td><td>De 0 a unas decenas de euros al mes</td></tr>
+            <tr><td>API de Claude</td><td>Modelo pequeño para clasificar, API por lotes y caché de prompts</td><td>La API por lotes cuesta la mitad</td></tr>
+            <tr><td>Electricidad</td><td>Mini PC en lugar de torre; los backtests pesados, en horario valle o en la nube por horas</td><td>De 20&nbsp;€ a 2&nbsp;€ al mes en un equipo encendido siempre</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h3>La luz en Bilbao</h3>
+      <p>Con la tarifa regulada (PVPC) el kWh ha costado de media entre 0,17 y 0,19&nbsp;€ en los últimos meses. Con la tarifa de acceso 2.0TD, las horas se dividen en tres periodos y conviene programar los trabajos pesados en el más barato.</p>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Periodo</th><th>De lunes a viernes</th><th>Fines de semana y festivos nacionales</th></tr></thead>
+          <tbody>
+            <tr><td>Punta</td><td>De 10 a 14 h y de 18 a 22 h</td><td>—</td></tr>
+            <tr><td>Llano</td><td>De 8 a 10 h, de 14 a 18 h y de 22 a 24 h</td><td>—</td></tr>
+            <tr><td>Valle</td><td>De 0 a 8 h</td><td>Todo el día</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Equipo encendido 24 horas</th><th class="num">Consumo</th><th class="num">kWh al mes</th><th class="num">€ al mes a 0,18</th></tr></thead>
+          <tbody>
+            <tr><td>Mini PC</td><td class="num">10–25 W</td><td class="num">7–18</td><td class="num">1,3–3,2</td></tr>
+            <tr><td>Router y ONT</td><td class="num">10–20 W</td><td class="num">7–14</td><td class="num">1,3–2,6</td></tr>
+            <tr><td>Portátil</td><td class="num">20–40 W</td><td class="num">14–29</td><td class="num">2,6–5,2</td></tr>
+            <tr><td>Torre de sobremesa</td><td class="num">80–200 W</td><td class="num">58–144</td><td class="num">10,4–25,9</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout">
+        <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="10" cy="10" r="8.25" stroke="currentColor" stroke-width="1.5"/><path d="M10 9v5M10 6.2v.1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        <div><span class="ct">Impuestos en Bizkaia</span><p>En Bizkaia, el IRPF lo gestiona la Hacienda Foral, con normas propias. Si lo tuyo es una actividad económica, por ejemplo cobros de fondeo que Hacienda considere actividad profesional, desde enero de 2026 te afecta Batuz: facturas con TicketBAI y un libro registro digital. Habla con un asesor antes de empezar a cobrar.</p></div>
+      </div>
+    </section>
 
-    # Cada par aporta un riesgo parecido (aproximación: ignora correlaciones)
-    vol = rets.rolling(63).std() * np.sqrt(252)
-    peso = senal * vol_objetivo / (vol * np.sqrt(precios.shape[1]))
-
-    # Rebalanceo semanal y ejecución al día siguiente: nunca mira el futuro
-    peso = peso.resample("W-FRI").last().reindex(precios.index).ffill().shift(1)
-
-    precio_mov = (peso * rets).sum(axis=1)
-    intereses = (peso * tipos.shift(1) / 100 / 252).sum(axis=1)
-    costes = peso.diff().abs().sum(axis=1) * coste_pb / 10_000
-    valido = peso.notna().any(axis=1)
-    neto = (precio_mov + intereses - costes)[valido]
-
-    anual = neto.mean() * 252
-    vol_real = neto.std() * np.sqrt(252)
-    curva = (1 + neto).cumprod()
-    caida_max = (curva / curva.cummax() - 1).min()
-    print(f"Rentabilidad anual {anual:.1%} · volatilidad {vol_real:.1%} · "
-          f"Sharpe {anual / vol_real:.2f} · caída máxima {caida_max:.1%}")
-    return neto</code></pre></div>
-      <p class="fig-note">Código educativo, no una recomendación. Necesitas tus propios datos de precios y de tipos de interés, por ejemplo de los bancos centrales. Antes de fiarte del resultado, aplica los pasos del <a href="01-trading-algoritmico.html">documento 1</a>. Si quieres que un agente de IA te ayude a construirlo y vigilarlo, sigue con <a href="03-agentes-claude-trading.html">el documento 3</a>; para conectarlo a cTrader, con <a href="05-ctrader-api-mcp.html">el 5</a>.</p>
+    <section class="sec" id="lista">
+      <p class="kicker">Resumen</p>
+      <h2 data-short="Lista final">La lista de la infraestructura final</h2>
+      <ul class="checklist">
+        <li>Motor, control de riesgo y ejecutor en un VPS en Londres con IP dedicada.</li>
+        <li>VPS en espera en otro proveedor, con cerrojo para que nunca operen dos a la vez.</li>
+        <li>Stops guardados en el servidor del bróker en cada orden.</li>
+        <li>Ningún puerto abierto: administración por túnel y claves por dispositivo.</li>
+        <li>Permiso «trading» solo en el ejecutor; lo demás, «accounts» o nada.</li>
+        <li>Investigación y agentes de IA en otra máquina, sin credenciales de trading.</li>
+        <li>Dos fibras de redes físicas distintas, 5G de reserva y SAI en casa.</li>
+        <li>Vigilancia externa con latido, avisos al móvil y copias cifradas fuera.</li>
+        <li>Relevo, botón de parada y restauración de copias probados cada mes.</li>
+        <li>Costes de operar medidos cada mes frente a los supuestos del backtest.</li>
+      </ul>
     </section>
 
     <section class="sec" id="fuentes">
       <p class="kicker">Fuentes</p>
       <h2 data-short="Fuentes">Fuentes y lecturas</h2>
       <ol class="refs">
-        <li>BIS (2025). OTC foreign exchange turnover in April 2025. <a href="https://www.bis.org/statistics/rpfx25_fx.htm" target="_blank" rel="noopener">Datos</a> · <a href="https://www.bis.org/press/p250930.htm" target="_blank" rel="noopener">Nota de prensa</a></li>
-        <li>BIS Markets Committee (2017). The sterling «flash event» of 7 October 2016. <a href="https://www.bis.org/publ/mktc09.htm" target="_blank" rel="noopener">Informe</a></li>
-        <li>Reserve Bank of Australia (2019). The Recent Japanese Yen Flash Event. <a href="https://www.rba.gov.au/publications/smp/2019/feb/box-b-the-recent-japanese-yen-flash-event.html" target="_blank" rel="noopener">Recuadro B</a></li>
-        <li>FCA (2014). Multas a cinco bancos por fallos en el mercado de divisas. <a href="https://www.fca.org.uk/news/press-releases/fca-fines-five-banks-%C2%A311-billion-fx-failings-and-announces-industry-wide-remediation-programme" target="_blank" rel="noopener">Nota de prensa</a></li>
-        <li>Global Foreign Exchange Committee. FX Global Code, principio 17 (last look).</li>
-        <li>Lustig, H., Roussanov, N. y Verdelhan, A. (2011). Common Risk Factors in Currency Markets. <i>Review of Financial Studies</i>.</li>
-        <li>Menkhoff, L., Sarno, L., Schmeling, M. y Schrimpf, A. (2012). Carry Trades and Global Foreign Exchange Volatility (<i>Journal of Finance</i>) y Currency Momentum Strategies (<i>Journal of Financial Economics</i>).</li>
-        <li>Brunnermeier, M., Nagel, S. y Pedersen, L. (2008). Carry Trades and Currency Crashes. <i>NBER Macroeconomics Annual</i>.</li>
-        <li>Moskowitz, T., Ooi, Y. H. y Pedersen, L. (2012). Time Series Momentum. <i>Journal of Financial Economics</i>.</li>
-        <li>Asness, C., Moskowitz, T. y Pedersen, L. (2013). Value and Momentum Everywhere. <i>Journal of Finance</i>.</li>
-        <li>Neely, C., Weller, P. y Ulrich, J. (2009). The Adaptive Markets Hypothesis: Evidence from the Foreign Exchange Market. <i>Journal of Financial and Quantitative Analysis</i>.</li>
-        <li>ESMA (2018). Medidas de intervención sobre CFD para clientes minoristas.</li>
-        <li>CNMV (2023). Resolución de 11 de julio de 2023 sobre CFD y otros productos apalancados. <a href="https://www.cnmv.es/docportal/aldia/Resolucion_CFD.pdf" target="_blank" rel="noopener">PDF</a></li>
+        <li>Spotware. World-class infrastructure of cTrader (Equinix LD5 y NY2). <a href="https://www.spotware.com/ctrader/brokers/server/" target="_blank" rel="noopener">Infraestructura</a></li>
+        <li>cTrader Help Centre. Open API: proxies and endpoints (AWS Global Accelerator); cTrader Algo: cloud features. <a href="https://help.ctrader.com/open-api/proxies-endpoints/" target="_blank" rel="noopener">Endpoints</a> · <a href="https://help.ctrader.com/ctrader-algo/documentation/cloud-features/" target="_blank" rel="noopener">Cloud</a></li>
+        <li>Zenlayer. Public latency table (Londres–Madrid, 22&nbsp;ms). <a href="https://www.zenlayer.com/public-latency-table-dmd/" target="_blank" rel="noopener">Tabla</a></li>
+        <li>IC Markets. Trading costs (cTrader, 3&nbsp;$ por lote y lado). Pepperstone. Trading costs and fees (3,5&nbsp;$ por lote y lado). <a href="https://www.icmarkets.eu/en/trading-pricing/trading-costs" target="_blank" rel="noopener">IC Markets</a> · <a href="https://pepperstone.com/en/ways-to-trade/pricing/" target="_blank" rel="noopener">Pepperstone</a></li>
+        <li>QuantVPS (2026). Top 13 Forex VPS Solutions; FxSVPS, London Forex VPS (precios de referencia). <a href="https://www.quantvps.com/blog/vps-forex" target="_blank" rel="noopener">QuantVPS</a> · <a href="https://www.fxsvps.com/london-forex-vps/" target="_blank" rel="noopener">FxSVPS</a></li>
+        <li>Xataka Móvil. Qué cobertura de fibra y móvil usa cada operador; Euskaltel, cobertura de fibra en Euskadi. <a href="https://www.xatakamovil.com/comparativa-de-tarifas/que-cobertura-fibra-movil-usa-cada-operador-o2-lowi-simyo-digi-pepephone-virgin-telco-otros-omvs-baratos" target="_blank" rel="noopener">Xataka</a> · <a href="https://www.euskaltel.com/tarifas/fibra-y-movil/euskadi" target="_blank" rel="noopener">Euskaltel</a></li>
+        <li>Wikipedia. Apagón en la península ibérica de 2025. <a href="https://es.wikipedia.org/wiki/Apag%C3%B3n_en_la_pen%C3%ADnsula_ib%C3%A9rica_de_2025" target="_blank" rel="noopener">Artículo</a></li>
+        <li>Tarifaluzhora y CostEEnergía. Precio medio del kWh con PVPC en 2026. <a href="https://tarifaluzhora.es/info/precio-kwh" target="_blank" rel="noopener">Tarifaluzhora</a> · <a href="https://www.costeenergia.es/historico/pvpc-mensual" target="_blank" rel="noopener">CostEEnergía</a></li>
+        <li>Propvator (2026). Can You Use a VPN at FTMO? <a href="https://propvator.com/blog/ftmo-vpn-ip-rule/" target="_blank" rel="noopener">Artículo</a></li>
+        <li>Cámara de Comercio de Bilbao. Diferencia entre Batuz y TicketBAI y cuándo implementarlos. <a href="https://www.camarabilbao.com/empresa/diferencia-batuz-ticketbai-tengo-implementarlos-negocio-202407161018/" target="_blank" rel="noopener">Artículo</a></li>
       </ol>
     </section>
   </main>
 </div>
-<footer class="foot wrap"><h2 class="foot-h" id="serie">La serie completa</h2><nav aria-labelledby="serie"><ol class="series-index"><li><a href="01-trading-algoritmico.html"><span class="n" style="--k:var(--k1)">1</span><span class="t">Trading algorítmico</span><span class="d">Qué puede hacer un algoritmo, quién paga cada ganancia y dónde están sus límites.</span></a></li><li><a href="#top" aria-current="page"><span class="n" style="--k:var(--k2)">2</span><span class="t">Forex algorítmico</span><span class="d">El mercado de divisas visto por un algoritmo: estructura, costes y estrategias con evidencia.</span><span class="here">Estás aquí</span></a></li><li><a href="03-agentes-claude-trading.html"><span class="n" style="--k:var(--k3)">3</span><span class="t">Agentes Claude</span><span class="d">Dónde aporta un agente de IA a un sistema de trading, dónde es un riesgo y cuánto cuesta.</span></a></li><li><a href="04-verdad-cuentas-fondeo.html"><span class="n" style="--k:var(--k4)">4</span><span class="t">Cuentas de fondeo</span><span class="d">Cómo ganan dinero las firmas de fondeo, quién cobra de verdad y qué pasa si eres rentable.</span></a></li><li><a href="05-ctrader-api-mcp.html"><span class="n" style="--k:var(--k5)">5</span><span class="t">cTrader: API y MCP</span><span class="d">Qué es cTrader y cómo conectar un sistema por Open API, FIX, cBots o MCP, y qué vigilar.</span></a></li><li><a href="06-gestion-del-riesgo.html"><span class="n" style="--k:var(--k6)">6</span><span class="t">Gestión del riesgo</span><span class="d">Tamaño de posición, límites, caídas y controles para que el sistema sobreviva.</span></a></li><li><a href="07-infraestructura-y-costes.html"><span class="n" style="--k:var(--k7)">7</span><span class="t">Infraestructura y costes</span><span class="d">Seguridad, redundancia, latencia y costes de la infraestructura final, desde Bilbao.</span></a></li><li><a href="08-atlas-de-estrategias.html"><span class="n" style="--k:var(--k8)">8</span><span class="t">Atlas de estrategias</span><span class="d">Estrategias algorítmicas por sector y dificultad: qué detectan, quién paga y cómo se montan.</span></a></li></ol></nav><p>Contenido educativo. No es asesoramiento financiero ni una recomendación de inversión. Las cifras proceden de las fuentes citadas; las simulaciones usan datos aleatorios y solo ilustran ideas.</p><p>Serie «Máquinas y mercados» · Septiembre de 2026</p></footer>
+<footer class="foot wrap"><h2 class="foot-h" id="serie">La serie completa</h2><nav aria-labelledby="serie"><ol class="series-index"><li><a href="01-trading-algoritmico.html"><span class="n" style="--k:var(--k1)">1</span><span class="t">Trading algorítmico</span><span class="d">Qué puede hacer un algoritmo, quién paga cada ganancia y dónde están sus límites.</span></a></li><li><a href="02-forex-algoritmico.html"><span class="n" style="--k:var(--k2)">2</span><span class="t">Forex algorítmico</span><span class="d">El mercado de divisas visto por un algoritmo: estructura, costes y estrategias con evidencia.</span></a></li><li><a href="03-agentes-claude-trading.html"><span class="n" style="--k:var(--k3)">3</span><span class="t">Agentes Claude</span><span class="d">Dónde aporta un agente de IA a un sistema de trading, dónde es un riesgo y cuánto cuesta.</span></a></li><li><a href="04-verdad-cuentas-fondeo.html"><span class="n" style="--k:var(--k4)">4</span><span class="t">Cuentas de fondeo</span><span class="d">Cómo ganan dinero las firmas de fondeo, quién cobra de verdad y qué pasa si eres rentable.</span></a></li><li><a href="05-ctrader-api-mcp.html"><span class="n" style="--k:var(--k5)">5</span><span class="t">cTrader: API y MCP</span><span class="d">Qué es cTrader y cómo conectar un sistema por Open API, FIX, cBots o MCP, y qué vigilar.</span></a></li><li><a href="06-gestion-del-riesgo.html"><span class="n" style="--k:var(--k6)">6</span><span class="t">Gestión del riesgo</span><span class="d">Tamaño de posición, límites, caídas y controles para que el sistema sobreviva.</span></a></li><li><a href="#top" aria-current="page"><span class="n" style="--k:var(--k7)">7</span><span class="t">Infraestructura y costes</span><span class="d">Seguridad, redundancia, latencia y costes de la infraestructura final, desde Bilbao.</span><span class="here">Estás aquí</span></a></li><li><a href="08-atlas-de-estrategias.html"><span class="n" style="--k:var(--k8)">8</span><span class="t">Atlas de estrategias</span><span class="d">Estrategias algorítmicas por sector y dificultad: qué detectan, quién paga y cómo se montan.</span></a></li></ol></nav><p>Contenido educativo. No es asesoramiento financiero ni una recomendación de inversión. Las cifras proceden de las fuentes citadas; las simulaciones usan datos aleatorios y solo ilustran ideas.</p><p>Serie «Máquinas y mercados» · Septiembre de 2026</p></footer>
 <script>
 (function () {
   "use strict";
@@ -1323,115 +1286,62 @@ def backtest_fx(precios, tipos, vol_objetivo=0.10, coste_pb=1.5):
 <script>
 (function () {
   var M = window.MM;
-  var pc = function (v) { return M.fmt(v, 1) + " %"; };
+  function $(id) { return document.getElementById(id); }
+  function num(id, d) { var v = parseFloat($(id).value); return isFinite(v) && v >= 0 ? v : d; }
+  function ms(v) { return v >= 1000 ? M.fmt(v / 1000, v >= 10000 ? 0 : 1) + " s" : M.fmt(v, v < 1 ? 1 : 0) + " ms"; }
 
-  /* Divisas */
-  var ccy = [
-    { label: "Dólar estadounidense (USD)", value: 89.2 }, { label: "Euro (EUR)", value: 28.9 }, { label: "Yen (JPY)", value: 16.8 },
-    { label: "Libra (GBP)", value: 10.2 }, { label: "Renminbi (CNY)", value: 8.5 }, { label: "Franco suizo (CHF)", value: 6.4 }, { label: "Dólar de Hong Kong (HKD)", value: 3.8 }
+  /* ---------- Latencias ---------- */
+  var latRows = [
+    { label: "Mínimo físico, Bilbao–Londres", dot: 9.3, note: "Unos 930 km en línea recta, ida y vuelta, por fibra." },
+    { label: "Madrid–Londres, entre centros de datos", dot: 22, note: "Red troncal de Zenlayer, media de 24 horas." },
+    { label: "Tu fibra en Bilbao → Londres", segs: [[25, 45]], note: "Estimación: depende del operador y de la ruta." },
+    { label: "5G o 4G → Londres", segs: [[35, 90]], note: "Estimación: muy variable según cobertura y carga." },
+    { label: "VPS en Londres → servidor de cTrader", segs: [[1, 5]], strong: true, note: "Según proveedores de VPS para forex cerca de LD4 y LD5." },
+    { label: "Respuesta de un modelo de IA por API", segs: [[1000, 20000]], note: "Segundos: por eso la IA no va en el camino de las órdenes." }
   ];
-  M.hbar(document.getElementById("ccy"), { aria: "Porcentaje de operaciones de divisas en que aparece cada moneda, abril de 2025", rows: ccy, domain: [0, 100], fmt: pc, labelW: 200, unitLabel: "de las operaciones" });
-  M.dataTable(document.getElementById("fig-ccy"), ["Divisa", "% de operaciones"], ccy.map(function (r) { return [r.label, pc(r.value)]; }), [1]);
-
-  /* Sesiones */
-  function hh(h) { return String(h % 24).padStart(2, "0") + ":00"; }
-  var ses = [
-    { label: "Sídney", segs: [[23, 24], [0, 8]], txt: "23:00 a 08:00" },
-    { label: "Tokio", segs: [[1, 10]], txt: "01:00 a 10:00" },
-    { label: "Londres", segs: [[9, 18]], txt: "09:00 a 18:00", strong: true },
-    { label: "Nueva York", segs: [[14, 23]], txt: "14:00 a 23:00", strong: true }
-  ];
-  var tk = []; for (var h = 0; h <= 24; h += 3) tk.push({ v: h, label: hh(h === 24 ? 0 : h), minor: h % 6 !== 0, anchor: h === 24 ? "end" : undefined });
-  M.range(document.getElementById("ses"), {
-    aria: "Sesiones del mercado de divisas a lo largo del día en hora de España",
-    rows: ses, scale: "lin", domain: [0, 24], labelW: 110, ticks: tk,
-    bands: [{ from: 14, to: 18, label: "Solape Londres–Nueva York", short: "Solape", level: 1 }],
-    markers: [{ v: 20, label: "Fed", anchor: "end", hideNarrow: true }, { v: 23, label: "Rollover", anchor: "end" }],
-    describe: function (r) { return r.txt; }
+  M.range($("lat"), {
+    aria: "Latencias de ida y vuelta en escala logarítmica, de un milisegundo a un minuto",
+    rows: latRows, scale: "log", domain: [0.5, 100000], labelW: 250, padRight: 18,
+    ticks: [{ v: 1, label: "1 ms" }, { v: 10, label: "10 ms" }, { v: 100, label: "100 ms" }, { v: 1000, label: "1 s" }, { v: 10000, label: "10 s", minor: true }, { v: 60000, label: "1 min" }],
+    markers: [{ v: 60000, label: "Una vela de 1 minuto", short: "Vela de 1 min", anchor: "end" }],
+    describe: function (r) { return r.dot !== undefined ? ms(r.dot) : ms(r.segs[0][0]) + " a " + ms(r.segs[0][1]); }
   });
-  M.dataTable(document.getElementById("fig-ses"), ["Sesión", "Horario aproximado (España)"], ses.map(function (r) { return [r.label, r.txt]; }));
+  M.dataTable($("fig-lat"), ["Tramo", "Ida y vuelta", "Nota"], latRows.map(function (r) { return [r.label, r.dot !== undefined ? ms(r.dot) : ms(r.segs[0][0]) + " a " + ms(r.segs[0][1]), r.note]; }), [1]);
 
-  /* Martingala frente a riesgo fijo: mismas tiradas */
-  function mart(seed, N) {
-    var r = M.rng(seed), eqM = 10000, eqF = 10000, k = 0, bust = -1, Mv = [eqM], Fv = [eqF];
-    for (var i = 1; i <= N; i++) {
-      var win = r() < 0.5;
-      if (bust < 0) { var stake = 10 * Math.pow(2, k); if (win) { eqM += stake; k = 0; } else { eqM -= stake; k++; } if (10 * Math.pow(2, k) > eqM) bust = i; }
-      var risk = eqF * 0.01; eqF += win ? risk : -risk;
-      Mv.push(eqM); Fv.push(eqF);
-    }
-    return { M: Mv, F: Fv, bust: bust };
+  /* ---------- Calculadora de costes ---------- */
+  var costChart = null, FX = 1.10;
+  function cost() {
+    var lots = num("c-lots", 100), spread = num("c-spread", 0.2), comm = num("c-comm", 3.5), slip = num("c-slip", 0.1);
+    var tier = num("c-tier", 140), ai = num("c-ai", 20), watts = num("c-watts", 60), kwh = num("c-kwh", 0.18);
+    $("c-lots-out").textContent = M.fmt(lots, 0);
+    var eComm = lots * comm * 2 / FX, eSpread = lots * spread * 10 / FX, eSlip = lots * slip * 10 / FX;
+    var eLight = watts * 24 * 30 / 1000 * kwh;
+    var rows = [
+      { label: "Comisiones", value: eComm, color: "var(--c1)" },
+      { label: "Spread", value: eSpread, color: "var(--c1)" },
+      { label: "Deslizamiento", value: eSlip, color: "var(--c1)" },
+      { label: "Servidores y servicios", value: tier, color: "var(--deemph)" },
+      { label: "API de Claude", value: ai, color: "var(--deemph)" },
+      { label: "Electricidad en casa", value: eLight, color: "var(--deemph)" }
+    ];
+    var trade = eComm + eSpread + eSlip, total = trade + tier + ai + eLight;
+    var cfg = { aria: "Coste mensual por partidas", rows: rows, labelW: 190, fmt: function (v) { return M.fmt(v, 0) + " €"; }, unitLabel: "al mes" };
+    if (costChart) costChart.update(cfg); else costChart = M.hbar($("cost"), cfg);
+    $("c-total").textContent = M.fmt(total, 0) + " €";
+    $("c-share").textContent = total > 0 ? M.fmt(trade / total * 100, 0) + " %" : "–";
+    var perLotUsd = comm * 2 + (spread + slip) * 10;
+    $("c-perlot").textContent = M.fmt(perLotUsd, 2) + " $";
+    $("c-perlot-s").textContent = "Equivale a " + M.fmt(perLotUsd / 10, 2) + " pips";
+    $("c-year").textContent = M.fmt(total * 12, 0) + " €";
+    var infra = tier + ai + eLight;
+    var ratio = infra > 0 ? trade / infra : 0;
+    $("c-read").textContent = trade > infra
+      ? "Operar cuesta " + M.fmt(ratio, 1) + " veces más que toda la infraestructura. Rebajar la comisión medio dólar por lado ahorraría " + M.fmt(lots * 0.5 * 2 / FX * 12, 0) + " € al año, más que muchos servidores. Tu estrategia tiene que ganar más de " + M.fmt(perLotUsd / 10, 2) + " pips por lote solo para cubrir costes."
+      : "Con este volumen, la infraestructura pesa más que operar. Si operas poco, empieza por el nivel 1 o 2: cTrader Cloud es gratis.";
+    M.dataTable($("fig-cost"), ["Partida", "€ al mes"], rows.map(function (r) { return [r.label, M.fmt(r.value, 0)]; }).concat([["Total", M.fmt(total, 0)]]), [1]);
   }
-  var mt = mart(302, 700), idx = mt.M.map(function (_, i) { return i; });
-  var usd = function (v) { return M.fmt(v, 0) + " $"; };
-  M.line(document.getElementById("mart"), {
-    aria: "Evolución de una cuenta con martingala frente a una con riesgo fijo del 1 por ciento",
-    x: idx, series: [{ name: "Riesgo fijo del 1 %", color: "var(--c1)", values: mt.F }, { name: "Martingala", color: "var(--c2)", values: mt.M }],
-    yFmt: usd, yDomain: [0, 14000],
-    xTicks: [{ v: 0, label: "0", anchor: "start" }, { v: 100, label: "100", minor: true }, { v: 200, label: "200" }, { v: 300, label: "300", minor: true }, { v: 400, label: "400" }, { v: 500, label: "500", minor: true }, { v: 600, label: "600" }, { v: 700, label: "700", anchor: "end" }],
-    vlines: [{ x: mt.bust, label: "La martingala ya no puede doblar", anchor: "end" }],
-    tipTitle: function (i) { return "Operación " + i; }
-  });
-  var mrows = []; for (var q = 0; q <= 700; q += 50) mrows.push(["Operación " + q, usd(mt.F[q]), usd(mt.M[q])]);
-  M.dataTable(document.getElementById("fig-mart"), ["Momento", "Riesgo fijo 1 %", "Martingala"], mrows, [1, 2]);
-
-  /* Calculadora de costes */
-  function num(id) { var v = parseFloat(document.getElementById(id).value); return isFinite(v) ? v : 0; }
-  function costs() {
-    var n = num("c-n"), c = num("c-cost"), e = num("c-edge"), l = num("c-lots");
-    document.getElementById("c-n-out").textContent = M.fmt(n);
-    var cost = n * c * l * 10, gross = n * e * l * 10, net = gross - cost, share = e > 0 ? c / e * 100 : 100;
-    document.getElementById("c-costs").textContent = usd(cost);
-    document.getElementById("c-gross").textContent = usd(gross);
-    document.getElementById("c-net").textContent = (net > 0 ? "+" : "") + usd(net);
-    var card = document.getElementById("c-net-card"), badge = document.getElementById("c-badge");
-    card.classList.toggle("is-good", net > 0); card.classList.toggle("is-bad", net <= 0);
-    badge.replaceChildren();
-    var ns = "http://www.w3.org/2000/svg", sv = document.createElementNS(ns, "svg"); sv.setAttribute("viewBox", "0 0 12 12"); sv.setAttribute("aria-hidden", "true");
-    var pth = document.createElementNS(ns, "path"); pth.setAttribute("d", net > 0 ? "M6 2l4 6H2z" : "M6 10L2 4h8z"); pth.setAttribute("fill", "currentColor"); sv.appendChild(pth);
-    badge.appendChild(sv); badge.appendChild(document.createTextNode(net > 0 ? "A tu favor" : "En contra"));
-    var mi = document.getElementById("c-meter-i"), mb = document.getElementById("c-meter");
-    mi.style.width = Math.min(100, share) + "%";
-    mb.className = "meter" + (share >= 80 ? " crit" : share >= 50 ? " warn" : "");
-    mb.setAttribute("aria-label", "Los costes se comen el " + M.fmt(share, 0) + " % de la ventaja");
-    document.getElementById("c-read").textContent = share >= 100
-      ? "Los costes (" + M.fmt(c, 1) + " pips) superan tu ventaja bruta (" + M.fmt(e, 1) + " pips). Cuantas más operaciones hagas, más pierdes."
-      : "Los costes se comen el " + M.fmt(share, 0) + " % de tu ventaja. Con " + M.fmt(n) + " operaciones al mes pagas " + usd(cost) + " para ganar, en teoría, " + usd(net) + " netos.";
-  }
-  ["c-n", "c-cost", "c-edge", "c-lots"].forEach(function (id) { document.getElementById(id).addEventListener("input", costs); });
-  costs();
-
-  /* Tamaño de posición */
-  function size() {
-    var cap = num("s-cap"), r = num("s-risk"), stop = Math.max(1, num("s-stop")), px = num("s-px") || 1.1;
-    document.getElementById("s-risk-out").textContent = M.fmt(r, 2).replace(/,?0+$/, "") + " %";
-    var money = cap * r / 100, lots = money / (stop * 10), nom = lots * 100000 * px, lev = cap > 0 ? nom / cap : 0;
-    document.getElementById("s-lots").textContent = M.fmt(lots, 2);
-    document.getElementById("s-money").textContent = usd(money);
-    document.getElementById("s-nom").textContent = usd(nom);
-    document.getElementById("s-lev").textContent = M.fmt(lev, 1) + "×";
-    document.getElementById("s-margin").textContent = "Garantía necesaria a 30:1: " + usd(nom / 30);
-    var mi = document.getElementById("s-meter-i"), mb = document.getElementById("s-meter"), sh = Math.min(100, lev / 30 * 100);
-    mi.style.width = sh + "%";
-    mb.className = "meter" + (lev > 30 ? " crit" : lev > 10 ? " warn" : "");
-    mb.setAttribute("aria-label", "Apalancamiento efectivo de " + M.fmt(lev, 1) + " veces frente a un máximo de 30");
-  }
-  ["s-cap", "s-risk", "s-stop", "s-px"].forEach(function (id) { document.getElementById(id).addEventListener("input", size); });
-  size();
-
-  /* Pila tecnológica */
-  M.flow(document.getElementById("stack"), {
-    aria: "Pila tecnológica de un sistema de forex: datos, estrategia, riesgo, ejecución y bróker",
-    nodes: [
-      { t: "Datos", d: "Flujo de precios del bróker o de un proveedor" },
-      { t: "Estrategia", d: "Python, MQL5 o C#" },
-      { t: "Riesgo", d: "Límites duros y parada de emergencia" },
-      { t: "Ejecución", d: "MT5, cTrader, FIX o REST" },
-      { t: "Bróker", d: "Cuenta real o demo" }
-    ],
-    edges: ["precios", "posición\ndeseada", "orden\npermitida", "órdenes"],
-    hl: [2]
-  });
+  ["c-lots", "c-spread", "c-comm", "c-slip", "c-tier", "c-ai", "c-watts", "c-kwh"].forEach(function (id) { $(id).addEventListener("input", cost); $(id).addEventListener("change", cost); });
+  cost();
 })();
 </script>
 </body>

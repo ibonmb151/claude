@@ -1,0 +1,1822 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Atlas de estrategias</title>
+<meta name="description" content="Cuarenta y una estrategias de trading algorítmico clasificadas por mercado, familia, dificultad y fuente de ventaja: en qué consisten, qué detectan, quién paga, su relación con la micro y la macroeconomía y cómo se montan.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..800;1,6..96,400..800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap">
+<style>
+/* ============================================================
+   Máquinas y mercados · sistema visual común
+   Billete: papel neutro, tinta de grabado, un color por documento
+   ============================================================ */
+:root{
+  --paper:#F4F5F2; --surface:#FCFCFB; --surface-2:#EEF0EC;
+  --ink:#121614; --ink-2:#48504B; --muted:#646C67;
+  --rule:#DCE1DC; --rule-strong:#C3CAC4; --grid:#E6E9E5; --deemph:#B4BBB6;
+  --good:#006300; --good-mark:#0ca30c;
+  --warn:#8a5a00; --warn-mark:#fab219;
+  --crit:#b42e2e; --crit-mark:#d03b3b;
+  --c1:#2a78d6; --c2:#eb6834; --c3:#1baf7a; --c4:#4a3aa7;
+  --c5:#e87ba4; --c6:#eda100; --c7:#5E7F91; --c8:#e34948;
+  --k1:#1c5cab; --k2:#AE4A1D; --k3:#0B7650; --k4:#4a3aa7; --k5:#A3336A; --k6:#7A5200; --k7:#3D5C6C; --k8:#B0283A;
+  --pos:#2a78d6; --neg:#e34948;
+  --o1:#a39ef9; --o2:#8b85de; --o3:#736dc3; --o4:#5d55a9; --o5:#483e90;
+  --accent:var(--c1); --accent-ink:#1c5cab;
+  --wash:color-mix(in oklab, var(--accent) 8%, var(--surface));
+  --f-display:"Bodoni Moda","Bodoni 72",Didot,"Bodoni MT",Georgia,serif;
+  --f-sans:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  --radius:10px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --paper:#0F1211; --surface:#161A18; --surface-2:#1D2220;
+    --ink:#EDF1EE; --ink-2:#B7BFBA; --muted:#8E9791;
+    --rule:#262D29; --rule-strong:#37403B; --grid:#222826; --deemph:#4B544F;
+    --good:#0ca30c; --good-mark:#0ca30c;
+    --warn:#fab219; --warn-mark:#fab219;
+    --crit:#e66767; --crit-mark:#e66767;
+    --c1:#3987e5; --c2:#d95926; --c3:#199e70; --c4:#9085e9;
+    --c5:#d55181; --c6:#c98500; --c7:#7FA3B6; --c8:#e66767;
+    --k1:#86b6ef; --k2:#F29A6B; --k3:#4FD0A0; --k4:#B3AAF3; --k5:#F4A3C6; --k6:#F3C35A; --k7:#A9C6D6; --k8:#F5A3A3;
+    --pos:#3987e5; --neg:#e66767;
+    --o1:#5d57a4; --o2:#726dbc; --o3:#8884d5; --o4:#9e9bee; --o5:#b6b3ff;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --paper:#0F1211; --surface:#161A18; --surface-2:#1D2220;
+  --ink:#EDF1EE; --ink-2:#B7BFBA; --muted:#8E9791;
+  --rule:#262D29; --rule-strong:#37403B; --grid:#222826; --deemph:#4B544F;
+  --good:#0ca30c; --good-mark:#0ca30c;
+  --warn:#fab219; --warn-mark:#fab219;
+  --crit:#e66767; --crit-mark:#e66767;
+  --c1:#3987e5; --c2:#d95926; --c3:#199e70; --c4:#9085e9;
+  --c5:#d55181; --c6:#c98500; --c7:#7FA3B6; --c8:#e66767;
+  --k1:#86b6ef; --k2:#F29A6B; --k3:#4FD0A0; --k4:#B3AAF3; --k5:#F4A3C6; --k6:#F3C35A; --k7:#A9C6D6; --k8:#F5A3A3;
+  --pos:#3987e5; --neg:#e66767;
+  --o1:#5d57a4; --o2:#726dbc; --o3:#8884d5; --o4:#9e9bee; --o5:#b6b3ff;
+}
+
+/* ---------- base ---------- */
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%;scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+body{margin:0;overflow-wrap:break-word;background:var(--paper);color:var(--ink);font-family:var(--f-sans);font-size:17px;line-height:1.62;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+@media (max-width:600px){body{font-size:16px}}
+h1,h2,h3,h4{margin:0;text-wrap:balance}
+p{margin:0}
+figure{margin:0}
+a{color:var(--accent-ink);text-decoration-line:underline;text-decoration-thickness:1px;text-underline-offset:3px}
+a:hover{text-decoration-thickness:2px}
+:focus-visible{outline:2px solid var(--accent-ink);outline-offset:2px;border-radius:3px}
+::selection{background:color-mix(in oklab,var(--accent) 28%,transparent)}
+strong,b{font-weight:600}
+abbr[title]{text-decoration:underline dotted;text-underline-offset:3px}
+.num{font-variant-numeric:tabular-nums}
+.wrap{max-width:1180px;margin-inline:auto;padding-inline:clamp(16px,4vw,44px)}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+
+/* ---------- barra de la serie ---------- */
+.series{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 24px;padding-block:14px 12px;border-bottom:1px solid var(--rule)}
+.series .brand{font:500 11.5px/1.2 var(--f-mono);letter-spacing:.18em;text-transform:uppercase;color:var(--ink-2)}
+.series-nav{display:flex;flex-wrap:wrap;gap:4px;margin:0;padding:0;list-style:none}
+.series-nav a,.series-nav span.soon{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-width:40px;height:36px;padding:0 11px;font:500 13px/1 var(--f-mono);color:var(--ink-2);text-decoration:none;border-radius:999px;border:1px solid transparent}
+.series-nav .dot{width:8px;height:8px;border-radius:1.5px;transform:rotate(45deg);background:var(--c);flex:none}
+.series-nav a:hover{border-color:var(--rule-strong);color:var(--ink)}
+.series-nav a[aria-current="page"]{font-family:var(--f-sans);border-color:var(--rule-strong);background:var(--surface);color:var(--ink)}
+.series-nav span.soon{opacity:.55}
+
+/* ---------- índice de la serie (pie) ---------- */
+.foot .foot-h{font:500 12px/1 var(--f-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.series-index{list-style:none;margin:0;padding:0;display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(250px,1fr))}
+.series-index li{min-width:0}
+.series-index a,.series-index .soon{display:grid;grid-template-columns:34px minmax(0,1fr);gap:2px 12px;height:100%;padding:14px 16px 15px;border:1px solid var(--rule);border-radius:var(--radius);background:var(--surface);color:var(--ink);text-decoration:none}
+.series-index a:hover{border-color:var(--rule-strong)}
+.series-index a[aria-current="page"]{border-color:var(--rule-strong);background:var(--surface-2)}
+.series-index .n{grid-row:1 / 4;font:italic 500 34px/1 var(--f-display);color:var(--k)}
+.series-index .t{font:600 15.5px/1.3 var(--f-sans)}
+.series-index .d{font-size:13.5px;line-height:1.45;color:var(--ink-2)}
+.series-index .here{font:500 11px/1.4 var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.series-index .soon{opacity:.6}
+
+/* ---------- portada ---------- */
+.hero{display:grid;gap:28px;align-items:center;padding-block:clamp(36px,6vw,76px) clamp(26px,4vw,44px)}
+@media (min-width:880px){.hero{grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:48px}}
+.eyebrow{display:flex;flex-wrap:wrap;gap:6px 16px;font:500 12px/1.3 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.eyebrow b{color:var(--accent-ink);font-weight:500}
+.hero h1{font-family:var(--f-display);font-weight:600;font-size:clamp(46px,7.4vw,100px);line-height:.95;letter-spacing:-.015em;margin-top:18px}
+.hero h1 em{font-style:italic;font-weight:500;color:var(--accent-ink)}
+.dek{font-size:clamp(18px,1.7vw,21px);line-height:1.5;color:var(--ink-2);max-width:42ch;margin-top:22px}
+.meta{margin-top:18px;font:13px/1.5 var(--f-mono);color:var(--muted)}
+.emblem{position:relative;width:min(100%,390px);aspect-ratio:1;justify-self:end;container-type:inline-size}
+@media (max-width:879px){.emblem{width:min(62vw,250px);justify-self:start;order:-1}}
+.emblem canvas{position:absolute;inset:0;width:100%;height:100%}
+.emblem .numeral{position:absolute;inset:0;display:grid;place-items:center;font-family:var(--f-display);font-weight:500;font-style:italic;font-size:30cqw;line-height:1;color:var(--accent-ink);padding-bottom:3cqw}
+.emblem .serial{position:absolute;left:0;right:0;top:calc(100% + 10px);text-align:center;font:500 11px/1 var(--f-mono);letter-spacing:.3em;color:var(--muted)}
+.microprint{font:500 6.5px/1 var(--f-mono);letter-spacing:.24em;color:var(--muted);white-space:nowrap;overflow:hidden;padding-block:4px;border-block:1px solid var(--rule);user-select:none}
+
+/* ---------- en corto ---------- */
+.tldr{background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);padding:22px clamp(18px,3vw,30px) 24px;margin-top:28px}
+.tldr h2{font:500 12px/1 var(--f-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.tldr ul{list-style:none;margin:16px 0 0;padding:0;display:grid;gap:14px 28px;grid-template-columns:repeat(auto-fit,minmax(250px,1fr))}
+.tldr li{position:relative;padding-left:20px;font-size:16px;line-height:1.5}
+.tldr li::before{content:"";position:absolute;left:1px;top:.5em;width:7px;height:7px;background:var(--accent);transform:rotate(45deg)}
+
+/* ---------- documento ---------- */
+.doc{display:grid;gap:36px;padding-block:44px 88px}
+@media (min-width:1080px){.doc{grid-template-columns:200px minmax(0,1fr);gap:60px}}
+.toc{font-size:14px}
+.toc details{border:1px solid var(--rule);border-radius:var(--radius);background:var(--surface);padding:2px 12px}
+.toc summary{cursor:pointer;font:500 12px/1 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2);padding:14px 2px}
+.toc ol{list-style:none;margin:0 0 10px;padding:0;display:grid;gap:2px;counter-reset:toc}
+.toc a{display:grid;grid-template-columns:24px 1fr;gap:4px;padding:6px 8px;border-radius:6px;color:var(--ink-2);text-decoration:none;line-height:1.35}
+.toc a::before{counter-increment:toc;content:counter(toc,decimal-leading-zero);font:500 11px/1.75 var(--f-mono);color:var(--muted)}
+.toc a:hover{background:var(--surface-2);color:var(--ink)}
+.toc a[aria-current="true"]{color:var(--ink);background:var(--surface-2)}
+.toc a[aria-current="true"]::before{color:var(--accent-ink)}
+@media (min-width:1080px){
+  .toc{position:sticky;top:calc(env(safe-area-inset-top,0px) + 24px);align-self:start;max-height:calc(100vh - 48px);overflow:auto}
+  .toc details{border:0;background:none;padding:0}
+  .toc summary{display:none}
+  .toc a:hover,.toc a[aria-current="true"]{background:var(--surface)}
+}
+.content{min-width:0;counter-reset:sec}
+.sec{counter-increment:sec;scroll-margin-top:24px}
+.sec + .sec{margin-top:84px}
+.sec > * + *{margin-top:18px}
+.sec > .kicker + h2{margin-top:12px}
+.sec > h2 + *{margin-top:22px}
+.sec > .fig,.sec > .cards,.sec > .stats,.sec > .tbl-wrap,.sec > .callout,.sec > .steps,.sec > .codeblock,.sec > .matrix,.sec > .tiers,.sec > .timeline,.sec > .split,.sec > .limits,.sec > .diagram{margin-top:30px}
+.sec > h3{margin-top:40px}
+.sec p,.sec > ul,.sec > ol{max-width:68ch}
+.sec > ul,.sec > ol{padding-left:1.25em}
+.sec > ul li + li,.sec > ol li + li{margin-top:8px}
+.kicker{display:flex;align-items:center;gap:10px;font:500 12px/1 var(--f-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.kicker::before{content:counter(sec,decimal-leading-zero);color:var(--accent-ink)}
+.sec h2{font-family:var(--f-display);font-weight:500;font-size:clamp(31px,3.7vw,46px);line-height:1.05;letter-spacing:-.01em}
+.sec h3{font-size:20px;line-height:1.3;font-weight:600}
+.lead{font-size:clamp(18px,1.5vw,19.5px);line-height:1.58;color:var(--ink-2)}
+.pull{font-family:var(--f-display);font-style:italic;font-weight:500;font-size:clamp(23px,2.4vw,29px);line-height:1.3;color:var(--ink);max-width:34ch;padding-block:6px}
+.pull b{color:var(--accent-ink);font-weight:600}
+
+/* ---------- tarjetas ---------- */
+.cards{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+.cards.two{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+.cards.quad{grid-template-columns:1fr}
+@media (min-width:560px){.cards.quad{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.card{background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);padding:18px 18px 16px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.card > .tag{font:500 11px/1.2 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--accent-ink)}
+.card > .ct{font:600 17px/1.3 var(--f-sans);margin:0;color:var(--ink)}
+.card > p{font-size:15px;line-height:1.55;color:var(--ink-2);margin:0;max-width:none}
+.card > .ex{margin-top:auto;padding-top:10px;font-size:13.5px;line-height:1.45;color:var(--muted);border-top:1px solid var(--rule)}
+.card > ul{margin:0;padding-left:1.1em;font-size:15px;line-height:1.5;color:var(--ink-2)}
+.card > ul li + li{margin-top:4px}
+.card.big > .ct{font:500 24px/1.15 var(--f-display)}
+
+/* ---------- cifras ---------- */
+.stats{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.stats.quad{grid-template-columns:repeat(2,minmax(0,1fr))}
+@media (max-width:479px){.stats.quad{grid-template-columns:1fr}}
+@media (min-width:1180px){.stats.quad{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.stat{background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);padding:16px 18px 14px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.stat .v{font:600 clamp(27px,2.8vw,34px)/1.05 var(--f-sans);letter-spacing:-.015em;color:var(--ink)}
+.stat .v small{font-size:.5em;font-weight:500;letter-spacing:0;color:var(--ink-2);margin-left:4px}
+.stat .l{font-size:14.5px;line-height:1.45;color:var(--ink-2)}
+.stat .s{font:11.5px/1.45 var(--f-mono);color:var(--muted);margin-top:auto;padding-top:4px}
+.stat.is-good .v{color:var(--good)} .stat.is-bad .v{color:var(--crit)}
+.stat .badge{display:inline-flex;align-items:center;gap:6px;font:500 12px/1 var(--f-sans);padding:4px 8px;border-radius:999px;border:1px solid var(--rule-strong);color:var(--ink-2);align-self:flex-start}
+.stat .badge svg{width:12px;height:12px}
+.stat.is-good .badge{color:var(--good);border-color:color-mix(in oklab,var(--good-mark) 45%,var(--rule))}
+.stat.is-bad .badge{color:var(--crit);border-color:color-mix(in oklab,var(--crit-mark) 45%,var(--rule))}
+
+/* ---------- avisos ---------- */
+.callout{display:grid;grid-template-columns:22px minmax(0,1fr);gap:12px;align-items:start;padding:16px 18px;border-radius:var(--radius);border:1px solid var(--rule);background:var(--surface)}
+.callout > svg{width:20px;height:20px;margin-top:2px;color:var(--accent-ink)}
+.callout .ct{font-weight:600;display:block;margin-bottom:2px}
+.callout p{font-size:15.5px;line-height:1.55;color:var(--ink-2);max-width:none}
+.callout p + p{margin-top:8px}
+.callout.warn{border-color:color-mix(in oklab,var(--warn-mark) 50%,var(--rule));background:color-mix(in oklab,var(--warn-mark) 7%,var(--surface))}
+.callout.warn > svg{color:var(--warn)}
+.callout.crit{border-color:color-mix(in oklab,var(--crit-mark) 45%,var(--rule));background:color-mix(in oklab,var(--crit-mark) 6%,var(--surface))}
+.callout.crit > svg{color:var(--crit)}
+.callout.good{border-color:color-mix(in oklab,var(--good-mark) 40%,var(--rule));background:color-mix(in oklab,var(--good-mark) 6%,var(--surface))}
+.callout.good > svg{color:var(--good)}
+
+/* ---------- tablas ---------- */
+.tbl-wrap{overflow-x:auto;border:1px solid var(--rule);border-radius:var(--radius);background:var(--surface)}
+.tbl-wrap table{min-width:640px}
+table{border-collapse:collapse;width:100%;font-size:14.5px;line-height:1.45}
+caption{caption-side:top;text-align:left;padding:14px 14px 4px;font-weight:600;font-size:15px}
+th{font:500 11.5px/1.3 var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);text-align:left;padding:12px 14px;border-bottom:1px solid var(--rule-strong);vertical-align:bottom}
+td{padding:11px 14px;border-bottom:1px solid var(--rule);vertical-align:top;color:var(--ink-2)}
+tbody tr:last-child td{border-bottom:0}
+td:first-child{color:var(--ink);font-weight:600}
+th.num,td.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+td .sub{display:block;font-weight:400;font-size:13px;color:var(--muted)}
+
+/* ---------- pasos ---------- */
+.steps{list-style:none;margin:0;padding:0;counter-reset:st}
+.sec > ol.steps,.sec > ol.timeline{padding-left:0;max-width:none}
+.steps > li{display:grid;grid-template-columns:52px minmax(0,1fr);gap:14px;padding:16px 0;border-top:1px solid var(--rule);max-width:none}
+.steps > li:last-child{border-bottom:1px solid var(--rule)}
+.steps > li::before{counter-increment:st;content:counter(st);font:500 32px/1 var(--f-display);color:var(--accent-ink);padding-top:2px}
+.steps b{display:block;font-weight:600;color:var(--ink)}
+.steps span{display:block;color:var(--ink-2);font-size:15.5px;line-height:1.55;margin-top:2px}
+
+/* ---------- figuras y gráficos ---------- */
+.fig{background:var(--surface);border:1px solid var(--rule);border-radius:12px;padding:20px clamp(14px,2.4vw,24px) 16px;margin-inline:0;min-width:0}
+.fig-title{font:600 17px/1.35 var(--f-sans);color:var(--ink)}
+.fig-sub{font-size:14.5px;line-height:1.5;color:var(--ink-2);margin-top:4px;max-width:72ch}
+.chart{position:relative;margin-top:16px;min-height:60px}
+.chart svg{display:block;overflow:visible}
+.legend{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13.5px;color:var(--ink-2);margin-top:14px}
+.legend span{display:inline-flex;align-items:center;gap:7px}
+.legend i{display:inline-block;width:16px;height:2px;border-radius:1px;background:var(--k)}
+.legend i.box{width:10px;height:10px;border-radius:2px}
+.fig-note{font-size:13px;line-height:1.55;color:var(--muted);margin-top:12px;max-width:none}
+.fig details.data{margin-top:12px;border-top:1px solid var(--rule);padding-top:10px}
+.fig details.data summary{cursor:pointer;font:500 12.5px/1.4 var(--f-mono);color:var(--ink-2);width:max-content;max-width:100%}
+.fig details.data .tbl-wrap{margin-top:10px}
+.fig details.data table{min-width:0}
+.viz text{font-family:var(--f-sans);font-size:12px;fill:var(--muted)}
+.viz .grid{stroke:var(--grid);stroke-width:1;shape-rendering:crispEdges}
+.viz .base{stroke:var(--rule-strong);stroke-width:1;shape-rendering:crispEdges}
+.viz .lbl{fill:var(--ink-2);font-size:12.5px}
+.viz .lbl-strong{fill:var(--ink);font-size:13px;font-weight:600}
+.viz .val{fill:var(--ink);font-size:12.5px;font-variant-numeric:tabular-nums}
+.viz .hit{fill:transparent;cursor:default}
+.viz .hit:focus{outline:none}
+.viz .hit:focus-visible{stroke:var(--accent-ink);stroke-width:2px}
+.viz .cross{stroke:var(--ink-2);stroke-width:1;shape-rendering:crispEdges}
+.viz .mark{transition:opacity .15s}
+.viz g.row:hover .mark,.viz g.row:focus-within .mark{opacity:.8}
+.viz .ref{stroke:var(--ink);stroke-width:1.5}
+.viz .band{fill:var(--wash)}
+
+.viz-tip{position:fixed;z-index:50;pointer-events:none;min-width:130px;max-width:290px;background:var(--ink);color:var(--paper);border-radius:8px;padding:9px 11px 10px;font:13px/1.4 var(--f-sans);box-shadow:0 12px 30px -12px rgba(0,0,0,.45);opacity:0;transform:translateY(4px);transition:opacity .12s,transform .12s;left:0;top:0}
+.viz-tip.on{opacity:1;transform:none}
+.viz-tip .t{font:500 11px/1.3 var(--f-mono);letter-spacing:.05em;opacity:.72;margin-bottom:5px}
+.viz-tip .r{display:flex;align-items:baseline;gap:8px}
+.viz-tip .r + .r{margin-top:2px}
+.viz-tip .r i{flex:none;width:12px;height:2px;border-radius:1px;align-self:center}
+.viz-tip .r b{font-weight:600;font-variant-numeric:tabular-nums}
+.viz-tip .r span{opacity:.78}
+.viz-tip .n{margin-top:6px;opacity:.78;font-size:12px}
+
+/* ---------- controles ---------- */
+.controls{display:grid;gap:14px 22px;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));margin-top:18px}
+.controls.four{grid-template-columns:repeat(auto-fit,minmax(170px,1fr))}
+.ctl{display:flex;flex-direction:column;gap:6px;min-width:0}
+.ctl label{display:flex;justify-content:space-between;gap:10px;font-size:13.5px;color:var(--ink-2)}
+.ctl output{font:500 13px var(--f-mono);color:var(--ink);white-space:nowrap}
+.ctl input[type="range"]{width:100%;accent-color:var(--accent-ink)}
+.ctl input[type="number"],.ctl select{font:15px var(--f-sans);color:var(--ink);background:var(--paper);border:1px solid var(--rule-strong);border-radius:8px;padding:8px 10px;width:100%}
+.ctl .hint{font-size:12px;color:var(--muted)}
+.btns{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.btn{font:500 14px/1 var(--f-sans);color:var(--ink);background:var(--surface);border:1px solid var(--rule-strong);border-radius:999px;padding:9px 14px;cursor:pointer}
+.btn:hover{border-color:var(--ink-2)}
+.btn[aria-pressed="true"]{background:var(--accent-ink);border-color:var(--accent-ink);color:var(--surface)}
+.btn.ghost{border-style:dashed}
+.readout{margin-top:16px;padding:14px 16px;border-radius:8px;background:var(--wash);font-size:15.5px;line-height:1.55;color:var(--ink)}
+.meter{height:10px;border-radius:999px;background:color-mix(in oklab,var(--accent) 16%,var(--surface));overflow:hidden;margin-top:8px}
+.meter > i{display:block;height:100%;border-radius:999px;background:var(--accent);transition:width .25s}
+.meter.warn > i{background:var(--warn-mark)} .meter.crit > i{background:var(--crit-mark)}
+.meter.warn{background:color-mix(in oklab,var(--warn-mark) 18%,var(--surface))} .meter.crit{background:color-mix(in oklab,var(--crit-mark) 16%,var(--surface))}
+
+/* ---------- código ---------- */
+.codeblock{position:relative}
+pre.code{margin:0;overflow-x:auto;background:var(--surface-2);border:1px solid var(--rule);border-radius:var(--radius);padding:18px 18px 16px;font:13.5px/1.6 var(--f-mono);color:var(--ink);tab-size:4}
+pre.code code{font:inherit}
+.codeblock .copy{position:absolute;top:8px;right:8px;font:500 12px/1 var(--f-mono);color:var(--ink-2);background:var(--surface);border:1px solid var(--rule-strong);border-radius:6px;padding:6px 9px;cursor:pointer}
+.codeblock .copy:hover{color:var(--ink);border-color:var(--ink-2)}
+.codeblock .lang{position:absolute;top:10px;left:18px;font:500 10.5px/1 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.codeblock .lang + pre.code{padding-top:34px}
+.c-com{color:var(--muted);font-style:italic}
+.c-str{color:var(--accent-ink)}
+.c-kw{font-weight:600}
+.c-num{color:var(--accent-ink)}
+code:not(pre code){font:.88em var(--f-mono);background:var(--surface-2);border:1px solid var(--rule);border-radius:4px;padding:.05em .35em}
+.prompt{background:var(--surface);border:1px dashed var(--rule-strong);border-radius:var(--radius);padding:16px 18px;font-size:15px;line-height:1.6;color:var(--ink)}
+.prompt .who{font:500 11px/1 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:8px}
+
+/* ---------- diagramas ---------- */
+.diagram{background:var(--surface);border:1px solid var(--rule);border-radius:12px;padding:18px clamp(12px,2.4vw,22px)}
+.diagram .scroll{overflow-x:auto}
+.scroll-hint{display:none;font:12px/1.4 var(--f-mono);color:var(--muted);margin-bottom:8px}
+@media (max-width:800px){.scroll-hint{display:block}}
+.diagram svg text{font-family:var(--f-sans)}
+.flowchart{margin-top:6px}
+.fnode rect{fill:var(--surface);stroke:var(--rule-strong)}
+.fnode.hl rect{fill:var(--wash);stroke:var(--accent)}
+.fnode .ft{fill:var(--ink);font-size:14px;font-weight:600}
+.fnode .fd{fill:var(--ink-2);font-size:12px}
+.fedge{stroke:var(--ink-2);stroke-width:1.25;fill:none}
+.fhead{fill:var(--ink-2)}
+.flabel{fill:var(--muted);font:11px var(--f-mono)}
+
+/* ---------- lista de límites ---------- */
+.limits{display:grid;gap:0;counter-reset:lim;border-top:1px solid var(--rule)}
+.limit{display:grid;grid-template-columns:44px minmax(0,1fr);gap:16px;padding:20px 0;border-bottom:1px solid var(--rule)}
+.limit::before{counter-increment:lim;content:counter(lim);font:500 30px/1 var(--f-display);color:var(--accent-ink);padding-top:2px}
+.limit h3{font-size:18px;line-height:1.3;font-weight:600}
+.limit p{margin-top:6px;color:var(--ink-2);font-size:16px;max-width:66ch}
+.limit .datum{margin-top:10px;font:12.5px/1.5 var(--f-mono);color:var(--ink);background:var(--surface);border:1px solid var(--rule);border-radius:6px;padding:8px 10px;max-width:66ch}
+.limit > div > .fig{margin-top:18px}
+@media (max-width:600px){.limit{grid-template-columns:1fr;gap:4px}.limit::before{font-size:24px}}
+
+/* ---------- dos columnas sí/no ---------- */
+.split{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+.split > div{background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);padding:18px 20px}
+.split h3{display:flex;align-items:center;gap:8px;font-size:17px}
+.split h3 svg{width:18px;height:18px}
+.split .yes h3{color:var(--good)} .split .no h3{color:var(--crit)}
+.split ul{margin:10px 0 0;padding-left:1.1em;color:var(--ink-2);font-size:15.5px;line-height:1.55}
+.split li + li{margin-top:6px}
+
+/* ---------- cronología ---------- */
+.timeline{list-style:none;margin:0;padding:0;border-left:1px solid var(--rule-strong);margin-left:6px}
+.timeline li{position:relative;padding:0 0 20px 22px;max-width:none}
+.timeline li::before{content:"";position:absolute;left:-5px;top:.45em;width:9px;height:9px;background:var(--accent);transform:rotate(45deg)}
+.timeline time{display:block;font:500 12px/1.4 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--accent-ink)}
+.timeline b{display:block;margin-top:2px}
+.timeline span{display:block;color:var(--ink-2);font-size:15.5px;line-height:1.55;max-width:66ch;margin-top:2px}
+
+/* ---------- fuentes y pie ---------- */
+.refs{font-size:14px;line-height:1.55;color:var(--ink-2);padding-left:1.3em}
+.refs li + li{margin-top:7px}
+.foot{border-top:1px solid var(--rule);padding-block:28px 40px;display:grid;gap:18px}
+.foot p{font-size:13.5px;color:var(--muted);max-width:80ch}
+
+@media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
+.fig .stats{margin-top:16px}
+
+/* página */
+:root{--accent:var(--c8);--accent-ink:var(--k8);
+  --e-serv:#2a78d6;--e-risk:#eb6834;--e-beh:#1baf7a;--e-info:#4a3aa7;
+  --h-n2:#eb6834;--h-n1:#f4b298;--h-0:#E6E9E5;--h-p1:#93bae8;--h-p2:#1c5cab;
+  --h-t-n2:#121614;--h-t-n1:#121614;--h-t-0:#48504B;--h-t-p1:#121614;--h-t-p2:#ffffff}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --e-serv:#256abf;--e-risk:#d95926;--e-beh:#199e70;--e-info:#9085e9;
+  --h-n2:#d95926;--h-n1:#783a1f;--h-0:#262D29;--h-p1:#28507e;--h-p2:#3987e5;
+  --h-t-n2:#121614;--h-t-n1:#EDF1EE;--h-t-0:#B7BFBA;--h-t-p1:#EDF1EE;--h-t-p2:#121614}}
+:root[data-theme="dark"]{
+  --e-serv:#256abf;--e-risk:#d95926;--e-beh:#199e70;--e-info:#9085e9;
+  --h-n2:#d95926;--h-n1:#783a1f;--h-0:#262D29;--h-p1:#28507e;--h-p2:#3987e5;
+  --h-t-n2:#121614;--h-t-n1:#EDF1EE;--h-t-0:#B7BFBA;--h-t-p1:#EDF1EE;--h-t-p2:#121614}
+.axes{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.axes .card .ct{font-size:16px}
+.filters{display:grid;gap:12px 18px;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));margin-top:6px}
+.fbar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;margin-top:14px;font-size:14px;color:var(--ink-2)}
+.fbar b{color:var(--ink)}
+.legend .ed{display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--e)}
+.legend .ed.hollow,.chip .ed.hollow{background:none;border:1.6px solid var(--ink-2)}
+.legend .ed.dash,.chip .ed.dash{border-style:dashed}
+.grid-map table{min-width:640px;table-layout:fixed}
+.grid-map col.rh{width:128px}
+.grid-map th,.grid-map td{vertical-align:top;padding:8px 6px}
+.grid-map td{border-left:1px solid var(--rule)}
+.grid-map thead th{text-align:left;vertical-align:bottom}
+.grid-map th[scope="row"]{position:sticky;left:0;z-index:1;background:var(--surface);font:500 11.5px/1.3 var(--f-mono);letter-spacing:.06em;text-transform:none;color:var(--ink-2);padding-left:14px}
+.grid-map th[scope="row"] b{display:block;font:italic 500 26px/1 var(--f-display);color:var(--accent-ink);margin-bottom:4px}
+.mchip{display:flex;align-items:center;gap:6px;width:100%;text-align:left;font:500 12.5px/1.25 var(--f-sans);color:var(--ink);background:var(--surface);border:1px solid var(--rule);border-radius:6px;padding:5px 7px;margin:0 0 5px;cursor:pointer}
+.mchip:hover{border-color:var(--ink-2)}
+.mchip .ed{width:9px;height:9px;border-radius:50%;background:var(--e);flex:none}
+.mchip .ed.hollow{background:none;border:1.6px solid var(--ink-2)}
+.mchip .ed.dash{border-style:dashed}
+.mchip.dim{opacity:.28}
+.catalog{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));align-items:start;margin-top:16px}
+details.strat{background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);min-width:0;scroll-margin-top:20px}
+details.strat[open]{border-color:var(--rule-strong)}
+details.strat > summary{list-style:none;cursor:pointer;padding:15px 16px 14px;display:flex;flex-direction:column;gap:7px}
+details.strat > summary::-webkit-details-marker{display:none}
+.s-top{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.s-fam{font:500 10.5px/1.3 var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--accent-ink)}
+.s-dd{display:inline-flex;gap:3px;flex:none}
+.s-dd i{width:7px;height:7px;border-radius:50%;border:1px solid var(--ink-2)}
+.s-dd i.on{background:var(--accent);border-color:var(--accent)}
+.s-name{font:600 16.5px/1.3 var(--f-sans);color:var(--ink);padding-right:18px;position:relative}
+.s-name::after{content:"";position:absolute;right:2px;top:.35em;width:7px;height:7px;border:solid var(--ink-2);border-width:0 1.5px 1.5px 0;transform:rotate(45deg);transition:transform .15s}
+details.strat[open] .s-name::after{transform:rotate(-135deg);top:.6em}
+.s-what{font-size:14.5px;line-height:1.5;color:var(--ink-2)}
+.s-meta{display:flex;flex-wrap:wrap;gap:6px}
+.chip{display:inline-flex;align-items:center;gap:6px;font:500 12px/1 var(--f-sans);padding:5px 9px;border-radius:999px;border:1px solid var(--rule-strong);color:var(--ink-2)}
+.chip .ed{width:9px;height:9px;border-radius:50%;background:var(--e);flex:none}
+.chip.ct-si{color:var(--good);border-color:color-mix(in oklab,var(--good-mark) 45%,var(--rule))}
+.chip.ct-no{color:var(--muted)}
+.s-body{margin:0;padding:2px 16px 16px;display:grid;gap:10px;border-top:1px solid var(--rule);padding-top:12px}
+.s-body dt{font:500 10.5px/1.3 var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.s-body dd{margin:3px 0 0;font-size:14.5px;line-height:1.55;color:var(--ink)}
+.heat td,.heat th{text-align:center}
+.heat td:first-child,.heat th:first-child{text-align:left}
+.tbl-wrap.heat{width:fit-content;max-width:100%}
+.heat td{vertical-align:middle}
+.heat td:first-child{white-space:nowrap;font-weight:500}
+.heat td:first-child a{color:var(--ink);text-decoration-color:var(--rule-strong)}
+.heat td.hc{font:600 13px/1 var(--f-mono);padding:9px 4px;min-width:74px;border-bottom:2px solid var(--surface)}
+@media (max-width:640px){.heat td:first-child{white-space:normal}.heat td.hc{min-width:44px}}
+.heat .h-n2{background:var(--h-n2);color:var(--h-t-n2)} .heat .h-n1{background:var(--h-n1);color:var(--h-t-n1)}
+.heat .h-0{background:var(--h-0);color:var(--h-t-0)} .heat .h-p1{background:var(--h-p1);color:var(--h-t-p1)} .heat .h-p2{background:var(--h-p2);color:var(--h-t-p2)}
+.heat th .s{display:none}
+@media (max-width:640px){.heat th .l{display:none}.heat th .s{display:inline}}
+.tbl-wrap.heat table,.tbl-wrap.smx table{min-width:0}
+.heat-leg{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13px;color:var(--ink-2);margin-top:12px}
+.heat-leg span{display:inline-flex;align-items:center;gap:6px}
+.heat-leg i{display:inline-grid;place-items:center;width:30px;height:20px;border-radius:4px;font:600 12px/1 var(--f-mono);font-style:normal}
+.smx td{vertical-align:middle}
+.smx td.n{text-align:center;font:500 14px var(--f-mono);color:var(--ink)}
+.smx th{text-align:center} .smx th:first-child{text-align:left}
+.tiers{display:grid;gap:12px}
+.tier{display:grid;grid-template-columns:54px minmax(0,1fr);gap:14px;background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);padding:16px 18px}
+.tier .tn{font:italic 500 40px/1 var(--f-display);color:var(--accent-ink)}
+.tier h3{font-size:17px}
+.tier p{font-size:15px;color:var(--ink-2);margin-top:4px}
+.tier .tl{margin-top:8px;font-size:14px;line-height:1.7}
+.tier .tl a{color:var(--ink-2);text-decoration-color:var(--rule-strong)}
+.tier .tl a:hover{color:var(--ink)}
+@media (max-width:560px){.tier{grid-template-columns:minmax(0,1fr);gap:4px}.tier .tn{font-size:30px}}
+.fit .card .ct{font-size:16px}
+</style>
+</head>
+<body>
+<header class="series wrap" id="top"><span class="brand">Máquinas y mercados</span><nav aria-label="Documentos de la serie"><ol class="series-nav"><li><a href="01-trading-algoritmico.html" title="1 · Trading algorítmico" aria-label="Documento 1 · Trading algorítmico"><span class="dot" style="--c:var(--c1)"></span>1</a></li><li><a href="02-forex-algoritmico.html" title="2 · Forex algorítmico" aria-label="Documento 2 · Forex algorítmico"><span class="dot" style="--c:var(--c2)"></span>2</a></li><li><a href="03-agentes-claude-trading.html" title="3 · Agentes Claude" aria-label="Documento 3 · Agentes Claude"><span class="dot" style="--c:var(--c3)"></span>3</a></li><li><a href="04-verdad-cuentas-fondeo.html" title="4 · Cuentas de fondeo" aria-label="Documento 4 · Cuentas de fondeo"><span class="dot" style="--c:var(--c4)"></span>4</a></li><li><a href="05-ctrader-api-mcp.html" title="5 · cTrader: API y MCP" aria-label="Documento 5 · cTrader: API y MCP"><span class="dot" style="--c:var(--c5)"></span>5</a></li><li><a href="06-gestion-del-riesgo.html" title="6 · Gestión del riesgo" aria-label="Documento 6 · Gestión del riesgo"><span class="dot" style="--c:var(--c6)"></span>6</a></li><li><a href="07-infraestructura-y-costes.html" title="7 · Infraestructura y costes" aria-label="Documento 7 · Infraestructura y costes"><span class="dot" style="--c:var(--c7)"></span>7</a></li><li><a href="#top" aria-current="page"><span class="dot" style="--c:var(--c8)"></span>8 · Atlas de estrategias</a></li></ol></nav></header>
+<section class="hero wrap">
+  <div class="hero-text">
+    <p class="eyebrow"><span>Máquinas y mercados</span><b>Documento 8 de 8</b></p>
+    <h1>Atlas de <em>estrategias</em></h1>
+    <p class="dek">Cuarenta y una estrategias de trading algorítmico por mercado, familia y dificultad. De cada una: en qué consiste, qué detecta, quién paga su ganancia, qué la mueve en la economía, cómo se monta y cuándo falla.</p>
+    <p class="meta">Septiembre de 2026 · 25 minutos de lectura, o consulta</p>
+  </div>
+  <div class="emblem" aria-hidden="true"><canvas></canvas><span class="numeral">8</span><span class="serial">MM · 08 · 2026</span></div>
+</section>
+<div class="wrap"><div class="microprint" aria-hidden="true" data-text="TENDENCIA · CARRY · VALOR · PARES · EVENTOS · VOLATILIDAD · MICROESTRUCTURA"></div>
+  <div class="tldr">
+    <h2>En corto</h2>
+    <ul>
+      <li>Toda estrategia con futuro responde a quién paga su ganancia: alguien que necesita liquidez, alguien que se quiere quitar un riesgo, alguien que se equivoca u obedece reglas, o alguien que se entera tarde.</li>
+      <li>La dificultad crece con la velocidad, los datos y la competencia. Las más accesibles, como la tendencia o el carry, son también las de más capacidad y las que mejor documentadas están.</li>
+      <li>Cada familia gana en un tipo de mercado y sufre en otro. Combinar perfiles opuestos, como tendencia y carry, pesa más que buscar la estrategia perfecta.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="doc wrap">
+  <aside class="toc" aria-label="Índice"></aside>
+  <main class="content">
+
+    <section class="sec" id="leer">
+      <p class="kicker">Clasificación</p>
+      <h2 data-short="Cómo leer el atlas">Cómo leer el atlas</h2>
+      <p class="lead">Cada estrategia se describe con siete etiquetas. Juntas dicen si merece tu tiempo antes de escribir una línea de código.</p>
+      <div class="stats quad">
+        <div class="stat"><span class="v">41</span><span class="l">estrategias</span></div>
+        <div class="stat"><span class="v">10</span><span class="l">familias</span></div>
+        <div class="stat"><span class="v">5</span><span class="l">mercados: divisas, acciones e índices, materias primas, tipos y cripto</span></div>
+        <div class="stat"><span class="v">4</span><span class="l">fuentes de ventaja, las del <a href="01-trading-algoritmico.html">documento 1</a>, y dos casos especiales</span></div>
+      </div>
+      <div class="axes">
+        <article class="card"><span class="tag">Quién paga</span><h3 class="ct">La fuente de la ventaja</h3><p><b>Servicio</b>: das liquidez a quien tiene prisa. <b>Riesgo</b>: cobras por asumir lo que otros no quieren. <b>Comportamiento</b>: aprovechas errores y obligaciones ajenas. <b>Información</b>: sabes o reaccionas antes. Aparte, el ahorro de costes y lo que no tiene ventaja propia.</p></article>
+        <article class="card"><span class="tag">Horizonte</span><h3 class="ct">Cuánto dura cada operación</h3><p>De microsegundos a años. Cuanto más corto, más importan la velocidad y los costes; cuanto más largo, más importa aguantar las rachas.</p></article>
+        <article class="card"><span class="tag">Dificultad</span><h3 class="ct">De 1 a 5</h3><p>1, datos diarios gratuitos y reglas sencillas. 2, datos intradía y costes decisivos. 3, varios mercados, datos de pago o estadística seria. 4, opciones, modelos complejos o capital relevante. 5, infraestructura institucional.</p></article>
+        <article class="card"><span class="tag">Encaje con cTrader</span><h3 class="ct">Sí, parcial o no</h3><p>Si se puede montar con divisas y CFD en cTrader, si necesita adaptaciones o datos externos, o si exige mercados e infraestructura fuera de su alcance.</p></article>
+        <article class="card"><span class="tag">Sesgo del resultado</span><h3 class="ct">Cómo se reparten las ganancias</h3><p>Negativo: muchas ganancias pequeñas y pérdidas raras pero grandes, como vender un seguro. Positivo: muchas pérdidas pequeñas y ganancias raras pero grandes, como comprarlo.</p></article>
+        <article class="card"><span class="tag">Familia, mercado y régimen</span><h3 class="ct">La idea, dónde y cuándo</h3><p>La idea de fondo, los mercados donde se aplica y el tipo de mercado en el que suele ganar o perder.</p></article>
+      </div>
+      <div class="callout warn">
+        <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 2.8l8 14H2l8-14z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M10 8v4.2M10 14.6v.1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        <div><span class="ct">Las ventajas publicadas se encogen</span><p>McLean y Pontiff estudiaron 97 anomalías de bolsa publicadas en revistas académicas: su rentabilidad caía un 26&nbsp;% fuera de la muestra original y un 58&nbsp;% después de publicarse. Lo que lees en este atlas es un punto de partida para investigar, no una garantía.</p></div>
+      </div>
+    </section>
+
+    <section class="sec" id="mapa">
+      <p class="kicker">Mapa</p>
+      <h2 data-short="El mapa">El mapa: horizonte frente a dificultad</h2>
+      <p class="lead">Cada etiqueta es una estrategia, colocada según lo que dura cada operación y lo difícil que es montarla. El color del punto dice quién paga. Los filtros se aplican también al catálogo y al mapa de calor.</p>
+      <figure class="fig" id="fig-map">
+        <p class="fig-title">41 estrategias según horizonte, dificultad y fuente de ventaja</p>
+        <p class="fig-sub">Columnas según lo que dura cada operación; filas según la dificultad. Pulsa una estrategia para abrir su ficha.</p>
+        <div class="filters" id="filtros">
+          <div class="ctl"><label for="f-fam">Familia</label><select id="f-fam"><option value="">Todas</option></select></div>
+          <div class="ctl"><label for="f-sec">Mercado</label><select id="f-sec"><option value="">Todos</option></select></div>
+          <div class="ctl"><label for="f-edge">Quién paga</label><select id="f-edge"><option value="">Todas</option></select></div>
+          <div class="ctl"><label for="f-diff">Dificultad</label><select id="f-diff"><option value="">Todas</option><option value="1">1 · Accesible</option><option value="2">Hasta 2 · Intermedia</option><option value="3">Hasta 3 · Avanzada</option><option value="4">Hasta 4 · Experta</option></select></div>
+          <div class="ctl"><label for="f-ct">Encaje con cTrader</label><select id="f-ct"><option value="">Todas</option><option value="si">Sí</option><option value="sip">Sí o parcial</option></select></div>
+        </div>
+        <p class="scroll-hint">Desliza hacia los lados para ver la cuadrícula completa.</p>
+        <div class="tbl-wrap grid-map" id="map" style="margin-top:16px"></div>
+        <div class="legend" id="map-leg"></div>
+        <div class="fbar"><span id="f-count"></span><button class="btn ghost" type="button" id="f-reset">Quitar filtros</button></div>
+      </figure>
+    </section>
+
+    <section class="sec" id="catalogo">
+      <p class="kicker">Catálogo</p>
+      <h2 data-short="El catálogo">El catálogo, estrategia a estrategia</h2>
+      <p class="lead">Abre una ficha para ver quién paga, qué la mueve en la economía, qué detecta, cómo se monta, su riesgo principal y la evidencia publicada.</p>
+      <div class="controls">
+        <div class="ctl"><label for="f-q">Buscar</label><input id="f-q" type="search" placeholder="Por ejemplo: carry, opciones, noticias" style="font:15px var(--f-sans);color:var(--ink);background:var(--paper);border:1px solid var(--rule-strong);border-radius:8px;padding:8px 10px;width:100%"></div>
+      </div>
+      <div class="fbar"><span id="c-count"></span><span class="btns" style="margin:0"><button class="btn" type="button" id="c-open">Abrir todas</button><button class="btn" type="button" id="c-close">Cerrar todas</button><a class="btn" href="#filtros" style="text-decoration:none">Cambiar filtros</a></span></div>
+      <div class="catalog" id="catalog"></div>
+    </section>
+
+    <section class="sec" id="familias">
+      <p class="kicker">Comparativa</p>
+      <h2 data-short="Diez familias">Diez familias, comparadas</h2>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Familia</th><th>Horizonte</th><th>Quién paga</th><th>Sesgo</th><th>Capacidad</th><th class="num">Dificultad</th><th>En cTrader</th></tr></thead>
+          <tbody>
+            <tr><td>Tendencia y momentum</td><td>Días a meses</td><td>Comportamiento</td><td>Positivo</td><td>Alta</td><td class="num">1–2</td><td>Sí</td></tr>
+            <tr><td>Reversión a la media</td><td>Minutos a semanas</td><td>Servicio</td><td>Negativo</td><td>Media</td><td class="num">1–2</td><td>Sí, con costes bajos</td></tr>
+            <tr><td>Valor relativo y arbitraje</td><td>Segundos a meses</td><td>Servicio y riesgo</td><td>Negativo</td><td>Media</td><td class="num">3–5</td><td>Parcial</td></tr>
+            <tr><td>Carry y primas</td><td>Semanas a meses</td><td>Riesgo</td><td>Negativo</td><td>Alta</td><td class="num">2–3</td><td>Parcial, por los swaps</td></tr>
+            <tr><td>Valor y macro</td><td>Meses a años</td><td>Riesgo, comportamiento e información</td><td>Neutro</td><td>Alta</td><td class="num">2–3</td><td>Parcial</td></tr>
+            <tr><td>Eventos</td><td>Milisegundos a meses</td><td>Comportamiento, riesgo e información</td><td>Variable</td><td>Media</td><td class="num">1–4</td><td>Parcial</td></tr>
+            <tr><td>Calendario y flujos</td><td>Minutos a meses</td><td>Comportamiento y riesgo</td><td>Neutro</td><td>Media</td><td class="num">1–3</td><td>Sí</td></tr>
+            <tr><td>Microestructura y velocidad</td><td>Microsegundos a horas</td><td>Servicio e información</td><td>Negativo o neutro</td><td>Baja</td><td class="num">3–5</td><td>No</td></tr>
+            <tr><td>Volatilidad y opciones</td><td>Semanas a meses</td><td>Riesgo</td><td>Muy negativo al vender, positivo al comprar</td><td>Alta</td><td class="num">4–5</td><td>No</td></tr>
+            <tr><td>Datos y aprendizaje automático</td><td>Minutos a meses</td><td>Información</td><td>Neutro</td><td>Baja a media</td><td class="num">3–4</td><td>Parcial</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="cards two">
+        <article class="card"><span class="tag">Sesgo negativo</span><h3 class="ct">Quien cobra primas</h3><p id="sk-neg"></p><p class="ex">Ganan casi siempre y pierden de golpe, a menudo todas a la vez en las crisis. Exigen tamaños pequeños y límites duros.</p></article>
+        <article class="card"><span class="tag">Sesgo positivo</span><h3 class="ct">Quien compra convexidad</h3><p id="sk-pos"></p><p class="ex">Pierden poco y a menudo, y ganan mucho en pocas ocasiones. Cuesta aguantarlas psicológicamente, pero protegen en las crisis largas.</p></article>
+      </div>
+    </section>
+
+    <section class="sec" id="mercados">
+      <p class="kicker">Por sector</p>
+      <h2 data-short="Por mercado">Qué se puede hacer en cada mercado</h2>
+      <p class="lead">Número de estrategias del atlas por familia y mercado. Una estrategia puede aplicarse en varios.</p>
+      <div class="tbl-wrap smx" id="smx"></div>
+      <div class="cards">
+        <article class="card"><span class="tag">Divisas</span><h3 class="ct">Tipos de interés y flujos</h3><p>Mercado de 24 horas sin bolsa central. Mandan los bancos centrales, el carry y los flujos de cobertura. En cTrader es el terreno natural.</p></article>
+        <article class="card"><span class="tag">Acciones e índices</span><h3 class="ct">Miles de activos</h3><p>Permiten estrategias de sección cruzada, factores, eventos corporativos y arbitraje estadístico. Desde cTrader, sobre todo con CFD de índices.</p></article>
+        <article class="card"><span class="tag">Materias primas</span><h3 class="ct">La curva y el almacén</h3><p>Futuros con estructura temporal: inventarios, estacionalidad y roll. La tendencia funciona especialmente bien aquí.</p></article>
+        <article class="card"><span class="tag">Tipos y bonos</span><h3 class="ct">Bancos centrales y curva</h3><p>Carry, pendiente de la curva y macro. Mucho volumen institucional y poco acceso minorista con CFD.</p></article>
+        <article class="card"><span class="tag">Cripto</span><h3 class="ct">Sin cierre y muy fragmentado</h3><p>Abierto todo el año, con mucho minorista apalancado: tendencia, financiación de perpetuos y arbitraje entre exchanges, con riesgo de contraparte.</p></article>
+      </div>
+    </section>
+
+    <section class="sec" id="dificultad">
+      <p class="kicker">Por dificultad</p>
+      <h2 data-short="Por dificultad">De la más accesible a la institucional</h2>
+      <p class="lead">Lo que hace difícil una estrategia es la combinación de datos, velocidad, matemáticas, capital y competencia.</p>
+      <div class="tiers" id="tiers"></div>
+    </section>
+
+    <section class="sec" id="regimenes">
+      <p class="kicker">Régimen</p>
+      <h2 data-short="Cuándo funciona">Cuándo funciona cada una</h2>
+      <p class="lead">Ninguna estrategia gana en todos los mercados. Esta tabla resume cómo suele irle a cada una en cinco tipos de entorno, con los filtros del mapa aplicados.</p>
+      <div class="tbl-wrap heat" id="heat"></div>
+      <div class="heat-leg" aria-hidden="true">
+        <span><i class="h-p2" style="background:var(--h-p2);color:var(--h-t-p2)">++</i>Le va muy bien</span>
+        <span><i style="background:var(--h-p1);color:var(--h-t-p1)">+</i>Bien</span>
+        <span><i style="background:var(--h-0);color:var(--h-t-0)">·</i>Neutral o sin relación</span>
+        <span><i style="background:var(--h-n1);color:var(--h-t-n1)">−</i>Mal</span>
+        <span><i style="background:var(--h-n2);color:var(--h-t-n2)">−−</i>Muy mal</span>
+      </div>
+      <p class="fig-note">Síntesis cualitativa de la literatura citada y de episodios conocidos, como 2008, agosto de 2007, febrero de 2018 y 2022. No es una medición: sirve para ver qué combinaciones se compensan.</p>
+      <p>La lectura práctica: la tendencia y la venta de volatilidad tienen perfiles casi opuestos, igual que el carry y la cobertura de cola. Una cartera con dos o tres familias que sufren en entornos distintos aguanta mejor que la mejor estrategia sola.</p>
+    </section>
+
+    <section class="sec" id="economia">
+      <p class="kicker">Micro y macro</p>
+      <h2 data-short="Micro y macro">Qué fuerzas económicas mueven cada ventaja</h2>
+      <p class="lead">Una ventaja dura mientras dura la razón económica que la produce. Si no sabes cuál es, no sabrás cuándo ha desaparecido.</p>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Fuerza</th><th>Nivel</th><th>Qué hace en los precios</th><th>Estrategias que la explotan</th></tr></thead>
+          <tbody>
+            <tr><td>Política monetaria y diferenciales de tipos</td><td>Macro</td><td>Las divisas de tipos altos rinden más de lo que su tipo a plazo anticipa, hasta que llega el pánico</td><td>Carry de divisas y de bonos, víspera de la Fed, macro sistemático</td></tr>
+            <tr><td>Ciclo económico e inflación</td><td>Macro</td><td>Tendencias largas en tipos, divisas y materias primas mientras la economía se ajusta despacio</td><td>Tendencia, macro, roll de materias primas, value</td></tr>
+            <tr><td>Aversión al riesgo y demanda de seguros</td><td>Macro-finanzas</td><td>Las opciones y las protecciones se pagan caras de forma sistemática</td><td>Venta de volatilidad, dispersión, carry; del otro lado, la cobertura de cola</td></tr>
+            <tr><td>Inventarios y almacenamiento</td><td>Micro de mercado físico</td><td>Curvas de futuros en backwardation cuando escasea el producto</td><td>Roll de materias primas, estacionalidad</td></tr>
+            <tr><td>Restricciones de apalancamiento</td><td>Micro</td><td>Se sobrepaga lo arriesgado y lo que da exposición sin pedir prestado</td><td>Calidad y beta baja, base, financiación cripto</td></tr>
+            <tr><td>Atención limitada y sesgos</td><td>Micro, conductual</td><td>La información se incorpora tarde y a medias</td><td>Momentum, deriva tras resultados, sentimiento</td></tr>
+            <tr><td>Liquidez y selección adversa</td><td>Microestructura</td><td>Quien opera con prisa mueve el precio y paga el spread</td><td>Creación de mercado, reversión corta, pares, libro de órdenes</td></tr>
+            <tr><td>Flujos obligados</td><td>Microestructura</td><td>Índices, fixing, nóminas y coberturas compran y venden en fechas y horas conocidas</td><td>Rebalanceo de índices, fixing de las 16 h, cambio de mes, momentum intradía</td></tr>
+            <tr><td>Fragmentación y velocidad</td><td>Microestructura</td><td>El mismo activo cotiza en varios sitios que se actualizan a destiempo</td><td>Latencia, triangular, ETF, CEX-DEX</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="sec" id="encaje">
+      <p class="kicker">Tu sistema</p>
+      <h2 data-short="Qué te encaja">Qué encaja con cTrader, Claude y un particular</h2>
+      <p class="lead">Con divisas y CFD en cTrader, un VPS en Londres y agentes de IA como analistas, estas son las prioridades razonables.</p>
+      <div class="cards two fit">
+        <article class="card"><span class="tag">Núcleo</span><h3 class="ct">Tendencia diversificada</h3><p>En CFD de divisas, índices y materias primas, con datos diarios. Sesgo positivo, poca rotación y fácil de validar. Encaja con los límites del <a href="06-gestion-del-riesgo.html">documento 6</a>.</p></article>
+        <article class="card"><span class="tag">Complemento</span><h3 class="ct">Carry con filtro de tendencia</h3><p>Diversifica la tendencia y cobra la diferencia de tipos. Comprueba el swap real de tu bróker: puede dejar la prima en casi nada.</p></article>
+        <article class="card"><span class="tag">Táctico</span><h3 class="ct">Reglas de calendario</h3><p>Cambio de mes y víspera de la Fed en índices: pocas operaciones y muy fáciles de probar. Efectos pequeños que pueden desaparecer.</p></article>
+        <article class="card"><span class="tag">Con cuidado</span><h3 class="ct">Reversión y rupturas intradía</h3><p>Viven de costes bajos y horas tranquilas. Mide el coste real por lote, como en el <a href="07-infraestructura-y-costes.html">documento 7</a>, antes de confiar en el backtest.</p></article>
+        <article class="card"><span class="tag">Claude</span><h3 class="ct">Analista, no gatillo</h3><p>Tono de los bancos centrales, clasificación de noticias y detección de régimen como filtros, con esquema fijo y fecha en cada dato. Nunca como orden directa (documentos <a href="03-agentes-claude-trading.html">3</a> y <a href="05-ctrader-api-mcp.html">5</a>).</p></article>
+        <article class="card"><span class="tag">Evita</span><h3 class="ct">Lo que no es para ti</h3><p>Rejilla y martingala, noticias en milisegundos, arbitraje de latencia y creación de mercado: sin ventaja, fuera de tu alcance o prohibidas en las firmas de fondeo del <a href="04-verdad-cuentas-fondeo.html">documento 4</a>.</p></article>
+      </div>
+      <div class="btns"><button class="btn" type="button" id="show-ct">Ver en el catálogo las viables en cTrader</button></div>
+    </section>
+
+    <section class="sec" id="fuentes">
+      <p class="kicker">Fuentes</p>
+      <h2 data-short="Fuentes">Fuentes y lecturas</h2>
+      <ol class="refs">
+        <li>McLean, R. D. y Pontiff, J. (2016). Does Academic Research Destroy Stock Return Predictability? Journal of Finance, 71(1).</li>
+        <li>Moskowitz, T., Ooi, Y. H. y Pedersen, L. H. (2012). Time Series Momentum. Journal of Financial Economics, 104(2). Hurst, B., Ooi, Y. H. y Pedersen, L. H. (2017). A Century of Evidence on Trend-Following Investing. Journal of Portfolio Management, 44(1).</li>
+        <li>Jegadeesh, N. y Titman, S. (1993). Returns to Buying Winners and Selling Losers. Journal of Finance, 48(1). Daniel, K. y Moskowitz, T. (2016). Momentum Crashes. Journal of Financial Economics, 122(2).</li>
+        <li>Asness, C., Moskowitz, T. y Pedersen, L. H. (2013). Value and Momentum Everywhere. Journal of Finance, 68(3). Fama, E. y French, K. (1993). Common Risk Factors in the Returns on Stocks and Bonds. Journal of Financial Economics, 33.</li>
+        <li>Menkhoff, L., Sarno, L., Schmeling, M. y Schrimpf, A. (2012). Currency Momentum Strategies. Journal of Financial Economics, 106(3); (2017). Currency Value. Review of Financial Studies, 30(2).</li>
+        <li>Lustig, H. y Verdelhan, A. (2007). The Cross Section of Foreign Currency Risk Premia and Consumption Growth Risk. American Economic Review, 97(1). Brunnermeier, M., Nagel, S. y Pedersen, L. H. (2008). Carry Trades and Currency Crashes. NBER Macroeconomics Annual, 23.</li>
+        <li>Koijen, R., Moskowitz, T., Pedersen, L. H. y Vrugt, E. (2018). Carry. Journal of Financial Economics, 127(2).</li>
+        <li>Gorton, G. y Rouwenhorst, K. G. (2006). Facts and Fantasies about Commodity Futures. Financial Analysts Journal, 62(2). Erb, C. y Harvey, C. (2006). The Strategic and Tactical Value of Commodity Futures. Financial Analysts Journal, 62(2). Fama, E. y French, K. (1987). Commodity Futures Prices. Journal of Business, 60(1).</li>
+        <li>Frazzini, A. y Pedersen, L. H. (2014). Betting Against Beta. Journal of Financial Economics, 111(1). Asness, C., Frazzini, A. y Pedersen, L. H. (2019). Quality Minus Junk. Review of Accounting Studies, 24.</li>
+        <li>Rogoff, K. (1996). The Purchasing Power Parity Puzzle. Journal of Economic Literature, 34(2). Brooks, J. (2017). A Half Century of Macro Momentum. AQR.</li>
+        <li>Lehmann, B. (1990). Fads, Martingales, and Market Efficiency. Quarterly Journal of Economics, 105(1). Nagel, S. (2012). Evaporating Liquidity. Review of Financial Studies, 25(7).</li>
+        <li>Gatev, E., Goetzmann, W. y Rouwenhorst, K. G. (2006). Pairs Trading. Review of Financial Studies, 19(3). Avellaneda, M. y Lee, J.-H. (2010). Statistical Arbitrage in the US Equities Market. Quantitative Finance, 10(7). Khandani, A. y Lo, A. (2011). What Happened to the Quants in August 2007? Journal of Financial Markets, 14(1).</li>
+        <li>Shleifer, A. y Vishny, R. (1997). The Limits of Arbitrage. Journal of Finance, 52(1). Ben-David, I., Franzoni, F. y Moussawi, R. (2018). Do ETFs Increase Volatility? Journal of Finance, 73(6).</li>
+        <li>Bernard, V. y Thomas, J. (1989). Post-Earnings-Announcement Drift. Journal of Accounting Research, 27. DellaVigna, S. y Pollet, J. (2009). Investor Inattention and Friday Earnings Announcements. Journal of Finance, 64(2).</li>
+        <li>Lucca, D. y Moench, E. (2015). The Pre-FOMC Announcement Drift. Journal of Finance, 70(1). Andersen, T., Bollerslev, T., Diebold, F. y Vega, C. (2003). Micro Effects of Macro Announcements. American Economic Review, 93(1).</li>
+        <li>Mitchell, M. y Pulvino, T. (2001). Characteristics of Risk and Return in Risk Arbitrage. Journal of Finance, 56(6). Harris, L. y Gurel, E. (1986) y Shleifer, A. (1986), sobre los cambios en el S&amp;P 500. Journal of Finance, 41.</li>
+        <li>Ariel, R. (1987). A Monthly Effect in Stock Returns. Journal of Financial Economics, 18. McConnell, J. y Xu, W. (2008). Equity Returns at the Turn of the Month. Financial Analysts Journal, 64(2). Gao, L., Han, Y., Li, S. y Zhou, G. (2018). Market Intraday Momentum. Journal of Financial Economics, 129(2).</li>
+        <li>Evans, M. (2018). Forex Trading and the WMR Fix. Journal of Banking and Finance, 87. Melvin, M. y Prins, J. (2015). Equity Hedging and Exchange Rates at the London 4 p.m. Fix. Journal of Financial Markets, 22.</li>
+        <li>Glosten, L. y Milgrom, P. (1985). Bid, Ask and Transaction Prices. Journal of Financial Economics, 14. Avellaneda, M. y Stoikov, S. (2008). High-Frequency Trading in a Limit Order Book. Quantitative Finance, 8(3). Cont, R., Kukanov, A. y Stoikov, S. (2014). The Price Impact of Order Book Events. Journal of Financial Econometrics, 12(1).</li>
+        <li>Aquilina, M., Budish, E. y O'Neill, P. (2022). Quantifying the High-Frequency Trading «Arms Race». Quarterly Journal of Economics, 137(1). Foucault, T., Kozhan, R. y Tham, W. W. (2017). Toxic Arbitrage. Review of Financial Studies, 30(4). Almgren, R. y Chriss, N. (2001). Optimal Execution of Portfolio Transactions. Journal of Risk, 3.</li>
+        <li>Carr, P. y Wu, L. (2009). Variance Risk Premiums. Review of Financial Studies, 22(3). Driessen, J., Maenhout, P. y Vilkov, G. (2009). The Price of Correlation Risk. Journal of Finance, 64(3).</li>
+        <li>Gu, S., Kelly, B. y Xiu, D. (2020). Empirical Asset Pricing via Machine Learning. Review of Financial Studies, 33(5). López de Prado, M. (2018). Advances in Financial Machine Learning. Wiley. Zhu, C. (2019). Big Data as a Governance Mechanism. Review of Financial Studies, 32(5).</li>
+        <li>Tetlock, P. (2007). Giving Content to Investor Sentiment. Journal of Finance, 62(3). Lopez-Lira, A. y Tang, Y. (2023). Can ChatGPT Forecast Stock Price Movements? SSRN.</li>
+        <li>Liu, Y. y Tsyvinski, A. (2021). Risks and Returns of Cryptocurrency. Review of Financial Studies, 34(6). He, S., Manela, A., Ross, O. y von Wachter, V. (2022). Fundamentals of Perpetual Futures. arXiv. Daian, P. y otros (2020). Flash Boys 2.0. IEEE Symposium on Security and Privacy.</li>
+      </ol>
+    </section>
+  </main>
+</div>
+<footer class="foot wrap"><h2 class="foot-h" id="serie">La serie completa</h2><nav aria-labelledby="serie"><ol class="series-index"><li><a href="01-trading-algoritmico.html"><span class="n" style="--k:var(--k1)">1</span><span class="t">Trading algorítmico</span><span class="d">Qué puede hacer un algoritmo, quién paga cada ganancia y dónde están sus límites.</span></a></li><li><a href="02-forex-algoritmico.html"><span class="n" style="--k:var(--k2)">2</span><span class="t">Forex algorítmico</span><span class="d">El mercado de divisas visto por un algoritmo: estructura, costes y estrategias con evidencia.</span></a></li><li><a href="03-agentes-claude-trading.html"><span class="n" style="--k:var(--k3)">3</span><span class="t">Agentes Claude</span><span class="d">Dónde aporta un agente de IA a un sistema de trading, dónde es un riesgo y cuánto cuesta.</span></a></li><li><a href="04-verdad-cuentas-fondeo.html"><span class="n" style="--k:var(--k4)">4</span><span class="t">Cuentas de fondeo</span><span class="d">Cómo ganan dinero las firmas de fondeo, quién cobra de verdad y qué pasa si eres rentable.</span></a></li><li><a href="05-ctrader-api-mcp.html"><span class="n" style="--k:var(--k5)">5</span><span class="t">cTrader: API y MCP</span><span class="d">Qué es cTrader y cómo conectar un sistema por Open API, FIX, cBots o MCP, y qué vigilar.</span></a></li><li><a href="06-gestion-del-riesgo.html"><span class="n" style="--k:var(--k6)">6</span><span class="t">Gestión del riesgo</span><span class="d">Tamaño de posición, límites, caídas y controles para que el sistema sobreviva.</span></a></li><li><a href="07-infraestructura-y-costes.html"><span class="n" style="--k:var(--k7)">7</span><span class="t">Infraestructura y costes</span><span class="d">Seguridad, redundancia, latencia y costes de la infraestructura final, desde Bilbao.</span></a></li><li><a href="#top" aria-current="page"><span class="n" style="--k:var(--k8)">8</span><span class="t">Atlas de estrategias</span><span class="d">Estrategias algorítmicas por sector y dificultad: qué detectan, quién paga y cómo se montan.</span><span class="here">Estás aquí</span></a></li></ol></nav><p>Contenido educativo. No es asesoramiento financiero ni una recomendación de inversión. Las cifras proceden de las fuentes citadas; las simulaciones usan datos aleatorios y solo ilustran ideas.</p><p>Serie «Máquinas y mercados» · Septiembre de 2026</p></footer>
+<script>
+(function () {
+  "use strict";
+  var NS = "http://www.w3.org/2000/svg";
+  var root = document.documentElement;
+  var reduceMotion = !!(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches);
+
+  function css(name) { return getComputedStyle(root).getPropertyValue(name).trim(); }
+  /* color resuelto de un token (los tokens pueden apuntar a otros tokens) */
+  function tokenColor(name) {
+    var p = document.createElement("span");
+    p.style.color = "var(" + name + ")"; p.style.display = "none";
+    document.body.appendChild(p);
+    var c = getComputedStyle(p).color; p.remove();
+    return c;
+  }
+  function $$(sel, ctx) { return Array.prototype.slice.call((ctx || document).querySelectorAll(sel)); }
+
+  /* ---------- cambios de tema (sistema o selector del visor) ---------- */
+  var themeFns = [];
+  function onTheme(fn) { themeFns.push(fn); }
+  function fireTheme() { themeFns.forEach(function (f) { try { f(); } catch (e) {} }); }
+  if (window.matchMedia) {
+    var mq = matchMedia("(prefers-color-scheme: dark)");
+    if (mq.addEventListener) mq.addEventListener("change", fireTheme);
+  }
+  new MutationObserver(fireTheme).observe(root, { attributes: true, attributeFilter: ["data-theme"] });
+
+  /* ---------- azar reproducible ---------- */
+  function rng(seed) {
+    var a = seed >>> 0;
+    return function () {
+      a |= 0; a = a + 0x6D2B79F5 | 0;
+      var t = Math.imul(a ^ a >>> 15, 1 | a);
+      t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+      return ((t ^ t >>> 14) >>> 0) / 4294967296;
+    };
+  }
+  function normal(r) { var u = 0; while (u === 0) u = r(); var v = r(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v); }
+
+  /* ---------- formato en español ---------- */
+  var nfCache = {};
+  function nf(d) { if (!nfCache[d]) nfCache[d] = new Intl.NumberFormat("es-ES", { minimumFractionDigits: d, maximumFractionDigits: d, useGrouping: "always" }); return nfCache[d]; }
+  function fmt(v, d) { d = d || 0; var s = nf(d).format(Math.abs(v)); return (v < 0 && Math.abs(v) >= Math.pow(10, -d) / 2 ? "−" : "") + s; }
+  function pct(v, d) { return fmt(v, d === undefined ? 1 : d) + " %"; }
+  function money(v, cur, d) { return fmt(v, d || 0) + " " + (cur || "$"); }
+  function signed(v, d, unit) { var s = fmt(v, d); return (v > 0 ? "+" : "") + s + (unit || ""); }
+
+  /* ---------- SVG ---------- */
+  function el(tag, attrs, parent) {
+    var e = document.createElementNS(NS, tag);
+    if (attrs) for (var k in attrs) {
+      if (attrs[k] === undefined || attrs[k] === null) continue;
+      if (k === "text") e.textContent = attrs[k];
+      else e.setAttribute(k, attrs[k]);
+    }
+    if (parent) parent.appendChild(e);
+    return e;
+  }
+  function lin(d0, d1, r0, r1) { var f = function (v) { return r0 + (v - d0) / (d1 - d0) * (r1 - r0); }; f.invert = function (p) { return d0 + (p - r0) / (r1 - r0) * (d1 - d0); }; return f; }
+  function logs(d0, d1, r0, r1) { var a = Math.log10(d0), b = Math.log10(d1); return function (v) { return r0 + (Math.log10(v) - a) / (b - a) * (r1 - r0); }; }
+  function niceStep(span, count) { var s0 = Math.pow(10, Math.floor(Math.log10(span / count))); var e = span / count / s0; return s0 * (e >= 7.5 ? 10 : e >= 3.5 ? 5 : e >= 1.5 ? 2 : 1); }
+  function niceDomain(min, max, count) { if (min === max) { min -= 1; max += 1; } var st = niceStep(max - min, count || 5); return [Math.floor(min / st) * st, Math.ceil(max / st) * st, st]; }
+  function ticks(min, max, step) { var t = []; for (var v = min; v <= max + step * 1e-6; v += step) t.push(+v.toFixed(10)); return t; }
+  /* barra con extremo de dato redondeado (4px) y base recta */
+  function barPath(x0, x1, y, h, r) {
+    r = Math.min(r === undefined ? 4 : r, Math.abs(x1 - x0), h / 2);
+    if (x1 >= x0) return "M" + x0 + "," + y + "H" + (x1 - r) + "Q" + x1 + "," + y + " " + x1 + "," + (y + r) + "V" + (y + h - r) + "Q" + x1 + "," + (y + h) + " " + (x1 - r) + "," + (y + h) + "H" + x0 + "Z";
+    return "M" + x0 + "," + y + "H" + (x1 + r) + "Q" + x1 + "," + y + " " + x1 + "," + (y + r) + "V" + (y + h - r) + "Q" + x1 + "," + (y + h) + " " + (x1 + r) + "," + (y + h) + "H" + x0 + "Z";
+  }
+  function roundRect(x0, x1, y, h, r) {
+    var w = Math.max(x1 - x0, 1); r = Math.min(r === undefined ? 4 : r, w / 2, h / 2);
+    return "M" + (x0 + r) + "," + y + "H" + (x1 - r) + "Q" + x1 + "," + y + " " + x1 + "," + (y + r) + "V" + (y + h - r) + "Q" + x1 + "," + (y + h) + " " + (x1 - r) + "," + (y + h) + "H" + (x0 + r) + "Q" + x0 + "," + (y + h) + " " + x0 + "," + (y + h - r) + "V" + (y + r) + "Q" + x0 + "," + y + " " + (x0 + r) + "," + y + "Z";
+  }
+  function wrapText(str, maxChars) {
+    var out = [];
+    String(str).split("\n").forEach(function (para) {
+      var words = para.split(" "), line = "";
+      words.forEach(function (w) {
+        if (!line) line = w;
+        else if ((line + " " + w).length <= maxChars) line += " " + w;
+        else { out.push(line); line = w; }
+      });
+      out.push(line);
+    });
+    return out;
+  }
+
+  /* ---------- tooltip ---------- */
+  var tipEl = document.createElement("div");
+  tipEl.className = "viz-tip"; tipEl.setAttribute("aria-hidden", "true");
+  document.body.appendChild(tipEl);
+  function showTip(title, rows, x, y, note) {
+    tipEl.replaceChildren();
+    if (title) { var t = document.createElement("div"); t.className = "t"; t.textContent = title; tipEl.appendChild(t); }
+    (rows || []).forEach(function (r) {
+      var d = document.createElement("div"); d.className = "r";
+      if (r.color) { var k = document.createElement("i"); k.style.background = r.color; d.appendChild(k); }
+      var b = document.createElement("b"); b.textContent = r.value; d.appendChild(b);
+      if (r.label) { var s = document.createElement("span"); s.textContent = r.label; d.appendChild(s); }
+      tipEl.appendChild(d);
+    });
+    if (note) { var n = document.createElement("div"); n.className = "n"; n.textContent = note; tipEl.appendChild(n); }
+    tipEl.classList.add("on");
+    var w = tipEl.offsetWidth, h = tipEl.offsetHeight;
+    var left = x + 14, top = y - h - 12;
+    if (left + w > window.innerWidth - 8) left = x - w - 14;
+    if (left < 8) left = 8;
+    if (top < 8) top = y + 18;
+    tipEl.style.left = left + "px"; tipEl.style.top = top + "px";
+  }
+  function hideTip() { tipEl.classList.remove("on"); }
+  window.addEventListener("scroll", hideTip, { passive: true });
+
+  /* ---------- redibujo según el ancho ---------- */
+  function responsive(box, render) {
+    var last = 0;
+    function run(force) { var w = Math.round(box.clientWidth); if (w && (force || w !== last)) { last = w; render(w); } }
+    if (window.ResizeObserver) new ResizeObserver(function () { run(false); }).observe(box);
+    else window.addEventListener("resize", function () { run(false); });
+    run(true);
+    return { redraw: function () { run(true); } };
+  }
+
+  /* ---------- tabla gemela de cada gráfico ---------- */
+  function dataTable(fig, headers, rows, numericCols) {
+    if (!fig) return;
+    var d = fig.querySelector("details.data");
+    if (!d) {
+      d = document.createElement("details"); d.className = "data";
+      var s = document.createElement("summary"); s.textContent = "Ver los datos en tabla"; d.appendChild(s);
+      fig.appendChild(d);
+    }
+    var old = d.querySelector(".tbl-wrap"); if (old) old.remove();
+    var wrap = document.createElement("div"); wrap.className = "tbl-wrap";
+    var tb = document.createElement("table"), th = document.createElement("thead"), tr = document.createElement("tr");
+    headers.forEach(function (h, i) { var c = document.createElement("th"); c.textContent = h; if (numericCols && numericCols.indexOf(i) >= 0) c.className = "num"; tr.appendChild(c); });
+    th.appendChild(tr); tb.appendChild(th);
+    var body = document.createElement("tbody");
+    rows.forEach(function (r) {
+      var row = document.createElement("tr");
+      r.forEach(function (v, i) { var c = document.createElement("td"); c.textContent = v; if (numericCols && numericCols.indexOf(i) >= 0) c.className = "num"; row.appendChild(c); });
+      body.appendChild(row);
+    });
+    tb.appendChild(body); wrap.appendChild(tb); d.appendChild(wrap);
+  }
+
+  function svgRoot(box, W, H, label) {
+    box.replaceChildren();
+    var s = el("svg", { width: W, height: H, viewBox: "0 0 " + W + " " + H, role: "img", "aria-label": label || "", class: "viz" }, box);
+    return s;
+  }
+  function tipAtEl(node, title, rows, note) {
+    var r = node.getBoundingClientRect();
+    showTip(title, rows, r.left + r.width / 2, r.top, note);
+  }
+
+  /* ---------- barras horizontales (magnitud, divergentes, embudo) ---------- */
+  function hbar(box, cfg0) {
+    var cur = cfg0;
+    var rr = responsive(box, function (W) {
+      var cfg = cur, rows = cfg.rows, fmtv = cfg.fmt || function (v) { return fmt(v, 1); };
+      var narrow = W < (cfg.narrowAt || 560);
+      var barH = cfg.barH || 18, gap = cfg.gap || 14;
+      var labelW = narrow ? 0 : (cfg.labelW || 160);
+      var hasRef = rows.some(function (r) { return r.ref; });
+      var labelLine = narrow ? 20 : 0;
+      var rowH = labelLine + barH + gap + (hasRef ? 6 : 0);
+      var top = hasRef ? 16 : 4;
+      var H = top + rows.length * rowH;
+      var min = cfg.domain ? cfg.domain[0] : Math.min(0, d3min(rows)), max = cfg.domain ? cfg.domain[1] : Math.max(0, d3max(rows)) * 1.02;
+      var valW = cfg.valW || 70;
+      var x0 = labelW + (labelW ? 12 : 0) + (min < 0 ? valW : 0), x1 = W - (max > 0 ? valW : 6);
+      var x = lin(min, max, x0, x1);
+      var svg = svgRoot(box, W, H, cfg.aria);
+      var zero = x(0);
+      el("line", { x1: zero, x2: zero, y1: top - 4, y2: H - gap / 2, class: "base" }, svg);
+      rows.forEach(function (r, i) {
+        var y = top + i * rowH + labelLine + (hasRef ? 6 : 0);
+        var g = el("g", { class: "row" }, svg);
+        if (narrow) el("text", { x: 0, y: y - 6, class: r.strong ? "lbl-strong" : "lbl", text: r.label }, g);
+        else el("text", { x: 0, y: y + barH / 2 + 4, class: r.strong ? "lbl-strong" : "lbl", text: r.label }, g);
+        var col = r.color || (cfg.diverging ? (r.value >= 0 ? "var(--pos)" : "var(--neg)") : (cfg.color || "var(--accent)"));
+        var xv = x(r.value);
+        if (Math.abs(xv - zero) >= 1) el("path", { d: barPath(zero, xv, y, barH, 4), class: "mark", style: "fill:" + col }, g);
+        var lab = cfg.valueLabel ? cfg.valueLabel(r) : fmtv(r.value);
+        if (r.value >= 0) el("text", { x: xv + 6, y: y + barH / 2 + 4, class: "val", text: lab }, g);
+        else el("text", { x: xv - 6, y: y + barH / 2 + 4, class: "val", "text-anchor": "end", text: lab }, g);
+        if (r.ref) {
+          var xr = x(r.ref.value);
+          el("line", { x1: xr, x2: xr, y1: y - 5, y2: y + barH + 5, class: "ref" }, g);
+          if (narrow) el("text", { x: W, y: y - 6, "text-anchor": "end", class: "lbl", style: "font-size:11px", text: r.ref.label }, g);
+          else el("text", { x: xr + 4, y: y - 6, class: "lbl", style: "font-size:11px", text: r.ref.label }, g);
+        }
+        var hit = el("rect", { x: 0, y: y - (narrow ? labelLine : 4) - (hasRef ? 6 : 0), width: W, height: barH + (narrow ? labelLine : 8) + (hasRef ? 6 : 0), class: "hit", tabindex: 0, "aria-label": r.label + ": " + lab }, g);
+        var rowsTip = function () { var out = [{ value: lab, label: cfg.unitLabel || "", color: col }]; if (r.ref) out.push({ value: fmtv(r.ref.value), label: r.ref.tip || r.ref.label, color: "var(--ink)" }); return out; };
+        hit.addEventListener("pointermove", function (ev) { showTip(r.label, rowsTip(), ev.clientX, ev.clientY, r.note); });
+        hit.addEventListener("pointerdown", function (ev) { showTip(r.label, rowsTip(), ev.clientX, ev.clientY, r.note); });
+        hit.addEventListener("pointerleave", hideTip);
+        hit.addEventListener("focus", function () { tipAtEl(hit, r.label, rowsTip(), r.note); });
+        hit.addEventListener("blur", hideTip);
+      });
+    });
+    rr.update = function (c) { cur = c; rr.redraw(); };
+    return rr;
+    function d3min(rs) { return Math.min.apply(null, rs.map(function (r) { return r.value; })); }
+    function d3max(rs) { return Math.max.apply(null, rs.map(function (r) { return Math.max(r.value, r.ref ? r.ref.value : -Infinity); })); }
+  }
+
+  /* ---------- rangos en un eje (horizontes, latencias, sesiones) ---------- */
+  function range(box, cfg0) {
+    var cur = cfg0;
+    var rr = responsive(box, function (W) {
+      var cfg = cur, rows = cfg.rows;
+      var narrow = W < (cfg.narrowAt || 600);
+      var barH = cfg.barH || 14, gap = cfg.gap || 16;
+      var labelW = narrow ? 0 : (cfg.labelW || 170);
+      var labelLine = narrow ? 20 : 0;
+      var rowH = labelLine + barH + gap;
+      var lv = 0;
+      (cfg.bands || []).concat(cfg.markers || []).forEach(function (o) { lv = Math.max(lv, o.level || 0); });
+      var top = (cfg.bands || cfg.markers) ? 26 + 14 * lv : 6;
+      var bottom = 28;
+      var H = top + rows.length * rowH + bottom - gap / 2;
+      var x0 = labelW + (labelW ? 14 : 0), x1 = W - (cfg.padRight || 14);
+      var x = cfg.scale === "log" ? logs(cfg.domain[0], cfg.domain[1], x0, x1) : lin(cfg.domain[0], cfg.domain[1], x0, x1);
+      var svg = svgRoot(box, W, H, cfg.aria);
+      var plotTop = top - 6, plotBot = H - bottom + 4;
+      (cfg.bands || []).forEach(function (b) {
+        el("rect", { x: x(b.from), y: plotTop, width: Math.max(1, x(b.to) - x(b.from)), height: plotBot - plotTop, class: "band" }, svg);
+        el("text", { x: x(b.from) + 4, y: plotTop - 6 - 14 * (b.level || 0), class: "lbl", style: "font-size:11.5px", text: narrow && b.short ? b.short : b.label }, svg);
+      });
+      (cfg.ticks || []).forEach(function (t) {
+        var xx = x(t.v);
+        el("line", { x1: xx, x2: xx, y1: plotTop, y2: plotBot, class: "grid" }, svg);
+        if (!(narrow && t.minor)) el("text", { x: xx, y: H - 8, "text-anchor": "middle", text: t.label }, svg);
+      });
+      el("line", { x1: x0, x2: x1, y1: plotBot, y2: plotBot, class: "base" }, svg);
+      (cfg.markers || []).forEach(function (m) {
+        var xx = x(m.v);
+        el("line", { x1: xx, x2: xx, y1: plotTop, y2: plotBot, class: "ref", style: "stroke-width:1" }, svg);
+        if (!(narrow && m.hideNarrow)) el("text", { x: xx + (m.anchor === "end" ? -4 : 4), y: plotTop - 6 - 14 * (m.level || 0), "text-anchor": m.anchor || "start", class: "lbl", style: "font-size:11.5px", text: narrow && m.short ? m.short : m.label }, svg);
+      });
+      rows.forEach(function (r, i) {
+        var y = top + i * rowH + labelLine;
+        var g = el("g", { class: "row" }, svg);
+        if (narrow) el("text", { x: 0, y: y - 6, class: r.strong ? "lbl-strong" : "lbl", text: r.label }, g);
+        else el("text", { x: 0, y: y + barH / 2 + 4, class: r.strong ? "lbl-strong" : "lbl", text: r.label }, g);
+        var col = r.color || cfg.color || "var(--accent)";
+        (r.segs || []).forEach(function (s) {
+          el("path", { d: roundRect(x(s[0]), x(s[1]), y, barH, 4), class: "mark", style: "fill:" + col + (r.dim ? ";opacity:.45" : "") }, g);
+        });
+        if (r.dot !== undefined) el("circle", { cx: x(r.dot), cy: y + barH / 2, r: 5.5, class: "mark", style: "fill:" + col + ";stroke:var(--surface);stroke-width:2" }, g);
+        var txt = cfg.describe ? cfg.describe(r) : "";
+        var hit = el("rect", { x: 0, y: y - 6 - labelLine, width: W, height: barH + 12 + labelLine, class: "hit", tabindex: 0, "aria-label": r.label + (txt ? ": " + txt : "") }, g);
+        var rowsTip = function () { return [{ value: txt, color: col }]; };
+        hit.addEventListener("pointermove", function (ev) { showTip(r.label, rowsTip(), ev.clientX, ev.clientY, r.note); });
+        hit.addEventListener("pointerdown", function (ev) { showTip(r.label, rowsTip(), ev.clientX, ev.clientY, r.note); });
+        hit.addEventListener("pointerleave", hideTip);
+        hit.addEventListener("focus", function () { tipAtEl(hit, r.label, rowsTip(), r.note); });
+        hit.addEventListener("blur", hideTip);
+      });
+    });
+    rr.update = function (c) { cur = c; rr.redraw(); };
+    return rr;
+  }
+
+  /* ---------- líneas con cruz de lectura ---------- */
+  function line(box, cfg0) {
+    var state = { i: -1 }, cur = cfg0;
+    var rr = responsive(box, function (W) {
+      var cfg = cur, narrow = W < 560;
+      var H = narrow ? (cfg.hNarrow || 250) : (cfg.height || 320);
+      var xs = cfg.x, S = cfg.series, C = cfg.context || [];
+      var yFmt = cfg.yFmt || function (v) { return fmt(v, 0); };
+      var all = [];
+      S.concat(C).forEach(function (s) { s.values.forEach(function (v) { if (v !== null && v !== undefined && isFinite(v)) all.push(v); }); });
+      (cfg.hlines || []).forEach(function (h) { all.push(h.y); });
+      var lo = cfg.yDomain ? cfg.yDomain[0] : Math.min.apply(null, all), hi = cfg.yDomain ? cfg.yDomain[1] : Math.max.apply(null, all);
+      var nd = niceDomain(lo, hi, narrow ? 4 : 5);
+      if (cfg.yDomain) nd = [cfg.yDomain[0], cfg.yDomain[1], niceStep(cfg.yDomain[1] - cfg.yDomain[0], narrow ? 4 : 5)];
+      var yt = ticks(Math.ceil(nd[0] / nd[2]) * nd[2], nd[1], nd[2]);
+      var left = Math.max.apply(null, yt.map(function (v) { return yFmt(v).length; })) * 6.8 + 12;
+      var right = cfg.padRight || 14, top = (cfg.vlines && cfg.vlines.length) ? 24 : 10, bottom = 28;
+      var x = lin(xs[0], xs[xs.length - 1], left, W - right);
+      var y = lin(nd[0], nd[1], H - bottom, top);
+      var svg = svgRoot(box, W, H, cfg.aria);
+      yt.forEach(function (v) {
+        el("line", { x1: left, x2: W - right, y1: y(v), y2: y(v), class: Math.abs(v) < 1e-9 && cfg.zeroBase ? "base" : "grid" }, svg);
+        el("text", { x: left - 8, y: y(v) + 4, "text-anchor": "end", text: yFmt(v) }, svg);
+      });
+      (cfg.xTicks || []).forEach(function (t) {
+        if (narrow && t.minor) return;
+        el("text", { x: x(t.v), y: H - 8, "text-anchor": t.anchor || "middle", text: t.label }, svg);
+      });
+      el("line", { x1: left, x2: W - right, y1: H - bottom, y2: H - bottom, class: "base" }, svg);
+      (cfg.vlines || []).forEach(function (v) {
+        el("line", { x1: x(v.x), x2: x(v.x), y1: top - 4, y2: H - bottom, class: "ref", style: "stroke-width:1" }, svg);
+        el("text", { x: x(v.x) + (v.anchor === "end" ? -5 : 5), y: top - 10, "text-anchor": v.anchor || "start", class: "lbl", style: "font-size:11.5px", text: v.label }, svg);
+      });
+      function pathOf(vals) {
+        var d = "", pen = false;
+        for (var i = 0; i < vals.length; i++) {
+          var v = vals[i];
+          if (v === null || v === undefined || !isFinite(v)) { pen = false; continue; }
+          d += (pen ? "L" : "M") + x(xs[i]).toFixed(1) + "," + y(v).toFixed(1); pen = true;
+        }
+        return d;
+      }
+      C.forEach(function (c) { el("path", { d: pathOf(c.values), style: "fill:none;stroke:" + (c.color || "var(--deemph)") + ";stroke-width:" + (c.width || 1) + ";stroke-linejoin:round;opacity:" + (c.opacity || 0.9) }, svg); });
+      if (cfg.area) {
+        var s0 = S[0], dA = pathOf(s0.values);
+        if (dA) {
+          var firstI = s0.values.findIndex(function (v) { return v !== null && v !== undefined; });
+          var lastI = s0.values.length - 1; while (lastI > 0 && (s0.values[lastI] === null || s0.values[lastI] === undefined)) lastI--;
+          el("path", { d: dA + "L" + x(xs[lastI]) + "," + y(Math.max(nd[0], 0)) + "L" + x(xs[firstI]) + "," + y(Math.max(nd[0], 0)) + "Z", style: "fill:" + s0.color + ";opacity:.1;stroke:none" }, svg);
+        }
+      }
+      (cfg.hlines || []).forEach(function (h) {
+        el("line", { x1: left, x2: W - right, y1: y(h.y), y2: y(h.y), class: "ref", style: "stroke-width:1;stroke:" + (h.color || "var(--ink)") }, svg);
+        el("text", { x: h.anchor === "start" ? left + 6 : W - right - 4, y: y(h.y) + (h.below ? 15 : -6), "text-anchor": h.anchor === "start" ? "start" : "end", class: "lbl", style: "font-size:11.5px", text: h.label }, svg);
+      });
+      S.forEach(function (s) {
+        el("path", { d: pathOf(s.values), style: "fill:none;stroke:" + s.color + ";stroke-width:" + (s.width || 2) + ";stroke-linejoin:round;stroke-linecap:round" }, svg);
+        if (cfg.endDots !== false) {
+          var li = s.values.length - 1; while (li > 0 && (s.values[li] === null || s.values[li] === undefined)) li--;
+          el("circle", { cx: x(xs[li]), cy: y(s.values[li]), r: 4.5, style: "fill:" + s.color + ";stroke:var(--surface);stroke-width:2" }, svg);
+        }
+      });
+      if (cfg.noHover) return;
+      var cross = el("line", { x1: 0, x2: 0, y1: top, y2: H - bottom, class: "cross", style: "opacity:0" }, svg);
+      var dots = S.map(function (s) { return el("circle", { r: 4.5, style: "fill:" + s.color + ";stroke:var(--surface);stroke-width:2;opacity:0" }, svg); });
+      var ov = el("rect", { x: left, y: top, width: Math.max(1, W - left - right), height: Math.max(1, H - top - bottom), class: "hit", tabindex: 0, style: "cursor:crosshair", "aria-label": (cfg.aria || "Gráfico") + ". Usa las flechas para recorrer los valores." }, svg);
+      function nearest(px) { var v = x.invert(px), bi = 0, bd = Infinity; for (var i = 0; i < xs.length; i++) { var dd = Math.abs(xs[i] - v); if (dd < bd) { bd = dd; bi = i; } } return bi; }
+      function paint(i, cx, cy) {
+        state.i = i;
+        var px = x(xs[i]);
+        cross.setAttribute("x1", px); cross.setAttribute("x2", px); cross.style.opacity = 1;
+        var rows = [];
+        S.forEach(function (s, k) {
+          var v = s.values[i];
+          if (v === null || v === undefined || !isFinite(v)) { dots[k].style.opacity = 0; return; }
+          dots[k].setAttribute("cx", px); dots[k].setAttribute("cy", y(v)); dots[k].style.opacity = 1;
+          rows.push({ value: (cfg.tipFmt || yFmt)(v), label: s.name, color: s.color });
+        });
+        var extra = cfg.tipExtra ? cfg.tipExtra(i) : null;
+        if (extra) rows = rows.concat(extra);
+        var title = cfg.tipTitle ? cfg.tipTitle(i) : String(xs[i]);
+        if (cx === undefined) { var r = ov.getBoundingClientRect(); cx = r.left + (px - left); cy = r.top + 10; }
+        showTip(title, rows, cx, cy, cfg.tipNote ? cfg.tipNote(i) : null);
+      }
+      function clear() { cross.style.opacity = 0; dots.forEach(function (d) { d.style.opacity = 0; }); hideTip(); }
+      function fromEvent(ev) { var r = svg.getBoundingClientRect(); paint(nearest(ev.clientX - r.left), ev.clientX, ev.clientY); }
+      ov.addEventListener("pointermove", fromEvent);
+      ov.addEventListener("pointerdown", fromEvent);
+      ov.addEventListener("pointerleave", clear);
+      ov.addEventListener("blur", clear);
+      ov.addEventListener("focus", function () { paint(state.i >= 0 ? state.i : xs.length - 1); });
+      ov.addEventListener("keydown", function (ev) {
+        var step = ev.shiftKey ? Math.max(1, Math.round(xs.length / 20)) : 1;
+        if (ev.key === "ArrowRight") { paint(Math.min(xs.length - 1, (state.i < 0 ? 0 : state.i) + step)); ev.preventDefault(); }
+        if (ev.key === "ArrowLeft") { paint(Math.max(0, (state.i < 0 ? xs.length - 1 : state.i) - step)); ev.preventDefault(); }
+        if (ev.key === "Escape") clear();
+      });
+    });
+    rr.update = function (c) { cur = c; state.i = -1; rr.redraw(); };
+    return rr;
+  }
+
+  /* ---------- diagrama de flujo lineal (horizontal o vertical según ancho) ---------- */
+  function flow(box, cfg) {
+    return responsive(box, function (W) {
+      var n = cfg.nodes.length, horiz = W >= (cfg.breakAt || 720);
+      var hl = cfg.hl || [];
+      var svg, H;
+      if (horiz) {
+        var aw = cfg.arrowW || 70, nw = (W - (n - 1) * aw) / n;
+        var cpl = Math.max(10, Math.floor((nw - 22) / 6.5));
+        var lines = cfg.nodes.map(function (nd) { return wrapText(nd.d || "", cpl); });
+        var tl = cfg.nodes.map(function (nd) { return wrapText(nd.t, Math.floor((nw - 22) / 8)); });
+        var maxL = Math.max.apply(null, lines.map(function (l, i) { return l.length + tl[i].length; }));
+        var nh = 22 + maxL * 17 + 8;
+        var top = 4;
+        H = top + nh + 6;
+        svg = svgRoot(box, W, H, cfg.aria);
+        cfg.nodes.forEach(function (nd, i) {
+          var x0 = i * (nw + aw);
+          var g = el("g", { class: "fnode" + (hl.indexOf(i) >= 0 ? " hl" : "") }, svg);
+          el("rect", { x: x0 + 0.5, y: top + 0.5, width: nw - 1, height: nh - 1, rx: 8 }, g);
+          var yy = top + 22;
+          tl[i].forEach(function (t) { el("text", { x: x0 + 12, y: yy, class: "ft", text: t }, g); yy += 17; });
+          lines[i].forEach(function (t) { el("text", { x: x0 + 12, y: yy + 1, class: "fd", text: t }, g); yy += 17; });
+          if (i < n - 1) {
+            var ax0 = x0 + nw + 6, ax1 = x0 + nw + aw - 8, ay = top + nh / 2;
+            el("line", { x1: ax0, x2: ax1 - 6, y1: ay, y2: ay, class: "fedge" }, svg);
+            el("path", { d: "M" + ax1 + "," + ay + "l-7,-4.5v9z", class: "fhead" }, svg);
+            var lab = wrapText(cfg.edges[i] || "", Math.floor(aw / 6.4));
+            lab.forEach(function (t, k) { el("text", { x: (ax0 + ax1) / 2, y: ay - 8 - (lab.length - 1 - k) * 13, "text-anchor": "middle", class: "flabel", text: t }, svg); });
+          }
+        });
+      } else {
+        var cplV = Math.max(16, Math.floor((W - 26) / 6.6));
+        var blocks = cfg.nodes.map(function (nd) { return { t: wrapText(nd.t, Math.floor((W - 26) / 8)), d: wrapText(nd.d || "", cplV) }; });
+        var ah = 44, yy2 = 2; H = 0;
+        var heights = blocks.map(function (b) { return 20 + (b.t.length + b.d.length) * 17 + 6; });
+        H = heights.reduce(function (a, b) { return a + b; }, 0) + (n - 1) * ah + 4;
+        svg = svgRoot(box, W, H, cfg.aria);
+        blocks.forEach(function (b, i) {
+          var g = el("g", { class: "fnode" + (hl.indexOf(i) >= 0 ? " hl" : "") }, svg);
+          el("rect", { x: 0.5, y: yy2 + 0.5, width: W - 1, height: heights[i] - 1, rx: 8 }, g);
+          var ty = yy2 + 21;
+          b.t.forEach(function (t) { el("text", { x: 12, y: ty, class: "ft", text: t }, g); ty += 17; });
+          b.d.forEach(function (t) { el("text", { x: 12, y: ty + 1, class: "fd", text: t }, g); ty += 17; });
+          yy2 += heights[i];
+          if (i < n - 1) {
+            var ax = 26;
+            el("line", { x1: ax, x2: ax, y1: yy2 + 5, y2: yy2 + ah - 11, class: "fedge" }, svg);
+            el("path", { d: "M" + ax + "," + (yy2 + ah - 4) + "l-4.5,-7h9z", class: "fhead" }, svg);
+            el("text", { x: ax + 14, y: yy2 + ah / 2 + 4, class: "flabel", text: (cfg.edges[i] || "").replace(/\n/g, " ") }, svg);
+            yy2 += ah;
+          }
+        });
+      }
+    });
+  }
+
+  /* ---------- barras verticales (histogramas) ---------- */
+  function vbar(box, cfg0) {
+    var cur = cfg0, state = { i: -1 };
+    var rr = responsive(box, function (W) {
+      var cfg = cur, bins = cfg.bins, narrow = W < 560;
+      var H = narrow ? (cfg.hNarrow || 220) : (cfg.height || 260);
+      var yFmt = cfg.yFmt || function (v) { return fmt(v, 0); };
+      var maxV = Math.max.apply(null, bins.map(function (b) { return b.value; }).concat([cfg.yMin || 0]));
+      var nd = niceDomain(0, maxV || 1, narrow ? 3 : 4);
+      var yt = ticks(0, nd[1], nd[2]);
+      var left = Math.max.apply(null, yt.map(function (v) { return yFmt(v).length; })) * 6.8 + 12;
+      var lv = 0; (cfg.markers || []).forEach(function (m) { lv = Math.max(lv, m.level || 0); });
+      var right = cfg.padRight || 14, top = (cfg.markers && cfg.markers.length) ? 26 + 14 * lv : 10, bottom = 28;
+      var x = lin(cfg.domain[0], cfg.domain[1], left, W - right), y = lin(0, nd[1], H - bottom, top);
+      var svg = svgRoot(box, W, H, cfg.aria);
+      yt.forEach(function (v) {
+        el("line", { x1: left, x2: W - right, y1: y(v), y2: y(v), class: "grid" }, svg);
+        el("text", { x: left - 8, y: y(v) + 4, "text-anchor": "end", text: yFmt(v) }, svg);
+      });
+      (cfg.xTicks || []).forEach(function (t) {
+        if (narrow && t.minor) return;
+        el("text", { x: x(t.v), y: H - 8, "text-anchor": t.anchor || "middle", text: t.label }, svg);
+      });
+      var gap = (x(bins[0].x1) - x(bins[0].x0)) > 8 ? 2 : 1;
+      bins.forEach(function (b) {
+        if (!(b.value > 0)) return;
+        var x0 = x(b.x0) + gap / 2, x1 = x(b.x1) - gap / 2, yt0 = y(b.value), yb = H - bottom;
+        var r = Math.min(3, (x1 - x0) / 2, yb - yt0);
+        el("path", { d: "M" + x0 + "," + yb + "V" + (yt0 + r) + "Q" + x0 + "," + yt0 + " " + (x0 + r) + "," + yt0 + "H" + (x1 - r) + "Q" + x1 + "," + yt0 + " " + x1 + "," + (yt0 + r) + "V" + yb + "Z", class: "mark", style: "fill:" + (b.color || cfg.color || "var(--accent)") }, svg);
+      });
+      el("line", { x1: left, x2: W - right, y1: H - bottom, y2: H - bottom, class: "base" }, svg);
+      (cfg.markers || []).forEach(function (m) {
+        var xx = x(m.v);
+        el("line", { x1: xx, x2: xx, y1: top - 4, y2: H - bottom, class: "ref", style: "stroke-width:1" + (m.color ? ";stroke:" + m.color : "") }, svg);
+        if (!(narrow && m.hideNarrow)) el("text", { x: xx + (m.anchor === "end" ? -4 : 4), y: top - 10 - 14 * (m.level || 0), "text-anchor": m.anchor || "start", class: "lbl", style: "font-size:11.5px", text: narrow && m.short ? m.short : m.label }, svg);
+      });
+      if (cfg.noHover) return;
+      var hl = el("rect", { x: 0, y: 0, width: 0, height: 0, style: "fill:none;stroke:var(--ink);stroke-width:1.5;opacity:0", rx: 2 }, svg);
+      var ov = el("rect", { x: left, y: top, width: Math.max(1, W - left - right), height: Math.max(1, H - top - bottom), class: "hit", tabindex: 0, "aria-label": (cfg.aria || "Histograma") + ". Usa las flechas para recorrer las barras." }, svg);
+      function paint(i, cx, cy) {
+        state.i = i; var b = bins[i];
+        var x0 = x(b.x0) + gap / 2, x1 = x(b.x1) - gap / 2, yt0 = y(Math.max(b.value, 0));
+        hl.setAttribute("x", x0 - 1); hl.setAttribute("width", Math.max(2, x1 - x0 + 2)); hl.setAttribute("y", yt0 - 1); hl.setAttribute("height", Math.max(2, H - bottom - yt0 + 1)); hl.style.opacity = 1;
+        var rows = [{ value: yFmt(b.value), label: cfg.unitLabel || "", color: b.color || cfg.color || "var(--accent)" }];
+        if (cfg.tipExtra) rows = rows.concat(cfg.tipExtra(b, i) || []);
+        if (cx === undefined) { var r = ov.getBoundingClientRect(); cx = r.left + ((x0 + x1) / 2 - left); cy = r.top + (yt0 - top); }
+        showTip(cfg.tipTitle ? cfg.tipTitle(b, i) : "", rows, cx, cy, cfg.tipNote ? cfg.tipNote(b, i) : null);
+      }
+      function clear() { hl.style.opacity = 0; hideTip(); }
+      function fromEvent(ev) {
+        var r = svg.getBoundingClientRect(), v = x.invert(ev.clientX - r.left), bi = 0;
+        for (var i = 0; i < bins.length; i++) if (v >= bins[i].x0) bi = i;
+        paint(bi, ev.clientX, ev.clientY);
+      }
+      ov.addEventListener("pointermove", fromEvent);
+      ov.addEventListener("pointerdown", fromEvent);
+      ov.addEventListener("pointerleave", clear);
+      ov.addEventListener("blur", clear);
+      ov.addEventListener("focus", function () { var best = 0; bins.forEach(function (b, i) { if (b.value > bins[best].value) best = i; }); paint(state.i >= 0 ? state.i : best); });
+      ov.addEventListener("keydown", function (ev) {
+        if (ev.key === "ArrowRight") { paint(Math.min(bins.length - 1, (state.i < 0 ? 0 : state.i) + 1)); ev.preventDefault(); }
+        if (ev.key === "ArrowLeft") { paint(Math.max(0, (state.i < 0 ? bins.length - 1 : state.i) - 1)); ev.preventDefault(); }
+        if (ev.key === "Escape") clear();
+      });
+    });
+    rr.update = function (c) { cur = c; state.i = -1; rr.redraw(); };
+    return rr;
+  }
+
+  /* ---------- guilloche (roseta de billete) ---------- */
+  function guilloche(canvas) {
+    var gen = 0, lastW = 0, ready = false;
+    function draw(animate) {
+      var my = ++gen;
+      var S = canvas.clientWidth; if (!S) return;
+      lastW = S;
+      var dpr = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width = Math.round(S * dpr); canvas.height = Math.round(S * dpr);
+      var ctx = canvas.getContext("2d"); ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      var col = tokenColor("--accent"), ink = tokenColor("--accent-ink"), c = S / 2, R = S * 0.485;
+      var dark = root.getAttribute("data-theme") === "dark" || (!root.getAttribute("data-theme") && window.matchMedia && matchMedia("(prefers-color-scheme: dark)").matches);
+      var curves = [], i;
+      for (i = 0; i < 44; i++) (function (ph) { curves.push(function (t) { var r = R * (0.87 + 0.055 * Math.sin(18 * t + ph)); return [c + r * Math.cos(t), c + r * Math.sin(t)]; }); })(i / 44 * Math.PI * 2);
+      for (i = 0; i < 30; i++) (function (ph) { curves.push(function (t) { var r = R * (0.665 + 0.105 * Math.sin(7 * t + ph) * Math.cos(2 * t + ph / 3)); return [c + r * Math.cos(t), c + r * Math.sin(t)]; }); })(i / 30 * Math.PI * 2 / 7);
+      for (i = 0; i < 20; i++) (function (ph) { curves.push(function (t) { var r = R * (0.45 + 0.085 * Math.cos(11 * t + ph)); return [c + r * Math.cos(t), c + r * Math.sin(t)]; }); })(i / 20 * Math.PI * 2 / 11);
+      function batch(list) {
+        ctx.save();
+        ctx.beginPath(); ctx.arc(c, c, R, 0, Math.PI * 2); ctx.arc(c, c, R * 0.35, 0, Math.PI * 2, true); ctx.clip();
+        ctx.strokeStyle = col; ctx.lineWidth = Math.max(0.5, S / 820); ctx.globalAlpha = dark ? 0.46 : 0.36;
+        list.forEach(function (f) { ctx.beginPath(); for (var k = 0; k <= 900; k++) { var p = f(k / 900 * Math.PI * 2); if (k) ctx.lineTo(p[0], p[1]); else ctx.moveTo(p[0], p[1]); } ctx.stroke(); });
+        ctx.restore();
+      }
+      function rings() {
+        ctx.save(); ctx.globalAlpha = 0.85; ctx.strokeStyle = ink; ctx.lineWidth = 1;
+        [0.995, 0.965, 0.36].forEach(function (k) { ctx.beginPath(); ctx.arc(c, c, R * k, 0, Math.PI * 2); ctx.stroke(); });
+        ctx.restore();
+      }
+      if (animate && !reduceMotion) {
+        var idx = 0;
+        (function frame() {
+          if (my !== gen) return;
+          batch(curves.slice(idx, idx + 5)); idx += 5;
+          if (idx < curves.length) requestAnimationFrame(frame); else rings();
+        })();
+      } else { batch(curves); rings(); }
+    }
+    if (window.ResizeObserver) new ResizeObserver(function () { if (ready && canvas.clientWidth !== lastW) draw(false); }).observe(canvas);
+    onTheme(function () { draw(false); });
+    draw(true); ready = true;
+  }
+
+  /* ---------- índice lateral ---------- */
+  function buildToc() {
+    var toc = document.querySelector(".toc"); if (!toc) return;
+    var secs = $$(".content > .sec[id]");
+    var det = document.createElement("details"), sum = document.createElement("summary");
+    sum.textContent = "Índice del documento"; det.appendChild(sum);
+    var ol = document.createElement("ol");
+    var links = secs.map(function (s) {
+      var h = s.querySelector("h2"), li = document.createElement("li"), a = document.createElement("a");
+      a.href = "#" + s.id; a.textContent = (h && (h.getAttribute("data-short") || h.textContent)) || s.id;
+      li.appendChild(a); ol.appendChild(li); return a;
+    });
+    det.appendChild(ol); toc.appendChild(det);
+    if (window.matchMedia) {
+      var wide = matchMedia("(min-width:1080px)");
+      var sync = function () { det.open = wide.matches; };
+      sync(); if (wide.addEventListener) wide.addEventListener("change", sync);
+    }
+    if ("IntersectionObserver" in window) {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (en) {
+          if (en.isIntersecting) {
+            var id = en.target.id;
+            links.forEach(function (a) { if (a.getAttribute("href") === "#" + id) a.setAttribute("aria-current", "true"); else a.removeAttribute("aria-current"); });
+          }
+        });
+      }, { rootMargin: "-15% 0px -75% 0px" });
+      secs.forEach(function (s) { io.observe(s); });
+    }
+  }
+
+  /* ---------- microtexto de seguridad ---------- */
+  function microprint() {
+    $$(".microprint").forEach(function (m) {
+      var s = (m.getAttribute("data-text") || "MÁQUINAS Y MERCADOS") + " · ";
+      m.textContent = new Array(40).join(s);
+    });
+  }
+
+  /* ---------- código: resaltado mínimo y botón de copiar ---------- */
+  function highlight(codeEl) {
+    var src = codeEl.textContent;
+    var re = /(#[^\n]*)|("""[\s\S]*?"""|[rfbuRFBU]{0,2}"(?:\\.|[^"\\\n])*"|[rfbuRFBU]{0,2}'(?:\\.|[^'\\\n])*')|\b(def|return|import|from|as|if|elif|else|for|in|and|or|not|None|True|False|with|raise|class|while|lambda|try|except|pass|yield)\b|\b(\d+(?:\.\d+)?(?:e-?\d+)?)\b/g;
+    var frag = document.createDocumentFragment(), last = 0, m;
+    while ((m = re.exec(src))) {
+      if (m.index > last) frag.appendChild(document.createTextNode(src.slice(last, m.index)));
+      var sp = document.createElement("span");
+      sp.className = m[1] ? "c-com" : m[2] ? "c-str" : m[3] ? "c-kw" : "c-num";
+      sp.textContent = m[0]; frag.appendChild(sp); last = m.index + m[0].length;
+    }
+    if (last < src.length) frag.appendChild(document.createTextNode(src.slice(last)));
+    codeEl.replaceChildren(frag);
+  }
+  function codeBlocks() {
+    $$(".codeblock").forEach(function (cb) {
+      var code = cb.querySelector("code"); if (!code) return;
+      if (cb.getAttribute("data-lang") === "python") highlight(code);
+      var b = document.createElement("button"); b.type = "button"; b.className = "copy"; b.textContent = "Copiar";
+      b.addEventListener("click", function () {
+        var txt = code.textContent;
+        var fallback = function () { var r = document.createRange(); r.selectNodeContents(code); var s = window.getSelection(); s.removeAllRanges(); s.addRange(r); b.textContent = "Seleccionado"; };
+        try {
+          if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(function () { b.textContent = "Copiado"; setTimeout(function () { b.textContent = "Copiar"; }, 1600); }, fallback);
+          else fallback();
+        } catch (e) { fallback(); }
+      });
+      cb.appendChild(b);
+    });
+  }
+
+  window.MM = {
+    css: css, tokenColor: tokenColor, rng: rng, normal: normal, fmt: fmt, pct: pct, money: money, signed: signed,
+    el: el, lin: lin, logs: logs, niceDomain: niceDomain, ticks: ticks,
+    showTip: showTip, hideTip: hideTip, responsive: responsive, dataTable: dataTable,
+    hbar: hbar, range: range, line: line, vbar: vbar, flow: flow, onTheme: onTheme, reduceMotion: reduceMotion,
+    barPath: barPath, roundRect: roundRect, wrapText: wrapText, svgRoot: svgRoot, tipAtEl: tipAtEl
+  };
+
+  buildToc();
+  microprint();
+  codeBlocks();
+  $$(".emblem canvas").forEach(guilloche);
+})();
+
+</script>
+<script>
+(function () {
+  var M = window.MM;
+  function $(id) { return document.getElementById(id); }
+  function h(tag, cls, txt) { var e = document.createElement(tag); if (cls) e.className = cls; if (txt !== undefined) e.textContent = txt; return e; }
+  var MIN = 60, HR = 3600, D = 86400, WK = 604800, MO = 2629800, Y = 31557600;
+
+  var FAM = { trend: "Tendencia y momentum", mr: "Reversión a la media", rel: "Valor relativo y arbitraje", carry: "Carry y primas", value: "Valor y macro", event: "Eventos", season: "Calendario y flujos", micro: "Microestructura y velocidad", vol: "Volatilidad y opciones", ml: "Datos y aprendizaje automático" };
+  var SEC = { fx: "Divisas", eq: "Acciones e índices", cmd: "Materias primas", rates: "Tipos y bonos", crypto: "Cripto" };
+  var EDGE = {
+    serv: { t: "Servicio", d: "das liquidez", c: "var(--e-serv)" },
+    risk: { t: "Riesgo", d: "cobras una prima", c: "var(--e-risk)" },
+    beh: { t: "Comportamiento", d: "errores y obligaciones ajenas", c: "var(--e-beh)" },
+    info: { t: "Información", d: "sabes o reaccionas antes", c: "var(--e-info)" },
+    save: { t: "Ahorro de costes", d: "no gana, evita perder", hollow: true },
+    none: { t: "Sin ventaja propia", d: "esperanza negativa por sí sola", hollow: true, dash: true }
+  };
+  var CT = { si: "Sí", parcial: "Parcial", no: "No" };
+  var SK = { pos: "Sesgo positivo", neg: "Sesgo negativo", neu: "Sesgo neutro" };
+  var DIFF = ["", "Accesible", "Intermedia", "Avanzada", "Experta", "Institucional"];
+  var REG = ["Tendencias largas", "Mercado lateral", "Crisis y pánico", "Calma y volatilidad baja", "Subidas de tipos e inflación"];
+  var REGS = ["Tend.", "Lateral", "Crisis", "Calma", "Tipos"];
+
+  var S = [
+    { id: "tsmom", n: "Tendencia en series temporales", lab: "Tendencia", f: "trend", s: ["fx", "eq", "cmd", "rates", "crypto"], d: 1, hz: [WK, 6 * MO], hzt: "Semanas a meses", e: "beh", ct: "si", sk: "pos", cap: "alta", r: [2, -2, 1, -1, 2],
+      w: "Comprar lo que lleva meses subiendo y vender lo que baja, en cada mercado por separado, con un tamaño que iguala el riesgo de todos.",
+      p: "Quien reacciona tarde. La información se incorpora poco a poco, los inversores anclan sus expectativas y bancos centrales y coberturas actúan de forma gradual.",
+      m: "Macro: ciclos de tipos, inflación y crecimiento que se ajustan despacio. Brilló en 2008 y en 2022. Micro: el efecto rebaño, los stops y las coberturas alargan los movimientos.",
+      x: "Deriva persistente: rendimientos de 1 a 12 meses que tienden a continuar.",
+      how: "Señal con el signo del rendimiento de 3 a 12 meses o un cruce de medias; volatilidad objetivo por mercado; revisión diaria o semanal; de 10 a 50 mercados. Es la base de los fondos de futuros gestionados (CTA).",
+      risk: "Muchas pérdidas pequeñas en mercados laterales y giros bruscos.",
+      ev: "Moskowitz, Ooi y Pedersen (2012); Hurst, Ooi y Pedersen (2017): un siglo de evidencia." },
+    { id: "breakout", n: "Ruptura de rangos", lab: "Rupturas", f: "trend", s: ["fx", "eq", "cmd", "crypto"], d: 1, hz: [D, 2 * MO], hzt: "Días a semanas", e: "beh", ct: "si", sk: "pos", cap: "alta", r: [2, -2, 1, -2, 1],
+      w: "Entrar cuando el precio supera el máximo o el mínimo de las últimas N sesiones y salir con un stop que se va moviendo, al estilo de los canales de Donchian.",
+      p: "Quien se cubre o salta por stops en cadena al romperse niveles que vigila todo el mercado.",
+      m: "Micro: acumulación de stops y de opciones cerca de niveles visibles. Macro: cambios de régimen tras noticias o datos.",
+      x: "Expansión de la volatilidad al salir de un rango.",
+      how: "Canal de 20 a 55 sesiones, stop a 2 o 3 veces el rango medio (ATR) y riesgo fijo por operación. Muy fácil de programar como cBot.",
+      risk: "Falsas rupturas: en intradía la mayoría fracasa y los costes se comen la ventaja.",
+      ev: "Reglas de los Turtle Traders de los años ochenta; la evidencia de la tendencia en general." },
+    { id: "xsmom", n: "Momentum relativo", lab: "Momentum relativo", f: "trend", s: ["eq", "fx", "cmd"], d: 2, hz: [MO, 12 * MO], hzt: "Meses", e: "beh", ct: "parcial", sk: "neg", cap: "alta", r: [1, -1, -1, 1, 0],
+      w: "Comprar los activos que más han subido en el último año, sin contar el último mes, y vender los que menos, dentro de un mismo universo.",
+      p: "Inversores que infrarreaccionan a las noticias y venden pronto lo que gana y aguantan lo que pierde (efecto disposición).",
+      m: "Micro: difusión lenta de la información entre empresas y sectores. Macro: sectores y divisas favorecidos por el ciclo.",
+      x: "Fuerza relativa persistente entre activos.",
+      how: "Ranking mensual por rendimiento de 12 a 2 meses; largo en el grupo de cabeza, corto en el de cola, neutral al mercado.",
+      risk: "Desplomes cuando el mercado rebota tras una crisis, como en 2009.",
+      ev: "Jegadeesh y Titman (1993); Daniel y Moskowitz (2016); Menkhoff y otros (2012) en divisas." },
+    { id: "intramom", n: "Momentum intradía del índice", lab: "Momentum intradía", f: "trend", s: ["eq"], d: 2, hz: [15 * MIN, HR], hzt: "Minutos", e: "beh", ct: "si", sk: "neu", cap: "media", r: [1, -1, 1, -1, 0],
+      w: "Si el índice sube en su primera media hora, comprar en la última media hora de la sesión, y al revés.",
+      p: "Flujos previsibles al cierre: coberturas de opciones, fondos apalancados que rebalancean y operadores que llegan tarde.",
+      m: "Micro: rebalanceo de ETF apalancados y cobertura de los creadores de mercado de opciones.",
+      x: "Relación entre el principio y el final de la sesión.",
+      how: "Una operación al día en CFD del S&P 500 o del Nasdaq, con costes muy ajustados.",
+      risk: "Efecto pequeño, sensible a costes y que cambia con el tiempo.",
+      ev: "Gao, Han, Li y Zhou (2018), Market Intraday Momentum." },
+    { id: "cryptomom", n: "Tendencia en cripto", lab: "Tendencia cripto", f: "trend", s: ["crypto"], d: 2, hz: [WK, 3 * MO], hzt: "Semanas", e: "beh", ct: "parcial", sk: "pos", cap: "media", r: [2, -1, -1, -1, -2],
+      w: "Seguir la tendencia de bitcoin y de las principales criptomonedas: comprar tras semanas de subida y salir cuando se gira.",
+      p: "Atención y compras de minoristas que llegan tarde en un mercado joven y poco eficiente.",
+      m: "Micro: flujos minoristas y apalancamiento. Macro: liquidez global; se hundió con las subidas de tipos de 2022.",
+      x: "Rendimientos de 1 a 4 semanas que tienden a continuar.",
+      how: "Señales de tendencia con volatilidad objetivo y tamaño pequeño. En CFD, la financiación nocturna es cara.",
+      risk: "Volatilidad extrema, huecos y cierres o quiebras de exchanges.",
+      ev: "Liu y Tsyvinski (2021), Risks and Returns of Cryptocurrency." },
+
+    { id: "strev", n: "Reversión de corto plazo", lab: "Reversión corta", f: "mr", s: ["eq"], d: 2, hz: [D, MO], hzt: "Días a semanas", e: "serv", ct: "parcial", sk: "neg", cap: "media", r: [-1, 2, 1, 0, 0],
+      w: "Comprar lo que más ha caído en la última semana o mes y vender lo que más ha subido.",
+      p: "Quien vendió o compró con prisa: tú le das liquidez, el precio se pasa y luego vuelve.",
+      m: "Micro: presión de órdenes grandes e inventario de los creadores de mercado. Paga más cuando la volatilidad es alta y escasea la liquidez.",
+      x: "Movimientos exagerados de corto plazo sin información nueva detrás.",
+      how: "Ranking semanal de rendimientos, cartera neutral al mercado y ejecución barata.",
+      risk: "Los costes se comen la ventaja; y a veces la caída tenía un motivo real.",
+      ev: "Lehmann (1990); Jegadeesh (1990); Nagel (2012), Evaporating Liquidity." },
+    { id: "intramr", n: "Reversión intradía a la media", lab: "Reversión intradía", f: "mr", s: ["fx", "eq"], d: 2, hz: [15 * MIN, D], hzt: "Minutos a horas", e: "serv", ct: "si", sk: "neg", cap: "media", r: [-2, 2, -2, 2, -1],
+      w: "Vender cuando el precio se aleja mucho por arriba de su media reciente y comprar cuando se aleja por abajo, esperando que vuelva.",
+      p: "Movimientos sin noticias detrás en horas tranquilas, que tienden a deshacerse.",
+      m: "Micro: rangos de la sesión asiática en cruces como EURCHF o AUDNZD, con poca información nueva.",
+      x: "Desviaciones de la media en mercados sin tendencia.",
+      how: "Bandas a 2 desviaciones, filtros de horario y de noticias, objetivo en la media y stop amplio. El coste por operación lo decide todo.",
+      risk: "Un día de noticias convierte el rango en tendencia: pérdidas raras y grandes.",
+      ev: "Evidencia mixta; el documento 2 explica por qué se agota en divisas." },
+    { id: "grid", n: "Rejilla y martingala", lab: "Rejilla", f: "mr", s: ["fx", "crypto"], d: 1, hz: [HR, MO], hzt: "Horas a semanas", e: "none", ct: "si", sk: "neg", cap: "baja", r: [-2, 2, -2, 2, -1],
+      w: "Abrir órdenes escalonadas cada X pips y, en la martingala, doblar el tamaño tras cada pérdida para recuperarlo todo con la primera ganancia.",
+      p: "Nadie: cambia muchas ganancias pequeñas por una pérdida enorme que acaba llegando.",
+      m: "Ninguna razón económica: solo la apuesta a que el precio siempre vuelve.",
+      x: "Nada; solo la distancia al último precio de entrada.",
+      how: "Fácil de programar, y por eso abunda en las tiendas de robots. Si la pruebas, que sea para entender por qué no funciona.",
+      risk: "Ruina: una tendencia larga, como la del franco suizo en 2015, se lleva la cuenta.",
+      ev: "Matemática de la ruina del jugador; el simulador de Kelly del documento 6." },
+
+    { id: "pairs", n: "Pares cointegrados", lab: "Pares", f: "rel", s: ["eq", "fx", "cmd"], d: 3, hz: [D, MO], hzt: "Días a semanas", e: "serv", ct: "parcial", sk: "neg", cap: "media", r: [-1, 2, -1, 1, 0],
+      w: "Dos activos que se mueven juntos se separan: comprar el barato, vender el caro y esperar a que el diferencial vuelva.",
+      p: "Quien empujó uno de los dos precios; cobras cuando el mercado corrige el desajuste.",
+      m: "Micro: empresas del mismo sector con los mismos costes. Macro: divisas ligadas por el comercio, como el dólar australiano y el neozelandés.",
+      x: "Un diferencial estable que se aleja de su media, medido en desviaciones típicas.",
+      how: "Selección por cointegración en un periodo de formación, entrada a 2 desviaciones, salida en la media y stop por tiempo o por ruptura.",
+      risk: "Que la relación se rompa de verdad, por una fusión o un cambio regulatorio, y promedies pérdidas.",
+      ev: "Gatev, Goetzmann y Rouwenhorst (2006): rentable durante décadas, cada vez menos." },
+    { id: "statarb", n: "Arbitraje estadístico con factores", lab: "Arb. estadístico", f: "rel", s: ["eq"], d: 4, hz: [D, 2 * WK], hzt: "Días", e: "serv", ct: "no", sk: "neg", cap: "media", r: [0, 1, -2, 1, -1],
+      w: "En cientos de acciones, quitar a cada una lo que explican el mercado y su sector, y apostar a que el resto, el residuo, vuelve a cero.",
+      p: "Quien necesita liquidez en valores concretos, a escala: miles de apuestas pequeñas casi independientes.",
+      m: "Micro: presión de los flujos de fondos y reacciones exageradas a noticias de una empresa.",
+      x: "Residuos de cada acción que se apartan de su media.",
+      how: "Modelo de factores o componentes principales diario, señales por desviación del residuo, cartera neutral en mercado y sector, ejecución algorítmica.",
+      risk: "Ventas en masa de fondos parecidos: en agosto de 2007 muchos fondos cuantitativos perdieron a la vez.",
+      ev: "Avellaneda y Lee (2010); Khandani y Lo (2011), sobre agosto de 2007." },
+    { id: "basis", n: "Arbitraje de base: futuro frente a contado", lab: "Base", f: "rel", s: ["eq", "rates", "cmd", "crypto"], d: 4, hz: [WK, 3 * MO], hzt: "Semanas a meses", e: "risk", ct: "no", sk: "neg", cap: "alta", r: [0, 1, -2, 1, -1],
+      w: "Comprar el contado y vender el futuro cuando el futuro cotiza caro frente a su precio teórico, y esperar a que converjan al vencimiento.",
+      p: "Quien quiere exposición apalancada y paga caro el futuro: cobras por prestar tu balance.",
+      m: "Macro: tipos de interés y demanda de apalancamiento. La base de los bonos del Tesoro de EE. UU. se desplomó en marzo de 2020.",
+      x: "Diferencia entre el futuro y su precio teórico con financiación y dividendos.",
+      how: "Precio teórico = contado ajustado por financiación y rendimientos; entrar cuando la diferencia supera todos los costes.",
+      risk: "Llamadas de margen si la base se abre más antes de converger; exige mucho apalancamiento.",
+      ev: "Shleifer y Vishny (1997), The Limits of Arbitrage." },
+    { id: "etfarb", n: "Arbitraje de ETF frente a su cesta", lab: "ETF", f: "rel", s: ["eq", "rates"], d: 5, hz: [1, D], hzt: "Segundos a horas", e: "serv", ct: "no", sk: "neu", cap: "media", r: [0, 0, 1, 0, 0],
+      w: "Cuando un ETF cotiza por encima o por debajo del valor de sus componentes, crear o reembolsar participaciones y cerrar la diferencia.",
+      p: "Solo los participantes autorizados pueden crear y reembolsar: cobran por mantener alineado el precio.",
+      m: "Micro: mecánica de creación y reembolso. En marzo de 2020, ETF de bonos cotizaron con grandes descuentos.",
+      x: "Prima o descuento sobre el valor liquidativo estimado.",
+      how: "Acuerdos con la gestora, acceso a los mercados de los componentes y financiación.",
+      risk: "Mercados de los componentes cerrados o sin liquidez.",
+      ev: "Ben-David, Franzoni y Moussawi (2018), Do ETFs Increase Volatility?" },
+
+    { id: "fxcarry", n: "Carry de divisas", lab: "Carry FX", f: "carry", s: ["fx"], d: 2, hz: [MO, Y], hzt: "Meses", e: "risk", ct: "parcial", sk: "neg", cap: "alta", r: [1, 1, -2, 2, 1],
+      w: "Comprar divisas con tipos de interés altos contra divisas con tipos bajos y cobrar la diferencia cada día.",
+      p: "Quien quiere librarse del riesgo de crisis: las divisas de tipos altos caen de golpe cuando el mundo se asusta.",
+      m: "Macro: diferenciales de política monetaria y el fallo de la paridad de intereses. Se desploma en las huidas hacia la seguridad, como en 2008 y en agosto de 2024 con el yen.",
+      x: "Diferencias de tipos de interés o, lo que es lo mismo, el descuento del tipo a plazo.",
+      how: "Ordenar de 10 a 20 divisas por tipo a corto plazo, comprar las tres más altas y vender las tres más bajas, y revisar cada mes. En CFD, comprueba el swap real del bróker.",
+      risk: "Caídas bruscas y simultáneas en las crisis; y un swap minorista que puede no pagar casi nada.",
+      ev: "Lustig y Verdelhan (2007); Brunnermeier, Nagel y Pedersen (2008)." },
+    { id: "carrytrend", n: "Carry con filtro de tendencia", lab: "Carry + tendencia", f: "carry", s: ["fx"], d: 2, hz: [MO, 6 * MO], hzt: "Meses", e: "risk", ct: "parcial", sk: "neu", cap: "alta", r: [2, 0, -1, 1, 1],
+      w: "Carry solo en las divisas cuya tendencia acompaña: si la divisa de tipos altos cae con fuerza, se sale.",
+      p: "La prima del carry, con la salida anticipada que da la tendencia.",
+      m: "Macro: evita parte de los desplomes de las huidas hacia la seguridad.",
+      x: "Diferencial de tipos y dirección del precio a la vez.",
+      how: "Como el carry, más un filtro de media de 3 a 12 meses. Es el ejemplo de código del documento 2.",
+      risk: "Giros rápidos que el filtro detecta tarde.",
+      ev: "Menkhoff y otros (2012); documento 2." },
+    { id: "cmdroll", n: "Roll de materias primas", lab: "Roll materias primas", f: "carry", s: ["cmd"], d: 3, hz: [MO, 3 * MO], hzt: "Meses", e: "risk", ct: "parcial", sk: "neu", cap: "media", r: [1, 0, -1, 0, 2],
+      w: "Comprar materias primas cuyo futuro cotiza por debajo del contado (backwardation) y vender las que están en contango.",
+      p: "Productores que pagan por cubrirse, y el valor de tener existencias cuando escasean.",
+      m: "Micro: teoría del almacenamiento; con inventarios bajos, el contado sube sobre el futuro. Macro: ciclos globales de oferta y demanda; brilló en 2021 y 2022.",
+      x: "Pendiente de la curva de futuros.",
+      how: "Ranking mensual por pendiente entre el primer y el segundo vencimiento; largo en backwardation, corto en contango.",
+      risk: "Shocks de oferta y cambios bruscos de inventarios.",
+      ev: "Gorton y Rouwenhorst (2006); Erb y Harvey (2006); Koijen y otros (2018)." },
+    { id: "bondcarry", n: "Carry y roll-down en bonos", lab: "Carry bonos", f: "carry", s: ["rates"], d: 3, hz: [MO, Y], hzt: "Meses", e: "risk", ct: "no", sk: "neg", cap: "alta", r: [0, 1, 1, 1, -2],
+      w: "Comprar los plazos de la curva que más rinden sobre la financiación y que ganan valor al acercarse al vencimiento.",
+      p: "Quien no quiere prestar a largo plazo: cobras la prima por plazo.",
+      m: "Macro: la pendiente de la curva anticipa ciclos. Sufrió con las subidas de tipos de 2022.",
+      x: "Pendiente de la curva y carry por plazo.",
+      how: "Futuros de bonos de varios países ordenados por carry, con el mismo riesgo por duración.",
+      risk: "Subidas de tipos inesperadas.",
+      ev: "Koijen, Moskowitz, Pedersen y Vrugt (2018), Carry." },
+    { id: "cryptofund", n: "Carry de financiación en perpetuos", lab: "Financiación cripto", f: "carry", s: ["crypto"], d: 3, hz: [D, MO], hzt: "Días a semanas", e: "risk", ct: "no", sk: "neg", cap: "media", r: [1, 0, -1, 0, 0],
+      w: "Comprar el contado y vender el perpetuo cuando la tasa de financiación es positiva, y cobrarla cada pocas horas sin apostar por la dirección.",
+      p: "Especuladores que pagan por estar apalancados al alza.",
+      m: "Micro: demanda de apalancamiento; la tasa sube en las euforias y cae en los pánicos.",
+      x: "Tasa de financiación y diferencia entre perpetuo y contado.",
+      how: "Dos patas, en el mismo exchange o en dos, con colateral de sobra y rebalanceo.",
+      risk: "Quiebra del exchange, como FTX en 2022, liquidación de la pata corta y tasas negativas.",
+      ev: "He, Manela, Ross y von Wachter (2022), Fundamentals of Perpetual Futures." },
+
+    { id: "value", n: "Value en acciones", lab: "Value", f: "value", s: ["eq"], d: 2, hz: [3 * MO, 3 * Y], hzt: "Meses a años", e: "risk", ct: "parcial", sk: "neu", cap: "alta", r: [0, 0, -1, 0, 2],
+      w: "Comprar acciones baratas por beneficios, ventas o valor contable y vender las caras.",
+      p: "Una mezcla de prima por riesgo, porque las baratas suelen tener problemas, y de inversores que extrapolan demasiado.",
+      m: "Macro: sufre con tipos bajos y dinero abundante, como entre 2010 y 2020, y revive con tipos altos, como en 2022.",
+      x: "Diferencias de valoración entre empresas.",
+      how: "Ratios de valoración combinados, revisión trimestral y neutralidad por sector.",
+      risk: "Décadas malas: la trampa de valor.",
+      ev: "Fama y French (1993); Asness, Moskowitz y Pedersen (2013)." },
+    { id: "fxvalue", n: "Valor en divisas", lab: "Valor FX", f: "value", s: ["fx"], d: 2, hz: [6 * MO, 5 * Y], hzt: "Meses a años", e: "risk", ct: "si", sk: "neu", cap: "alta", r: [-1, 1, 0, 0, 1],
+      w: "Comprar las divisas más baratas según la paridad de poder adquisitivo y vender las más caras.",
+      p: "Los tipos de cambio vuelven despacio a su equilibrio; cobras por esperar y por soportar el riesgo mientras tanto.",
+      m: "Macro: inflación relativa, balanza por cuenta corriente y términos de intercambio.",
+      x: "Desviación del tipo de cambio real frente a su media de largo plazo.",
+      how: "Tipo de cambio real con precios de la OCDE o del FMI, revisión trimestral y horizonte de años.",
+      risk: "Las desviaciones duran años: la vida media se estima entre 3 y 5.",
+      ev: "Rogoff (1996); Menkhoff y otros (2017), Currency Value." },
+    { id: "quality", n: "Calidad y beta baja", lab: "Calidad", f: "value", s: ["eq"], d: 3, hz: [3 * MO, Y], hzt: "Meses", e: "beh", ct: "parcial", sk: "neu", cap: "alta", r: [-1, 1, 1, 0, -1],
+      w: "Comprar acciones rentables y de poco riesgo y vender las especulativas, con una cartera neutral en beta.",
+      p: "Inversores que no pueden endeudarse y sobrepagan las acciones arriesgadas para ganar exposición.",
+      m: "Micro: restricciones de apalancamiento. Macro: defensiva en recesiones.",
+      x: "Beta, volatilidad y rentabilidad sobre el capital.",
+      how: "Larga en beta baja apalancada, corta en beta alta; revisión mensual.",
+      risk: "Rotaciones hacia empresas especulativas y subidas de tipos.",
+      ev: "Frazzini y Pedersen (2014), Betting Against Beta; Asness, Frazzini y Pedersen (2019)." },
+    { id: "macrofund", n: "Macro sistemático", lab: "Macro", f: "value", s: ["fx", "rates", "eq"], d: 3, hz: [MO, 6 * MO], hzt: "Meses", e: "info", ct: "parcial", sk: "neu", cap: "alta", r: [1, 0, 1, 0, 1],
+      w: "Posiciones en divisas, bonos e índices según la marcha de la economía: crecimiento, inflación, sorpresas frente al consenso.",
+      p: "Precios que incorporan tarde la información macro que llega poco a poco.",
+      m: "Macro pura: ciclo económico, política monetaria y flujos de capital.",
+      x: "Cambios en el ritmo de crecimiento e inflación antes de que los reflejen los precios.",
+      how: "Indicadores de sorpresa, tendencia de los datos y modelos de predicción inmediata; revisión semanal o mensual.",
+      risk: "Datos que se revisan, cambios de régimen y pocas observaciones para validar.",
+      ev: "Brooks (2017), A Half Century of Macro Momentum." },
+
+    { id: "pead", n: "Deriva tras resultados", lab: "Resultados", f: "event", s: ["eq"], d: 3, hz: [D, 2 * MO], hzt: "Días a semanas", e: "beh", ct: "parcial", sk: "neu", cap: "media", r: [0, 0, 0, 1, 0],
+      w: "Comprar las empresas que baten con claridad las previsiones de beneficios y vender las que decepcionan, y mantener unas semanas.",
+      p: "Inversores que reaccionan a medias a las sorpresas, sobre todo los días con muchos resultados.",
+      m: "Micro: atención limitada; la deriva es mayor cuando los resultados salen en viernes o en días saturados.",
+      x: "Sorpresa de beneficios frente al consenso y reacción del precio el día del anuncio.",
+      how: "Datos de consenso y resultados, entrada al día siguiente y salida a los 60 días.",
+      risk: "Efecto más débil en grandes empresas y desde los años 2000.",
+      ev: "Ball y Brown (1968); Bernard y Thomas (1989); DellaVigna y Pollet (2009)." },
+    { id: "prefomc", n: "Víspera de la Reserva Federal", lab: "Víspera Fed", f: "event", s: ["eq"], d: 1, hz: [12 * HR, D], hzt: "Un día", e: "risk", ct: "si", sk: "neu", cap: "alta", r: [0, 0, 0, 0, -1],
+      w: "Comprar el índice la víspera de las decisiones de la Reserva Federal y cerrar justo antes del anuncio.",
+      p: "Una prima por soportar la incertidumbre antes de la decisión; su causa exacta se discute.",
+      m: "Macro: política monetaria y resolución de la incertidumbre.",
+      x: "El calendario de reuniones de la Fed.",
+      how: "Ocho operaciones al año en CFD del S&P 500, sin stops ajustados.",
+      risk: "Se ha debilitado desde que se publicó; muestra pequeña.",
+      ev: "Lucca y Moench (2015), The Pre-FOMC Announcement Drift." },
+    { id: "news", n: "Reacción a datos macro", lab: "Noticias", f: "event", s: ["fx", "eq", "rates"], d: 4, hz: [0.001, HR], hzt: "Milisegundos a minutos", e: "info", ct: "no", sk: "neu", cap: "baja", r: [0, 0, 1, -1, 1],
+      w: "Reaccionar en milisegundos a la publicación de un dato, como el empleo o la inflación, según la sorpresa frente al consenso.",
+      p: "Los más lentos en procesar el dato.",
+      m: "Macro: las sorpresas de empleo, inflación y tipos mueven divisas y bonos en segundos.",
+      x: "Sorpresa: dato publicado menos el consenso.",
+      how: "Fuentes de datos de baja latencia de pago, servidores junto al mercado y órdenes preparadas.",
+      risk: "Spreads que se abren, deslizamiento enorme y datos revisados. Prohibido en muchas firmas de fondeo.",
+      ev: "Andersen, Bollerslev, Diebold y Vega (2003)." },
+    { id: "mergerarb", n: "Arbitraje de fusiones", lab: "Fusiones", f: "event", s: ["eq"], d: 3, hz: [MO, Y], hzt: "Meses", e: "risk", ct: "parcial", sk: "neg", cap: "media", r: [0, 1, -2, 2, -1],
+      w: "Tras anunciarse una compra, comprar la empresa comprada por debajo del precio ofrecido y cobrar la diferencia si la operación se cierra.",
+      p: "Accionistas que venden nada más conocerse la oferta para no esperar ni correr el riesgo de que fracase.",
+      m: "Micro: riesgo regulatorio y de financiación de cada operación. Macro: en las crisis fracasan muchas a la vez.",
+      x: "Diferencia entre el precio de mercado y el de la oferta.",
+      how: "Cartera diversificada de operaciones; cobertura con la compradora si paga con acciones.",
+      risk: "Operaciones que se rompen: pérdidas grandes y correlacionadas en crisis.",
+      ev: "Mitchell y Pulvino (2001): su perfil se parece al de vender opciones de venta." },
+    { id: "index", n: "Cambios en los índices", lab: "Índices", f: "event", s: ["eq"], d: 3, hz: [D, MO], hzt: "Días a semanas", e: "beh", ct: "parcial", sk: "neu", cap: "media", r: [0, 0, -1, 1, 0],
+      w: "Anticipar las compras y ventas de los fondos indexados cuando una empresa entra o sale de un índice.",
+      p: "Fondos pasivos obligados a operar en una fecha conocida.",
+      m: "Micro: flujos obligados de la gestión pasiva, cada vez mayores.",
+      x: "Cambios de composición anunciados y demanda estimada frente al volumen normal.",
+      how: "Posición entre el anuncio y la fecha efectiva; se deshace al cierre de ese día.",
+      risk: "Mucha competencia: el efecto se ha reducido y a veces se adelanta.",
+      ev: "Harris y Gurel (1986); Shleifer (1986)." },
+
+    { id: "tom", n: "Efecto cambio de mes", lab: "Cambio de mes", f: "season", s: ["eq"], d: 1, hz: [3 * D, WK], hzt: "Unos días", e: "beh", ct: "si", sk: "neu", cap: "alta", r: [0, 0, 0, 0, 0],
+      w: "Estar comprado en el índice solo el último día del mes y los tres primeros del siguiente.",
+      p: "Flujos de nóminas y aportaciones a planes de pensiones que entran a principios de mes.",
+      m: "Micro: calendario de pagos y de flujos institucionales.",
+      x: "El calendario.",
+      how: "Una regla de calendario sobre CFD de índices, fácil de probar con décadas de datos.",
+      risk: "Efecto pequeño que puede desaparecer.",
+      ev: "Ariel (1987); Lakonishok y Smidt (1988); McConnell y Xu (2008)." },
+    { id: "fxfix", n: "Flujos del fixing de las 16 h", lab: "Fixing 16 h", f: "season", s: ["fx"], d: 3, hz: [15 * MIN, D], hzt: "Minutos a horas", e: "beh", ct: "si", sk: "neu", cap: "media", r: [0, 0, 1, 0, 0],
+      w: "Anticipar las compras y ventas de divisas que los gestores internacionales ejecutan al fixing de las 16 h de Londres, sobre todo a fin de mes.",
+      p: "Coberturas y rebalanceos previsibles, poco sensibles al precio.",
+      m: "Micro: cobertura cambiaria de carteras internacionales tras movimientos de las bolsas.",
+      x: "Rendimiento de las bolsas en el mes, que marca el sentido del rebalanceo.",
+      how: "Estimar el signo del flujo y operar en la ventana previa al fixing, que desde 2015 dura cinco minutos.",
+      risk: "Lo conoce todo el mundo; la ventaja es pequeña y variable.",
+      ev: "Evans (2018); Melvin y Prins (2015)." },
+    { id: "cmdseason", n: "Estacionalidad en materias primas", lab: "Estacional", f: "season", s: ["cmd"], d: 3, hz: [MO, 6 * MO], hzt: "Meses", e: "risk", ct: "parcial", sk: "neu", cap: "media", r: [0, 1, -1, 0, 0],
+      w: "Operar patrones del calendario de oferta y demanda: gas en invierno, gasolina en verano, grano en la cosecha.",
+      p: "Quien paga por almacenar o cubrirse en épocas de riesgo de escasez.",
+      m: "Micro: ciclos de producción, almacenamiento y consumo.",
+      x: "Diferenciales entre vencimientos de distintas estaciones.",
+      how: "Spreads de calendario en futuros, con tamaño pequeño; con CFD solo se aproxima.",
+      risk: "El tiempo atmosférico y la geopolítica rompen los patrones.",
+      ev: "Fama y French (1987), Commodity Futures Prices." },
+
+    { id: "mm", n: "Creación de mercado", lab: "Creación de mercado", f: "micro", s: ["eq", "fx", "crypto"], d: 5, hz: [0.001, 10 * MIN], hzt: "Milisegundos a minutos", e: "serv", ct: "no", sk: "neg", cap: "baja", r: [-1, 2, -2, 2, 0],
+      w: "Cotizar a la vez compra y venta, ganar el diferencial y gestionar el inventario que se acumula.",
+      p: "Quien tiene prisa. Pierdes con quien sabe más que tú: la selección adversa.",
+      m: "Micro pura: el spread compensa la selección adversa y el riesgo de inventario (modelos de Glosten-Milgrom y Kyle).",
+      x: "Precio justo, desequilibrio de órdenes y flujo tóxico.",
+      how: "Motor de cotización con control de inventario, acceso directo al mercado y reembolsos por aportar liquidez.",
+      risk: "Saltos de precio con inventario acumulado y competencia de firmas en microsegundos.",
+      ev: "Glosten y Milgrom (1985); Avellaneda y Stoikov (2008)." },
+    { id: "obi", n: "Desequilibrio del libro de órdenes", lab: "Libro de órdenes", f: "micro", s: ["eq", "crypto", "fx"], d: 4, hz: [0.1, MIN], hzt: "Segundos", e: "info", ct: "no", sk: "neu", cap: "baja", r: [0, 0, 1, 0, 0],
+      w: "Predecir el siguiente movimiento a segundos vista con el desequilibrio entre órdenes de compra y de venta.",
+      p: "Quien lee más tarde la presión compradora o vendedora.",
+      m: "Micro: el precio se mueve en proporción al desequilibrio del flujo de órdenes.",
+      x: "Desequilibrio del flujo en el mejor precio.",
+      how: "Datos de libro completos, modelos lineales o de aprendizaje y ejecución de muy baja latencia.",
+      risk: "Costes y competencia; la señal dura segundos.",
+      ev: "Cont, Kukanov y Stoikov (2014)." },
+    { id: "latarb", n: "Arbitraje de latencia", lab: "Latencia", f: "micro", s: ["eq", "fx", "crypto"], d: 5, hz: [0.000001, 0.001], hzt: "Microsegundos", e: "info", ct: "no", sk: "neu", cap: "baja", r: [0, 0, 1, -1, 0],
+      w: "Cuando un precio se mueve en un mercado, operar antes que nadie en otro que aún no se ha actualizado.",
+      p: "Los creadores de mercado más lentos.",
+      m: "Micro: fragmentación de mercados y carreras de microsegundos.",
+      x: "Desajustes entre mercados o entre futuro y contado.",
+      how: "Servidores en el mismo centro de datos, enlaces de microondas y hardware especializado.",
+      risk: "Carrera armamentística sin fin; en brókeres minoristas y firmas de fondeo, prohibido.",
+      ev: "Aquilina, Budish y O'Neill (2022): carreras de 5 a 10 microsegundos, un 20 % del volumen." },
+    { id: "triarb", n: "Arbitraje triangular", lab: "Triangular", f: "micro", s: ["fx", "crypto"], d: 5, hz: [0.000001, 1], hzt: "Microsegundos a segundos", e: "info", ct: "no", sk: "neu", cap: "baja", r: [0, 0, 1, 0, 0],
+      w: "Operar tres pares, como EURUSD, USDJPY y EURJPY, cuando sus precios no son coherentes entre sí.",
+      p: "Quien cotiza con precios desfasados durante milisegundos.",
+      m: "Micro: la ley de un solo precio.",
+      x: "Incoherencias entre tipos de cambio cruzados.",
+      how: "Acceso directo a varios mercados y ejecución simultánea.",
+      risk: "Las oportunidades duran menos que tu latencia; para un minorista casi no existen.",
+      ev: "Foucault, Kozhan y Tham (2017), Toxic Arbitrage." },
+    { id: "cexdex", n: "Arbitraje entre exchanges cripto", lab: "CEX-DEX", f: "micro", s: ["crypto"], d: 5, hz: [1, MIN], hzt: "Segundos", e: "info", ct: "no", sk: "neu", cap: "baja", r: [0, 0, 1, 0, 0],
+      w: "Aprovechar diferencias de precio entre exchanges centralizados y descentralizados, o el orden de las transacciones en una cadena de bloques.",
+      p: "Quien opera en exchanges descentralizados con precios desfasados.",
+      m: "Micro: fragmentación y precios que se actualizan bloque a bloque.",
+      x: "Desfase entre el precio de un fondo de liquidez y el de los exchanges centralizados.",
+      how: "Bots con nodos propios y subastas por el orden de los bloques; competencia extrema.",
+      risk: "Fallos de contratos inteligentes, comisiones de red y bots especializados.",
+      ev: "Daian y otros (2020), Flash Boys 2.0." },
+    { id: "exec", n: "Algoritmos de ejecución", lab: "Ejecución", f: "micro", s: ["eq", "fx", "rates", "cmd", "crypto"], d: 3, hz: [MIN, D], hzt: "Minutos a horas", e: "save", ct: "si", sk: "neu", cap: "alta", r: [0, 0, 0, 0, 0],
+      w: "Repartir una orden grande en el tiempo para no mover el precio: según el volumen (VWAP), el reloj (TWAP) o minimizando el coste total.",
+      p: "Nadie: no gana, evita perder. En órdenes grandes ahorra más de lo que gana muchas estrategias.",
+      m: "Micro: el impacto de mercado crece aproximadamente con la raíz cuadrada del tamaño.",
+      x: "Perfil de volumen del día y liquidez disponible.",
+      how: "Troceo con límites de participación en el volumen y ajuste por urgencia. Un TWAP sencillo se programa en un cBot.",
+      risk: "Que otros detecten tu patrón y operen delante.",
+      ev: "Almgren y Chriss (2001)." },
+
+    { id: "shortvol", n: "Venta de volatilidad", lab: "Venta de vol.", f: "vol", s: ["eq", "fx", "rates"], d: 4, hz: [WK, 3 * MO], hzt: "Semanas a meses", e: "risk", ct: "no", sk: "neg", cap: "alta", r: [0, 2, -2, 2, -1],
+      w: "Vender opciones o varianza y cobrar la diferencia entre la volatilidad implícita, que suele ser mayor, y la que acaba habiendo.",
+      p: "Inversores que pagan de más por protegerse de caídas: cobras un seguro.",
+      m: "Macro-finanzas: aversión al riesgo y demanda de coberturas. Explota en las crisis.",
+      x: "Diferencia entre volatilidad implícita y realizada.",
+      how: "Venta sistemática de opciones con cobertura de delta y límites de pérdida; nunca con pérdida ilimitada.",
+      risk: "Pérdidas enormes de golpe: el XIV perdió más del 90 % en febrero de 2018.",
+      ev: "Carr y Wu (2009), Variance Risk Premiums." },
+    { id: "longvol", n: "Cobertura de cola", lab: "Cobertura de cola", f: "vol", s: ["eq", "fx"], d: 4, hz: [MO, Y], hzt: "Meses", e: "none", ct: "no", sk: "pos", cap: "alta", r: [0, -2, 2, -2, 0],
+      w: "Comprar protección, como opciones de venta lejanas o volatilidad, que pierde un poco casi siempre y gana mucho en los desplomes.",
+      p: "Tú pagas la prima: sola tiene esperanza negativa, pero puede mejorar una cartera que sufre en las crisis.",
+      m: "Macro-finanzas: el otro lado de la venta de volatilidad.",
+      x: "Precio de la protección frente al riesgo de cola estimado.",
+      how: "Presupuesto fijo de primas, vencimientos escalonados y reglas para recoger beneficios en los picos.",
+      risk: "Sangrado continuo si no llega la crisis.",
+      ev: "Carr y Wu (2009); literatura sobre la prima de varianza." },
+    { id: "dispersion", n: "Dispersión", lab: "Dispersión", f: "vol", s: ["eq"], d: 5, hz: [MO, 3 * MO], hzt: "Meses", e: "risk", ct: "no", sk: "neg", cap: "media", r: [0, 1, -2, 1, 0],
+      w: "Vender volatilidad del índice y comprar la de sus componentes, apostando a que la correlación será menor de la que descuentan las opciones.",
+      p: "Quien paga caro protegerse de caídas conjuntas: cobras la prima de correlación.",
+      m: "Macro: en las crisis todo cae a la vez y la correlación se dispara.",
+      x: "Correlación implícita frente a la realizada.",
+      how: "Libro de opciones sobre el índice y decenas de acciones, con cobertura de delta diaria.",
+      risk: "Picos de correlación en las crisis.",
+      ev: "Driessen, Maenhout y Vilkov (2009), The Price of Correlation Risk." },
+
+    { id: "mlshort", n: "Predicción a corto plazo con aprendizaje automático", lab: "ML corto plazo", f: "ml", s: ["eq", "fx", "crypto"], d: 4, hz: [MIN, D], hzt: "Minutos a horas", e: "info", ct: "parcial", sk: "neu", cap: "baja", r: [0, 0, -1, 0, -1],
+      w: "Modelos que combinan cientos de variables de precio, volumen y calendario para predecir el siguiente movimiento.",
+      p: "Quien no ve relaciones no lineales débiles que las reglas simples pasan por alto.",
+      m: "Micro: patrones de flujos y de liquidez. Poca relación con la macro.",
+      x: "Patrones estadísticos débiles repartidos en muchas variables.",
+      how: "Validación con purga y embargo, pocas variables bien pensadas, costes realistas y un tramo final que nadie toca.",
+      risk: "El sobreajuste, el riesgo número uno del documento 1.",
+      ev: "Gu, Kelly y Xiu (2020); López de Prado (2018)." },
+    { id: "altdata", n: "Datos alternativos", lab: "Datos alternativos", f: "ml", s: ["eq", "cmd"], d: 4, hz: [WK, 3 * MO], hzt: "Semanas a meses", e: "info", ct: "no", sk: "neu", cap: "media", r: [0, 0, 0, 0, 0],
+      w: "Estimar ventas o producción antes de que se publiquen: aparcamientos vistos por satélite, pagos con tarjeta, envíos, precios en webs, petroleros.",
+      p: "El consenso, que se entera más tarde de cómo va un negocio o un mercado físico.",
+      m: "Micro: ventas y márgenes de empresas. Macro: actividad económica en tiempo real.",
+      x: "Diferencia entre la estimación con datos alternativos y el consenso.",
+      how: "Proveedores de pago, series con fecha de disponibilidad y validación frente a los resultados publicados.",
+      risk: "Datos caros que dejan de ser exclusivos y problemas legales de privacidad.",
+      ev: "Zhu (2019), Big Data as a Governance Mechanism." },
+    { id: "sentiment", n: "Sentimiento de noticias con modelos de lenguaje", lab: "Sentimiento", f: "ml", s: ["eq", "fx", "crypto"], d: 3, hz: [HR, WK], hzt: "Horas a días", e: "info", ct: "parcial", sk: "neu", cap: "media", r: [0, 0, 1, 0, 0],
+      w: "Convertir titulares, comunicados o redes en una puntuación de tono y operar en la dirección de las noticias.",
+      p: "Quien procesa el texto más despacio o de forma menos consistente; el mercado incorpora las noticias poco a poco en valores con poca cobertura.",
+      m: "Micro: difusión lenta de la información en empresas pequeñas. Macro: el tono de los bancos centrales.",
+      x: "Tono y novedad de las noticias.",
+      how: "Clasificación con un modelo de lenguaje y esquema fijo, fecha de cada dato y evaluación sin sesgo de anticipación, como en el documento 3.",
+      risk: "Backtests contaminados por lo que el modelo ya sabe y una señal que se agota al popularizarse.",
+      ev: "Tetlock (2007); Lopez-Lira y Tang (2023)." }
+  ];
+
+  /* ---------- filtros ---------- */
+  var st = { fam: "", sec: "", edge: "", diff: "", ct: "", q: "" };
+  function fill(sel, obj, fmt) { Object.keys(obj).forEach(function (k) { var o = document.createElement("option"); o.value = k; o.textContent = fmt ? fmt(k) : obj[k]; sel.appendChild(o); }); }
+  fill($("f-fam"), FAM); fill($("f-sec"), SEC); fill($("f-edge"), EDGE, function (k) { return EDGE[k].t; });
+  function norm(t) { return String(t).toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, ""); }
+  S.forEach(function (s) { s.text = norm([s.n, s.lab, FAM[s.f], s.w, s.p, s.m, s.x, s.how, s.risk, s.ev].concat(s.s.map(function (k) { return SEC[k]; })).join(" ")); });
+  function match(s) {
+    if (st.fam && s.f !== st.fam) return false;
+    if (st.sec && s.s.indexOf(st.sec) < 0) return false;
+    if (st.edge && s.e !== st.edge) return false;
+    if (st.diff && s.d > +st.diff) return false;
+    if (st.ct === "si" && s.ct !== "si") return false;
+    if (st.ct === "sip" && s.ct === "no") return false;
+    if (st.q) { var words = norm(st.q).split(/\s+/).filter(Boolean); for (var i = 0; i < words.length; i++) if (s.text.indexOf(words[i]) < 0) return false; }
+    return true;
+  }
+
+  /* ---------- catálogo ---------- */
+  var cards = {};
+  function edgeDot(e) { var i = h("i", "ed" + (EDGE[e].hollow ? " hollow" : "") + (EDGE[e].dash ? " dash" : "")); if (EDGE[e].c) i.style.setProperty("--e", EDGE[e].c); return i; }
+  S.forEach(function (s) {
+    var det = h("details", "strat"); det.id = "s-" + s.id;
+    var sum = h("summary");
+    var top = h("span", "s-top"); top.appendChild(h("span", "s-fam", FAM[s.f]));
+    var dd = h("span", "s-dd"); dd.setAttribute("role", "img"); dd.setAttribute("aria-label", "Dificultad " + s.d + " de 5");
+    for (var k = 1; k <= 5; k++) dd.appendChild(h("i", k <= s.d ? "on" : ""));
+    top.appendChild(dd); sum.appendChild(top);
+    sum.appendChild(h("span", "s-name", s.n));
+    sum.appendChild(h("span", "s-what", s.w));
+    var meta = h("span", "s-meta");
+    var ce = h("span", "chip"); ce.appendChild(edgeDot(s.e)); ce.appendChild(document.createTextNode(EDGE[s.e].t)); meta.appendChild(ce);
+    meta.appendChild(h("span", "chip", s.hzt));
+    meta.appendChild(h("span", "chip ct-" + s.ct, "cTrader: " + CT[s.ct].toLowerCase()));
+    sum.appendChild(meta); det.appendChild(sum);
+    var dl = h("dl", "s-body");
+    [["Quién paga", s.p], ["Micro y macro", s.m], ["Qué detecta", s.x], ["Cómo se monta", s.how], ["Riesgo principal", s.risk], ["Evidencia", s.ev],
+     ["Mercados", s.s.map(function (k) { return SEC[k]; }).join(" · ")],
+     ["Perfil", "Dificultad " + s.d + " de 5 (" + DIFF[s.d].toLowerCase() + ") · " + SK[s.sk] + " · capacidad " + s.cap]].forEach(function (row) {
+      var d = h("div"); d.appendChild(h("dt", "", row[0])); d.appendChild(h("dd", "", row[1])); dl.appendChild(d);
+    });
+    det.appendChild(dl);
+    $("catalog").appendChild(det); cards[s.id] = det;
+  });
+  function openCard(id) {
+    var el = cards[id]; if (!el) return;
+    if (el.hidden) { resetFilters(); }
+    el.open = true;
+    el.scrollIntoView({ behavior: M.reduceMotion ? "auto" : "smooth", block: "start" });
+    var sm = el.querySelector("summary"); if (sm && sm.focus) sm.focus({ preventScroll: true });
+  }
+
+  /* ---------- mapa: cuadrícula de horizonte y dificultad ---------- */
+  var BUCK = ["Menos de una hora", "Horas", "Días", "Semanas", "Meses o más"];
+  function bucket(s) { var g = Math.sqrt(s.hz[0] * s.hz[1]); return g < HR ? 0 : g < D ? 1 : g < WK ? 2 : g < MO ? 3 : 4; }
+  var chips = {};
+  (function gridMap() {
+    var tb = document.createElement("table"), th = document.createElement("thead"), tr = document.createElement("tr");
+    var cg = document.createElement("colgroup"); cg.appendChild(h("col", "rh")); BUCK.forEach(function () { cg.appendChild(h("col")); }); tb.appendChild(cg);
+    tr.appendChild(h("th", "", "Dificultad"));
+    BUCK.forEach(function (b) { var c = h("th", "", b); c.setAttribute("scope", "col"); tr.appendChild(c); });
+    th.appendChild(tr); tb.appendChild(th);
+    var body = document.createElement("tbody");
+    for (var d = 5; d >= 1; d--) {
+      var row = document.createElement("tr"), rh = h("th"); rh.setAttribute("scope", "row");
+      rh.appendChild(h("b", "", String(d))); rh.appendChild(document.createTextNode(DIFF[d])); row.appendChild(rh);
+      for (var b = 0; b < BUCK.length; b++) {
+        var td = h("td");
+        S.filter(function (s) { return s.d === d && bucket(s) === b; }).sort(function (x, y) { return x.hz[0] * x.hz[1] - y.hz[0] * y.hz[1]; }).forEach(function (s) {
+          var btn = h("button", "mchip"); btn.type = "button";
+          btn.appendChild(edgeDot(s.e)); btn.appendChild(document.createTextNode(s.lab));
+          btn.title = s.n + " · " + EDGE[s.e].t + " · " + s.hzt + " · cTrader: " + CT[s.ct].toLowerCase();
+          btn.setAttribute("aria-label", s.n + ". Quién paga: " + EDGE[s.e].t + ". Horizonte: " + s.hzt + ". Dificultad " + s.d + " de 5. Abrir ficha");
+          btn.addEventListener("click", function () { openCard(s.id); });
+          td.appendChild(btn); chips[s.id] = btn;
+        });
+        row.appendChild(td);
+      }
+      body.appendChild(row);
+    }
+    tb.appendChild(body); $("map").appendChild(tb);
+  })();
+  (function legend() {
+    var lg = $("map-leg");
+    Object.keys(EDGE).forEach(function (k) { var sp = h("span"); sp.appendChild(edgeDot(k)); sp.appendChild(document.createTextNode(EDGE[k].t)); lg.appendChild(sp); });
+  })();
+  M.dataTable($("fig-map"), ["Estrategia", "Familia", "Horizonte", "Dificultad", "Quién paga", "cTrader"], S.map(function (s) { return [s.n, FAM[s.f], s.hzt, String(s.d), EDGE[s.e].t, CT[s.ct]]; }), [3]);
+
+  /* ---------- mapa de calor ---------- */
+  var heatRows = {};
+  (function heat() {
+    var wrap = $("heat"), tb = document.createElement("table"), th = document.createElement("thead"), tr = document.createElement("tr");
+    var c0 = h("th", "", "Estrategia"); tr.appendChild(c0);
+    REG.forEach(function (rname, i) { var c = h("th"); c.appendChild(h("span", "l", rname)); c.appendChild(h("span", "s", REGS[i])); c.setAttribute("scope", "col"); tr.appendChild(c); });
+    th.appendChild(tr); tb.appendChild(th);
+    var body = document.createElement("tbody");
+    var SYM = { "2": "++", "1": "+", "0": "·", "-1": "−", "-2": "−−" }, CL = { "2": "h-p2", "1": "h-p1", "0": "h-0", "-1": "h-n1", "-2": "h-n2" };
+    var TXT = { "2": "le va muy bien", "1": "le va bien", "0": "neutral", "-1": "le va mal", "-2": "le va muy mal" };
+    S.forEach(function (s) {
+      var row = document.createElement("tr");
+      var nc = h("td"); var a = h("a", "", s.lab); a.href = "#s-" + s.id; a.title = s.n;
+      a.addEventListener("click", function (ev) { ev.preventDefault(); openCard(s.id); });
+      nc.appendChild(a); row.appendChild(nc);
+      s.r.forEach(function (v, i) { var c = h("td", "hc " + CL[String(v)], SYM[String(v)]); c.title = REG[i] + ": " + TXT[String(v)]; c.setAttribute("aria-label", REG[i] + ": " + TXT[String(v)]); row.appendChild(c); });
+      body.appendChild(row); heatRows[s.id] = row;
+    });
+    tb.appendChild(body); wrap.appendChild(tb);
+  })();
+
+  /* ---------- sectores ---------- */
+  (function smx() {
+    var tb = document.createElement("table"), th = document.createElement("thead"), tr = document.createElement("tr");
+    tr.appendChild(h("th", "", "Familia"));
+    Object.keys(SEC).forEach(function (k) { tr.appendChild(h("th", "", SEC[k])); });
+    th.appendChild(tr); tb.appendChild(th);
+    var body = document.createElement("tbody");
+    Object.keys(FAM).forEach(function (f) {
+      var row = document.createElement("tr"); row.appendChild(h("td", "", FAM[f]));
+      Object.keys(SEC).forEach(function (k) {
+        var n = S.filter(function (s) { return s.f === f && s.s.indexOf(k) >= 0; }).length;
+        var c = h("td", "n", n ? String(n) : "·");
+        if (n) c.style.background = "color-mix(in oklab, var(--c1) " + Math.min(60, n * 14) + "%, var(--surface))";
+        c.setAttribute("aria-label", FAM[f] + " en " + SEC[k] + ": " + n);
+        row.appendChild(c);
+      });
+      body.appendChild(row);
+    });
+    tb.appendChild(body); $("smx").appendChild(tb);
+  })();
+
+  /* ---------- dificultad ---------- */
+  (function tiers() {
+    var D = [
+      "Datos diarios gratuitos, reglas sencillas y sin prisa al ejecutar. Aquí empieza casi todo el mundo, y aquí están algunas de las ventajas mejor documentadas.",
+      "Datos intradía, costes que deciden el resultado y más cuidado al validar.",
+      "Varios mercados, datos de pago o eventos, y estadística seria para no engañarte.",
+      "Opciones, modelos complejos, datos caros o capital relevante.",
+      "Colocation, microsegundos, licencias o el balance de un banco: fuera del alcance de un particular."
+    ];
+    for (var d = 1; d <= 5; d++) {
+      var t = h("div", "tier"); t.appendChild(h("span", "tn", String(d)));
+      var b = h("div"); b.appendChild(h("h3", "", DIFF[d])); b.appendChild(h("p", "", D[d - 1]));
+      var l = h("p", "tl");
+      S.filter(function (s) { return s.d === d; }).forEach(function (s, i) {
+        if (i) l.appendChild(document.createTextNode(" · "));
+        var a = h("a", "", s.n); a.href = "#s-" + s.id;
+        a.addEventListener("click", function (ev) { ev.preventDefault(); openCard(s.id); });
+        l.appendChild(a);
+      });
+      b.appendChild(l); t.appendChild(b); $("tiers").appendChild(t);
+    }
+  })();
+
+  /* ---------- sesgos ---------- */
+  $("sk-neg").textContent = S.filter(function (s) { return s.sk === "neg"; }).map(function (s) { return s.lab; }).join(", ") + ".";
+  $("sk-pos").textContent = S.filter(function (s) { return s.sk === "pos"; }).map(function (s) { return s.lab; }).join(", ") + ".";
+
+  /* ---------- aplicar filtros ---------- */
+  function apply() {
+    var n = 0;
+    S.forEach(function (s) { var on = match(s); if (on) n++; cards[s.id].hidden = !on; heatRows[s.id].hidden = !on; chips[s.id].classList.toggle("dim", !on); });
+    $("f-count").textContent = n === S.length ? "Se muestran las 41 estrategias" : "Cumplen los filtros " + n + " de 41 estrategias";
+    $("c-count").textContent = n === S.length ? "41 fichas" : n + " de 41 fichas";
+  }
+  function resetFilters() { ["f-fam", "f-sec", "f-edge", "f-diff", "f-ct", "f-q"].forEach(function (id) { $(id).value = ""; }); st = { fam: "", sec: "", edge: "", diff: "", ct: "", q: "" }; apply(); }
+  [["f-fam", "fam"], ["f-sec", "sec"], ["f-edge", "edge"], ["f-diff", "diff"], ["f-ct", "ct"]].forEach(function (p) { $(p[0]).addEventListener("change", function () { st[p[1]] = $(p[0]).value; apply(); }); });
+  var qT = 0;
+  $("f-q").addEventListener("input", function () { clearTimeout(qT); qT = setTimeout(function () { st.q = $("f-q").value.trim(); apply(); }, 120); });
+  $("f-reset").addEventListener("click", resetFilters);
+  $("c-open").addEventListener("click", function () { S.forEach(function (s) { if (!cards[s.id].hidden) cards[s.id].open = true; }); });
+  $("c-close").addEventListener("click", function () { S.forEach(function (s) { cards[s.id].open = false; }); });
+  $("show-ct").addEventListener("click", function () {
+    resetFilters(); $("f-ct").value = "si"; st.ct = "si"; apply();
+    $("catalogo").scrollIntoView({ behavior: M.reduceMotion ? "auto" : "smooth", block: "start" });
+  });
+  apply();
+})();
+</script>
+</body>
+</html>

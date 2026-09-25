@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Forex algorítmico</title>
-<meta name="description" content="Cómo funciona el mercado de divisas por dentro, qué lo hace distinto para un algoritmo, qué estrategias tienen evidencia y cuánto cuestan de verdad, con calculadoras.">
+<title>Gestión del riesgo</title>
+<meta name="description" content="Cómo controlar el riesgo de un sistema de trading algorítmico: tamaño de posición, caídas, límites en capas, botón de parada, cuentas de fondeo, eventos extremos y fallos operativos, con simuladores.">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..800;1,6..96,400..800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap">
 <style>
 /* ============================================================
@@ -355,23 +355,13 @@ code:not(pre code){font:.88em var(--f-mono);background:var(--surface-2);border:1
 .fig .stats{margin-top:16px}
 
 /* página */
-:root{--accent:var(--c2);--accent-ink:#AE4A1D}
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--accent-ink:#F29A6B}}
-:root[data-theme="dark"]{--accent-ink:#F29A6B}
-.tiers{display:grid;background:var(--surface);border:1px solid var(--rule);border-radius:12px;padding:18px clamp(14px,2.4vw,22px)}
-.tier{border:1px solid var(--rule-strong);border-radius:8px;padding:12px 14px;background:var(--surface)}
-.tier .tl{display:block;font:500 11px/1.2 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--accent-ink);margin-bottom:4px}
-.tier p{font-size:15px;line-height:1.5;color:var(--ink-2);max-width:none}
-.tier.you{background:var(--wash);border-color:var(--accent)}
-.tier .two{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));margin-top:8px}
-.tier .two > div{border:1px dashed var(--rule-strong);border-radius:6px;padding:10px 12px}
-.tier .two b{display:block;font-size:15px;color:var(--ink)}
-.tlink{position:relative;height:44px;margin-left:28px;border-left:1.5px solid var(--ink-2)}
-.tlink::before,.tlink::after{content:"";position:absolute;left:-5.75px;border:5px solid transparent}
-.tlink::before{top:-1px;border-bottom:7px solid var(--ink-2);border-top:0}
-.tlink::after{bottom:-1px;border-top:7px solid var(--ink-2);border-bottom:0}
-.tlink span{position:absolute;left:14px;top:50%;transform:translateY(-50%);font:11.5px/1.2 var(--f-mono);color:var(--muted);white-space:nowrap}
-.calc{display:grid;gap:18px}
+:root{--accent:var(--c6);--accent-ink:var(--k6)}
+.formula{font:500 clamp(17px,1.9vw,21px)/1.5 var(--f-mono);color:var(--ink);background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);padding:16px 18px}
+.formula small{display:block;margin-top:6px;font:13.5px/1.5 var(--f-sans);color:var(--ink-2)}
+.sim-sub{font:600 15px/1.35 var(--f-sans);color:var(--ink);margin-top:22px}
+.meter-row{margin-top:16px}
+.meter-row .ml{display:flex;justify-content:space-between;gap:12px;font-size:14px;color:var(--ink-2)}
+.meter-row .ml b{font:500 13px var(--f-mono);color:var(--ink);white-space:nowrap}
 .checklist{list-style:none;padding:0!important;display:grid;gap:10px}
 .checklist li{position:relative;padding-left:26px}
 .checklist li::before{content:"";position:absolute;left:2px;top:.35em;width:13px;height:13px;border:1.5px solid var(--accent-ink);border-radius:3px}
@@ -379,23 +369,23 @@ code:not(pre code){font:.88em var(--f-mono);background:var(--surface-2);border:1
 </style>
 </head>
 <body>
-<header class="series wrap" id="top"><span class="brand">Máquinas y mercados</span><nav aria-label="Documentos de la serie"><ol class="series-nav"><li><a href="01-trading-algoritmico.html" title="1 · Trading algorítmico" aria-label="Documento 1 · Trading algorítmico"><span class="dot" style="--c:var(--c1)"></span>1</a></li><li><a href="#top" aria-current="page"><span class="dot" style="--c:var(--c2)"></span>2 · Forex algorítmico</a></li><li><a href="03-agentes-claude-trading.html" title="3 · Agentes Claude" aria-label="Documento 3 · Agentes Claude"><span class="dot" style="--c:var(--c3)"></span>3</a></li><li><a href="04-verdad-cuentas-fondeo.html" title="4 · Cuentas de fondeo" aria-label="Documento 4 · Cuentas de fondeo"><span class="dot" style="--c:var(--c4)"></span>4</a></li><li><a href="05-ctrader-api-mcp.html" title="5 · cTrader: API y MCP" aria-label="Documento 5 · cTrader: API y MCP"><span class="dot" style="--c:var(--c5)"></span>5</a></li><li><a href="06-gestion-del-riesgo.html" title="6 · Gestión del riesgo" aria-label="Documento 6 · Gestión del riesgo"><span class="dot" style="--c:var(--c6)"></span>6</a></li><li><a href="07-infraestructura-y-costes.html" title="7 · Infraestructura y costes" aria-label="Documento 7 · Infraestructura y costes"><span class="dot" style="--c:var(--c7)"></span>7</a></li><li><a href="08-atlas-de-estrategias.html" title="8 · Atlas de estrategias" aria-label="Documento 8 · Atlas de estrategias"><span class="dot" style="--c:var(--c8)"></span>8</a></li></ol></nav></header>
+<header class="series wrap" id="top"><span class="brand">Máquinas y mercados</span><nav aria-label="Documentos de la serie"><ol class="series-nav"><li><a href="01-trading-algoritmico.html" title="1 · Trading algorítmico" aria-label="Documento 1 · Trading algorítmico"><span class="dot" style="--c:var(--c1)"></span>1</a></li><li><a href="02-forex-algoritmico.html" title="2 · Forex algorítmico" aria-label="Documento 2 · Forex algorítmico"><span class="dot" style="--c:var(--c2)"></span>2</a></li><li><a href="03-agentes-claude-trading.html" title="3 · Agentes Claude" aria-label="Documento 3 · Agentes Claude"><span class="dot" style="--c:var(--c3)"></span>3</a></li><li><a href="04-verdad-cuentas-fondeo.html" title="4 · Cuentas de fondeo" aria-label="Documento 4 · Cuentas de fondeo"><span class="dot" style="--c:var(--c4)"></span>4</a></li><li><a href="05-ctrader-api-mcp.html" title="5 · cTrader: API y MCP" aria-label="Documento 5 · cTrader: API y MCP"><span class="dot" style="--c:var(--c5)"></span>5</a></li><li><a href="#top" aria-current="page"><span class="dot" style="--c:var(--c6)"></span>6 · Gestión del riesgo</a></li><li><a href="07-infraestructura-y-costes.html" title="7 · Infraestructura y costes" aria-label="Documento 7 · Infraestructura y costes"><span class="dot" style="--c:var(--c7)"></span>7</a></li><li><a href="08-atlas-de-estrategias.html" title="8 · Atlas de estrategias" aria-label="Documento 8 · Atlas de estrategias"><span class="dot" style="--c:var(--c8)"></span>8</a></li></ol></nav></header>
 <section class="hero wrap">
   <div class="hero-text">
-    <p class="eyebrow"><span>Máquinas y mercados</span><b>Documento 2 de 8</b></p>
-    <h1>Forex <em>algorítmico</em></h1>
-    <p class="dek">Cómo funciona por dentro el mayor mercado del mundo, qué lo hace distinto para un algoritmo y qué estrategias tienen evidencia detrás. Con calculadoras de costes y de tamaño de posición.</p>
-    <p class="meta">Septiembre de 2026 · 18 minutos de lectura</p>
+    <p class="eyebrow"><span>Máquinas y mercados</span><b>Documento 6 de 8</b></p>
+    <h1>Primero, <em>sobrevivir</em></h1>
+    <p class="dek">La gestión del riesgo decide si un sistema de trading dura lo suficiente para demostrar su ventaja. Tamaño de posición, caídas, límites, botón de parada y los riesgos que no salen en el gráfico, con simuladores para ver los números.</p>
+    <p class="meta">Septiembre de 2026 · 16 minutos de lectura</p>
   </div>
-  <div class="emblem" aria-hidden="true"><canvas></canvas><span class="numeral">2</span><span class="serial">MM · 02 · 2026</span></div>
+  <div class="emblem" aria-hidden="true"><canvas></canvas><span class="numeral">6</span><span class="serial">MM · 06 · 2026</span></div>
 </section>
-<div class="wrap"><div class="microprint" aria-hidden="true" data-text="FOREX ALGORÍTMICO · EUR/USD · USD/JPY · GBP/USD"></div>
+<div class="wrap"><div class="microprint" aria-hidden="true" data-text="RIESGO · 1 % · KELLY · CAÍDA MÁXIMA · BOTÓN DE PARADA"></div>
   <div class="tldr">
     <h2>En corto</h2>
     <ul>
-      <li>Se negocian 9,6 billones de dólares al día (BIS, abril de 2025). Es un mercado descentralizado, sin un precio ni un volumen únicos.</li>
-      <li>Los enemigos de un particular son los costes, el apalancamiento y los eventos extremos, mucho más que la falta de un buen indicador.</li>
-      <li>Las estrategias con evidencia (carry, momentum, value) son de medio plazo y se reparten entre muchas divisas. El scalping y la martingala juegan en terreno hostil.</li>
+      <li>La ventaja de una estrategia es pequeña e incierta. Con la misma estrategia, arriesgar un 1&nbsp;% o un 5&nbsp;% por operación separa una caída llevadera de la ruina.</li>
+      <li>Los límites se escriben en código y en capas: por operación, por día, por exposición, por caída acumulada y por comportamiento del propio sistema, con un botón de parada independiente.</li>
+      <li>Los peores golpes no salen del gráfico: saltos de precio que ignoran el stop, errores de software, el bróker o la firma de fondeo, y un agente de IA con permisos de más.</li>
     </ul>
   </div>
 </div>
@@ -404,300 +394,264 @@ code:not(pre code){font:.88em var(--f-mono);background:var(--surface-2);border:1
   <aside class="toc" aria-label="Índice"></aside>
   <main class="content">
 
-    <section class="sec" id="mercado">
+    <section class="sec" id="mapa">
+      <p class="kicker">Mapa</p>
+      <h2 data-short="Los siete riesgos">Los siete riesgos de un sistema</h2>
+      <p class="lead">El riesgo de mercado es el único que eliges asumir. Los otros seis llegan solos y cada uno necesita su propio control.</p>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Riesgo</th><th>Cómo aparece</th><th>Control principal</th></tr></thead>
+          <tbody>
+            <tr><td>De mercado</td><td>El precio va en tu contra</td><td>Tamaño de posición y stop guardado en el servidor del bróker</td></tr>
+            <tr><td>De modelo</td><td>La ventaja nunca existió, porque el backtest estaba sobreajustado, o se agota con el tiempo</td><td>Validación fuera de muestra y reglas escritas para apagar la estrategia</td></tr>
+            <tr><td>De ejecución</td><td>Deslizamiento, spreads que se abren, huecos de precio, órdenes parciales</td><td>Medir el coste real frente al supuesto y evitar los momentos de poca liquidez</td></tr>
+            <tr><td>Tecnológico</td><td>Cortes, errores de código, órdenes duplicadas, precios que dejan de actualizarse</td><td>Controles antes de cada orden, reconciliación con el bróker y botón de parada</td></tr>
+            <tr><td>De contraparte</td><td>El bróker quiebra o la firma de fondeo no paga o cierra</td><td>Entidades reguladas, capital repartido y retiradas frecuentes</td></tr>
+            <tr><td>De apalancamiento</td><td>Cierre forzoso por margen o saldo negativo tras un salto de precio</td><td>Apalancamiento efectivo bajo y protección de saldo negativo</td></tr>
+            <tr><td>Humano y de agentes</td><td>Saltarte el sistema tras una mala racha, o un agente de IA con permiso para operar</td><td>Reglas escritas antes de empezar; la IA propone y el código decide</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="sec" id="tamano">
       <p class="kicker">Tamaño</p>
-      <h2 data-short="El mercado en cifras">El mercado más grande del mundo</h2>
-      <p class="lead">Cada tres años, los bancos centrales miden el mercado de divisas en la encuesta trienal del Banco de Pagos Internacionales (BIS). La última, de abril de 2025, dejó estas cifras.</p>
-      <div class="stats quad">
-        <div class="stat"><span class="v">9,6<small>billones de $</small></span><span class="l">negociados cada día, un 28&nbsp;% más que en 2022.</span><span class="s">BIS, encuesta trienal 2025</span></div>
-        <div class="stat"><span class="v">3<small>billones de $</small></span><span class="l">al día en contado (spot), el 31&nbsp;% del total. Las permutas de divisas suman 4 billones.</span><span class="s">BIS, 2025</span></div>
-        <div class="stat"><span class="v">89&nbsp;%</span><span class="l">de las operaciones tienen el dólar en uno de sus lados.</span><span class="s">BIS, 2025</span></div>
-        <div class="stat"><span class="v">38&nbsp;%</span><span class="l">del volumen se negocia desde Reino Unido. Con EE.&nbsp;UU., Singapur y Hong Kong, el 75&nbsp;%.</span><span class="s">BIS, 2025</span></div>
-      </div>
-      <p class="fig-note">En español, un billón es un millón de millones (10<sup>12</sup>). En inglés sería <i>trillion</i>.</p>
-      <figure class="fig" id="fig-ccy">
-        <p class="fig-title">Presencia de cada divisa en las operaciones</p>
-        <p class="fig-sub">Porcentaje de operaciones en las que aparece cada divisa. Suma 200&nbsp;% porque cada operación tiene dos.</p>
-        <div class="chart" id="ccy"></div>
-        <p class="fig-note">Fuente: BIS, encuesta trienal de abril de 2025.</p>
+      <h2 data-short="Cuánto arriesgar">Cuánto arriesgar por operación</h2>
+      <p class="lead">El tamaño de cada posición sale de dos números: cuánto capital aceptas perder si salta el stop y a qué distancia está ese stop.</p>
+      <div class="formula">lotes = (capital × riesgo %) ÷ (pips de stop × valor del pip por lote)<small>Ejemplo: con 10.000&nbsp;$, un 1&nbsp;% de riesgo y un stop de 20 pips en EURUSD (10&nbsp;$ por pip y lote), son 100&nbsp;$ ÷ 200&nbsp;$ = 0,5 lotes.</small></div>
+      <p>El apalancamiento máximo no dice cuánto arriesgas. Con 10.000&nbsp;$ y el límite minorista europeo de 30 a 1 en divisas principales puedes abrir hasta 300.000&nbsp;$ de EURUSD, pero lo que pierdes si salta el stop depende del tamaño y de la distancia. El apalancamiento importa cuando el precio salta sin pasar por tu stop.</p>
+      <h3>El techo teórico: el criterio de Kelly</h3>
+      <p>John Kelly calculó en 1956 la fracción del capital que maximiza el crecimiento a largo plazo cuando conoces tus probabilidades. Por debajo creces menos; por encima creces menos y con caídas mayores; y cerca del doble, la cuenta encoge aunque la estrategia gane dinero en cada operación media.</p>
+      <figure class="fig" id="fig-kelly">
+        <p class="fig-title">Crecimiento esperado según el riesgo por operación</p>
+        <p class="fig-sub">Cada 100 operaciones independientes, reinvirtiendo, para una estrategia con stop fijo y objetivo en múltiplos del riesgo (R).</p>
+        <div class="controls">
+          <div class="ctl"><label for="k-p">Tasa de acierto <output id="k-p-out" for="k-p"></output></label><input id="k-p" type="range" min="30" max="65" step="1" value="45"></div>
+          <div class="ctl"><label for="k-r">Beneficio / riesgo <output id="k-r-out" for="k-r"></output></label><input id="k-r" type="range" min="0.5" max="3" step="0.1" value="1.5"></div>
+          <div class="ctl"><label for="k-c">Coste por operación <output id="k-c-out" for="k-c"></output></label><input id="k-c" type="range" min="0" max="0.2" step="0.01" value="0.05"></div>
+        </div>
+        <div class="chart" id="kelly"></div>
+        <p class="readout" id="kelly-read" aria-live="polite"></p>
+        <p class="fig-note">Fórmula: crecimiento por operación = p·ln(1 + f·(R − c)) + (1 − p)·ln(1 − f·(1 + c)), con f el riesgo por operación. Kelly supone que conoces p y R con exactitud; como solo tienes estimaciones con error, en la práctica se usa entre un cuarto y la mitad de Kelly, y en cuentas minoristas, entre un 0,25&nbsp;% y un 1&nbsp;% por operación.</p>
       </figure>
-      <p>El 46&nbsp;% del volumen se cruza entre grandes intermediarios, y otro 50&nbsp;% entre intermediarios y otras instituciones financieras, como fondos, bancos pequeños y creadores de mercado no bancarios. El particular llega a este mercado a través de su bróker y representa una parte pequeña del total.</p>
     </section>
 
-    <section class="sec" id="estructura">
-      <p class="kicker">Estructura</p>
-      <h2 data-short="Quién está al otro lado">Quién está al otro lado de tu orden</h2>
-      <p class="lead">En forex no hay una bolsa central. Es una red de intermediarios que se cotizan precios entre sí, y tu orden recorre varias capas antes de encontrar contrapartida, o se queda en tu bróker.</p>
-      <figure class="tiers" aria-label="Capas del mercado de divisas, de los proveedores de liquidez al trader particular">
-        <div class="tier"><span class="tl">Proveedores de liquidez</span><p>Grandes bancos y creadores de mercado no bancarios como XTX, Citadel Securities, Jump o HC Tech. Cotizan precios a todo el mercado.</p></div>
-        <div class="tlink"><span>cotizaciones y órdenes</span></div>
-        <div class="tier"><span class="tl">Plataformas</span><p>Interbancarias (EBS, LSEG Matching) y redes electrónicas o ECN (Cboe FX, Currenex, LMAX). Casan órdenes de muchos participantes.</p></div>
-        <div class="tlink"><span>acceso con crédito</span></div>
-        <div class="tier"><span class="tl">Prime brokers y agregadores</span><p>Dan crédito a los intermediarios pequeños y combinan precios de varios proveedores en un solo flujo.</p></div>
-        <div class="tlink"><span>precios agregados</span></div>
-        <div class="tier"><span class="tl">Tu bróker</span>
-          <div class="two">
-            <div><b>A-book</b><p>Envía tu orden al mercado y cobra una comisión o parte del diferencial.</p></div>
-            <div><b>B-book</b><p>Se queda con el otro lado de tu operación. Gana lo que tú pierdes.</p></div>
-          </div></div>
-        <div class="tlink"><span>MT5, cTrader o API</span></div>
-        <div class="tier you"><span class="tl">Tú</span><p>Tu algoritmo, en tu ordenador o en un servidor cercano al del bróker.</p></div>
+    <section class="sec" id="caidas">
+      <p class="kicker">Caídas</p>
+      <h2 data-short="Las caídas">Las matemáticas de las caídas</h2>
+      <p class="lead">Las pérdidas y las ganancias no son simétricas: cuanto más cae la cuenta, más cuesta recuperarla.</p>
+      <figure class="fig" id="fig-rec">
+        <p class="fig-title">Ganancia necesaria para volver al punto de partida</p>
+        <div class="chart" id="rec"></div>
+        <p class="fig-note">Ganancia necesaria = pérdida ÷ (1 − pérdida). Tras perder la mitad, hay que doblar lo que queda.</p>
       </figure>
-      <p>Muchos proveedores aplican <i>last look</i>: tras recibir tu orden, disponen de unos milisegundos para aceptarla o rechazarla si el precio se ha movido. El Código Global de Divisas (principio 17) les exige explicarlo. Para una estrategia rápida significa rechazos justo cuando más importa.</p>
+      <h3>¿Qué caída es normal para tu estrategia?</h3>
+      <p>Incluso una estrategia con ventaja real encadena rachas de pérdidas. Este simulador reparte miles de años posibles con las mismas reglas y muestra la peor caída desde el máximo que sufre cada uno.</p>
+      <figure class="fig" id="fig-mc">
+        <p class="fig-title">Caída máxima en un año, 4.000 simulaciones</p>
+        <p class="fig-sub">Riesgo fijo sobre el capital de cada momento. Operaciones independientes con resultado +R o −1, menos el coste.</p>
+        <div class="controls four">
+          <div class="ctl"><label for="m-p">Tasa de acierto <output id="m-p-out" for="m-p"></output></label><input id="m-p" type="range" min="30" max="65" step="1" value="45"></div>
+          <div class="ctl"><label for="m-r">Beneficio / riesgo <output id="m-r-out" for="m-r"></output></label><input id="m-r" type="range" min="0.5" max="3" step="0.1" value="1.5"></div>
+          <div class="ctl"><label for="m-f">Riesgo por operación <output id="m-f-out" for="m-f"></output></label><input id="m-f" type="range" min="0.25" max="5" step="0.25" value="1"></div>
+          <div class="ctl"><label for="m-t">Operaciones al año <output id="m-t-out" for="m-t"></output></label><input id="m-t" type="range" min="50" max="1000" step="50" value="250"></div>
+          <div class="ctl"><label for="m-c">Coste por operación <output id="m-c-out" for="m-c"></output></label><input id="m-c" type="range" min="0" max="0.2" step="0.01" value="0.05"></div>
+          <div class="ctl"><label for="m-lim">Límite de pérdida de la cuenta (%)</label><input id="m-lim" type="number" min="1" max="60" step="1" value="10"><span class="hint">10&nbsp;% es el habitual en fondeo</span></div>
+        </div>
+        <div class="chart" id="mc"></div>
+        <div class="legend"><span><i class="box" style="--k:var(--accent)"></i>Años por debajo del límite</span><span><i class="box" style="--k:var(--crit-mark)"></i>Años que lo superan</span></div>
+        <div class="stats quad">
+          <div class="stat"><span class="v" id="mc-med">–</span><span class="l">caída máxima en el año mediano</span></div>
+          <div class="stat"><span class="v" id="mc-p95">–</span><span class="l">o más, en uno de cada veinte años</span></div>
+          <div class="stat" id="mc-lim-card"><span class="v" id="mc-lim">–</span><span class="l" id="mc-lim-l">de los años superan el límite</span></div>
+          <div class="stat"><span class="v" id="mc-streak">–</span><span class="l">pérdidas seguidas en la peor racha del año mediano</span><span class="s" id="mc-streak-s"></span></div>
+        </div>
+        <p class="readout" id="mc-read" aria-live="polite"></p>
+        <div class="btns"><button class="btn ghost" id="mc-again" type="button">Repetir con otro azar</button></div>
+      </figure>
+    </section>
+
+    <section class="sec" id="limites">
+      <p class="kicker">Límites</p>
+      <h2 data-short="Límites en capas">Límites en capas</h2>
+      <p class="lead">Cada capa atrapa lo que se escapa de la anterior. Todas se comprueban en código antes de enviar cada orden, no en tu cabeza.</p>
       <div class="tbl-wrap">
         <table>
-          <thead><tr><th>Modelo de bróker</th><th>Cómo gana</th><th>Qué implica para tu algoritmo</th></tr></thead>
+          <thead><tr><th>Capa</th><th>Qué limita</th><th>Ejemplo razonable</th></tr></thead>
           <tbody>
-            <tr><td>Creador de mercado (B-book)</td><td>Con el diferencial y con lo que pierden sus clientes</td><td>Puede limitar el scalping, recotizar o retrasar órdenes en noticias. Vigila si las condiciones cambian cuando empiezas a ganar.</td></tr>
-            <tr><td>STP o ECN (A-book)</td><td>Con una comisión por lote o un margen sobre el diferencial</td><td>Precios más cercanos al mercado real, con diferenciales variables que se abren en las noticias.</td></tr>
-            <tr><td>Híbrido</td><td>Clasifica a los clientes: A-book para los que ganan, B-book para el resto</td><td>Muy extendido entre los brókeres minoristas. Tus ejecuciones pueden empeorar si pasas de un libro a otro.</td></tr>
+            <tr><td>Operación</td><td>Pérdida hasta el stop, volumen máximo, precio de la orden frente al último precio</td><td>0,25–1&nbsp;% del capital; un volumen tope en lotes; rechazar órdenes lejos del precio actual</td></tr>
+            <tr><td>Día</td><td>Pérdida cerrada más la de las posiciones abiertas; número de operaciones</td><td>2–3&nbsp;% del capital, o la mitad del límite diario de la firma de fondeo</td></tr>
+            <tr><td>Exposición</td><td>Riesgo abierto total, exposición neta por divisa, posiciones que se mueven juntas</td><td>Riesgo abierto de un 2–3&nbsp;% como máximo. Comprar EURUSD y GBPUSD es casi la misma apuesta contra el dólar</td></tr>
+            <tr><td>Caída acumulada</td><td>Pérdida desde el mejor saldo alcanzado</td><td>A partir de un umbral, mitad de tamaño; a partir de otro mayor, parar y revisar. Fíjalos con tu backtest</td></tr>
+            <tr><td>Sistema</td><td>Órdenes por minuto, rechazos seguidos, deslizamiento anómalo, precios sin actualizar, posiciones que no cuadran</td><td>Pausa automática y aviso al móvil</td></tr>
+            <tr><td>Calendario</td><td>Noticias fuertes, fines de semana, cambio de día con spreads anchos, festivos con poca liquidez</td><td>Sin entradas nuevas en esas ventanas; reducir o cerrar antes del fin de semana</td></tr>
           </tbody>
         </table>
       </div>
-    </section>
-
-    <section class="sec" id="reloj">
-      <p class="kicker">Horario</p>
-      <h2 data-short="El reloj del forex">El reloj del forex</h2>
-      <p class="lead">El mercado abre el domingo por la noche y cierra el viernes por la noche, pero la liquidez cambia mucho según la hora del día.</p>
-      <figure class="fig" id="fig-ses">
-        <p class="fig-title">Sesiones en hora de la España peninsular</p>
-        <p class="fig-sub">Horas aproximadas de invierno. Pasa el cursor por cada sesión.</p>
-        <div class="chart" id="ses"></div>
-        <p class="fig-note">Londres abre siempre a las 9:00 en España y Nueva York a las 14:00, salvo unas semanas de marzo y noviembre en que EE.&nbsp;UU. y Europa cambian la hora en fechas distintas. Tokio y Sídney se desplazan una hora según la época del año.</p>
-      </figure>
-      <p>Tres citas marcan el día de un algoritmo: los datos macro de EE.&nbsp;UU. (empleo, inflación) salen a las 14:30; el BCE anuncia sus tipos a las 14:15; la Reserva Federal, a las 20:00. A las 23:00 llega el cambio de día (<i>rollover</i>), con diferenciales más anchos y el cobro o pago de los intereses de las posiciones abiertas.</p>
-    </section>
-
-    <section class="sec" id="diferente">
-      <p class="kicker">Particularidades</p>
-      <h2 data-short="Lo que cambia">Lo que cambia para un algoritmo</h2>
-      <p class="lead">Un sistema que funciona en acciones no se traslada tal cual al forex. Estas ocho diferencias son las que más backtests rompen.</p>
-      <div class="cards two">
-        <article class="card"><h3 class="ct">Sin precio ni volumen únicos</h3><p>Cada bróker tiene su propio flujo de precios. El volumen de MetaTrader cuenta cambios de precio (ticks) en tu bróker, no contratos negociados en el mercado.</p></article>
-        <article class="card"><h3 class="ct">Diferenciales que respiran</h3><p>Se abren en el cambio de día, con las noticias y en las horas de poca liquidez. Un backtest con diferencial fijo te está mintiendo.</p></article>
-        <article class="card"><h3 class="ct">Intereses cada noche</h3><p>Mantener una posición al cierre cobra o paga la diferencia de tipos de interés (swap). El miércoles se aplica triple para cubrir el fin de semana.</p></article>
-        <article class="card"><h3 class="ct">Huecos de fin de semana</h3><p>El mercado cierra el viernes a las 23:00 y reabre el domingo por la noche. Un stop no te protege si el precio abre más allá.</p></article>
-        <article class="card"><h3 class="ct">Bancos centrales</h3><p>Las decisiones de tipos y las intervenciones mueven más que cualquier indicador. Japón intervino para sostener el yen en 2022 y en 2024.</p></article>
-        <article class="card"><h3 class="ct">Apalancamiento regulado</h3><p>En la UE, un cliente minorista puede apalancarse como máximo 30 veces en los pares principales y 20 veces en el resto.</p></article>
-        <article class="card"><h3 class="ct">Rechazos por last look</h3><p>Algunos proveedores pueden rechazar tu orden unos milisegundos después de recibirla. Las estrategias rápidas lo sufren más.</p></article>
-        <article class="card"><h3 class="ct">Correlación escondida</h3><p>Comprar EUR/USD, GBP/USD y AUD/USD a la vez es, en la práctica, una sola apuesta grande contra el dólar.</p></article>
+      <div class="callout">
+        <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="10" cy="10" r="8.25" stroke="currentColor" stroke-width="1.5"/><path d="M10 9v5M10 6.2v.1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        <div><span class="ct">El estándar profesional</span><p>La normativa europea exige a las empresas de inversión que hacen trading algorítmico controles previos a cada orden, con márgenes de precio, valor y volumen máximos y un límite de mensajes, vigilancia en tiempo real y una función de parada que cancele al instante todas las órdenes pendientes (Reglamento Delegado (UE) 2017/589, artículos 12 y 15). A un particular no se le exige, pero es la mejor plantilla disponible.</p></div>
       </div>
-      <h3>Cuando el mercado se rompe</h3>
-      <ol class="timeline">
-        <li><time>2014–2015</time><b>El escándalo de los fixings</b><span>Los reguladores de Reino Unido, EE.&nbsp;UU. y Suiza multaron a grandes bancos con más de 10.000 millones de dólares por manipular las fijaciones de referencia del mercado de divisas.</span></li>
-        <li><time>15 de enero de 2015</time><b>Suiza abandona el suelo del franco</b><span>El EUR/CHF cayó de 1,20 a cerca de 0,85 en minutos. FXCM necesitó un préstamo de rescate de 300 millones de dólares y Alpari UK quebró.</span></li>
-        <li><time>7 de octubre de 2016</time><b>Desplome relámpago de la libra</b><span>La libra cayó en torno a un 9&nbsp;% frente al dólar en segundos, durante la madrugada asiática, y recuperó buena parte después (BIS).</span></li>
-        <li><time>3 de enero de 2019</time><b>Desplome relámpago del yen</b><span>El yen se apreció un 3&nbsp;% frente al dólar en unos 30 segundos y el AUD/JPY cayó un 7&nbsp;% en minutos (Banco de la Reserva de Australia).</span></li>
-        <li><time>5 de agosto de 2024</time><b>Cierre masivo del carry con el yen</b><span>Tras la subida de tipos en Japón y un mal dato de empleo en EE.&nbsp;UU., la salida en bloque de las posiciones de carry contribuyó a que el Nikkei cayera un 12&nbsp;% en una sesión.</span></li>
+    </section>
+
+    <section class="sec" id="parada">
+      <p class="kicker">Emergencia</p>
+      <h2 data-short="Botón de parada">El botón de parada</h2>
+      <p class="lead">Un proceso separado de la estrategia, con sus propias credenciales y, si puede ser, en otra máquina, para que funcione aunque la estrategia se cuelgue.</p>
+      <ol class="steps">
+        <li><div><b>Bloquear las entradas nuevas</b><span>La estrategia deja de poder enviar órdenes.</span></div></li>
+        <li><div><b>Cancelar las órdenes pendientes</b><span>Todas, salvo los stops que protegen posiciones abiertas.</span></div></li>
+        <li><div><b>Cerrar o proteger las posiciones</b><span>Según una regla fijada de antemano: cerrarlo todo o dejar solo lo que tenga stop en el servidor.</span></div></li>
+        <li><div><b>Avisar y registrar</b><span>Un mensaje al móvil con el motivo, el estado de la cuenta y la hora exacta.</span></div></li>
+        <li><div><b>Reiniciar a mano</b><span>Nunca de forma automática tras una parada por riesgo. Una persona revisa qué pasó y reactiva el sistema.</span></div></li>
       </ol>
-    </section>
-
-    <section class="sec" id="estrategias">
-      <p class="kicker">Estrategias</p>
-      <h2 data-short="Estrategias">Qué funciona en forex y qué no</h2>
-      <p class="lead">Las estrategias de divisas con respaldo académico son pocas, de medio plazo, y funcionan mejor repartidas entre muchos pares.</p>
       <div class="tbl-wrap">
         <table>
-          <thead><tr><th>Estrategia</th><th>Idea</th><th>Evidencia</th><th>Riesgo principal</th></tr></thead>
+          <thead><tr><th>Disparador</th><th>Umbral de ejemplo</th></tr></thead>
           <tbody>
-            <tr><td>Carry</td><td>Comprar divisas con tipos de interés altos y vender las de tipos bajos</td><td>Prima documentada durante décadas (Lustig, Roussanov y Verdelhan, 2011; Menkhoff y otros, 2012)</td><td>Caídas bruscas en las crisis (Brunnermeier, Nagel y Pedersen, 2008)</td></tr>
-            <tr><td>Momentum y tendencia</td><td>Seguir a las divisas que más han subido en los últimos meses</td><td>Rentable en estudios amplios (Menkhoff y otros, 2012; Moskowitz, Ooi y Pedersen, 2012)</td><td>Mercados laterales, giros y costes altos en divisas poco líquidas</td></tr>
-            <tr><td>Value</td><td>Comprar divisas baratas según su poder adquisitivo (PPA)</td><td>Funciona en horizontes de años (Asness, Moskowitz y Pedersen, 2013)</td><td>Puede tardar años en converger</td></tr>
-            <tr><td>Reversión en cruces</td><td>Operar pares que suelen moverse en un rango, como AUD/NZD</td><td>Depende mucho del par y del periodo</td><td>Rupturas de régimen, como el franco suizo en 2015</td></tr>
-            <tr><td>Noticias</td><td>Reaccionar a datos macro y a los bancos centrales</td><td>Ventaja reservada a los más rápidos</td><td>Diferenciales, deslizamiento y rechazos justo en el momento clave</td></tr>
-            <tr><td>Rupturas de sesión</td><td>Operar la salida del rango asiático en la apertura de Londres</td><td>Resultados mixtos y muy sensibles a los costes</td><td>Falsas rupturas</td></tr>
-            <tr><td>Martingala y rejilla</td><td>Doblar la posición tras cada pérdida o promediar a intervalos fijos</td><td>Ninguna. No crean ventaja</td><td>Una ruina ocasional que borra meses de ganancias</td></tr>
+            <tr><td>Pérdida del día</td><td>Llega a tu stop diario interno</td></tr>
+            <tr><td>Caída acumulada</td><td>Supera el umbral de parada</td></tr>
+            <tr><td>Posiciones que no cuadran</td><td>La reconciliación con el bróker no coincide con lo esperado</td></tr>
+            <tr><td>Silencio</td><td>Pasan N segundos sin precios nuevos o sin respuesta al latido</td></tr>
+            <tr><td>Errores</td><td>Tres órdenes rechazadas seguidas</td></tr>
+            <tr><td>Deslizamiento</td><td>El medio de las últimas 20 órdenes triplica el supuesto</td></tr>
+            <tr><td>Manual</td><td>Un botón, un comando o un mensaje desde el móvil</td></tr>
           </tbody>
         </table>
       </div>
-      <p>Neely, Weller y Ulrich (2009) mostraron que las reglas técnicas sencillas que ganaban dinero en divisas en los años setenta y ochenta dejaron de hacerlo después, a medida que el mercado aprendía. Es la ventaja que se agota del <a href="01-trading-algoritmico.html">documento 1</a>, aplicada al forex.</p>
-      <figure class="fig" id="fig-mart">
-        <p class="fig-title">La martingala en una imagen</p>
-        <p class="fig-sub">Dos cuentas de 10.000&nbsp;$ juegan exactamente las mismas 700 operaciones a cara o cruz, con 10 pips de objetivo y de stop. El eje horizontal cuenta operaciones. Una dobla la posición tras cada pérdida; la otra arriesga siempre el 1&nbsp;%.</p>
-        <div class="chart" id="mart"></div>
-        <div class="legend"><span><i style="--k:var(--c1)"></i>Riesgo fijo del 1&nbsp;%</span><span><i style="--k:var(--c2)"></i>Martingala</span></div>
-        <p class="fig-note">Simulación ilustrativa, sin costes ni límites de margen. Con los límites europeos de apalancamiento la martingala se cortaría antes, pero las pérdidas llegarían igual.</p>
-      </figure>
+      <p>Pruébalo una vez al mes en demo: si nunca se ha usado, no sabes si funciona.</p>
     </section>
 
-    <section class="sec" id="calculadoras">
-      <p class="kicker">Números</p>
-      <h2 data-short="Calculadoras">Costes y tamaño de posición</h2>
-      <p class="lead">Dos cálculos que conviene hacer antes de programar una sola línea: cuánto se comen los costes y cuánto arriesgas de verdad en cada operación.</p>
-      <figure class="fig" id="fig-cost">
-        <p class="fig-title">¿Cuánto se comen los costes?</p>
-        <p class="fig-sub">Para EUR/USD y pares cotizados en dólares, donde un pip vale 10&nbsp;$ por lote estándar. Los valores iniciales son un ejemplo.</p>
+    <section class="sec" id="fondeo">
+      <p class="kicker">Fondeo</p>
+      <h2 data-short="En una cuenta de fondeo">El presupuesto de riesgo en una cuenta de fondeo</h2>
+      <p class="lead">En una cuenta de fondeo, tocar el límite diario o el total significa perder la cuenta, sin segunda oportunidad. En muchas firmas, el límite diario incluye las posiciones abiertas y se mide contra el saldo al empezar el día.</p>
+      <figure class="fig" id="fig-prop">
+        <p class="fig-title">Calculadora de presupuesto de riesgo</p>
+        <p class="fig-sub">Traduce las reglas de la firma a límites internos más estrictos, contando con que los stops se ejecutan con algo de deslizamiento.</p>
         <div class="controls four">
-          <div class="ctl"><label for="c-n">Operaciones al mes <output id="c-n-out" for="c-n">80</output></label><input id="c-n" type="range" min="5" max="400" step="5" value="80"></div>
-          <div class="ctl"><label for="c-cost">Coste por operación (pips)</label><input id="c-cost" type="number" min="0" max="20" step="0.1" value="1.2"><span class="hint">Diferencial más comisión, ida y vuelta</span></div>
-          <div class="ctl"><label for="c-edge">Ventaja bruta media por operación (pips)</label><input id="c-edge" type="number" min="0.1" max="100" step="0.1" value="2"><span class="hint">Lo que ganarías de media sin costes</span></div>
-          <div class="ctl"><label for="c-lots">Tamaño (lotes)</label><input id="c-lots" type="number" min="0.01" max="100" step="0.01" value="1"></div>
-        </div>
-        <div class="stats">
-          <div class="stat"><span class="v" id="c-costs">–</span><span class="l">pagas en costes al mes</span></div>
-          <div class="stat"><span class="v" id="c-gross">–</span><span class="l">de ganancia bruta esperada al mes</span></div>
-          <div class="stat" id="c-net-card"><span class="v" id="c-net">–</span><span class="l">de resultado neto esperado al mes</span><span class="badge" id="c-badge"></span></div>
-        </div>
-        <div class="readout" id="c-read" aria-live="polite"></div>
-        <div class="meter" id="c-meter" role="img" aria-label="Parte de la ventaja que se comen los costes"><i id="c-meter-i"></i></div>
-      </figure>
-      <figure class="fig" id="fig-size">
-        <p class="fig-title">Tamaño de posición por riesgo</p>
-        <p class="fig-sub">Lotes = (capital × riesgo por operación) ÷ (stop en pips × valor del pip). Ejemplo con una cuenta en dólares operando EUR/USD.</p>
-        <div class="controls four">
-          <div class="ctl"><label for="s-cap">Capital ($)</label><input id="s-cap" type="number" min="100" step="100" value="10000"></div>
-          <div class="ctl"><label for="s-risk">Riesgo por operación <output id="s-risk-out" for="s-risk">1 %</output></label><input id="s-risk" type="range" min="0.25" max="5" step="0.25" value="1"></div>
-          <div class="ctl"><label for="s-stop">Stop (pips)</label><input id="s-stop" type="number" min="1" max="1000" step="1" value="25"></div>
-          <div class="ctl"><label for="s-px">Precio EUR/USD (ejemplo)</label><input id="s-px" type="number" min="0.5" max="2" step="0.0001" value="1.1000"></div>
+          <div class="ctl"><label for="b-acct">Tamaño de la cuenta ($)</label><input id="b-acct" type="number" min="1000" max="2000000" step="1000" value="100000"></div>
+          <div class="ctl"><label for="b-daily">Límite diario de la firma (%)</label><input id="b-daily" type="number" min="0.5" max="20" step="0.5" value="5"></div>
+          <div class="ctl"><label for="b-max">Límite total de la firma (%)</label><input id="b-max" type="number" min="1" max="30" step="0.5" value="10"></div>
+          <div class="ctl"><label for="b-buf">Tu stop diario, sobre el de la firma</label><select id="b-buf"><option value="40">40 %</option><option value="50" selected>50 %</option><option value="60">60 %</option><option value="75">75 %</option></select></div>
+          <div class="ctl"><label for="b-risk">Riesgo por operación <output id="b-risk-out" for="b-risk"></output></label><input id="b-risk" type="range" min="0.1" max="2" step="0.05" value="0.5"></div>
+          <div class="ctl"><label for="b-open">Posiciones abiertas a la vez <output id="b-open-out" for="b-open"></output></label><input id="b-open" type="range" min="1" max="6" step="1" value="2"></div>
+          <div class="ctl"><label for="b-slip">Deslizamiento en los stops <output id="b-slip-out" for="b-slip"></output></label><input id="b-slip" type="range" min="0" max="50" step="5" value="10"><span class="hint">Porcentaje extra sobre la pérdida prevista</span></div>
         </div>
         <div class="stats quad">
-          <div class="stat"><span class="v" id="s-lots">–</span><span class="l">lotes estándar</span></div>
-          <div class="stat"><span class="v" id="s-money">–</span><span class="l">en riesgo si salta el stop</span></div>
-          <div class="stat"><span class="v" id="s-nom">–</span><span class="l">de tamaño nominal</span></div>
-          <div class="stat"><span class="v" id="s-lev">–</span><span class="l">de apalancamiento efectivo</span><span class="s" id="s-margin"></span></div>
+          <div class="stat"><span class="v" id="b-int">–</span><span class="l">es tu stop diario interno</span><span class="s" id="b-int-s"></span></div>
+          <div class="stat"><span class="v" id="b-n1">–</span><span class="l">pérdidas seguidas hasta tu stop diario</span></div>
+          <div class="stat"><span class="v" id="b-n2">–</span><span class="l">pérdidas seguidas hasta el límite diario de la firma</span></div>
+          <div class="stat"><span class="v" id="b-n3">–</span><span class="l">pérdidas seguidas hasta el límite total</span></div>
         </div>
-        <div class="meter" id="s-meter" role="img" aria-label="Apalancamiento efectivo frente al máximo europeo de 30 veces"><i id="s-meter-i"></i></div>
-        <p class="fig-note">La barra compara tu apalancamiento efectivo con el máximo de 30 veces que permite la UE a un minorista en pares principales. Que la regla lo permita no significa que sea prudente.</p>
+        <div class="meter-row"><p class="ml"><span>Riesgo abierto máximo frente a tu stop diario</span><b id="b-m1-t"></b></p><div class="meter" id="b-m1"><i></i></div></div>
+        <div class="meter-row"><p class="ml"><span>Tu stop diario frente al límite de la firma</span><b id="b-m2-t"></b></p><div class="meter" id="b-m2"><i></i></div></div>
+        <p class="readout" id="b-read" aria-live="polite"></p>
+        <p class="fig-note">Cálculo simplificado: cada pérdida cuesta el riesgo por operación más el deslizamiento indicado. Las reglas exactas cambian de una firma a otra; compruébalas en sus condiciones y en el <a href="04-verdad-cuentas-fondeo.html">documento 4</a>.</p>
       </figure>
     </section>
 
-    <section class="sec" id="backtest">
-      <p class="kicker">Método</p>
-      <h2 data-short="Datos y tecnología">Datos, backtest y tecnología</h2>
-      <h3>Un backtest de forex honesto</h3>
-      <ul class="checklist">
-        <li>Datos tick con el diferencial real. Dukascopy ofrece históricos gratuitos; mejor aún, los de tu propio bróker.</li>
-        <li>Diferencial variable, comisión, deslizamiento y swaps, incluido el triple del miércoles.</li>
-        <li>Huecos de fin de semana y días festivos.</li>
-        <li>Zona horaria del servidor. Muchos brókeres usan GMT+2 o GMT+3 para que la vela diaria cierre a las 17:00 de Nueva York y haya cinco velas diarias por semana.</li>
-        <li>En el probador de MetaTrader 5, el modo «cada tick basado en ticks reales».</li>
-        <li>Walk-forward y Monte Carlo: reordena las operaciones y empeora los costes para ver si la estrategia sobrevive.</li>
-        <li>Cuidado con el optimizador. Miles de combinaciones garantizan un resultado brillante por azar, como muestra el laboratorio del <a href="01-trading-algoritmico.html">documento 1</a>.</li>
-      </ul>
-      <h3>La pila tecnológica</h3>
-      <figure class="diagram">
-        <div class="flowchart" id="stack"></div>
-        <figcaption class="fig-note">La capa de riesgo va en código propio, separada de la estrategia, y puede cerrar todo aunque la estrategia falle.</figcaption>
+    <section class="sec" id="colas">
+      <p class="kicker">Eventos extremos</p>
+      <h2 data-short="Cuando el stop no protege">Cuando el stop no protege</h2>
+      <p class="lead">Un stop es una orden que se ejecuta al primer precio disponible. Si el precio salta, se ejecuta mucho más lejos, o después de que ya haya pasado todo.</p>
+      <figure class="fig" id="fig-tail">
+        <p class="fig-title">Caída del precio en minutos, frente a un stop habitual</p>
+        <div class="chart" id="tail"></div>
+        <p class="fig-note">Fuentes: prensa de la época para el franco suizo (el mínimo de 0,85 lo cotizaron algunos brókeres), BIS y Banco de Inglaterra para la libra, y Banco de la Reserva de Australia para el yen.</p>
       </figure>
-      <div class="tbl-wrap">
-        <table>
-          <thead><tr><th>Plataforma</th><th>Lenguaje</th><th>Para qué</th></tr></thead>
-          <tbody>
-            <tr><td>MetaTrader 5</td><td>MQL5, y Python en Windows</td><td>La más extendida en brókeres minoristas y firmas de fondeo, con probador integrado</td></tr>
-            <tr><td>MetaTrader 4</td><td>MQL4</td><td>Veterana y en retirada en favor de MetaTrader 5</td></tr>
-            <tr><td>cTrader</td><td>C# (cTrader Algo)</td><td>Alternativa moderna a MetaTrader</td></tr>
-            <tr><td>NinjaTrader</td><td>C#</td><td>Futuros de divisas en el CME</td></tr>
-            <tr><td>APIs REST y FIX</td><td>Python o cualquier lenguaje</td><td>OANDA, Interactive Brokers y redes ECN, con el máximo control</td></tr>
-          </tbody>
-        </table>
+      <p>El 15 de enero de 2015, el Banco Nacional Suizo abandonó sin aviso el suelo de 1,20 francos por euro. En menos de un minuto el cruce cayó por debajo de 1,00 y los stops se ejecutaron donde pudieron. Los clientes de FXCM quedaron debiendo 225 millones de dólares y Alpari UK entró en insolvencia ese mismo día.</p>
+      <div class="cards two">
+        <article class="card"><span class="tag">Tamaño</span><h3 class="ct">Piensa en el salto, no solo en el stop</h3><p>Pregúntate cuánto perderías si el precio saltara un 5 o un 10&nbsp;% sin pasar por tu stop. Con poco apalancamiento efectivo, es un mal día; con mucho, se acaba la cuenta.</p></article>
+        <article class="card"><span class="tag">Calendario</span><h3 class="ct">Fuera en los eventos binarios</h3><p>Decisiones de bancos centrales que pueden romper un tipo de cambio, referendos y fines de semana tensos. La libra en 2016 y el yen en 2019 cayeron en horas asiáticas, con poca liquidez.</p></article>
+        <article class="card"><span class="tag">Protección</span><h3 class="ct">Saldo negativo y cierre por margen</h3><p>En la UE, las cuentas minoristas de CFD tienen protección de saldo negativo y cierre de posiciones cuando el margen cae a la mitad del exigido, por las medidas de ESMA que aplica la CNMV. Las cuentas profesionales y muchos brókeres de fuera de la UE no la tienen.</p></article>
+        <article class="card"><span class="tag">Contraparte</span><h3 class="ct">No todo en el mismo sitio</h3><p>Reparte el capital entre entidades reguladas y retira con frecuencia de las firmas de fondeo. Un bróker insolvente o una firma que cierra congelan tu dinero durante meses.</p></article>
       </div>
-      <p>Si tu estrategia opera en horizontes de minutos o más, la latencia importa poco. Si es más rápida, un servidor virtual en el mismo centro de datos que tu bróker (Equinix LD4 en Londres, NY4 en Nueva York o TY3 en Tokio) baja la latencia de decenas de milisegundos a uno o dos.</p>
     </section>
 
-    <section class="sec" id="regulacion">
-      <p class="kicker">Reglas</p>
-      <h2 data-short="Regulación">Regulación en España y la UE</h2>
-      <p class="lead">Desde 2018, ESMA limita el apalancamiento de los CFD que se venden a minoristas, incluido el forex al contado con apalancamiento que ofrecen los brókeres.</p>
+    <section class="sec" id="operativo">
+      <p class="kicker">Operativa</p>
+      <h2 data-short="Fallos operativos">Fallos de software, de personas y de agentes</h2>
+      <p class="lead">El 1 de agosto de 2012, Knight Capital activó por error un código antiguo al desplegar una versión nueva. En 45 minutos envió más de 4 millones de órdenes para cubrir 212 de clientes y perdió más de 460 millones de dólares. La SEC la multó porque no tenía controles que lo frenaran.</p>
       <div class="tbl-wrap">
         <table>
-          <thead><tr><th>Subyacente</th><th class="num">Apalancamiento máximo</th><th class="num">Garantía mínima</th></tr></thead>
+          <thead><tr><th>Fallo</th><th>Control</th></tr></thead>
           <tbody>
-            <tr><td>Pares de divisas principales<span class="sub">Combinaciones de USD, EUR, JPY, GBP, CAD y CHF</span></td><td class="num">30 : 1</td><td class="num">3,33&nbsp;%</td></tr>
-            <tr><td>Otros pares, oro e índices principales</td><td class="num">20 : 1</td><td class="num">5&nbsp;%</td></tr>
-            <tr><td>Materias primas salvo el oro e índices no principales</td><td class="num">10 : 1</td><td class="num">10&nbsp;%</td></tr>
-            <tr><td>Acciones individuales y otros</td><td class="num">5 : 1</td><td class="num">20&nbsp;%</td></tr>
-            <tr><td>Criptoactivos</td><td class="num">2 : 1</td><td class="num">50&nbsp;%</td></tr>
+            <tr><td>Código nuevo que se porta distinto en real</td><td>Desplegar primero en demo y después con tamaño mínimo, y poder volver a la versión anterior en un minuto</td></tr>
+            <tr><td>Órdenes en bucle</td><td>Tope de órdenes por minuto y de volumen total del día en el control de riesgo</td></tr>
+            <tr><td>Datos malos</td><td>Descartar precios imposibles, avisar si falta un dato y no operar con precios viejos</td></tr>
+            <tr><td>Relojes desincronizados</td><td>Sincronización horaria en el servidor y todo el registro en UTC</td></tr>
+            <tr><td>Un agente de IA con permiso para operar</td><td>Sin permiso de trading: propone, y el código decide. Lo explican los documentos <a href="03-agentes-claude-trading.html">3</a> y <a href="05-ctrader-api-mcp.html">5</a></td></tr>
+            <tr><td>Tú, después de una mala racha</td><td>Reglas escritas antes de empezar y cambios solo con el mercado cerrado</td></tr>
           </tbody>
         </table>
       </div>
+    </section>
+
+    <section class="sec" id="apagar">
+      <p class="kicker">Revisión</p>
+      <h2 data-short="Cuándo apagar">Cuándo apagar una estrategia</h2>
+      <p class="lead">Las ventajas pequeñas tardan mucho en distinguirse de la suerte. Por eso el criterio para apagar una estrategia se escribe antes de encenderla.</p>
+      <figure class="fig" id="fig-fun">
+        <p class="fig-title">Lo que esperabas frente a lo que pasa</p>
+        <p class="fig-sub">Resultado acumulado en R de una estrategia con objetivo de 1,5 R, frente a la banda donde debería moverse el 90&nbsp;% de las veces según el backtest.</p>
+        <div class="controls">
+          <div class="ctl"><label for="u-exp">Ventaja según el backtest <output id="u-exp-out" for="u-exp"></output></label><input id="u-exp" type="range" min="0.02" max="0.3" step="0.01" value="0.1"></div>
+          <div class="ctl"><label for="u-live">Ventaja real en vivo <output id="u-live-out" for="u-live"></output></label><input id="u-live" type="range" min="-0.2" max="0.3" step="0.01" value="0"></div>
+        </div>
+        <div class="chart" id="fun"></div>
+        <div class="legend"><span><i style="--k:var(--accent)"></i>En vivo</span><span><i style="--k:var(--ink-2)"></i>Esperado según el backtest</span><span><i style="--k:var(--deemph)"></i>Banda del 90&nbsp;%</span></div>
+        <div class="stats">
+          <div class="stat"><span class="v" id="fun-exit">–</span><span class="l" id="fun-exit-l">operación en la que sale por debajo de la banda</span></div>
+          <div class="stat"><span class="v" id="fun-need">–</span><span class="l">operaciones hacen falta para distinguir esta ventaja de cero</span></div>
+        </div>
+        <p class="readout" id="fun-read" aria-live="polite"></p>
+        <div class="btns"><button class="btn ghost" id="fun-again" type="button">Otro recorrido</button></div>
+        <p class="fig-note">Banda: ventaja × n ± 1,645 × desviación × √n, con la desviación por operación de una estrategia que gana 1,5 R o pierde 1 R. Operaciones «para distinguir» ≈ (1,645 × desviación ÷ ventaja)².</p>
+      </figure>
       <ul>
-        <li>El bróker cierra tus posiciones cuando tu margen cae al 50&nbsp;% del mínimo exigido.</li>
-        <li>Protección de saldo negativo: no puedes perder más de lo que has depositado.</li>
-        <li>Advertencia estandarizada con el porcentaje de cuentas que pierden. ESMA observó entre el 74&nbsp;% y el 89&nbsp;%.</li>
-        <li>En España, una resolución de la CNMV de 11 de julio de 2023 prohíbe la publicidad de CFD dirigida a minoristas y limita el apalancamiento de otros productos, como futuros y opciones.</li>
-        <li>Comprueba que tu bróker está autorizado en los registros de la CNMV o de su supervisor europeo y que no aparece en la lista de advertencias.</li>
-        <li>Si quiebra un bróker español, el FOGAIN cubre hasta 100.000 euros por inversor. Los de otros países de la UE tienen su propio fondo, con un mínimo europeo de 20.000 euros.</li>
+        <li>Fija de antemano la caída que te hará parar, por ejemplo 1,5 veces la peor del backtest, y la que te hará reducir el tamaño.</li>
+        <li>Si el resultado sale por debajo de la banda, reduce el tamaño y revisa: costes, régimen de mercado y errores de ejecución.</li>
+        <li>Si el coste real, entre spread y deslizamiento, supera en más de un 50&nbsp;% al supuesto, recalcula la ventaja con el coste real.</li>
+        <li>No la apagues por una semana mala ni la mantengas por esperanza: decide con los criterios que escribiste.</li>
       </ul>
     </section>
 
-    <section class="sec" id="sistema">
-      <p class="kicker">Plantilla</p>
-      <h2 data-short="Sistema de ejemplo">Un sistema sensato para empezar</h2>
-      <p class="lead">Este esqueleto combina dos de las primas con más evidencia, reparte el riesgo y opera poco. Sirve para aprender el proceso completo antes de buscar nada más ambicioso.</p>
-      <div class="cards">
-        <article class="card"><span class="tag">Universo</span><p>Entre 7 y 9 pares frente al dólar: EUR, GBP, JPY, CHF, AUD, CAD, NZD…</p></article>
-        <article class="card"><span class="tag">Señales</span><p>Tendencia de 12 meses sin el último, y carry según el diferencial de tipos.</p></article>
-        <article class="card"><span class="tag">Tamaño</span><p>Cada par aporta un riesgo parecido, con una volatilidad objetivo del 8&nbsp;% al 10&nbsp;% anual.</p></article>
-        <article class="card"><span class="tag">Frecuencia</span><p>Revisión semanal. Pocas operaciones y pocos costes.</p></article>
-        <article class="card"><span class="tag">Límites</span><p>Pérdida máxima diaria y total escritas en el código, y parada de emergencia.</p></article>
-        <article class="card"><span class="tag">Validación</span><p>Walk-forward, costes pesimistas y cuenta demo antes del dinero real.</p></article>
-      </div>
-      <div class="codeblock" data-lang="python"><span class="lang">Python · educativo</span><pre class="code"><code>import numpy as np
-import pandas as pd
-
-
-def backtest_fx(precios, tipos, vol_objetivo=0.10, coste_pb=1.5):
-    """Tendencia + carry en pares frente al dólar, con datos diarios.
-
-    precios:  cierres diarios en dólares por unidad de cada divisa
-              (invierte USDJPY, USDCHF y USDCAD para que todo apunte igual).
-    tipos:    tipo a corto de cada divisa menos el del dólar, en % anual.
-    coste_pb: coste por operación, en puntos básicos del nominal negociado.
-    """
-    rets = precios.pct_change()
-
-    # Señal 1: tendencia de 12 meses, saltándose el último mes
-    tendencia = np.sign(precios.shift(21) / precios.shift(252) - 1)
-    # Señal 2: carry, comprar si la divisa paga más interés que el dólar
-    carry = np.sign(tipos)
-    senal = (tendencia + carry) / 2   # -1, -0.5, 0, 0.5 o 1
-
-    # Cada par aporta un riesgo parecido (aproximación: ignora correlaciones)
-    vol = rets.rolling(63).std() * np.sqrt(252)
-    peso = senal * vol_objetivo / (vol * np.sqrt(precios.shape[1]))
-
-    # Rebalanceo semanal y ejecución al día siguiente: nunca mira el futuro
-    peso = peso.resample("W-FRI").last().reindex(precios.index).ffill().shift(1)
-
-    precio_mov = (peso * rets).sum(axis=1)
-    intereses = (peso * tipos.shift(1) / 100 / 252).sum(axis=1)
-    costes = peso.diff().abs().sum(axis=1) * coste_pb / 10_000
-    valido = peso.notna().any(axis=1)
-    neto = (precio_mov + intereses - costes)[valido]
-
-    anual = neto.mean() * 252
-    vol_real = neto.std() * np.sqrt(252)
-    curva = (1 + neto).cumprod()
-    caida_max = (curva / curva.cummax() - 1).min()
-    print(f"Rentabilidad anual {anual:.1%} · volatilidad {vol_real:.1%} · "
-          f"Sharpe {anual / vol_real:.2f} · caída máxima {caida_max:.1%}")
-    return neto</code></pre></div>
-      <p class="fig-note">Código educativo, no una recomendación. Necesitas tus propios datos de precios y de tipos de interés, por ejemplo de los bancos centrales. Antes de fiarte del resultado, aplica los pasos del <a href="01-trading-algoritmico.html">documento 1</a>. Si quieres que un agente de IA te ayude a construirlo y vigilarlo, sigue con <a href="03-agentes-claude-trading.html">el documento 3</a>; para conectarlo a cTrader, con <a href="05-ctrader-api-mcp.html">el 5</a>.</p>
+    <section class="sec" id="lista">
+      <p class="kicker">Antes de empezar</p>
+      <h2 data-short="Lista final">Antes de arriesgar dinero</h2>
+      <ul class="checklist">
+        <li>Riesgo por operación calculado en código a partir de la distancia al stop.</li>
+        <li>Stop guardado en el servidor en cada orden.</li>
+        <li>Límites diario, de exposición y de caída acumulada, con los umbrales por escrito.</li>
+        <li>Botón de parada probado en el último mes.</li>
+        <li>Reconciliación con el bróker al arrancar y tras cada corte.</li>
+        <li>Registro con hora de cada orden, ejecución y error.</li>
+        <li>Avisos al móvil por parada, silencio y errores.</li>
+        <li>Plan para saltos de precio y fines de semana.</li>
+        <li>Reglas del bróker o de la firma traducidas a comprobaciones automáticas.</li>
+        <li>Criterios para apagar la estrategia, escritos antes de encenderla.</li>
+      </ul>
+      <p class="pull">Una estrategia mediocre con buena gestión del riesgo sobrevive. <b>Una buena con mala gestión, no.</b></p>
     </section>
 
     <section class="sec" id="fuentes">
       <p class="kicker">Fuentes</p>
       <h2 data-short="Fuentes">Fuentes y lecturas</h2>
       <ol class="refs">
-        <li>BIS (2025). OTC foreign exchange turnover in April 2025. <a href="https://www.bis.org/statistics/rpfx25_fx.htm" target="_blank" rel="noopener">Datos</a> · <a href="https://www.bis.org/press/p250930.htm" target="_blank" rel="noopener">Nota de prensa</a></li>
+        <li>Kelly, J. L. (1956). A New Interpretation of Information Rate. Bell System Technical Journal, 35(4). <a href="https://doi.org/10.1002/j.1538-7305.1956.tb03809.x" target="_blank" rel="noopener">DOI</a></li>
+        <li>Thorp, E. O. (2006). The Kelly Criterion in Blackjack, Sports Betting and the Stock Market. Handbook of Asset and Liability Management, vol. 1, Elsevier.</li>
+        <li>Reglamento Delegado (UE) 2017/589 de la Comisión (RTS 6), requisitos organizativos de las empresas de inversión dedicadas a la negociación algorítmica. <a href="https://eur-lex.europa.eu/eli/reg_del/2017/589/oj/eng" target="_blank" rel="noopener">EUR-Lex</a></li>
+        <li>SEC (2013). SEC Charges Knight Capital With Violations of Market Access Rule. <a href="https://www.sec.gov/newsroom/press-releases/2013-222" target="_blank" rel="noopener">Nota de prensa</a></li>
         <li>BIS Markets Committee (2017). The sterling «flash event» of 7 October 2016. <a href="https://www.bis.org/publ/mktc09.htm" target="_blank" rel="noopener">Informe</a></li>
-        <li>Reserve Bank of Australia (2019). The Recent Japanese Yen Flash Event. <a href="https://www.rba.gov.au/publications/smp/2019/feb/box-b-the-recent-japanese-yen-flash-event.html" target="_blank" rel="noopener">Recuadro B</a></li>
-        <li>FCA (2014). Multas a cinco bancos por fallos en el mercado de divisas. <a href="https://www.fca.org.uk/news/press-releases/fca-fines-five-banks-%C2%A311-billion-fx-failings-and-announces-industry-wide-remediation-programme" target="_blank" rel="noopener">Nota de prensa</a></li>
-        <li>Global Foreign Exchange Committee. FX Global Code, principio 17 (last look).</li>
-        <li>Lustig, H., Roussanov, N. y Verdelhan, A. (2011). Common Risk Factors in Currency Markets. <i>Review of Financial Studies</i>.</li>
-        <li>Menkhoff, L., Sarno, L., Schmeling, M. y Schrimpf, A. (2012). Carry Trades and Global Foreign Exchange Volatility (<i>Journal of Finance</i>) y Currency Momentum Strategies (<i>Journal of Financial Economics</i>).</li>
-        <li>Brunnermeier, M., Nagel, S. y Pedersen, L. (2008). Carry Trades and Currency Crashes. <i>NBER Macroeconomics Annual</i>.</li>
-        <li>Moskowitz, T., Ooi, Y. H. y Pedersen, L. (2012). Time Series Momentum. <i>Journal of Financial Economics</i>.</li>
-        <li>Asness, C., Moskowitz, T. y Pedersen, L. (2013). Value and Momentum Everywhere. <i>Journal of Finance</i>.</li>
-        <li>Neely, C., Weller, P. y Ulrich, J. (2009). The Adaptive Markets Hypothesis: Evidence from the Foreign Exchange Market. <i>Journal of Financial and Quantitative Analysis</i>.</li>
-        <li>ESMA (2018). Medidas de intervención sobre CFD para clientes minoristas.</li>
-        <li>CNMV (2023). Resolución de 11 de julio de 2023 sobre CFD y otros productos apalancados. <a href="https://www.cnmv.es/docportal/aldia/Resolucion_CFD.pdf" target="_blank" rel="noopener">PDF</a></li>
+        <li>Reserve Bank of Australia (2019). Box B: The Recent Japanese Yen Flash Event. Statement on Monetary Policy, febrero. <a href="https://www.rba.gov.au/publications/smp/2019/feb/box-b-the-recent-japanese-yen-flash-event.html" target="_blank" rel="noopener">Recuadro</a></li>
+        <li>swissinfo.ch / Bloomberg (2015). FXCM Faces Losses as Swiss Shock Leaves Alpari (UK) Insolvent. <a href="https://www.swissinfo.ch/eng/fxcm-faces-losses-as-swiss-shock-leaves-alpari-uk-insolvent/41219974" target="_blank" rel="noopener">Artículo</a></li>
+        <li>ESMA (2018). Medidas de intervención sobre CFD para clientes minoristas: límites de apalancamiento, cierre por margen al 50&nbsp;% y protección de saldo negativo, aplicadas en España por la CNMV desde 2019. <a href="https://www.esma.europa.eu/press-news/esma-news/esma-agrees-prohibit-binary-options-and-restrict-cfds-protect-retail-investors" target="_blank" rel="noopener">ESMA</a></li>
       </ol>
     </section>
   </main>
 </div>
-<footer class="foot wrap"><h2 class="foot-h" id="serie">La serie completa</h2><nav aria-labelledby="serie"><ol class="series-index"><li><a href="01-trading-algoritmico.html"><span class="n" style="--k:var(--k1)">1</span><span class="t">Trading algorítmico</span><span class="d">Qué puede hacer un algoritmo, quién paga cada ganancia y dónde están sus límites.</span></a></li><li><a href="#top" aria-current="page"><span class="n" style="--k:var(--k2)">2</span><span class="t">Forex algorítmico</span><span class="d">El mercado de divisas visto por un algoritmo: estructura, costes y estrategias con evidencia.</span><span class="here">Estás aquí</span></a></li><li><a href="03-agentes-claude-trading.html"><span class="n" style="--k:var(--k3)">3</span><span class="t">Agentes Claude</span><span class="d">Dónde aporta un agente de IA a un sistema de trading, dónde es un riesgo y cuánto cuesta.</span></a></li><li><a href="04-verdad-cuentas-fondeo.html"><span class="n" style="--k:var(--k4)">4</span><span class="t">Cuentas de fondeo</span><span class="d">Cómo ganan dinero las firmas de fondeo, quién cobra de verdad y qué pasa si eres rentable.</span></a></li><li><a href="05-ctrader-api-mcp.html"><span class="n" style="--k:var(--k5)">5</span><span class="t">cTrader: API y MCP</span><span class="d">Qué es cTrader y cómo conectar un sistema por Open API, FIX, cBots o MCP, y qué vigilar.</span></a></li><li><a href="06-gestion-del-riesgo.html"><span class="n" style="--k:var(--k6)">6</span><span class="t">Gestión del riesgo</span><span class="d">Tamaño de posición, límites, caídas y controles para que el sistema sobreviva.</span></a></li><li><a href="07-infraestructura-y-costes.html"><span class="n" style="--k:var(--k7)">7</span><span class="t">Infraestructura y costes</span><span class="d">Seguridad, redundancia, latencia y costes de la infraestructura final, desde Bilbao.</span></a></li><li><a href="08-atlas-de-estrategias.html"><span class="n" style="--k:var(--k8)">8</span><span class="t">Atlas de estrategias</span><span class="d">Estrategias algorítmicas por sector y dificultad: qué detectan, quién paga y cómo se montan.</span></a></li></ol></nav><p>Contenido educativo. No es asesoramiento financiero ni una recomendación de inversión. Las cifras proceden de las fuentes citadas; las simulaciones usan datos aleatorios y solo ilustran ideas.</p><p>Serie «Máquinas y mercados» · Septiembre de 2026</p></footer>
+<footer class="foot wrap"><h2 class="foot-h" id="serie">La serie completa</h2><nav aria-labelledby="serie"><ol class="series-index"><li><a href="01-trading-algoritmico.html"><span class="n" style="--k:var(--k1)">1</span><span class="t">Trading algorítmico</span><span class="d">Qué puede hacer un algoritmo, quién paga cada ganancia y dónde están sus límites.</span></a></li><li><a href="02-forex-algoritmico.html"><span class="n" style="--k:var(--k2)">2</span><span class="t">Forex algorítmico</span><span class="d">El mercado de divisas visto por un algoritmo: estructura, costes y estrategias con evidencia.</span></a></li><li><a href="03-agentes-claude-trading.html"><span class="n" style="--k:var(--k3)">3</span><span class="t">Agentes Claude</span><span class="d">Dónde aporta un agente de IA a un sistema de trading, dónde es un riesgo y cuánto cuesta.</span></a></li><li><a href="04-verdad-cuentas-fondeo.html"><span class="n" style="--k:var(--k4)">4</span><span class="t">Cuentas de fondeo</span><span class="d">Cómo ganan dinero las firmas de fondeo, quién cobra de verdad y qué pasa si eres rentable.</span></a></li><li><a href="05-ctrader-api-mcp.html"><span class="n" style="--k:var(--k5)">5</span><span class="t">cTrader: API y MCP</span><span class="d">Qué es cTrader y cómo conectar un sistema por Open API, FIX, cBots o MCP, y qué vigilar.</span></a></li><li><a href="#top" aria-current="page"><span class="n" style="--k:var(--k6)">6</span><span class="t">Gestión del riesgo</span><span class="d">Tamaño de posición, límites, caídas y controles para que el sistema sobreviva.</span><span class="here">Estás aquí</span></a></li><li><a href="07-infraestructura-y-costes.html"><span class="n" style="--k:var(--k7)">7</span><span class="t">Infraestructura y costes</span><span class="d">Seguridad, redundancia, latencia y costes de la infraestructura final, desde Bilbao.</span></a></li><li><a href="08-atlas-de-estrategias.html"><span class="n" style="--k:var(--k8)">8</span><span class="t">Atlas de estrategias</span><span class="d">Estrategias algorítmicas por sector y dificultad: qué detectan, quién paga y cómo se montan.</span></a></li></ol></nav><p>Contenido educativo. No es asesoramiento financiero ni una recomendación de inversión. Las cifras proceden de las fuentes citadas; las simulaciones usan datos aleatorios y solo ilustran ideas.</p><p>Serie «Máquinas y mercados» · Septiembre de 2026</p></footer>
 <script>
 (function () {
   "use strict";
@@ -1323,115 +1277,200 @@ def backtest_fx(precios, tipos, vol_objetivo=0.10, coste_pb=1.5):
 <script>
 (function () {
   var M = window.MM;
-  var pc = function (v) { return M.fmt(v, 1) + " %"; };
+  function $(id) { return document.getElementById(id); }
+  function num(id, d) { var v = parseFloat($(id).value); return isFinite(v) ? v : d; }
+  function pc(v, d) { return M.fmt(v, d === undefined ? 1 : d) + " %"; }
+  function sg(v, d) { return (v > 0 ? "+" : "") + pc(v, d); }
+  function trim(v, d) { return M.fmt(v, d).replace(/,?0+$/, ""); }
 
-  /* Divisas */
-  var ccy = [
-    { label: "Dólar estadounidense (USD)", value: 89.2 }, { label: "Euro (EUR)", value: 28.9 }, { label: "Yen (JPY)", value: 16.8 },
-    { label: "Libra (GBP)", value: 10.2 }, { label: "Renminbi (CNY)", value: 8.5 }, { label: "Franco suizo (CHF)", value: 6.4 }, { label: "Dólar de Hong Kong (HKD)", value: 3.8 }
-  ];
-  M.hbar(document.getElementById("ccy"), { aria: "Porcentaje de operaciones de divisas en que aparece cada moneda, abril de 2025", rows: ccy, domain: [0, 100], fmt: pc, labelW: 200, unitLabel: "de las operaciones" });
-  M.dataTable(document.getElementById("fig-ccy"), ["Divisa", "% de operaciones"], ccy.map(function (r) { return [r.label, pc(r.value)]; }), [1]);
-
-  /* Sesiones */
-  function hh(h) { return String(h % 24).padStart(2, "0") + ":00"; }
-  var ses = [
-    { label: "Sídney", segs: [[23, 24], [0, 8]], txt: "23:00 a 08:00" },
-    { label: "Tokio", segs: [[1, 10]], txt: "01:00 a 10:00" },
-    { label: "Londres", segs: [[9, 18]], txt: "09:00 a 18:00", strong: true },
-    { label: "Nueva York", segs: [[14, 23]], txt: "14:00 a 23:00", strong: true }
-  ];
-  var tk = []; for (var h = 0; h <= 24; h += 3) tk.push({ v: h, label: hh(h === 24 ? 0 : h), minor: h % 6 !== 0, anchor: h === 24 ? "end" : undefined });
-  M.range(document.getElementById("ses"), {
-    aria: "Sesiones del mercado de divisas a lo largo del día en hora de España",
-    rows: ses, scale: "lin", domain: [0, 24], labelW: 110, ticks: tk,
-    bands: [{ from: 14, to: 18, label: "Solape Londres–Nueva York", short: "Solape", level: 1 }],
-    markers: [{ v: 20, label: "Fed", anchor: "end", hideNarrow: true }, { v: 23, label: "Rollover", anchor: "end" }],
-    describe: function (r) { return r.txt; }
-  });
-  M.dataTable(document.getElementById("fig-ses"), ["Sesión", "Horario aproximado (España)"], ses.map(function (r) { return [r.label, r.txt]; }));
-
-  /* Martingala frente a riesgo fijo: mismas tiradas */
-  function mart(seed, N) {
-    var r = M.rng(seed), eqM = 10000, eqF = 10000, k = 0, bust = -1, Mv = [eqM], Fv = [eqF];
-    for (var i = 1; i <= N; i++) {
-      var win = r() < 0.5;
-      if (bust < 0) { var stake = 10 * Math.pow(2, k); if (win) { eqM += stake; k = 0; } else { eqM -= stake; k++; } if (10 * Math.pow(2, k) > eqM) bust = i; }
-      var risk = eqF * 0.01; eqF += win ? risk : -risk;
-      Mv.push(eqM); Fv.push(eqF);
+  /* ---------- Kelly ---------- */
+  var kChart = null;
+  function g(f, p, a, b) { return p * Math.log(1 + a * f) + (1 - p) * Math.log(1 - b * f); }
+  function per100(f, p, a, b) { return (Math.exp(100 * g(f, p, a, b)) - 1) * 100; }
+  function kelly() {
+    var p = num("k-p", 45) / 100, R = num("k-r", 1.5), c = num("k-c", 0.05);
+    $("k-p-out").textContent = M.fmt(p * 100, 0) + " %";
+    $("k-r-out").textContent = M.fmt(R, 1) + " R";
+    $("k-c-out").textContent = M.fmt(c, 2) + " R";
+    var a = R - c, b = 1 + c, fs = (p * a - (1 - p) * b) / (a * b);
+    var xmax = fs > 0 ? Math.min(40, Math.max(3, fs * 250)) : 10;
+    var xs = [], ys = [];
+    for (var i = 0; i <= 160; i++) { var f = xmax * i / 160; xs.push(f); ys.push(per100(f / 100, p, a, b)); }
+    var nd = M.niceDomain(0, xmax, 5), xt = [];
+    M.ticks(0, xmax, nd[2]).forEach(function (v, k) { xt.push({ v: v, label: trim(v, 1) + " %", anchor: k === 0 ? "start" : "middle", minor: k % 2 === 1 }); });
+    var vl = [];
+    if (fs > 0) {
+      vl.push({ x: fs * 50, label: "½ Kelly", anchor: "end" });
+      vl.push({ x: fs * 100, label: "Kelly" });
+      if (fs * 200 <= xmax) vl.push({ x: fs * 200, label: "2× Kelly" });
     }
-    return { M: Mv, F: Fv, bust: bust };
+    var cfg = {
+      aria: "Crecimiento esperado cada 100 operaciones según el porcentaje de capital arriesgado por operación",
+      x: xs, series: [{ name: "cada 100 operaciones", color: "var(--accent)", values: ys, width: 2.2 }],
+      yFmt: function (v) { return (v > 0 ? "+" : "") + M.fmt(v, 0) + " %"; },
+      tipFmt: function (v) { return sg(v, 1); },
+      xTicks: xt, vlines: vl, zeroBase: true, endDots: false, height: 300,
+      tipTitle: function (i) { return "Riesgo por operación: " + pc(xs[i], 2); }
+    };
+    if (kChart) kChart.update(cfg); else kChart = M.line($("kelly"), cfg);
+    var txt;
+    if (fs <= 0) txt = "Con estos números no hay ventaja: cualquier tamaño hace que la cuenta encoja con el tiempo. Ningún tamaño de posición arregla una estrategia sin ventaja.";
+    else {
+      var zero = null;
+      for (var f = fs; f < 1 / b; f += 0.0005) { if (g(f, p, a, b) < 0) { zero = f; break; } }
+      txt = "El punto de Kelly está en arriesgar un " + pc(fs * 100, 1) + " por operación, con un crecimiento esperado de " + sg(per100(fs, p, a, b), 0) + " cada 100 operaciones. Con un 1 % crecerías " + sg(per100(0.01, p, a, b), 1) + ", con caídas mucho menores. " + (zero ? "A partir de un " + pc(zero * 100, 1) + " de riesgo, el crecimiento esperado es negativo aunque la estrategia gane dinero en la operación media." : "");
+    }
+    $("kelly-read").textContent = txt;
+    M.dataTable($("fig-kelly"), ["Riesgo por operación", "Crecimiento cada 100 operaciones"], xs.filter(function (_, i) { return i % 16 === 0; }).map(function (x) { return [pc(x, 2), sg(per100(x / 100, p, a, b), 1)]; }), [0, 1]);
   }
-  var mt = mart(302, 700), idx = mt.M.map(function (_, i) { return i; });
-  var usd = function (v) { return M.fmt(v, 0) + " $"; };
-  M.line(document.getElementById("mart"), {
-    aria: "Evolución de una cuenta con martingala frente a una con riesgo fijo del 1 por ciento",
-    x: idx, series: [{ name: "Riesgo fijo del 1 %", color: "var(--c1)", values: mt.F }, { name: "Martingala", color: "var(--c2)", values: mt.M }],
-    yFmt: usd, yDomain: [0, 14000],
-    xTicks: [{ v: 0, label: "0", anchor: "start" }, { v: 100, label: "100", minor: true }, { v: 200, label: "200" }, { v: 300, label: "300", minor: true }, { v: 400, label: "400" }, { v: 500, label: "500", minor: true }, { v: 600, label: "600" }, { v: 700, label: "700", anchor: "end" }],
-    vlines: [{ x: mt.bust, label: "La martingala ya no puede doblar", anchor: "end" }],
-    tipTitle: function (i) { return "Operación " + i; }
-  });
-  var mrows = []; for (var q = 0; q <= 700; q += 50) mrows.push(["Operación " + q, usd(mt.F[q]), usd(mt.M[q])]);
-  M.dataTable(document.getElementById("fig-mart"), ["Momento", "Riesgo fijo 1 %", "Martingala"], mrows, [1, 2]);
+  ["k-p", "k-r", "k-c"].forEach(function (id) { $(id).addEventListener("input", kelly); });
+  kelly();
 
-  /* Calculadora de costes */
-  function num(id) { var v = parseFloat(document.getElementById(id).value); return isFinite(v) ? v : 0; }
-  function costs() {
-    var n = num("c-n"), c = num("c-cost"), e = num("c-edge"), l = num("c-lots");
-    document.getElementById("c-n-out").textContent = M.fmt(n);
-    var cost = n * c * l * 10, gross = n * e * l * 10, net = gross - cost, share = e > 0 ? c / e * 100 : 100;
-    document.getElementById("c-costs").textContent = usd(cost);
-    document.getElementById("c-gross").textContent = usd(gross);
-    document.getElementById("c-net").textContent = (net > 0 ? "+" : "") + usd(net);
-    var card = document.getElementById("c-net-card"), badge = document.getElementById("c-badge");
-    card.classList.toggle("is-good", net > 0); card.classList.toggle("is-bad", net <= 0);
-    badge.replaceChildren();
-    var ns = "http://www.w3.org/2000/svg", sv = document.createElementNS(ns, "svg"); sv.setAttribute("viewBox", "0 0 12 12"); sv.setAttribute("aria-hidden", "true");
-    var pth = document.createElementNS(ns, "path"); pth.setAttribute("d", net > 0 ? "M6 2l4 6H2z" : "M6 10L2 4h8z"); pth.setAttribute("fill", "currentColor"); sv.appendChild(pth);
-    badge.appendChild(sv); badge.appendChild(document.createTextNode(net > 0 ? "A tu favor" : "En contra"));
-    var mi = document.getElementById("c-meter-i"), mb = document.getElementById("c-meter");
-    mi.style.width = Math.min(100, share) + "%";
-    mb.className = "meter" + (share >= 80 ? " crit" : share >= 50 ? " warn" : "");
-    mb.setAttribute("aria-label", "Los costes se comen el " + M.fmt(share, 0) + " % de la ventaja");
-    document.getElementById("c-read").textContent = share >= 100
-      ? "Los costes (" + M.fmt(c, 1) + " pips) superan tu ventaja bruta (" + M.fmt(e, 1) + " pips). Cuantas más operaciones hagas, más pierdes."
-      : "Los costes se comen el " + M.fmt(share, 0) + " % de tu ventaja. Con " + M.fmt(n) + " operaciones al mes pagas " + usd(cost) + " para ganar, en teoría, " + usd(net) + " netos.";
+  /* ---------- Recuperación ---------- */
+  var recRows = [5, 10, 15, 20, 25, 30, 40, 50, 60].map(function (l) { return { label: "Pierdes un " + l + " %", value: l / (100 - l) * 100 }; });
+  M.hbar($("rec"), { aria: "Ganancia necesaria para recuperar cada nivel de pérdida", rows: recRows, domain: [0, 150], labelW: 150, fmt: function (v) { return "+" + M.fmt(v, 1) + " %"; }, unitLabel: "para recuperarte" });
+  M.dataTable($("fig-rec"), ["Pérdida", "Ganancia necesaria"], recRows.map(function (r) { return [r.label.replace("Pierdes un ", ""), "+" + M.fmt(r.value, 1) + " %"]; }), [1]);
+
+  /* ---------- Monte Carlo de caídas ---------- */
+  var mcSeed = 11, mcChart = null;
+  function quant(arr, q) { var a = Array.prototype.slice.call(arr).sort(function (x, y) { return x - y; }); return a[Math.min(a.length - 1, Math.floor(q * a.length))]; }
+  function mc() {
+    var P = { p: num("m-p", 45) / 100, R: num("m-r", 1.5), f: num("m-f", 1) / 100, T: Math.round(num("m-t", 250)), c: num("m-c", 0.05), lim: Math.max(1, num("m-lim", 10)) };
+    $("m-p-out").textContent = M.fmt(P.p * 100, 0) + " %";
+    $("m-r-out").textContent = M.fmt(P.R, 1) + " R";
+    $("m-f-out").textContent = trim(P.f * 100, 2) + " %";
+    $("m-t-out").textContent = M.fmt(P.T, 0);
+    $("m-c-out").textContent = M.fmt(P.c, 2) + " R";
+    var N = 4000, r = M.rng(mcSeed), win = P.R - P.c, loss = 1 + P.c;
+    var dds = new Float64Array(N), st = new Int32Array(N), fin = new Float64Array(N);
+    for (var i = 0; i < N; i++) {
+      var eq = 1, peak = 1, mdd = 0, run = 0, best = 0;
+      for (var t = 0; t < P.T; t++) {
+        if (r() < P.p) { eq *= 1 + P.f * win; run = 0; } else { eq *= Math.max(0, 1 - P.f * loss); run++; if (run > best) best = run; }
+        if (eq > peak) peak = eq; else { var dd = 1 - eq / peak; if (dd > mdd) mdd = dd; }
+      }
+      dds[i] = mdd * 100; st[i] = best; fin[i] = (eq - 1) * 100;
+    }
+    var med = quant(dds, 0.5), p95 = quant(dds, 0.95), p995 = quant(dds, 0.995), over = 0;
+    for (i = 0; i < N; i++) if (dds[i] >= P.lim) over++;
+    var upper = Math.min(100, Math.max(10, Math.ceil(p995 / 5) * 5)), w = upper <= 20 ? 1 : upper <= 50 ? 2 : 5;
+    var bins = [];
+    for (var x = 0; x < upper - 1e-9; x += w) bins.push({ x0: x, x1: x + w, value: 0 });
+    for (i = 0; i < N; i++) { var k = Math.min(bins.length - 1, Math.floor(dds[i] / w)); bins[k].value += 100 / N; }
+    bins.forEach(function (bn) { bn.color = bn.x0 >= P.lim - 1e-9 ? "var(--crit-mark)" : "var(--accent)"; });
+    var xt = [];
+    var step = upper <= 20 ? 5 : upper <= 50 ? 10 : 20;
+    for (x = 0; x <= upper + 1e-9; x += step) xt.push({ v: x, label: M.fmt(x, 0) + " %", anchor: x === 0 ? "start" : x >= upper ? "end" : "middle" });
+    function side(v) { return v / upper > 0.6 ? "end" : "start"; }
+    var marks = [{ v: med, label: "Mediana " + pc(med, 1), anchor: side(med) }, { v: p95, label: "Peor 5 % " + pc(p95, 1), anchor: side(p95), level: 1 }];
+    if (P.lim < upper) marks.push({ v: P.lim, label: "Límite " + M.fmt(P.lim, 0) + " %", level: 2, color: "var(--crit)", anchor: side(P.lim) });
+    var cfg = {
+      aria: "Histograma de la caída máxima anual en 4.000 simulaciones", bins: bins, domain: [0, upper], xTicks: xt, markers: marks,
+      yFmt: function (v) { return M.fmt(v, v < 10 && v % 1 ? 1 : 0) + " %"; }, unitLabel: "de los años",
+      tipTitle: function (bn) { return "Caída máxima entre " + M.fmt(bn.x0, 0) + " y " + M.fmt(bn.x1, 0) + " %"; },
+      height: 250
+    };
+    if (mcChart) mcChart.update(cfg); else mcChart = M.vbar($("mc"), cfg);
+    var over100 = over / N * 100, smed = quant(st, 0.5), s95 = quant(st, 0.95), fmed = quant(fin, 0.5);
+    $("mc-med").textContent = pc(med, 1);
+    $("mc-p95").textContent = pc(p95, 1);
+    $("mc-lim").textContent = pc(over100, 1);
+    $("mc-lim-l").textContent = "de los años superan el límite del " + M.fmt(P.lim, 0) + " %";
+    $("mc-lim-card").classList.toggle("is-bad", over100 >= 5);
+    $("mc-streak").textContent = String(smed);
+    $("mc-streak-s").textContent = "En uno de cada veinte años, " + s95 + " o más";
+    var edge = P.p * win - (1 - P.p) * loss;
+    $("mc-read").textContent = "Ventaja por operación: " + (edge > 0 ? "+" : "") + M.fmt(edge, 3) + " R. El año mediano termina con " + sg(fmed, 1) + " y una caída máxima del " + pc(med, 1) + ". " + (edge > 0 ? "Aun con ventaja real, " : "Sin ventaja, ") + M.fmt(over100, 1) + " de cada 100 años tocan el límite del " + M.fmt(P.lim, 0) + " %. Prueba a doblar el riesgo por operación: la caída típica crece más que la ganancia.";
+    M.dataTable($("fig-mc"), ["Caída máxima", "Porcentaje de años"], bins.map(function (bn) { return [M.fmt(bn.x0, 0) + "–" + M.fmt(bn.x1, 0) + " %", pc(bn.value, 1)]; }), [1]);
   }
-  ["c-n", "c-cost", "c-edge", "c-lots"].forEach(function (id) { document.getElementById(id).addEventListener("input", costs); });
-  costs();
-
-  /* Tamaño de posición */
-  function size() {
-    var cap = num("s-cap"), r = num("s-risk"), stop = Math.max(1, num("s-stop")), px = num("s-px") || 1.1;
-    document.getElementById("s-risk-out").textContent = M.fmt(r, 2).replace(/,?0+$/, "") + " %";
-    var money = cap * r / 100, lots = money / (stop * 10), nom = lots * 100000 * px, lev = cap > 0 ? nom / cap : 0;
-    document.getElementById("s-lots").textContent = M.fmt(lots, 2);
-    document.getElementById("s-money").textContent = usd(money);
-    document.getElementById("s-nom").textContent = usd(nom);
-    document.getElementById("s-lev").textContent = M.fmt(lev, 1) + "×";
-    document.getElementById("s-margin").textContent = "Garantía necesaria a 30:1: " + usd(nom / 30);
-    var mi = document.getElementById("s-meter-i"), mb = document.getElementById("s-meter"), sh = Math.min(100, lev / 30 * 100);
-    mi.style.width = sh + "%";
-    mb.className = "meter" + (lev > 30 ? " crit" : lev > 10 ? " warn" : "");
-    mb.setAttribute("aria-label", "Apalancamiento efectivo de " + M.fmt(lev, 1) + " veces frente a un máximo de 30");
+  var mcT = 0;
+  function mcLater() {
+    $("m-p-out").textContent = M.fmt(num("m-p", 45), 0) + " %"; $("m-r-out").textContent = M.fmt(num("m-r", 1.5), 1) + " R";
+    $("m-f-out").textContent = trim(num("m-f", 1), 2) + " %"; $("m-t-out").textContent = M.fmt(num("m-t", 250), 0); $("m-c-out").textContent = M.fmt(num("m-c", 0.05), 2) + " R";
+    clearTimeout(mcT); mcT = setTimeout(mc, 120);
   }
-  ["s-cap", "s-risk", "s-stop", "s-px"].forEach(function (id) { document.getElementById(id).addEventListener("input", size); });
-  size();
+  ["m-p", "m-r", "m-f", "m-t", "m-c", "m-lim"].forEach(function (id) { $(id).addEventListener("input", mcLater); });
+  $("mc-again").addEventListener("click", function () { mcSeed = (mcSeed * 48271 + 7) % 2147483647; mc(); });
+  mc();
 
-  /* Pila tecnológica */
-  M.flow(document.getElementById("stack"), {
-    aria: "Pila tecnológica de un sistema de forex: datos, estrategia, riesgo, ejecución y bróker",
-    nodes: [
-      { t: "Datos", d: "Flujo de precios del bróker o de un proveedor" },
-      { t: "Estrategia", d: "Python, MQL5 o C#" },
-      { t: "Riesgo", d: "Límites duros y parada de emergencia" },
-      { t: "Ejecución", d: "MT5, cTrader, FIX o REST" },
-      { t: "Bróker", d: "Cuenta real o demo" }
-    ],
-    edges: ["precios", "posición\ndeseada", "orden\npermitida", "órdenes"],
-    hl: [2]
-  });
+  /* ---------- Presupuesto para fondeo ---------- */
+  function setMeter(id, ratio, txt) {
+    var m = $(id); m.querySelector("i").style.width = Math.min(100, ratio * 100) + "%";
+    m.classList.toggle("warn", ratio > 0.6 && ratio <= 1); m.classList.toggle("crit", ratio > 1);
+    $(id + "-t").textContent = txt;
+  }
+  function budget() {
+    var acct = Math.max(1000, num("b-acct", 100000)), daily = Math.max(0.5, num("b-daily", 5)), maxl = Math.max(daily, num("b-max", 10));
+    var buf = num("b-buf", 50) / 100, risk = num("b-risk", 0.5), open = Math.round(num("b-open", 2)), slip = num("b-slip", 10) / 100;
+    $("b-risk-out").textContent = trim(risk, 2) + " %"; $("b-open-out").textContent = String(open); $("b-slip-out").textContent = M.fmt(slip * 100, 0) + " %";
+    var per = risk * (1 + slip), internal = daily * buf, openRisk = per * open;
+    $("b-int").textContent = trim(internal, 2) + " %";
+    $("b-int-s").textContent = M.fmt(acct * internal / 100, 0) + " $ en esta cuenta";
+    $("b-n1").textContent = String(Math.floor(internal / per + 1e-9));
+    $("b-n2").textContent = String(Math.floor(daily / per + 1e-9));
+    $("b-n3").textContent = String(Math.floor(maxl / per + 1e-9));
+    setMeter("b-m1", openRisk / internal, trim(openRisk, 2) + " % de " + trim(internal, 2) + " %");
+    setMeter("b-m2", internal / daily, trim(internal, 2) + " % de " + trim(daily, 2) + " %");
+    var txt;
+    if (openRisk > daily) txt = "Peligro: si todas las posiciones abiertas saltan a la vez, superas el límite diario de la firma en un solo golpe. Reduce el riesgo por operación o las posiciones simultáneas.";
+    else if (openRisk > internal) txt = "Cuidado: todas las posiciones abiertas juntas pueden llevarte más allá de tu stop diario de una vez, aunque sin tocar el de la firma.";
+    else txt = "Tu riesgo abierto máximo cabe dentro de tu stop diario, y este deja un colchón de " + trim(daily - internal, 2) + " % hasta el límite de la firma para el deslizamiento y los saltos de precio.";
+    $("b-read").textContent = txt;
+  }
+  ["b-acct", "b-daily", "b-max", "b-buf", "b-risk", "b-open", "b-slip"].forEach(function (id) { $(id).addEventListener("input", budget); $(id).addEventListener("change", budget); });
+  budget();
+
+  /* ---------- Eventos extremos ---------- */
+  var tailRows = [
+    { label: "EUR/CHF · 15 ene 2015", value: 29.2, note: "De 1,20 a 0,85, el mínimo que cotizaron algunos brókeres, en minutos. Por debajo de 1,00 en menos de un minuto." },
+    { label: "GBP/USD · 7 oct 2016", value: 9.66, note: "De 1,2601 a 1,1491 en 40 segundos, en horario asiático." },
+    { label: "AUD/JPY · 3 ene 2019", value: 7, note: "En minutos, al abrir Asia con poca liquidez." },
+    { label: "USD/JPY · 3 ene 2019", value: 4, note: "De cerca de 109 a menos de 105." },
+    { label: "Stop de 20 pips en EURUSD", value: 0.18, color: "var(--deemph)", note: "Para comparar: la distancia de un stop habitual, con EURUSD en 1,10." }
+  ];
+  M.hbar($("tail"), { aria: "Caídas de precio en minutos en cuatro episodios extremos frente a la distancia de un stop habitual", rows: tailRows, domain: [0, 30], labelW: 200, fmt: function (v) { return "−" + M.fmt(v, v < 1 ? 2 : v % 1 ? 1 : 0) + " %"; }, unitLabel: "de caída", valW: 64 });
+  M.dataTable($("fig-tail"), ["Episodio", "Caída"], tailRows.map(function (r) { return [r.label, "−" + M.fmt(r.value, r.value < 1 ? 2 : 1) + " %"]; }), [1]);
+
+  /* ---------- Embudo de expectativas ---------- */
+  var fSeed = 10, fChart = null;
+  function funnel() {
+    var E = num("u-exp", 0.1), L = num("u-live", 0), R = 1.5, N = 500;
+    $("u-exp-out").textContent = (E > 0 ? "+" : "") + M.fmt(E, 2) + " R";
+    $("u-live-out").textContent = (L > 0 ? "+" : "") + M.fmt(L, 2) + " R";
+    var pE = (E + 1) / (R + 1), pL = Math.min(0.99, Math.max(0.01, (L + 1) / (R + 1)));
+    var sd = (R + 1) * Math.sqrt(pE * (1 - pE));
+    var r = M.rng(fSeed), xs = [], live = [], exp = [], up = [], lo = [], cum = 0, exit = null;
+    for (var n = 0; n <= N; n++) {
+      if (n > 0) cum += r() < pL ? R : -1;
+      xs.push(n); live.push(cum); exp.push(E * n);
+      up.push(E * n + 1.645 * sd * Math.sqrt(n)); lo.push(E * n - 1.645 * sd * Math.sqrt(n));
+      if (exit === null && n >= 20 && cum < lo[n]) exit = n;
+    }
+    var need = Math.ceil(Math.pow(1.645 * sd / E, 2));
+    var cfg = {
+      aria: "Resultado acumulado en vivo frente al esperado y a la banda del 90 % durante 500 operaciones",
+      x: xs, series: [{ name: "En vivo", color: "var(--accent)", values: live, width: 2 }],
+      context: [{ values: up, color: "var(--deemph)", width: 1.2, opacity: 1 }, { values: lo, color: "var(--deemph)", width: 1.2, opacity: 1 }, { values: exp, color: "var(--ink-2)", width: 1.5, opacity: 1 }],
+      yFmt: function (v) { return (v > 0 ? "+" : "") + M.fmt(v, 0) + " R"; }, zeroBase: true, height: 300,
+      xTicks: [{ v: 0, label: "0", anchor: "start" }, { v: 100, label: "100", minor: true }, { v: 200, label: "200" }, { v: 300, label: "300", minor: true }, { v: 400, label: "400" }, { v: 500, label: "500 operaciones", anchor: "end" }],
+      vlines: exit !== null ? [{ x: exit, label: "Sale de la banda", anchor: exit > 380 ? "end" : "start" }] : [],
+      tipTitle: function (i) { return "Operación " + i; },
+      tipFmt: function (v) { return (v > 0 ? "+" : "") + M.fmt(v, 1) + " R"; },
+      tipExtra: function (i) { return [{ value: (exp[i] > 0 ? "+" : "") + M.fmt(exp[i], 1) + " R", label: "esperado", color: "var(--ink-2)" }, { value: M.fmt(lo[i], 1) + " a " + M.fmt(up[i], 1) + " R", label: "banda del 90 %", color: "var(--deemph)" }]; }
+    };
+    if (fChart) fChart.update(cfg); else fChart = M.line($("fun"), cfg);
+    $("fun-exit").textContent = exit !== null ? String(exit) : "No sale";
+    $("fun-exit-l").textContent = exit !== null ? "es la operación en la que sale por debajo de la banda" : "de la banda en estas 500 operaciones";
+    $("fun-need").textContent = "≈ " + M.fmt(need, 0);
+    var t = "Con una ventaja esperada de " + M.fmt(E, 2) + " R por operación, el resultado de cada una varía " + M.fmt(sd, 2) + " R arriba o abajo, unas " + M.fmt(sd / E, 0) + " veces más. ";
+    if (L < E && exit === null) t += "Aunque la ventaja real es menor, este recorrido no llega a salir de la banda: por eso hace falta además un límite de caída fijado de antemano.";
+    else if (exit !== null) t += "Aquí el recorrido en vivo sale de la banda en la operación " + exit + ". Es la señal para reducir y revisar, no necesariamente para abandonar.";
+    else t += "Con la ventaja real igual o mejor que la esperada, lo normal es moverse dentro de la banda, con rachas por debajo de la línea esperada.";
+    $("fun-read").textContent = t;
+  }
+  ["u-exp", "u-live"].forEach(function (id) { $(id).addEventListener("input", funnel); });
+  $("fun-again").addEventListener("click", function () { fSeed = (fSeed * 16807 + 3) % 2147483647; funnel(); });
+  funnel();
 })();
 </script>
 </body>
