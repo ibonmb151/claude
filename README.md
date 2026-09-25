@@ -1,6 +1,6 @@
 # Máquinas y mercados
 
-Serie de nueve documentos HTML interactivos sobre trading algorítmico, escritos en español en septiembre de 2026.
+Serie de once documentos HTML interactivos sobre trading algorítmico, escritos en español en septiembre de 2026.
 
 | Nº | Documento | Qué contiene |
 |---|---|---|
@@ -13,6 +13,8 @@ Serie de nueve documentos HTML interactivos sobre trading algorítmico, escritos
 | 7 | [Infraestructura y costes](trading/07-infraestructura-y-costes.html) | La infraestructura final desde Bilbao: arquitectura, latencia, operadores de internet, seguridad, segregación de IP, redundancia, calculadora de costes, dónde recortar y la luz |
 | 8 | [Atlas de estrategias](trading/08-atlas-de-estrategias.html) | 41 estrategias por mercado, familia y dificultad, con filtros: qué detectan, quién paga, micro y macro, cómo se montan, cuándo funcionan y qué encaja con cTrader |
 | 9 | [Jev, el decisor](trading/09-jev-el-decisor.html) | Cómo un decisor, agente de IA o persona, enciende y apaga estrategias según el mercado: arquitectura con todo separado, cinco opciones para leer y decidir, simulador de una regla fija, histéresis, límites y evaluación por fases |
+| 10 | [El plan hasta diciembre](trading/10-plan-hasta-diciembre.html) | El plan del 28 de septiembre al 31 de diciembre de 2026: calendario semana a semana, mes de desarrollo, incubación en demo, pruebas de fondeo con simulador, qué hacer con cada cobro, cuándo pasar a capital propio, 2027, presupuesto detallado y la parte legal y fiscal en Bizkaia |
+| 11 | [Mejora continua](trading/11-mejora-continua.html) | Cómo mejorar sin engañarse: el resultado separado en variables, una arquitectura para aislarlas, cuántas observaciones hacen falta, registro de intentos y Sharpe deflactado, vigilancia con CUSUM, el camino de un cambio y la cadencia de revisiones |
 
 ## Cómo abrirlos
 

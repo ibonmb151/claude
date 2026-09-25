@@ -1,0 +1,1850 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>El plan hasta diciembre</title>
+<meta name="description" content="El plan del 28 de septiembre al 31 de diciembre de 2026: un mes de desarrollo, dos semanas de prueba, las pruebas de fondeo, cuándo pasar a capital propio, qué hacer después y cuánto hay que invertir, con calendario, simulador y calculadoras.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..800;1,6..96,400..800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap">
+<style>
+/* ============================================================
+   Máquinas y mercados · sistema visual común
+   Billete: papel neutro, tinta de grabado, un color por documento
+   ============================================================ */
+:root{
+  --paper:#F4F5F2; --surface:#FCFCFB; --surface-2:#EEF0EC;
+  --ink:#121614; --ink-2:#48504B; --muted:#646C67;
+  --rule:#DCE1DC; --rule-strong:#C3CAC4; --grid:#E6E9E5; --deemph:#B4BBB6;
+  --good:#006300; --good-mark:#0ca30c;
+  --warn:#8a5a00; --warn-mark:#fab219;
+  --crit:#b42e2e; --crit-mark:#d03b3b;
+  --c1:#2a78d6; --c2:#eb6834; --c3:#1baf7a; --c4:#4a3aa7;
+  --c5:#e87ba4; --c6:#eda100; --c7:#5E7F91; --c8:#e34948; --c9:#00839a; --c10:#798b00; --c11:#8d41bc;
+  --k1:#1c5cab; --k2:#AE4A1D; --k3:#0B7650; --k4:#4a3aa7; --k5:#A3336A; --k6:#7A5200; --k7:#3D5C6C; --k8:#B0283A; --k9:#006273; --k10:#505d00; --k11:#6a2c8f;
+  --pos:#2a78d6; --neg:#e34948;
+  --o1:#a39ef9; --o2:#8b85de; --o3:#736dc3; --o4:#5d55a9; --o5:#483e90;
+  --accent:var(--c1); --accent-ink:#1c5cab;
+  --wash:color-mix(in oklab, var(--accent) 8%, var(--surface));
+  --f-display:"Bodoni Moda","Bodoni 72",Didot,"Bodoni MT",Georgia,serif;
+  --f-sans:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  --radius:10px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --paper:#0F1211; --surface:#161A18; --surface-2:#1D2220;
+    --ink:#EDF1EE; --ink-2:#B7BFBA; --muted:#8E9791;
+    --rule:#262D29; --rule-strong:#37403B; --grid:#222826; --deemph:#4B544F;
+    --good:#0ca30c; --good-mark:#0ca30c;
+    --warn:#fab219; --warn-mark:#fab219;
+    --crit:#e66767; --crit-mark:#e66767;
+    --c1:#3987e5; --c2:#d95926; --c3:#199e70; --c4:#9085e9;
+    --c5:#d55181; --c6:#c98500; --c7:#7FA3B6; --c8:#e66767; --c9:#2aa9bf; --c10:#90a400; --c11:#b573e2;
+    --k1:#86b6ef; --k2:#F29A6B; --k3:#4FD0A0; --k4:#B3AAF3; --k5:#F4A3C6; --k6:#F3C35A; --k7:#A9C6D6; --k8:#F5A3A3; --k9:#7FD3E2; --k10:#c7d97b; --k11:#e0befa;
+    --pos:#3987e5; --neg:#e66767;
+    --o1:#5d57a4; --o2:#726dbc; --o3:#8884d5; --o4:#9e9bee; --o5:#b6b3ff;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --paper:#0F1211; --surface:#161A18; --surface-2:#1D2220;
+  --ink:#EDF1EE; --ink-2:#B7BFBA; --muted:#8E9791;
+  --rule:#262D29; --rule-strong:#37403B; --grid:#222826; --deemph:#4B544F;
+  --good:#0ca30c; --good-mark:#0ca30c;
+  --warn:#fab219; --warn-mark:#fab219;
+  --crit:#e66767; --crit-mark:#e66767;
+  --c1:#3987e5; --c2:#d95926; --c3:#199e70; --c4:#9085e9;
+  --c5:#d55181; --c6:#c98500; --c7:#7FA3B6; --c8:#e66767; --c9:#2aa9bf; --c10:#90a400; --c11:#b573e2;
+  --k1:#86b6ef; --k2:#F29A6B; --k3:#4FD0A0; --k4:#B3AAF3; --k5:#F4A3C6; --k6:#F3C35A; --k7:#A9C6D6; --k8:#F5A3A3; --k9:#7FD3E2; --k10:#c7d97b; --k11:#e0befa;
+  --pos:#3987e5; --neg:#e66767;
+  --o1:#5d57a4; --o2:#726dbc; --o3:#8884d5; --o4:#9e9bee; --o5:#b6b3ff;
+}
+
+/* ---------- base ---------- */
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%;scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+body{margin:0;overflow-wrap:break-word;background:var(--paper);color:var(--ink);font-family:var(--f-sans);font-size:17px;line-height:1.62;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+@media (max-width:600px){body{font-size:16px}}
+h1,h2,h3,h4{margin:0;text-wrap:balance}
+p{margin:0}
+figure{margin:0}
+a{color:var(--accent-ink);text-decoration-line:underline;text-decoration-thickness:1px;text-underline-offset:3px}
+a:hover{text-decoration-thickness:2px}
+:focus-visible{outline:2px solid var(--accent-ink);outline-offset:2px;border-radius:3px}
+::selection{background:color-mix(in oklab,var(--accent) 28%,transparent)}
+strong,b{font-weight:600}
+abbr[title]{text-decoration:underline dotted;text-underline-offset:3px}
+.num{font-variant-numeric:tabular-nums}
+.wrap{max-width:1180px;margin-inline:auto;padding-inline:clamp(16px,4vw,44px)}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+
+/* ---------- barra de la serie ---------- */
+.series{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 24px;padding-block:14px 12px;border-bottom:1px solid var(--rule)}
+.series .brand{font:500 11.5px/1.2 var(--f-mono);letter-spacing:.18em;text-transform:uppercase;color:var(--ink-2)}
+.series-nav{display:flex;flex-wrap:wrap;gap:4px;margin:0;padding:0;list-style:none}
+.series-nav a,.series-nav span.soon{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-width:40px;height:36px;padding:0 11px;font:500 13px/1 var(--f-mono);color:var(--ink-2);text-decoration:none;border-radius:999px;border:1px solid transparent}
+.series-nav .dot{width:8px;height:8px;border-radius:1.5px;transform:rotate(45deg);background:var(--c);flex:none}
+.series-nav a:hover{border-color:var(--rule-strong);color:var(--ink)}
+.series-nav a[aria-current="page"]{font-family:var(--f-sans);border-color:var(--rule-strong);background:var(--surface);color:var(--ink)}
+.series-nav span.soon{opacity:.55}
+
+/* ---------- índice de la serie (pie) ---------- */
+.foot .foot-h{font:500 12px/1 var(--f-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.series-index{list-style:none;margin:0;padding:0;display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(250px,1fr))}
+.series-index li{min-width:0}
+.series-index a,.series-index .soon{display:grid;grid-template-columns:34px minmax(0,1fr);gap:2px 12px;height:100%;padding:14px 16px 15px;border:1px solid var(--rule);border-radius:var(--radius);background:var(--surface);color:var(--ink);text-decoration:none}
+.series-index a:hover{border-color:var(--rule-strong)}
+.series-index a[aria-current="page"]{border-color:var(--rule-strong);background:var(--surface-2)}
+.series-index .n{grid-row:1 / 4;font:italic 500 34px/1 var(--f-display);color:var(--k)}
+.series-index .t{font:600 15.5px/1.3 var(--f-sans)}
+.series-index .d{font-size:13.5px;line-height:1.45;color:var(--ink-2)}
+.series-index .here{font:500 11px/1.4 var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.series-index .soon{opacity:.6}
+
+/* ---------- portada ---------- */
+.hero{display:grid;gap:28px;align-items:center;padding-block:clamp(36px,6vw,76px) clamp(26px,4vw,44px)}
+@media (min-width:880px){.hero{grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:48px}}
+.eyebrow{display:flex;flex-wrap:wrap;gap:6px 16px;font:500 12px/1.3 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.eyebrow b{color:var(--accent-ink);font-weight:500}
+.hero h1{font-family:var(--f-display);font-weight:600;font-size:clamp(46px,7.4vw,100px);line-height:.95;letter-spacing:-.015em;margin-top:18px}
+.hero h1 em{font-style:italic;font-weight:500;color:var(--accent-ink)}
+.dek{font-size:clamp(18px,1.7vw,21px);line-height:1.5;color:var(--ink-2);max-width:42ch;margin-top:22px}
+.meta{margin-top:18px;font:13px/1.5 var(--f-mono);color:var(--muted)}
+.emblem{position:relative;width:min(100%,390px);aspect-ratio:1;justify-self:end;container-type:inline-size}
+@media (max-width:879px){.emblem{width:min(62vw,250px);justify-self:start;order:-1}}
+.emblem canvas{position:absolute;inset:0;width:100%;height:100%}
+.emblem .numeral{position:absolute;inset:0;display:grid;place-items:center;font-family:var(--f-display);font-weight:500;font-style:italic;font-size:30cqw;line-height:1;color:var(--accent-ink);padding-bottom:3cqw}
+.emblem .serial{position:absolute;left:0;right:0;top:calc(100% + 10px);text-align:center;font:500 11px/1 var(--f-mono);letter-spacing:.3em;color:var(--muted)}
+.microprint{font:500 6.5px/1 var(--f-mono);letter-spacing:.24em;color:var(--muted);white-space:nowrap;overflow:hidden;padding-block:4px;border-block:1px solid var(--rule);user-select:none}
+
+/* ---------- en corto ---------- */
+.tldr{background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);padding:22px clamp(18px,3vw,30px) 24px;margin-top:28px}
+.tldr h2{font:500 12px/1 var(--f-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.tldr ul{list-style:none;margin:16px 0 0;padding:0;display:grid;gap:14px 28px;grid-template-columns:repeat(auto-fit,minmax(250px,1fr))}
+.tldr li{position:relative;padding-left:20px;font-size:16px;line-height:1.5}
+.tldr li::before{content:"";position:absolute;left:1px;top:.5em;width:7px;height:7px;background:var(--accent);transform:rotate(45deg)}
+
+/* ---------- documento ---------- */
+.doc{display:grid;gap:36px;padding-block:44px 88px}
+@media (min-width:1080px){.doc{grid-template-columns:200px minmax(0,1fr);gap:60px}}
+.toc{font-size:14px}
+.toc details{border:1px solid var(--rule);border-radius:var(--radius);background:var(--surface);padding:2px 12px}
+.toc summary{cursor:pointer;font:500 12px/1 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2);padding:14px 2px}
+.toc ol{list-style:none;margin:0 0 10px;padding:0;display:grid;gap:2px;counter-reset:toc}
+.toc a{display:grid;grid-template-columns:24px 1fr;gap:4px;padding:6px 8px;border-radius:6px;color:var(--ink-2);text-decoration:none;line-height:1.35}
+.toc a::before{counter-increment:toc;content:counter(toc,decimal-leading-zero);font:500 11px/1.75 var(--f-mono);color:var(--muted)}
+.toc a:hover{background:var(--surface-2);color:var(--ink)}
+.toc a[aria-current="true"]{color:var(--ink);background:var(--surface-2)}
+.toc a[aria-current="true"]::before{color:var(--accent-ink)}
+@media (min-width:1080px){
+  .toc{position:sticky;top:calc(env(safe-area-inset-top,0px) + 24px);align-self:start;max-height:calc(100vh - 48px);overflow:auto}
+  .toc details{border:0;background:none;padding:0}
+  .toc summary{display:none}
+  .toc a:hover,.toc a[aria-current="true"]{background:var(--surface)}
+}
+.content{min-width:0;counter-reset:sec}
+.sec{counter-increment:sec;scroll-margin-top:24px}
+.sec + .sec{margin-top:84px}
+.sec > * + *{margin-top:18px}
+.sec > .kicker + h2{margin-top:12px}
+.sec > h2 + *{margin-top:22px}
+.sec > .fig,.sec > .cards,.sec > .stats,.sec > .tbl-wrap,.sec > .callout,.sec > .steps,.sec > .codeblock,.sec > .matrix,.sec > .tiers,.sec > .timeline,.sec > .split,.sec > .limits,.sec > .diagram{margin-top:30px}
+.sec > h3{margin-top:40px}
+.sec p,.sec > ul,.sec > ol{max-width:68ch}
+.sec > ul,.sec > ol{padding-left:1.25em}
+.sec > ul li + li,.sec > ol li + li{margin-top:8px}
+.kicker{display:flex;align-items:center;gap:10px;font:500 12px/1 var(--f-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.kicker::before{content:counter(sec,decimal-leading-zero);color:var(--accent-ink)}
+.sec h2{font-family:var(--f-display);font-weight:500;font-size:clamp(31px,3.7vw,46px);line-height:1.05;letter-spacing:-.01em}
+.sec h3{font-size:20px;line-height:1.3;font-weight:600}
+.lead{font-size:clamp(18px,1.5vw,19.5px);line-height:1.58;color:var(--ink-2)}
+.pull{font-family:var(--f-display);font-style:italic;font-weight:500;font-size:clamp(23px,2.4vw,29px);line-height:1.3;color:var(--ink);max-width:34ch;padding-block:6px}
+.pull b{color:var(--accent-ink);font-weight:600}
+
+/* ---------- tarjetas ---------- */
+.cards{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+.cards.two{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+.cards.quad{grid-template-columns:1fr}
+@media (min-width:560px){.cards.quad{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.card{background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);padding:18px 18px 16px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.card > .tag{font:500 11px/1.2 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--accent-ink)}
+.card > .ct{font:600 17px/1.3 var(--f-sans);margin:0;color:var(--ink)}
+.card > p{font-size:15px;line-height:1.55;color:var(--ink-2);margin:0;max-width:none}
+.card > .ex{margin-top:auto;padding-top:10px;font-size:13.5px;line-height:1.45;color:var(--muted);border-top:1px solid var(--rule)}
+.card > ul{margin:0;padding-left:1.1em;font-size:15px;line-height:1.5;color:var(--ink-2)}
+.card > ul li + li{margin-top:4px}
+.card.big > .ct{font:500 24px/1.15 var(--f-display)}
+
+/* ---------- cifras ---------- */
+.stats{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.stats.quad{grid-template-columns:repeat(2,minmax(0,1fr))}
+@media (max-width:479px){.stats.quad{grid-template-columns:1fr}}
+@media (min-width:1180px){.stats.quad{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.stat{background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);padding:16px 18px 14px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.stat .v{font:600 clamp(27px,2.8vw,34px)/1.05 var(--f-sans);letter-spacing:-.015em;color:var(--ink)}
+.stat .v small{font-size:.5em;font-weight:500;letter-spacing:0;color:var(--ink-2);margin-left:4px}
+.stat .l{font-size:14.5px;line-height:1.45;color:var(--ink-2)}
+.stat .s{font:11.5px/1.45 var(--f-mono);color:var(--muted);margin-top:auto;padding-top:4px}
+.stat.is-good .v{color:var(--good)} .stat.is-bad .v{color:var(--crit)}
+.stat .badge{display:inline-flex;align-items:center;gap:6px;font:500 12px/1 var(--f-sans);padding:4px 8px;border-radius:999px;border:1px solid var(--rule-strong);color:var(--ink-2);align-self:flex-start}
+.stat .badge svg{width:12px;height:12px}
+.stat.is-good .badge{color:var(--good);border-color:color-mix(in oklab,var(--good-mark) 45%,var(--rule))}
+.stat.is-bad .badge{color:var(--crit);border-color:color-mix(in oklab,var(--crit-mark) 45%,var(--rule))}
+
+/* ---------- avisos ---------- */
+.callout{display:grid;grid-template-columns:22px minmax(0,1fr);gap:12px;align-items:start;padding:16px 18px;border-radius:var(--radius);border:1px solid var(--rule);background:var(--surface)}
+.callout > svg{width:20px;height:20px;margin-top:2px;color:var(--accent-ink)}
+.callout .ct{font-weight:600;display:block;margin-bottom:2px}
+.callout p{font-size:15.5px;line-height:1.55;color:var(--ink-2);max-width:none}
+.callout p + p{margin-top:8px}
+.callout.warn{border-color:color-mix(in oklab,var(--warn-mark) 50%,var(--rule));background:color-mix(in oklab,var(--warn-mark) 7%,var(--surface))}
+.callout.warn > svg{color:var(--warn)}
+.callout.crit{border-color:color-mix(in oklab,var(--crit-mark) 45%,var(--rule));background:color-mix(in oklab,var(--crit-mark) 6%,var(--surface))}
+.callout.crit > svg{color:var(--crit)}
+.callout.good{border-color:color-mix(in oklab,var(--good-mark) 40%,var(--rule));background:color-mix(in oklab,var(--good-mark) 6%,var(--surface))}
+.callout.good > svg{color:var(--good)}
+
+/* ---------- tablas ---------- */
+.tbl-wrap{overflow-x:auto;border:1px solid var(--rule);border-radius:var(--radius);background:var(--surface)}
+.tbl-wrap table{min-width:640px}
+table{border-collapse:collapse;width:100%;font-size:14.5px;line-height:1.45}
+caption{caption-side:top;text-align:left;padding:14px 14px 4px;font-weight:600;font-size:15px}
+th{font:500 11.5px/1.3 var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);text-align:left;padding:12px 14px;border-bottom:1px solid var(--rule-strong);vertical-align:bottom}
+td{padding:11px 14px;border-bottom:1px solid var(--rule);vertical-align:top;color:var(--ink-2)}
+tbody tr:last-child td{border-bottom:0}
+td:first-child{color:var(--ink);font-weight:600}
+th.num,td.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+td .sub{display:block;font-weight:400;font-size:13px;color:var(--muted)}
+
+/* ---------- pasos ---------- */
+.steps{list-style:none;margin:0;padding:0;counter-reset:st}
+.sec > ol.steps,.sec > ol.timeline{padding-left:0;max-width:none}
+.steps > li{display:grid;grid-template-columns:52px minmax(0,1fr);gap:14px;padding:16px 0;border-top:1px solid var(--rule);max-width:none}
+.steps > li:last-child{border-bottom:1px solid var(--rule)}
+.steps > li::before{counter-increment:st;content:counter(st);font:500 32px/1 var(--f-display);color:var(--accent-ink);padding-top:2px}
+.steps b{display:block;font-weight:600;color:var(--ink)}
+.steps span{display:block;color:var(--ink-2);font-size:15.5px;line-height:1.55;margin-top:2px}
+
+/* ---------- figuras y gráficos ---------- */
+.fig{background:var(--surface);border:1px solid var(--rule);border-radius:12px;padding:20px clamp(14px,2.4vw,24px) 16px;margin-inline:0;min-width:0}
+.fig-title{font:600 17px/1.35 var(--f-sans);color:var(--ink)}
+.fig-sub{font-size:14.5px;line-height:1.5;color:var(--ink-2);margin-top:4px;max-width:72ch}
+.chart{position:relative;margin-top:16px;min-height:60px}
+.chart svg{display:block;overflow:visible}
+.legend{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13.5px;color:var(--ink-2);margin-top:14px}
+.legend span{display:inline-flex;align-items:center;gap:7px}
+.legend i{display:inline-block;width:16px;height:2px;border-radius:1px;background:var(--k)}
+.legend i.box{width:10px;height:10px;border-radius:2px}
+.fig-note{font-size:13px;line-height:1.55;color:var(--muted);margin-top:12px;max-width:none}
+.fig details.data{margin-top:12px;border-top:1px solid var(--rule);padding-top:10px}
+.fig details.data summary{cursor:pointer;font:500 12.5px/1.4 var(--f-mono);color:var(--ink-2);width:max-content;max-width:100%}
+.fig details.data .tbl-wrap{margin-top:10px}
+.fig details.data table{min-width:0}
+.viz text{font-family:var(--f-sans);font-size:12px;fill:var(--muted)}
+.viz .grid{stroke:var(--grid);stroke-width:1;shape-rendering:crispEdges}
+.viz .base{stroke:var(--rule-strong);stroke-width:1;shape-rendering:crispEdges}
+.viz .lbl{fill:var(--ink-2);font-size:12.5px}
+.viz .lbl-strong{fill:var(--ink);font-size:13px;font-weight:600}
+.viz .val{fill:var(--ink);font-size:12.5px;font-variant-numeric:tabular-nums}
+.viz .hit{fill:transparent;cursor:default}
+.viz .hit:focus{outline:none}
+.viz .hit:focus-visible{stroke:var(--accent-ink);stroke-width:2px}
+.viz .cross{stroke:var(--ink-2);stroke-width:1;shape-rendering:crispEdges}
+.viz .mark{transition:opacity .15s}
+.viz g.row:hover .mark,.viz g.row:focus-within .mark{opacity:.8}
+.viz .ref{stroke:var(--ink);stroke-width:1.5}
+.viz .band{fill:var(--wash)}
+
+.viz-tip{position:fixed;z-index:50;pointer-events:none;min-width:130px;max-width:290px;background:var(--ink);color:var(--paper);border-radius:8px;padding:9px 11px 10px;font:13px/1.4 var(--f-sans);box-shadow:0 12px 30px -12px rgba(0,0,0,.45);opacity:0;transform:translateY(4px);transition:opacity .12s,transform .12s;left:0;top:0}
+.viz-tip.on{opacity:1;transform:none}
+.viz-tip .t{font:500 11px/1.3 var(--f-mono);letter-spacing:.05em;opacity:.72;margin-bottom:5px}
+.viz-tip .r{display:flex;align-items:baseline;gap:8px}
+.viz-tip .r + .r{margin-top:2px}
+.viz-tip .r i{flex:none;width:12px;height:2px;border-radius:1px;align-self:center}
+.viz-tip .r b{font-weight:600;font-variant-numeric:tabular-nums}
+.viz-tip .r span{opacity:.78}
+.viz-tip .n{margin-top:6px;opacity:.78;font-size:12px}
+
+/* ---------- controles ---------- */
+.controls{display:grid;gap:14px 22px;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));margin-top:18px}
+.controls.four{grid-template-columns:repeat(auto-fit,minmax(170px,1fr))}
+.ctl{display:flex;flex-direction:column;gap:6px;min-width:0}
+.ctl label{display:flex;justify-content:space-between;gap:10px;font-size:13.5px;color:var(--ink-2)}
+.ctl output{font:500 13px var(--f-mono);color:var(--ink);white-space:nowrap}
+.ctl input[type="range"]{width:100%;accent-color:var(--accent-ink)}
+.ctl input[type="number"],.ctl select{font:15px var(--f-sans);color:var(--ink);background:var(--paper);border:1px solid var(--rule-strong);border-radius:8px;padding:8px 10px;width:100%}
+.ctl .hint{font-size:12px;color:var(--muted)}
+.btns{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.btn{font:500 14px/1 var(--f-sans);color:var(--ink);background:var(--surface);border:1px solid var(--rule-strong);border-radius:999px;padding:9px 14px;cursor:pointer}
+.btn:hover{border-color:var(--ink-2)}
+.btn[aria-pressed="true"]{background:var(--accent-ink);border-color:var(--accent-ink);color:var(--surface)}
+.btn.ghost{border-style:dashed}
+.readout{margin-top:16px;padding:14px 16px;border-radius:8px;background:var(--wash);font-size:15.5px;line-height:1.55;color:var(--ink)}
+.meter{height:10px;border-radius:999px;background:color-mix(in oklab,var(--accent) 16%,var(--surface));overflow:hidden;margin-top:8px}
+.meter > i{display:block;height:100%;border-radius:999px;background:var(--accent);transition:width .25s}
+.meter.warn > i{background:var(--warn-mark)} .meter.crit > i{background:var(--crit-mark)}
+.meter.warn{background:color-mix(in oklab,var(--warn-mark) 18%,var(--surface))} .meter.crit{background:color-mix(in oklab,var(--crit-mark) 16%,var(--surface))}
+
+/* ---------- código ---------- */
+.codeblock{position:relative}
+pre.code{margin:0;overflow-x:auto;background:var(--surface-2);border:1px solid var(--rule);border-radius:var(--radius);padding:18px 18px 16px;font:13.5px/1.6 var(--f-mono);color:var(--ink);tab-size:4}
+pre.code code{font:inherit}
+.codeblock .copy{position:absolute;top:8px;right:8px;font:500 12px/1 var(--f-mono);color:var(--ink-2);background:var(--surface);border:1px solid var(--rule-strong);border-radius:6px;padding:6px 9px;cursor:pointer}
+.codeblock .copy:hover{color:var(--ink);border-color:var(--ink-2)}
+.codeblock .lang{position:absolute;top:10px;left:18px;font:500 10.5px/1 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.codeblock .lang + pre.code{padding-top:34px}
+.c-com{color:var(--muted);font-style:italic}
+.c-str{color:var(--accent-ink)}
+.c-kw{font-weight:600}
+.c-num{color:var(--accent-ink)}
+code:not(pre code){font:.88em var(--f-mono);background:var(--surface-2);border:1px solid var(--rule);border-radius:4px;padding:.05em .35em}
+.prompt{background:var(--surface);border:1px dashed var(--rule-strong);border-radius:var(--radius);padding:16px 18px;font-size:15px;line-height:1.6;color:var(--ink)}
+.prompt .who{font:500 11px/1 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:8px}
+
+/* ---------- diagramas ---------- */
+.diagram{background:var(--surface);border:1px solid var(--rule);border-radius:12px;padding:18px clamp(12px,2.4vw,22px)}
+.diagram .scroll{overflow-x:auto}
+.scroll-hint{display:none;font:12px/1.4 var(--f-mono);color:var(--muted);margin-bottom:8px}
+@media (max-width:800px){.scroll-hint{display:block}}
+.diagram svg text{font-family:var(--f-sans)}
+.flowchart{margin-top:6px}
+.fnode rect{fill:var(--surface);stroke:var(--rule-strong)}
+.fnode.hl rect{fill:var(--wash);stroke:var(--accent)}
+.fnode .ft{fill:var(--ink);font-size:14px;font-weight:600}
+.fnode .fd{fill:var(--ink-2);font-size:12px}
+.fedge{stroke:var(--ink-2);stroke-width:1.25;fill:none}
+.fhead{fill:var(--ink-2)}
+.flabel{fill:var(--muted);font:11px var(--f-mono)}
+
+/* ---------- lista de límites ---------- */
+.limits{display:grid;gap:0;counter-reset:lim;border-top:1px solid var(--rule)}
+.limit{display:grid;grid-template-columns:44px minmax(0,1fr);gap:16px;padding:20px 0;border-bottom:1px solid var(--rule)}
+.limit::before{counter-increment:lim;content:counter(lim);font:500 30px/1 var(--f-display);color:var(--accent-ink);padding-top:2px}
+.limit h3{font-size:18px;line-height:1.3;font-weight:600}
+.limit p{margin-top:6px;color:var(--ink-2);font-size:16px;max-width:66ch}
+.limit .datum{margin-top:10px;font:12.5px/1.5 var(--f-mono);color:var(--ink);background:var(--surface);border:1px solid var(--rule);border-radius:6px;padding:8px 10px;max-width:66ch}
+.limit > div > .fig{margin-top:18px}
+@media (max-width:600px){.limit{grid-template-columns:1fr;gap:4px}.limit::before{font-size:24px}}
+
+/* ---------- dos columnas sí/no ---------- */
+.split{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+.split > div{background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);padding:18px 20px}
+.split h3{display:flex;align-items:center;gap:8px;font-size:17px}
+.split h3 svg{width:18px;height:18px}
+.split .yes h3{color:var(--good)} .split .no h3{color:var(--crit)}
+.split ul{margin:10px 0 0;padding-left:1.1em;color:var(--ink-2);font-size:15.5px;line-height:1.55}
+.split li + li{margin-top:6px}
+
+/* ---------- cronología ---------- */
+.timeline{list-style:none;margin:0;padding:0;border-left:1px solid var(--rule-strong);margin-left:6px}
+.timeline li{position:relative;padding:0 0 20px 22px;max-width:none}
+.timeline li::before{content:"";position:absolute;left:-5px;top:.45em;width:9px;height:9px;background:var(--accent);transform:rotate(45deg)}
+.timeline time{display:block;font:500 12px/1.4 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--accent-ink)}
+.timeline b{display:block;margin-top:2px}
+.timeline span{display:block;color:var(--ink-2);font-size:15.5px;line-height:1.55;max-width:66ch;margin-top:2px}
+
+/* ---------- fuentes y pie ---------- */
+.refs{font-size:14px;line-height:1.55;color:var(--ink-2);padding-left:1.3em}
+.refs li + li{margin-top:7px}
+.foot{border-top:1px solid var(--rule);padding-block:28px 40px;display:grid;gap:18px}
+.foot p{font-size:13.5px;color:var(--muted);max-width:80ch}
+
+@media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
+.fig .stats{margin-top:16px}
+
+/* página */
+:root{--accent:var(--c10);--accent-ink:var(--k10)}
+.principles{list-style:none;padding:0!important;display:grid;gap:10px}
+.principles li{padding-left:22px;position:relative}
+.principles li::before{content:"";position:absolute;left:2px;top:.55em;width:7px;height:7px;background:var(--accent);transform:rotate(45deg)}
+.checklist{list-style:none;padding:0!important;display:grid;gap:10px}
+.checklist li{position:relative;padding-left:26px}
+.checklist li::before{content:"";position:absolute;left:2px;top:.35em;width:13px;height:13px;border:1.5px solid var(--accent-ink);border-radius:3px}
+.checklist li::after{content:"";position:absolute;left:6px;top:.52em;width:5px;height:8px;border:solid var(--accent-ink);border-width:0 1.8px 1.8px 0;transform:rotate(45deg)}
+.sim-sub{font:600 15px/1.35 var(--f-sans);color:var(--ink);margin-top:22px}
+.tldr ul{grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr))}
+td.nw{white-space:nowrap}
+#fig-plan .stat .v,#fig-budget .stat .v,#fig-econ .stat .v{white-space:nowrap;font-size:clamp(22px,2.3vw,30px)}
+@media (max-width:1179px){#fig-plan .stats.quad,#fig-budget .stats.quad{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.gantt .g-mon{fill:var(--ink-2);font:500 11px var(--f-mono);letter-spacing:.12em;text-transform:uppercase}
+.gantt .g-lane{fill:var(--ink);font-size:13px;font-weight:600}
+.gantt .g-bar{fill:var(--accent)}
+.gantt .g-bar.soft{fill:color-mix(in oklab,var(--accent) 55%,var(--surface))}
+.gantt .g-bar.off{fill:var(--deemph)}
+.gantt .g-gate{fill:var(--accent-ink);stroke:var(--surface);stroke-width:2}
+.gantt .g-gl{stroke:var(--accent-ink);stroke-width:1;opacity:.45}
+.gantt .g-gt{fill:var(--ink);font-size:11.5px;font-weight:600}
+.gantt .g-ev{fill:var(--ink-2);stroke:var(--surface);stroke-width:2}
+.gantt .g-et{fill:var(--ink-2);font-size:11px}
+.gantt .g-dot{fill:var(--accent);stroke:var(--surface);stroke-width:2}
+.gantt g.it:hover .g-bar,.gantt g.it:focus-within .g-bar{opacity:.8}
+.phase .tag{font-variant-numeric:tabular-nums}
+.cbox{display:flex;align-items:center;gap:8px;font-size:13.5px;color:var(--ink-2);margin-top:6px}
+.cbox input{accent-color:var(--accent-ink);width:16px;height:16px}
+</style>
+</head>
+<body>
+<header class="series wrap" id="top"><span class="brand">Máquinas y mercados</span><nav aria-label="Documentos de la serie"><ol class="series-nav"><li><a href="01-trading-algoritmico.html" title="1 · Trading algorítmico" aria-label="Documento 1 · Trading algorítmico"><span class="dot" style="--c:var(--c1)"></span>1</a></li><li><a href="02-forex-algoritmico.html" title="2 · Forex algorítmico" aria-label="Documento 2 · Forex algorítmico"><span class="dot" style="--c:var(--c2)"></span>2</a></li><li><a href="03-agentes-claude-trading.html" title="3 · Agentes Claude" aria-label="Documento 3 · Agentes Claude"><span class="dot" style="--c:var(--c3)"></span>3</a></li><li><a href="04-verdad-cuentas-fondeo.html" title="4 · Cuentas de fondeo" aria-label="Documento 4 · Cuentas de fondeo"><span class="dot" style="--c:var(--c4)"></span>4</a></li><li><a href="05-ctrader-api-mcp.html" title="5 · cTrader: API y MCP" aria-label="Documento 5 · cTrader: API y MCP"><span class="dot" style="--c:var(--c5)"></span>5</a></li><li><a href="06-gestion-del-riesgo.html" title="6 · Gestión del riesgo" aria-label="Documento 6 · Gestión del riesgo"><span class="dot" style="--c:var(--c6)"></span>6</a></li><li><a href="07-infraestructura-y-costes.html" title="7 · Infraestructura y costes" aria-label="Documento 7 · Infraestructura y costes"><span class="dot" style="--c:var(--c7)"></span>7</a></li><li><a href="08-atlas-de-estrategias.html" title="8 · Atlas de estrategias" aria-label="Documento 8 · Atlas de estrategias"><span class="dot" style="--c:var(--c8)"></span>8</a></li><li><a href="09-jev-el-decisor.html" title="9 · Jev, el decisor" aria-label="Documento 9 · Jev, el decisor"><span class="dot" style="--c:var(--c9)"></span>9</a></li><li><a href="#top" aria-current="page"><span class="dot" style="--c:var(--c10)"></span>10 · El plan hasta diciembre</a></li><li><a href="11-mejora-continua.html" title="11 · Mejora continua" aria-label="Documento 11 · Mejora continua"><span class="dot" style="--c:var(--c11)"></span>11</a></li></ol></nav></header>
+<section class="hero wrap">
+  <div class="hero-text">
+    <p class="eyebrow"><span>Máquinas y mercados</span><b>Documento 10 de 11</b></p>
+    <h1>El plan <em>hasta diciembre</em></h1>
+    <p class="dek">Del lunes 28 de septiembre al 31 de diciembre de 2026, semana a semana: un mes para construir el sistema, dos semanas para probarlo, las pruebas de fondeo, cuándo pasar a capital propio y cuánto dinero hace falta de verdad.</p>
+    <p class="meta">Septiembre de 2026 · 25 minutos de lectura</p>
+  </div>
+  <div class="emblem" aria-hidden="true"><canvas></canvas><span class="numeral">10</span><span class="serial">MM · 10 · 2026</span></div>
+</section>
+<div class="wrap"><div class="microprint" aria-hidden="true" data-text="CONSTRUIR · PROBAR · FONDEAR · COBRAR · REVISAR · ESCALAR · 28·09 → 31·12"></div>
+  <div class="tldr">
+    <h2>En corto</h2>
+    <ul>
+      <li>Cuatro tramos: construir hasta el 1 de noviembre, probar en demo hasta el 15, pruebas de fondeo desde el 16 y revisión la última semana del año. Cada tramo acaba cuando cumple sus criterios, no cuando llega la fecha.</li>
+      <li>Con una ventaja realista, superar la primera fase lleva meses. Lo probable el 31 de diciembre es un sistema probado y una prueba en marcha, no dinero: los primeros cobros llegarían en 2027.</li>
+      <li>El escenario recomendado presupuesta unos 2.000&nbsp;€ de gasto hasta el 31 de diciembre y arriesga 1.000&nbsp;€ en una cuenta real pequeña. Desde enero, mantener el sistema cuesta unos 300&nbsp;€ al mes.</li>
+      <li>Pasar a capital propio es gradual. Una cuenta financiada de 100.000&nbsp;$ rinde como unos 73.000&nbsp;€ propios: se llega con una parte de cada cobro y 12 meses de historial, no de golpe.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="doc wrap">
+  <aside class="toc" aria-label="Índice"></aside>
+  <main class="content">
+
+    <section class="sec" id="mapa">
+      <p class="kicker">Visión general</p>
+      <h2 data-short="El plan en una página">El plan en una página</h2>
+      <p class="lead">Cuatro tramos con fecha objetivo y una puerta al final de cada uno. La puerta tiene criterios escritos: si no se cumplen, no se avanza, aunque haya llegado el día.</p>
+      <div class="cards quad">
+        <article class="card phase"><span class="tag">28 sep – 1 nov</span><h3 class="ct">1 · Construir</h3><p>El sistema completo en demo: datos, backtest con costes, tres estrategias, control de riesgo, ejecución por Open API y supervisión.</p><p class="ex">Puerta 1: todo funciona en demo cinco días seguidos sin fallos críticos.</p></article>
+        <article class="card phase"><span class="tag">2 – 15 nov</span><h3 class="ct">2 · Probar</h3><p>Dos semanas en demo, la prueba gratuita de la firma y una cuenta real mínima. Cada operación se compara con lo que decía el backtest.</p><p class="ex">Puerta 2: el sistema hace en real lo que hace en el backtest.</p></article>
+        <article class="card phase"><span class="tag">16 nov – 20 dic</span><h3 class="ct">3 · Fondear</h3><p>Una prueba de fondeo con riesgo prudente; la segunda, solo si falla la primera. Jev empieza a decidir a la sombra.</p><p class="ex">Sin puerta: la prueba no tiene plazo y sigue en 2027.</p></article>
+        <article class="card phase"><span class="tag">21 – 31 dic</span><h3 class="ct">4 · Revisar</h3><p>Pausa por la poca liquidez de Navidad, informe del trimestre y plan para 2027.</p><p class="ex">Puerta 3: continuar, ajustar o parar, con los datos delante.</p></article>
+      </div>
+      <h3>Cinco reglas del plan</h3>
+      <ul class="principles">
+        <li><b>Puertas, no fechas.</b> Las fechas ordenan el trabajo; los criterios deciden si se avanza.</li>
+        <li><b>Presupuesto cerrado.</b> El dinero para cuotas y el capital en riesgo se fijan hoy, por escrito, y no se amplían después de un mal día.</li>
+        <li><b>Dinero propio, lo último.</b> Nada de capital relevante en riesgo hasta tener 12 meses de historial; antes, solo una cuenta testigo pequeña.</li>
+        <li><b>Todo se compara con el backtest.</b> Cada operación real tiene su gemela en el backtest y las diferencias se explican una a una, como cuenta el <a href="11-mejora-continua.html">documento 11</a>.</li>
+        <li><b>Criterios de abandono escritos.</b> Qué resultado te hace parar, volver atrás o dejarlo, decidido antes de empezar.</li>
+      </ul>
+    </section>
+
+    <section class="sec" id="calendario">
+      <p class="kicker">Calendario</p>
+      <h2 data-short="Semana a semana">Semana a semana</h2>
+      <p class="lead">El calendario cuadra el trabajo con lo que pasa en el mercado: dos cambios de hora, seis reuniones de bancos centrales, las elecciones de mitad de mandato en Estados Unidos y la Navidad.</p>
+      <figure class="fig" id="fig-gantt">
+        <p class="fig-title">Del 28 de septiembre de 2026 al 3 de enero de 2027</p>
+        <p class="fig-sub">Barras: trabajo. Rombos grandes: puertas. Rombos pequeños de arriba: eventos del mercado; las etiquetas que no caben están en el detalle y en la tabla. Pasa el cursor, toca o recorre con el tabulador cada elemento.</p>
+        <div class="chart gantt" id="gantt"></div>
+        <div class="legend"><span><i class="box" style="--k:var(--accent)"></i>Trabajo</span><span><i class="box" style="--k:color-mix(in oklab,var(--accent) 55%,var(--surface))"></i>A la sombra, sin dinero</span><span><i class="box" style="--k:var(--deemph)"></i>Pausa</span><span><i class="box" style="--k:var(--accent-ink);transform:rotate(45deg)"></i>Puerta</span><span><i class="box" style="--k:var(--ink-2);transform:rotate(45deg);width:7px;height:7px"></i>Evento del mercado</span></div>
+        <p class="fig-note">Fechas de la Reserva Federal, el BCE, el Banco de Inglaterra y la Oficina de Estadísticas Laborales de EE. UU. para 2026. Las barras con punta siguen en 2027.</p>
+      </figure>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Semana</th><th>Fechas</th><th>Qué se hace</th><th>Entregable</th><th class="num">Horas</th></tr></thead>
+          <tbody>
+            <tr><td>0</td><td class="nw">28 sep – 4 oct</td><td>Carta del plan con objetivos, presupuesto, límites de riesgo y criterios de abandono. Elegir estrategias y mercados. Cuentas demo de cTrader, aplicación de la Open API, repositorio, VPS y descarga de datos.</td><td>Carta firmada y datos descargados (puerta 0)</td><td class="num">25</td></tr>
+            <tr><td>1</td><td class="nw">5 – 11 oct</td><td>Limpieza de datos. Motor de backtest por eventos con costes reales: spread según la hora, comisión, swaps y deslizamiento. Pruebas de unidades y de conversión de volúmenes.</td><td>Backtest reproducible de la primera estrategia</td><td class="num">35</td></tr>
+            <tr><td>2</td><td class="nw">12 – 18 oct</td><td>Las tres estrategias, con parámetros fijados antes de mirar resultados. Validación por ventanas móviles, sensibilidad a los parámetros y costes al doble. Registro de intentos.</td><td>Ficha de cada estrategia con su resultado fuera de muestra</td><td class="num">35</td></tr>
+            <tr><td>3</td><td class="nw">19 – 25 oct</td><td>Control de riesgo por capas, ejecutor por Open API con estados de orden, reconciliación y botón de parada. Batería de fallos: cortes, reinicios y órdenes rechazadas.</td><td>Sistema completo en demo que supera la batería</td><td class="num">35</td></tr>
+            <tr><td>4</td><td class="nw">26 oct – 1 nov</td><td>Despliegue en el VPS de Londres, avisos, panel y manual de incidentes. Es la semana entre los dos cambios de hora, con la Fed y el BCE: una buena prueba del calendario.</td><td>Cinco días en demo sin fallos críticos (puerta 1)</td><td class="num">25</td></tr>
+            <tr><td>5–6</td><td class="nw">2 – 15 nov</td><td>Demo 24 horas, prueba gratuita de FTMO y cuenta testigo. Elecciones en EE. UU., Banco de Inglaterra y dato de empleo americano.</td><td>Informe de fidelidad frente al backtest (puerta 2)</td><td class="num">16</td></tr>
+            <tr><td>7–11</td><td class="nw">16 nov – 20 dic</td><td>Prueba de fondeo con el sistema, sin tocar parámetros. Revisión semanal. Lectores del mercado y Jev a la sombra. Consulta con un asesor fiscal.</td><td>Prueba en curso o fase superada</td><td class="num">30</td></tr>
+            <tr><td>12</td><td class="nw">21 – 27 dic</td><td>Pausa: sin posiciones nuevas o con riesgo mínimo. Mantenimiento y copias de seguridad.</td><td>Sistema en reposo, sin sorpresas</td><td class="num">2</td></tr>
+            <tr><td>13</td><td class="nw">28 dic – 3 ene</td><td>Revisión del trimestre y plan de 2027.</td><td>Informe y decisión (puerta 3)</td><td class="num">8</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout">
+        <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="10" cy="10" r="8.25" stroke="currentColor" stroke-width="1.5"/><path d="M10 9v5M10 6.2v.1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        <div><span class="ct">Si además tienes un trabajo</span><p>Son unas 210 horas hasta final de año, 155 de ellas en el mes de desarrollo. A 15 horas por semana, el desarrollo ocupa unas diez semanas: estira el tramo 1 hasta mediados de diciembre y deja el fondeo para enero. El orden importa más que la fecha.</p></div>
+      </div>
+    </section>
+
+    <section class="sec" id="construir">
+      <p class="kicker">Tramo 1</p>
+      <h2 data-short="El mes de desarrollo">El mes de desarrollo</h2>
+      <p class="lead">Cinco semanas para tener el sistema completo funcionando en demo. Cada pieza tiene una definición de terminada: sin ella, «casi listo» se alarga meses.</p>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Pieza</th><th>Qué hace</th><th>Terminada cuando</th></tr></thead>
+          <tbody>
+            <tr><td>Datos</td><td>Históricos de 5 a 10 años en barras de un minuto o ticks, de Dukascopy y de la propia API de cTrader, con los huecos documentados</td><td>Dos descargas y dos limpiezas dan exactamente lo mismo</td></tr>
+            <tr><td>Modelo de costes</td><td>Spread según la hora, comisión de 3 a 3,5&nbsp;$ por lote y lado, swaps y deslizamiento</td><td>Tiene un valor para cada coste; se contrasta en el tramo 2</td></tr>
+            <tr><td>Motor de backtest</td><td>Recorre los datos evento a evento y no puede mirar al futuro por construcción</td><td>Reproduce un caso calculado a mano y coincide con el backtester de cTrader en una estrategia sencilla</td></tr>
+            <tr><td>Estrategias</td><td>Tres del atlas, cada una en su módulo, con su propio stop y sus límites</td><td>Ficha completa y resultado fuera de muestra registrado</td></tr>
+            <tr><td>Control de riesgo</td><td>Las capas del <a href="06-gestion-del-riesgo.html">documento 6</a> y las reglas de la firma traducidas a límites más estrictos</td><td>Rechaza todas las órdenes erróneas de la batería de pruebas</td></tr>
+            <tr><td>Ejecutor</td><td>Envía órdenes por la Open API con un identificador propio, sigue su estado y reconcilia con el bróker, como explica el <a href="05-ctrader-api-mcp.html">documento 5</a></td><td>Sobrevive a cortes y reinicios sin duplicar ni perder órdenes</td></tr>
+            <tr><td>Supervisión</td><td>Latido, avisos al móvil, panel de solo lectura y botón de parada</td><td>Avisa en menos de dos minutos de cada fallo simulado</td></tr>
+            <tr><td>Registro</td><td>Cada dato, señal, orden, ejecución y decisión con su hora</td><td>Cualquier operación se puede reconstruir y repetir</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h3>Con qué estrategias empezar</h3>
+      <p>Tres del <a href="08-atlas-de-estrategias.html">atlas</a>: sencillas, compatibles con cTrader y con las reglas de fondeo, y que ganan en entornos distintos, así que el conjunto sufre menos que cada una por separado.</p>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Estrategia</th><th>Mercados y horizonte</th><th>Por qué</th><th>Cuidado con</th></tr></thead>
+          <tbody>
+            <tr><td>Tendencia diversificada</td><td>Divisas principales, oro e índices; barras diarias; posiciones de días a semanas</td><td>La más sencilla y documentada. Pierde poco muchas veces y gana mucho alguna vez</td><td>Mantiene posiciones el fin de semana: necesita la cuenta de tipo Swing</td></tr>
+            <tr><td>Reversión intradía a la media</td><td>EURUSD y un índice en horas tranquilas; de minutos a horas; cierra antes del final del día</td><td>Gana cuando la tendencia sufre y equilibra el conjunto</td><td>Gana poco muchas veces y pierde mucho alguna vez; los costes deciden</td></tr>
+            <tr><td>Momentum intradía del índice</td><td>Índice de EE. UU. en la última media hora de la sesión</td><td>Poco relacionada con las otras dos</td><td>Da pocas señales y tardará en demostrar algo</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Fuera se quedan las rejillas y martingalas, que no tienen ventaja; las estrategias de noticias, que chocan con las reglas de las cuentas financiadas; y todo lo que dependa de la latencia, que las firmas prohíben.</p>
+      <h3>Qué hacen los agentes de Claude este mes</h3>
+      <div class="split">
+        <div class="yes"><h3><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 10.5l4 4 8-9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Sí</h3>
+          <ul><li>Escribir y revisar código, pruebas y documentación con Claude Code.</li><li>Leer la documentación de cTrader y de la firma y convertirla en comprobaciones automáticas.</li><li>Generar casos de prueba y fallos simulados.</li><li>Revisar cada cambio antes de desplegarlo.</li></ul></div>
+        <div class="no"><h3><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5 5l10 10M15 5L5 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>No</h3>
+          <ul><li>Elegir parámetros repitiendo backtests hasta que el resultado salga bonito.</li><li>Tocar las credenciales de trading.</li><li>Decidir operaciones.</li><li>Lanzar backtests sin que queden en el registro de intentos del <a href="11-mejora-continua.html">documento 11</a>.</li></ul></div>
+      </div>
+      <div class="callout warn">
+        <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 2.8l8 14H2l8-14z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M10 8v4.2M10 14.6v.1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        <div><span class="ct">La trampa del mes de desarrollo</span><p>Lo que más retrasa estos proyectos es pulir la estrategia antes de tener el sistema completo. Primero, todas las piezas funcionando con estrategias sencillas; después, mejorar, con el método del documento 11.</p></div>
+      </div>
+    </section>
+
+    <section class="sec" id="probar">
+      <p class="kicker">Tramo 2</p>
+      <h2 data-short="Dos semanas en demo">Dos semanas de prueba</h2>
+      <p class="lead">Dos semanas no dicen nada sobre si la estrategia gana. Sí dicen si el sistema hace en real lo que hace en el backtest, que es lo que se mide aquí.</p>
+      <div class="cards">
+        <article class="card"><span class="tag">Demo</span><h3 class="ct">El sistema, 24 horas al día</h3><p>El sistema completo en el VPS contra una cuenta demo de cTrader, con el mismo código y la misma configuración que usará después.</p></article>
+        <article class="card"><span class="tag">Firma</span><h3 class="ct">La prueba gratuita</h3><p>FTMO ofrece una prueba gratuita de 14 días con capital ficticio. Sirve para comprobar que el sistema se conecta y opera bien en su servidor antes de pagar la cuota.</p></article>
+        <article class="card"><span class="tag">Real</span><h3 class="ct">La cuenta testigo</h3><p>1.000&nbsp;€ en un bróker regulado en la UE con cTrader, operando el tamaño mínimo. La demo es optimista con los precios; esta cuenta mide el deslizamiento y los rechazos de verdad.</p></article>
+      </div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Qué se mide</th><th>Cómo</th><th>Umbral para pasar</th></tr></thead>
+          <tbody>
+            <tr><td>Coincidencia con el backtest</td><td>Repetir el backtest con los datos de esos días y comparar operación a operación</td><td>El 95&nbsp;% de las operaciones coincide en sentido, entrada y salida</td></tr>
+            <tr><td>Deslizamiento</td><td>Precio pedido frente a precio ejecutado, en la demo y en la cuenta testigo</td><td>La media, dentro de un ±30&nbsp;% de lo supuesto</td></tr>
+            <tr><td>Coste por lote</td><td>Spread, comisión y swaps reales</td><td>Como mucho un 20&nbsp;% por encima de lo supuesto</td></tr>
+            <tr><td>Disponibilidad</td><td>Latidos del sistema durante las horas de mercado</td><td>El 99,5&nbsp;% del tiempo, y ningún corte sin aviso</td></tr>
+            <tr><td>Incidentes críticos</td><td>Orden duplicada, posición sin stop o límite ignorado</td><td>Ninguno</td></tr>
+            <tr><td>Resultado</td><td>—</td><td>No se juzga: dos semanas son ruido</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Si falla algún umbral, se corrige y se repite una semana, dos como mucho. No se paga ninguna cuota con un sistema que no ha pasado esta puerta.</p>
+    </section>
+
+    <section class="sec" id="fondeo">
+      <p class="kicker">Tramo 3</p>
+      <h2 data-short="Las pruebas de fondeo">Las pruebas de fondeo</h2>
+      <p class="lead">Una prueba bien elegida, un riesgo que el sistema aguante y paciencia para que tarde lo que tenga que tardar. El simulador de esta sección muestra por qué.</p>
+      <h3>Qué prueba comprar</h3>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>FTMO, cuenta de 100.000&nbsp;$</th><th>Dos fases</th><th>Una fase</th></tr></thead>
+          <tbody>
+            <tr><td>Objetivo</td><td>+10&nbsp;% y después +5&nbsp;%</td><td>+10&nbsp;%</td></tr>
+            <tr><td>Pérdida diaria máxima</td><td>5&nbsp;%</td><td>3&nbsp;%</td></tr>
+            <tr><td>Pérdida máxima</td><td>10&nbsp;%, fija</td><td>10&nbsp;%, que sube con tu mejor saldo al cierre</td></tr>
+            <tr><td>Días mínimos</td><td>4 por fase</td><td>Ninguno</td></tr>
+            <tr><td>Regla del mejor día</td><td>No</td><td>Tu mejor día no puede pasar del 50&nbsp;% de lo ganado en los días positivos</td></tr>
+            <tr><td>Fin de semana y noticias, ya financiada</td><td>Libres con el tipo Swing</td><td>Hay que cerrar antes del fin de semana, y no se puede abrir, cerrar ni dejar que salte un stop dos minutos antes y después de las noticias fuertes</td></tr>
+            <tr><td>Cuota</td><td>540&nbsp;€, que se devuelve con el primer cobro</td><td>Unos 500&nbsp;€, sin devolución</td></tr>
+            <tr><td>Reparto</td><td>80&nbsp;%, hasta el 90&nbsp;% con el plan de escalado</td><td>90&nbsp;%</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Para este sistema, <b>dos fases con el tipo Swing</b>. La estrategia de tendencia mantiene posiciones el fin de semana, y en la cuenta financiada estándar tendría que cerrarlas. Además, un stop que salta en la ventana de una noticia cuenta como infracción, algo difícil de evitar en un sistema automático. La prueba de una fase encaja con un sistema que solo opere dentro del día.</p>
+      <h3>Cuántas y con qué riesgo</h3>
+      <ul>
+        <li>Una prueba de 100.000&nbsp;$. La segunda, solo si la primera falla, nunca a la vez: el mismo sistema en dos cuentas gana y pierde a la vez, y FTMO limita el capital a 400.000&nbsp;$ por persona o estrategia.</li>
+        <li>Volatilidad diaria objetivo del 0,75 al 1&nbsp;%: días malos de un 2&nbsp;% unas pocas veces al año, lejos del límite del 5&nbsp;%.</li>
+        <li>Stop diario interno en el 2,5&nbsp;%, la mitad del de la firma, con la calculadora del <a href="06-gestion-del-riesgo.html">documento 6</a>.</li>
+        <li>Nada de subir el riesgo para llegar antes: es lo que hace suspender a la mayoría.</li>
+        <li>No hay plazo, pero si una cuenta de prueba pasa 30 días sin operaciones, FTMO avisa, y si pasan otros 30, la cierra. Si vas a parar más tiempo, pide congelarla.</li>
+      </ul>
+      <figure class="fig" id="fig-plan">
+        <p class="fig-title">Qué pasa hasta el 31 de diciembre, y hasta junio</p>
+        <p class="fig-sub">4.000 trayectorias de tu sistema frente a las reglas de FTMO. Cada día gana o pierde según su Sharpe y su volatilidad, con días extremos más frecuentes que en una campana normal. Todo se calcula en tu navegador.</p>
+        <div class="btns" role="group" aria-label="Calidad del sistema" id="plan-pre"></div>
+        <div class="controls">
+          <div class="ctl"><label for="pl-sr">Sharpe anual, después de costes <output id="pl-sr-out" for="pl-sr"></output></label><input id="pl-sr" type="range" min="0" max="2" step="0.1" value="1"></div>
+          <div class="ctl"><label for="pl-vol">Volatilidad diaria de la cuenta <output id="pl-vol-out" for="pl-vol"></output></label><input id="pl-vol" type="range" min="0.4" max="2" step="0.05" value="1"></div>
+          <div class="ctl"><label for="pl-prog">Prueba</label><select id="pl-prog"><option value="2" selected>Dos fases, tipo Swing</option><option value="1">Una fase</option></select></div>
+          <div class="ctl"><label for="pl-tries">Pruebas presupuestadas</label><select id="pl-tries"><option value="1">1</option><option value="2" selected>2</option><option value="3">3</option><option value="4">4</option></select></div>
+          <div class="ctl"><label for="pl-start">Empezar la prueba</label><select id="pl-start"><option value="2026-11-02">2 de noviembre, sin demo</option><option value="2026-11-16" selected>16 de noviembre, el plan</option><option value="2026-12-01">1 de diciembre</option></select>
+            <label class="cbox"><input id="pl-pause" type="checkbox" checked>Sin operar del 21 de diciembre al 1 de enero</label></div>
+        </div>
+        <div class="chart" id="plan"></div>
+        <div class="legend"><span><i style="--k:var(--o1)"></i>Ha superado la fase 1</span><span><i style="--k:var(--o3)"></i>Ha llegado a la cuenta financiada</span><span><i style="--k:var(--o5)"></i>Ha cobrado algo</span><span><i style="--k:var(--crit-mark)"></i>Se ha quedado sin pruebas</span></div>
+        <p class="sim-sub">A 31 de diciembre de 2026</p>
+        <div class="stats quad">
+          <div class="stat"><span class="v" id="a-p1">–</span><span class="l">ha superado la fase&nbsp;1</span></div>
+          <div class="stat"><span class="v" id="a-fu">–</span><span class="l">ha llegado a la cuenta financiada</span></div>
+          <div class="stat"><span class="v" id="a-pa">–</span><span class="l">ha cobrado algo</span></div>
+          <div class="stat"><span class="v" id="a-cash">–</span><span class="l">de balance medio: cobros menos cuotas</span></div>
+        </div>
+        <p class="sim-sub">A 30 de junio de 2027</p>
+        <div class="stats quad">
+          <div class="stat"><span class="v" id="b-p1">–</span><span class="l">ha superado la fase&nbsp;1</span></div>
+          <div class="stat"><span class="v" id="b-fu">–</span><span class="l">ha llegado a la cuenta financiada</span></div>
+          <div class="stat"><span class="v" id="b-pa">–</span><span class="l">ha cobrado algo</span></div>
+          <div class="stat"><span class="v" id="b-cash">–</span><span class="l">de balance medio: cobros menos cuotas</span></div>
+        </div>
+        <p class="readout" id="plan-read" aria-live="polite"></p>
+        <p class="fig-note">Supuestos: la ganancia diaria sigue una t de Student con cuatro grados de libertad; el riesgo se mide sobre el capital inicial; el límite diario se comprueba también dentro del día, con la probabilidad de tocarlo según la volatilidad; la fase 2 empieza dos días después de la 1 y la cuenta financiada, cinco días después de la 2; se cobra cada 14 días si hay beneficio y el saldo vuelve al inicial; la cuota de dos fases se devuelve con el primer cobro; 1&nbsp;€ = 1,10&nbsp;$. Sin impuestos, sin límites de cobro, sin cambios de reglas y sin cierres de la firma.</p>
+      </figure>
+      <h3>Lo que dice el simulador</h3>
+      <ul>
+        <li><b>El 31 de diciembre llega pronto.</b> Con un Sharpe de 1 y una volatilidad diaria del 1&nbsp;%, solo un 6&nbsp;% supera la fase 1 antes de fin de año y nadie cobra en 2026. Ese sistema gana de media un 1,3&nbsp;% al mes: el +10&nbsp;% tarda más de medio año.</li>
+        <li><b>Hasta junio, la cosa cambia.</b> Con los mismos valores, un 43&nbsp;% llega a la cuenta financiada y uno de cada tres cobra antes del 30 de junio.</li>
+        <li><b>Más riesgo acelera y suspende más.</b> Con una volatilidad del 1,5&nbsp;%, un 21&nbsp;% supera la fase 1 antes de fin de año, pero un 40&nbsp;% gasta todas sus pruebas antes de junio.</li>
+        <li><b>Aprobar no demuestra que haya ventaja.</b> Sin ventaja y con un 1&nbsp;% de volatilidad diaria, un 19&nbsp;% llega a la cuenta financiada antes de junio por pura suerte. Lo que demuestra algo es comparar cada operación con el backtest.</li>
+        <li><b>Una fase o dos.</b> En el modelo, con volatilidades bajas la de una fase llega antes porque pide un solo objetivo; por encima del 1,3&nbsp;% más o menos, su límite diario del 3&nbsp;% y su pérdida máxima que sube con tu saldo la hacen peor, y en ambos casos se queda sin pruebas mucha más gente. Lo que el modelo no ve es que en su cuenta financiada no podrías mantener la tendencia el fin de semana.</li>
+      </ul>
+    </section>
+
+    <section class="sec" id="cobrar">
+      <p class="kicker">Cobros</p>
+      <h2 data-short="Cobros">Si llegas a la cuenta financiada</h2>
+      <p class="lead">La cuenta financiada sigue siendo una demo con las mismas reglas. Lo nuevo es que cada dos semanas puedes cobrar tu parte, y que cada cobro tiene que ir a su sitio antes de gastarlo.</p>
+      <ul>
+        <li>El primer cobro se puede pedir 14 días después de la primera operación en la cuenta financiada, sin posiciones abiertas. La revisión tarda uno o dos días hábiles y el pago, otros uno o dos.</li>
+        <li>Con el primer cobro se devuelve la cuota de la prueba de dos fases.</li>
+        <li>El reparto es del 80&nbsp;% y sube al 90&nbsp;% con el plan de escalado: un 25&nbsp;% más de saldo cada cuatro meses si ganas al menos un 10&nbsp;% neto en ese tiempo y cobras dos veces, hasta 2 millones de dólares.</li>
+        <li>Cobra a menudo. El saldo pendiente en una firma no tiene ninguna protección, como recuerda el <a href="04-verdad-cuentas-fondeo.html">documento 4</a>.</li>
+      </ul>
+      <h3>Qué hacer con cada cobro</h3>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th class="num">Parte</th><th>Para qué</th><th>Por qué</th></tr></thead>
+          <tbody>
+            <tr><td class="num">35&nbsp;%</td><td>Impuestos y cotizaciones</td><td>Los cobros tributan como actividad económica en la base general del IRPF, del 23 al 49&nbsp;% en Bizkaia en 2026, y hay cuota de autónomo. En Bizkaia el pago a cuenta se calcula sobre los rendimientos de dos años antes, así que al principio es muy bajo y casi todo se paga en la declaración anual</td></tr>
+            <tr><td class="num">30&nbsp;%</td><td>Capital propio</td><td>Hace crecer la cuenta real, que opera el mismo sistema</td></tr>
+            <tr><td class="num">15&nbsp;%</td><td>Nuevas pruebas y una segunda firma</td><td>Reparte el riesgo de que una firma cambie las reglas o deje de pagar</td></tr>
+            <tr><td class="num">20&nbsp;%</td><td>Para ti</td><td>El sistema tiene que pagarte algo, o acabarás cambiando las reglas por impaciencia</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Los porcentajes son un punto de partida; lo importante es decidirlos antes del primer cobro. Tras ese primer cobro, abre una prueba en una segunda firma que ofrezca cTrader y permita cBots, como FundedNext o The5ers, con las comprobaciones del documento 4 y confirmando sus reglas antes de pagar. El objetivo es que ninguna firma concentre más de la mitad del capital asignado.</p>
+    </section>
+
+    <section class="sec" id="propio">
+      <p class="kicker">Capital propio</p>
+      <h2 data-short="Capital propio">Cuándo pasar a capital propio</h2>
+      <p class="lead">No es un salto, es ir moviendo el peso. Una cuenta financiada es una opción barata sobre un capital grande; el capital propio no tiene reglas ajenas, pero hay que tenerlo.</p>
+      <p>Si tu sistema gana el mismo porcentaje en las dos, una cuenta financiada de 100.000&nbsp;$ con un reparto del 80&nbsp;% rinde como unos 73.000&nbsp;€ propios. Irse del fondeo con 10.000&nbsp;€ no es independizarse: es cobrar siete veces menos.</p>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Capital asignado en fondeo</th><th class="num">Reparto</th><th class="num">Capital propio que rinde lo mismo</th></tr></thead>
+          <tbody>
+            <tr><td>100.000&nbsp;$</td><td class="num">80&nbsp;%</td><td class="num">≈ 73.000&nbsp;€</td></tr>
+            <tr><td>200.000&nbsp;$</td><td class="num">80&nbsp;%</td><td class="num">≈ 145.000&nbsp;€</td></tr>
+            <tr><td>200.000&nbsp;$</td><td class="num">90&nbsp;%</td><td class="num">≈ 164.000&nbsp;€</td></tr>
+            <tr><td>400.000&nbsp;$</td><td class="num">90&nbsp;%</td><td class="num">≈ 327.000&nbsp;€</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h3>Tres etapas</h3>
+      <ol class="steps">
+        <li><div><b>Cuenta testigo · desde noviembre de 2026</b><span>1.000&nbsp;€ reales con el tamaño mínimo. No es para ganar: mide la ejecución real y deja un historial auditable a tu nombre.</span></div></li>
+        <li><div><b>Crecimiento · durante 2027</b><span>El 30&nbsp;% de cada cobro va a la cuenta propia, que opera el mismo sistema con el mismo riesgo en porcentaje. El fondeo sigue siendo la fuente principal.</span></div></li>
+        <li><div><b>Paso principal · cuando se cumplan los criterios</b><span>La cuenta propia pasa a ser el vehículo principal y el fondeo, un complemento que se mantiene mientras compense.</span></div></li>
+      </ol>
+      <h3>Los criterios para dar el paso</h3>
+      <ul class="checklist">
+        <li>12 meses de historial entre fondeo y cuenta propia, con un resultado dentro de la banda que esperaba el backtest.</li>
+        <li>Un capital propio que rinda al menos lo mismo que tus cuentas financiadas, o unas reglas de la firma que te impidan operar tu sistema.</li>
+        <li>Seis meses de gastos personales ahorrados fuera del trading.</li>
+        <li>El protocolo de mejora continua funcionando: revisiones con fecha, registro de cambios y comparación con el backtest.</li>
+        <li>La estructura fiscal decidida con un asesor.</li>
+      </ul>
+      <p>Hay motivos para salir antes de una firma: que retrase o deniegue cobros, que cambie reglas que rompen tu estrategia o que haya dudas sobre su solvencia. En ese caso se deja esa firma, no el plan.</p>
+      <figure class="fig" id="fig-econ">
+        <p class="fig-title">Lo que te queda al mes</p>
+        <p class="fig-sub">Valor esperado en un mes normal, de lo que gana el sistema a lo que llega a tu bolsillo. Los meses reales oscilan mucho alrededor de esta cifra.</p>
+        <div class="controls">
+          <div class="ctl"><label for="ec-a">Capital en fondeo <output id="ec-a-out" for="ec-a"></output></label><input id="ec-a" type="range" min="0" max="400000" step="25000" value="100000"></div>
+          <div class="ctl"><label for="ec-s">Reparto</label><select id="ec-s"><option value="0.8" selected>80 %</option><option value="0.9">90 %</option></select></div>
+          <div class="ctl"><label for="ec-c">Capital propio <output id="ec-c-out" for="ec-c"></output></label><input id="ec-c" type="range" min="0" max="200000" step="5000" value="10000"></div>
+          <div class="ctl"><label for="ec-r">Rentabilidad mensual esperada <output id="ec-r-out" for="ec-r"></output></label><input id="ec-r" type="range" min="0" max="3" step="0.1" value="1"><span class="hint">Un Sharpe de 1 con un 1&nbsp;% de volatilidad diaria da cerca de un 1,3&nbsp;%.</span></div>
+          <div class="ctl"><label for="ec-k">Costes fijos al mes <output id="ec-k-out" for="ec-k"></output></label><input id="ec-k" type="range" min="0" max="1000" step="10" value="300"></div>
+          <div class="ctl"><label for="ec-t">Impuestos y cotizaciones <output id="ec-t-out" for="ec-t"></output></label><input id="ec-t" type="range" min="0" max="50" step="1" value="35"></div>
+        </div>
+        <div class="chart" id="econ"></div>
+        <div class="legend"><span><i class="box" style="--k:var(--accent)"></i>Totales</span><span><i class="box" style="--k:var(--pos)"></i>Suma</span><span><i class="box" style="--k:var(--neg)"></i>Resta</span></div>
+        <div class="stats">
+          <div class="stat"><span class="v" id="ec-net">–</span><span class="l">te quedan al mes</span></div>
+          <div class="stat"><span class="v" id="ec-year">–</span><span class="l">al año</span></div>
+          <div class="stat"><span class="v" id="ec-eq">–</span><span class="l">de capital propio rendirían lo mismo que tu fondeo</span></div>
+        </div>
+        <p class="readout" id="ec-read" aria-live="polite"></p>
+        <p class="fig-note">1&nbsp;€ = 1,10&nbsp;$. El tipo de impuestos es una media: los cobros de fondeo tributan en la base general y las ganancias de tu cuenta, en la del ahorro, del 19 al 28&nbsp;% en Bizkaia. No incluye el riesgo de perder la cuenta financiada ni los meses en negativo.</p>
+      </figure>
+      <p>Más adelante, con historial y capital, hay dos puertas más. El estatus de cliente profesional da más apalancamiento a cambio de perder protecciones; en la UE exige cumplir dos de tres condiciones: operaciones frecuentes y de tamaño relevante, una cartera de más de 500.000&nbsp;€ o experiencia profesional en el sector. Y gestionar dinero de otros exige autorización de la CNMV: no lo hagas sin ella.</p>
+    </section>
+
+    <section class="sec" id="despues">
+      <p class="kicker">2027</p>
+      <h2 data-short="Después del 31 de diciembre">Después del 31 de diciembre</h2>
+      <p class="lead">El plan no acaba en Nochevieja: ahí empieza a haber datos. Este es el camino si las puertas se van superando.</p>
+      <ol class="timeline">
+        <li><time>Enero – marzo de 2027</time><b>Terminar las pruebas y primeros cobros</b><span>Alta como autónomo antes del primer cobro. Revisión mensual. Jev decide a la sombra y se compara con dejarlo todo encendido, como en el <a href="09-jev-el-decisor.html">documento 9</a>.</span></li>
+        <li><time>Abril – junio</time><b>Repartir el riesgo</b><span>Segunda firma tras el primer cobro. La cuenta propia crece con el 30&nbsp;% de cada cobro. Una cuarta estrategia, solo si supera el protocolo del documento 11.</span></li>
+        <li><time>Julio – septiembre</time><b>El primer año del sistema</b><span>Revisión anual de cada estrategia y de sus costes. Primer escalado posible en FTMO. Jev puede empezar a apagar estrategias si ha batido a la referencia.</span></li>
+        <li><time>Octubre – diciembre</time><b>La decisión del capital propio</b><span>Con 12 meses de historial, decidir si la cuenta propia pasa a ser la principal y qué estructura fiscal conviene para 2028.</span></li>
+      </ol>
+    </section>
+
+    <section class="sec" id="inversion">
+      <p class="kicker">Inversión</p>
+      <h2 data-short="La inversión">Cuánto hay que invertir</h2>
+      <p class="lead">Tres tipos de recursos que conviene no mezclar: el gasto, que no vuelve; el capital en riesgo, que puede perderse; y el tiempo, que es lo más caro del plan.</p>
+      <figure class="fig" id="fig-budget">
+        <p class="fig-title">Presupuesto hasta el 31 de diciembre</p>
+        <p class="fig-sub">Elige un escenario y ajusta cada partida. Los meses cuentan de octubre a diciembre.</p>
+        <div class="btns" role="group" aria-label="Escenarios" id="bu-pre"></div>
+        <div class="controls">
+          <div class="ctl"><label for="bu-cl">Claude para desarrollar</label><select id="bu-cl"><option value="22">Pro · 22 € al mes</option><option value="105">Max 5x · 105 € al mes</option><option value="210">Max 20x · 210 € al mes</option></select></div>
+          <div class="ctl"><label for="bu-in">Infraestructura</label><select id="bu-in"><option value="1">Nivel 1 · tu ordenador</option><option value="2">Nivel 2 · VPS, 40 € al mes</option><option value="3">Nivel 3 · 140 € al mes y equipos</option></select></div>
+          <div class="ctl"><label for="bu-tr">Pruebas de fondeo presupuestadas</label><select id="bu-tr"><option value="1">1 · 540 €</option><option value="2">2 · 1.080 €</option><option value="3">3 · 1.620 €</option><option value="4">4 · 2.160 €</option></select></div>
+          <div class="ctl"><label for="bu-api">API de Claude, nov. y dic. <output id="bu-api-out" for="bu-api"></output></label><input id="bu-api" type="range" min="0" max="60" step="5" value="10"></div>
+          <div class="ctl"><label for="bu-ad">Asesoría fiscal inicial <output id="bu-ad-out" for="bu-ad"></output></label><input id="bu-ad" type="range" min="0" max="400" step="10" value="150"></div>
+          <div class="ctl"><label for="bu-bk">Libros y formación <output id="bu-bk-out" for="bu-bk"></output></label><input id="bu-bk" type="range" min="0" max="400" step="10" value="80"></div>
+          <div class="ctl"><label for="bu-wi">Cuenta testigo <output id="bu-wi-out" for="bu-wi"></output></label><input id="bu-wi" type="range" min="0" max="5000" step="250" value="1000"></div>
+          <div class="ctl"><label for="bu-ex">Imprevistos <output id="bu-ex-out" for="bu-ex"></output></label><input id="bu-ex" type="range" min="0" max="30" step="1" value="15"></div>
+        </div>
+        <div class="stats quad">
+          <div class="stat"><span class="v" id="bu-tot">–</span><span class="l">de gasto hasta el 31 de diciembre</span></div>
+          <div class="stat"><span class="v" id="bu-risk">–</span><span class="l">de capital en riesgo en la cuenta testigo</span></div>
+          <div class="stat"><span class="v" id="bu-max">–</span><span class="l">es lo máximo que puedes perder hasta diciembre</span></div>
+          <div class="stat"><span class="v" id="bu-mon">–</span><span class="l">al mes desde enero</span><span class="s">Con autónomo y gestoría</span></div>
+        </div>
+        <div class="chart" id="budget"></div>
+        <p class="readout" id="bu-read" aria-live="polite"></p>
+        <p class="fig-note">Precios de septiembre de 2026 con IVA cuando lo lleva. Los planes de Claude se cobran en dólares más IVA y varían con el cambio. La segunda prueba de fondeo solo se gasta si falla la primera, así que el gasto esperado es menor que el presupuesto. Desde enero se suman la tarifa plana de autónomo, unos 88&nbsp;€ al mes, y una gestoría, unos 75&nbsp;€.</p>
+      </figure>
+      <h3>Desde enero: lo que cuesta mantenerlo</h3>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Partida</th><th class="num">Al mes</th><th>Nota</th></tr></thead>
+          <tbody>
+            <tr><td>Claude</td><td class="num">22–105&nbsp;€</td><td>Pro basta para mantener; Max si sigues desarrollando mucho</td></tr>
+            <tr><td>API de Claude</td><td class="num">10–30&nbsp;€</td><td>Lectores de texto y Jev; con la API por lotes cuesta la mitad</td></tr>
+            <tr><td>VPS en Londres</td><td class="num">40–140&nbsp;€</td><td>Nivel 2 o 3 del <a href="07-infraestructura-y-costes.html">documento 7</a></td></tr>
+            <tr><td>Cuota de autónomo</td><td class="num">≈ 80–90&nbsp;€</td><td>Tarifa plana el primer año si cumples los requisitos; después, según ingresos, de unos 200 a 590&nbsp;€</td></tr>
+            <tr><td>Gestoría</td><td class="num">60–90&nbsp;€</td><td>Incluye TicketBAI y el libro registro de Batuz</td></tr>
+            <tr><td>Pruebas de reposición</td><td class="num">0–180&nbsp;€</td><td>Una por trimestre, solo si hace falta</td></tr>
+            <tr><td>Total</td><td class="num">≈ 210–630&nbsp;€</td><td>Unos 300&nbsp;€ en el escenario recomendado</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Para cubrir 300&nbsp;€ al mes con un reparto del 80&nbsp;%, la cuenta financiada tiene que ganar unos 410&nbsp;$ al mes antes de impuestos: un 0,4&nbsp;% sobre 100.000&nbsp;$. Es alcanzable para un sistema con ventaja, pero deja claro que una sola cuenta de 100.000&nbsp;$ no es un sueldo.</p>
+      <h3>El tiempo</h3>
+      <p>Unas 155 horas en el mes de desarrollo y unas 55 más hasta final de año. Después, entre 5 y 8 horas por semana: revisión semanal, mantenimiento e investigación con el protocolo del documento 11. Si el sistema pide más para funcionar, es un síntoma, no una virtud.</p>
+    </section>
+
+    <section class="sec" id="legal">
+      <p class="kicker">Hacienda</p>
+      <h2 data-short="Legal y fiscal">Lo legal y lo fiscal, en orden</h2>
+      <p class="lead">En Bizkaia, el IRPF y el IVA los gestiona la Hacienda Foral, con normas propias. Esto es un mapa para preparar la conversación con un asesor, no un sustituto de ella.</p>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Cuándo</th><th>Qué</th><th>Detalle</th></tr></thead>
+          <tbody>
+            <tr><td>Desde el primer día</td><td>Guardar todas las facturas</td><td>Cuotas de las pruebas, VPS, suscripciones y equipos pueden ser gastos de la actividad cuando la haya</td></tr>
+            <tr><td>Antes del primer cobro</td><td>Consulta con un asesor foral</td><td>Con este documento y las fechas previstas delante</td></tr>
+            <tr><td>Antes del primer cobro</td><td>Alta en Hacienda Foral y en autónomos</td><td>Declaración censal con el epígrafe que indique el asesor, y alta en la Seguridad Social dentro de plazo. Con la tarifa plana, unos 80–90&nbsp;€ al mes el primer año si cumples los requisitos</td></tr>
+            <tr><td>Desde el alta</td><td>Batuz</td><td>Desde enero de 2026, toda actividad económica en Bizkaia factura con TicketBAI y lleva el libro registro de operaciones (modelo 140)</td></tr>
+            <tr><td>Con cada cobro de una firma de la UE</td><td>IVA intracomunitario</td><td>Si la firma está en otro país de la UE, como FTMO en la República Checa, la factura va sin IVA por inversión del sujeto pasivo. Exige alta en el registro de operadores intracomunitarios y declarar esas operaciones (modelo 349)</td></tr>
+            <tr><td>Cada año</td><td>IRPF de los cobros</td><td>Rendimientos de una actividad económica en la base general: del 23 al 49&nbsp;% en Bizkaia en 2026. Así los calificó la Dirección General de Tributos en la consulta V1722-23, para el territorio común</td></tr>
+            <tr><td>Cada año</td><td>IRPF de la cuenta propia</td><td>Las ganancias y pérdidas de tus operaciones con CFD y divisas van a la base del ahorro: del 19 al 28&nbsp;% en Bizkaia desde 2026</td></tr>
+            <tr><td>Si procede</td><td>Bienes en el extranjero</td><td>Cuentas en brókeres extranjeros por encima de 50.000&nbsp;€ obligan a una declaración informativa</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Las plataformas de pago informan a Hacienda de los movimientos de sus clientes: no cuentes con que un cobro pase desapercibido.</p>
+      <div class="callout crit">
+        <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="10" cy="10" r="8.25" stroke="currentColor" stroke-width="1.5"/><path d="M10 5.8v5.2M10 13.8v.1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        <div><span class="ct">El error caro</span><p>Cobrar sin estar de alta. Los recargos por darse de alta tarde en autónomos y las sanciones fiscales cuestan más que cualquier cuota: el alta, antes del primer cobro.</p></div>
+      </div>
+    </section>
+
+    <section class="sec" id="riesgos">
+      <p class="kicker">Riesgos</p>
+      <h2 data-short="Riesgos del plan">Qué puede torcer el plan</h2>
+      <p class="lead">Los riesgos del mercado están en el documento 6. Estos son los del plan: el tiempo, el dinero, las firmas y tú.</p>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Riesgo</th><th>Cómo se nota</th><th>Respuesta</th></tr></thead>
+          <tbody>
+            <tr><td>Sobreajuste</td><td>Brilla en el backtest y se apaga en demo</td><td>Volver al tramo 1 con el protocolo del documento 11; nada de recalibrar a ciegas</td></tr>
+            <tr><td>El desarrollo se alarga</td><td>La puerta 1 no llega el 1 de noviembre</td><td>Recortar alcance, por ejemplo a dos estrategias; nunca saltarse la demo</td></tr>
+            <tr><td>La firma</td><td>Cambia reglas, retrasa cobros o cierra</td><td>Cobrar a menudo, segunda firma y cuenta propia</td></tr>
+            <tr><td>El presupuesto</td><td>Comprar otra prueba tras un mal día</td><td>Presupuesto cerrado; al agotarlo, parar y revisar</td></tr>
+            <tr><td>Intervenir a mano</td><td>Cerrar o abrir operaciones «para ayudar»</td><td>Registro de intervenciones; durante la prueba, prohibido</td></tr>
+            <tr><td>Un fallo técnico</td><td>Órdenes erróneas en real</td><td>Controles previos, botón de parada y vuelta atrás en un minuto (documentos 6 y 7)</td></tr>
+            <tr><td>Hacienda</td><td>Cobrar sin estar de alta</td><td>Alta antes del primer cobro</td></tr>
+            <tr><td>Tu tiempo y tu cabeza</td><td>Cansancio, mirar la cuenta cada hora</td><td>Supervisión automática y revisiones con día fijo</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h3>Criterios de abandono</h3>
+      <ul class="checklist">
+        <li>Si en la puerta 1 ninguna estrategia tiene un resultado fuera de muestra positivo después de costes, no se compra ninguna prueba: se vuelve a investigar.</li>
+        <li>Si se agotan las pruebas presupuestadas sin superar una fase 1, se para el fondeo y se revisa el sistema antes de gastar más.</li>
+        <li>Si tras 300 operaciones reales, sumando demo, testigo y fondeo, el resultado queda por debajo de la banda esperada del documento 6, esa estrategia se apaga.</li>
+        <li>Si el 30 de junio de 2027 no hay ningún cobro ni un historial que lo justifique, el plan se replantea desde cero.</li>
+      </ul>
+    </section>
+
+    <section class="sec" id="lunes">
+      <p class="kicker">Primeros pasos</p>
+      <h2 data-short="Para empezar">Para empezar el lunes</h2>
+      <ol class="steps">
+        <li><div><b>Escribir la carta del plan</b><span>Objetivo, presupuesto máximo, límites de riesgo, criterios de abandono y fechas de las puertas, en una página.</span></div></li>
+        <li><div><b>Elegir las tres estrategias y escribir su hipótesis</b><span>Qué detecta cada una, quién paga su ganancia y en qué entorno debería perder, antes de ver ningún resultado.</span></div></li>
+        <li><div><b>Abrir las cuentas</b><span>Demo de cTrader, aplicación de la Open API y repositorio de código con su registro de intentos.</span></div></li>
+        <li><div><b>Descargar los datos</b><span>De cinco a diez años de divisas principales, oro e índices, comprobando los huecos.</span></div></li>
+        <li><div><b>Contratar el VPS en Londres</b><span>Con IP dedicada, como pide la firma, y la seguridad del documento 7.</span></div></li>
+        <li><div><b>Poner fecha a la consulta fiscal</b><span>Antes de mediados de diciembre, con este documento delante.</span></div></li>
+      </ol>
+      <p class="pull">El 31 de diciembre no se mide por lo que has cobrado, sino por <b>lo que sabes</b> de tu sistema y lo bien que funciona.</p>
+    </section>
+
+    <section class="sec" id="fuentes">
+      <p class="kicker">Fuentes</p>
+      <h2 data-short="Fuentes">Fuentes y lecturas</h2>
+      <ol class="refs">
+        <li>FTMO. FTMO Challenge: 2-Step; FTMO Challenge: 1-Step; Trading Objectives; How it works. <a href="https://ftmo.com/en/2-step-challenge/" target="_blank" rel="noopener">Dos fases</a> · <a href="https://ftmo.com/en/1-step-challenge/" target="_blank" rel="noopener">Una fase</a> · <a href="https://ftmo.com/en/trading-objectives/" target="_blank" rel="noopener">Objetivos</a></li>
+        <li>FTMO (2026). Introducing the 1-Step FTMO Challenge. <a href="https://ftmo.com/en/blog/introducing-the-1-step-ftmo-challenge/" target="_blank" rel="noopener">Artículo</a></li>
+        <li>FTMO. Scaling and Reward Growth Plan. <a href="https://ftmo.com/en/reward-growth-and-scaling-plan/" target="_blank" rel="noopener">Escalado</a></li>
+        <li>FTMO. Preguntas frecuentes sobre la cuenta Swing, las noticias, las posiciones en fin de semana y el capital máximo. <a href="https://ftmo.com/en/faq/is-the-swing-account-type-available-for-ftmo-challenge-1-step/" target="_blank" rel="noopener">Swing</a> · <a href="https://ftmo.com/en/faq/can-i-trade-news/" target="_blank" rel="noopener">Noticias</a> · <a href="https://ftmo.com/en/faq/do-i-have-to-close-my-positions-overnight-or-before-the-weekend/" target="_blank" rel="noopener">Fin de semana</a> · <a href="https://ftmo.com/en/faq/how-many-accounts-can-i-have/" target="_blank" rel="noopener">Cuentas</a></li>
+        <li>FTMO. Trading platforms: cTrader Automate y Open API. <a href="https://ftmo.com/en/trading-platforms/" target="_blank" rel="noopener">Plataformas</a></li>
+        <li>Dirección General de Tributos. Consulta vinculante V1722-23, de 15 de junio de 2023, sobre cuentas financiadas.</li>
+        <li>Diputación Foral de Bizkaia. Norma Foral 13/2013 del IRPF, con las escalas de 2026 de las Normas Forales 2/2025 y 7/2025; instrucciones del modelo 130. <a href="https://guiafiscal.es/irpf/pais-vasco/" target="_blank" rel="noopener">Escalas</a> · <a href="https://www.bizkaia.eus/fitxategiak/05/ogasuna/ereduak/Argitaratu/130CasInst.pdf" target="_blank" rel="noopener">Modelo 130</a></li>
+        <li>Batuz, Hacienda Foral de Bizkaia. Preguntas frecuentes. <a href="https://www.batuz.eus/es/preguntas-frecuentes" target="_blank" rel="noopener">Batuz</a></li>
+        <li>Infoautónomos (2026). Tarifa plana y cuota de autónomos por tramos. <a href="https://www.infoautonomos.com/seguridad-social/tarifa-plana-autonomos/" target="_blank" rel="noopener">Tarifa plana</a></li>
+        <li>CNMV (2023). Resolución de 11 de julio de 2023 sobre medidas de intervención de producto relativas a CFD y otros productos apalancados. <a href="https://www.boe.es/diario_boe/txt.php?id=BOE-A-2023-16394" target="_blank" rel="noopener">BOE</a></li>
+        <li>Reserva Federal, BCE, Banco de Inglaterra y Oficina de Estadísticas Laborales de EE. UU. Calendarios de 2026. <a href="https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm" target="_blank" rel="noopener">Fed</a> · <a href="https://www.ecb.europa.eu/press/calendars/mgcgc/html/index.en.html" target="_blank" rel="noopener">BCE</a> · <a href="https://www.bankofengland.co.uk/monetary-policy/upcoming-mpc-dates" target="_blank" rel="noopener">Banco de Inglaterra</a> · <a href="https://www.bls.gov/schedule/2026/home.htm" target="_blank" rel="noopener">BLS</a></li>
+        <li>Documentos 4 a 9 y 11 de esta serie: fondeo, cTrader, riesgo, infraestructura, estrategias, el decisor y la mejora continua.</li>
+      </ol>
+    </section>
+  </main>
+</div>
+<footer class="foot wrap"><h2 class="foot-h" id="serie">La serie completa</h2><nav aria-labelledby="serie"><ol class="series-index"><li><a href="01-trading-algoritmico.html"><span class="n" style="--k:var(--k1)">1</span><span class="t">Trading algorítmico</span><span class="d">Qué puede hacer un algoritmo, quién paga cada ganancia y dónde están sus límites.</span></a></li><li><a href="02-forex-algoritmico.html"><span class="n" style="--k:var(--k2)">2</span><span class="t">Forex algorítmico</span><span class="d">El mercado de divisas visto por un algoritmo: estructura, costes y estrategias con evidencia.</span></a></li><li><a href="03-agentes-claude-trading.html"><span class="n" style="--k:var(--k3)">3</span><span class="t">Agentes Claude</span><span class="d">Dónde aporta un agente de IA a un sistema de trading, dónde es un riesgo y cuánto cuesta.</span></a></li><li><a href="04-verdad-cuentas-fondeo.html"><span class="n" style="--k:var(--k4)">4</span><span class="t">Cuentas de fondeo</span><span class="d">Cómo ganan dinero las firmas de fondeo, quién cobra de verdad y qué pasa si eres rentable.</span></a></li><li><a href="05-ctrader-api-mcp.html"><span class="n" style="--k:var(--k5)">5</span><span class="t">cTrader: API y MCP</span><span class="d">Qué es cTrader y cómo conectar un sistema por Open API, FIX, cBots o MCP, y qué vigilar.</span></a></li><li><a href="06-gestion-del-riesgo.html"><span class="n" style="--k:var(--k6)">6</span><span class="t">Gestión del riesgo</span><span class="d">Tamaño de posición, límites, caídas y controles para que el sistema sobreviva.</span></a></li><li><a href="07-infraestructura-y-costes.html"><span class="n" style="--k:var(--k7)">7</span><span class="t">Infraestructura y costes</span><span class="d">Seguridad, redundancia, latencia y costes de la infraestructura final, desde Bilbao.</span></a></li><li><a href="08-atlas-de-estrategias.html"><span class="n" style="--k:var(--k8)">8</span><span class="t">Atlas de estrategias</span><span class="d">Estrategias algorítmicas por sector y dificultad: qué detectan, quién paga y cómo se montan.</span></a></li><li><a href="09-jev-el-decisor.html"><span class="n" style="--k:var(--k9)">9</span><span class="t">Jev, el decisor</span><span class="d">Cómo un decisor enciende y apaga estrategias según el mercado, sin poner en riesgo el sistema.</span></a></li><li><a href="#top" aria-current="page"><span class="n" style="--k:var(--k10)">10</span><span class="t">El plan hasta diciembre</span><span class="d">Un mes de desarrollo, las pruebas de fondeo, cuándo pasar a capital propio y cuánto dinero hace falta.</span><span class="here">Estás aquí</span></a></li><li><a href="11-mejora-continua.html"><span class="n" style="--k:var(--k11)">11</span><span class="t">Mejora continua</span><span class="d">Cómo separar cada variable del resultado, probar un cambio cada vez y saber si una mejora es real.</span></a></li></ol></nav><p>Contenido educativo. No es asesoramiento financiero ni una recomendación de inversión. Las cifras proceden de las fuentes citadas; las simulaciones usan datos aleatorios y solo ilustran ideas.</p><p>Serie «Máquinas y mercados» · Septiembre de 2026</p></footer>
+<script>
+(function () {
+  "use strict";
+  var NS = "http://www.w3.org/2000/svg";
+  var root = document.documentElement;
+  var reduceMotion = !!(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches);
+
+  function css(name) { return getComputedStyle(root).getPropertyValue(name).trim(); }
+  /* color resuelto de un token (los tokens pueden apuntar a otros tokens) */
+  function tokenColor(name) {
+    var p = document.createElement("span");
+    p.style.color = "var(" + name + ")"; p.style.display = "none";
+    document.body.appendChild(p);
+    var c = getComputedStyle(p).color; p.remove();
+    return c;
+  }
+  function $$(sel, ctx) { return Array.prototype.slice.call((ctx || document).querySelectorAll(sel)); }
+
+  /* ---------- cambios de tema (sistema o selector del visor) ---------- */
+  var themeFns = [];
+  function onTheme(fn) { themeFns.push(fn); }
+  function fireTheme() { themeFns.forEach(function (f) { try { f(); } catch (e) {} }); }
+  if (window.matchMedia) {
+    var mq = matchMedia("(prefers-color-scheme: dark)");
+    if (mq.addEventListener) mq.addEventListener("change", fireTheme);
+  }
+  new MutationObserver(fireTheme).observe(root, { attributes: true, attributeFilter: ["data-theme"] });
+
+  /* ---------- azar reproducible ---------- */
+  function rng(seed) {
+    var a = seed >>> 0;
+    return function () {
+      a |= 0; a = a + 0x6D2B79F5 | 0;
+      var t = Math.imul(a ^ a >>> 15, 1 | a);
+      t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+      return ((t ^ t >>> 14) >>> 0) / 4294967296;
+    };
+  }
+  function normal(r) { var u = 0; while (u === 0) u = r(); var v = r(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v); }
+
+  /* ---------- formato en español ---------- */
+  var nfCache = {};
+  function nf(d) { if (!nfCache[d]) nfCache[d] = new Intl.NumberFormat("es-ES", { minimumFractionDigits: d, maximumFractionDigits: d, useGrouping: "always" }); return nfCache[d]; }
+  function fmt(v, d) { d = d || 0; var s = nf(d).format(Math.abs(v)); return (v < 0 && Math.abs(v) >= Math.pow(10, -d) / 2 ? "−" : "") + s; }
+  function pct(v, d) { return fmt(v, d === undefined ? 1 : d) + " %"; }
+  function money(v, cur, d) { return fmt(v, d || 0) + " " + (cur || "$"); }
+  function signed(v, d, unit) { var s = fmt(v, d); return (v > 0 ? "+" : "") + s + (unit || ""); }
+
+  /* ---------- SVG ---------- */
+  function el(tag, attrs, parent) {
+    var e = document.createElementNS(NS, tag);
+    if (attrs) for (var k in attrs) {
+      if (attrs[k] === undefined || attrs[k] === null) continue;
+      if (k === "text") e.textContent = attrs[k];
+      else e.setAttribute(k, attrs[k]);
+    }
+    if (parent) parent.appendChild(e);
+    return e;
+  }
+  function lin(d0, d1, r0, r1) { var f = function (v) { return r0 + (v - d0) / (d1 - d0) * (r1 - r0); }; f.invert = function (p) { return d0 + (p - r0) / (r1 - r0) * (d1 - d0); }; return f; }
+  function logs(d0, d1, r0, r1) { var a = Math.log10(d0), b = Math.log10(d1); return function (v) { return r0 + (Math.log10(v) - a) / (b - a) * (r1 - r0); }; }
+  function niceStep(span, count) { var s0 = Math.pow(10, Math.floor(Math.log10(span / count))); var e = span / count / s0; return s0 * (e >= 7.5 ? 10 : e >= 3.5 ? 5 : e >= 1.5 ? 2 : 1); }
+  function niceDomain(min, max, count) { if (min === max) { min -= 1; max += 1; } var st = niceStep(max - min, count || 5); return [Math.floor(min / st) * st, Math.ceil(max / st) * st, st]; }
+  function ticks(min, max, step) { var t = []; for (var v = min; v <= max + step * 1e-6; v += step) t.push(+v.toFixed(10)); return t; }
+  /* barra con extremo de dato redondeado (4px) y base recta */
+  function barPath(x0, x1, y, h, r) {
+    r = Math.min(r === undefined ? 4 : r, Math.abs(x1 - x0), h / 2);
+    if (x1 >= x0) return "M" + x0 + "," + y + "H" + (x1 - r) + "Q" + x1 + "," + y + " " + x1 + "," + (y + r) + "V" + (y + h - r) + "Q" + x1 + "," + (y + h) + " " + (x1 - r) + "," + (y + h) + "H" + x0 + "Z";
+    return "M" + x0 + "," + y + "H" + (x1 + r) + "Q" + x1 + "," + y + " " + x1 + "," + (y + r) + "V" + (y + h - r) + "Q" + x1 + "," + (y + h) + " " + (x1 + r) + "," + (y + h) + "H" + x0 + "Z";
+  }
+  function roundRect(x0, x1, y, h, r) {
+    var w = Math.max(x1 - x0, 1); r = Math.min(r === undefined ? 4 : r, w / 2, h / 2);
+    return "M" + (x0 + r) + "," + y + "H" + (x1 - r) + "Q" + x1 + "," + y + " " + x1 + "," + (y + r) + "V" + (y + h - r) + "Q" + x1 + "," + (y + h) + " " + (x1 - r) + "," + (y + h) + "H" + (x0 + r) + "Q" + x0 + "," + (y + h) + " " + x0 + "," + (y + h - r) + "V" + (y + r) + "Q" + x0 + "," + y + " " + (x0 + r) + "," + y + "Z";
+  }
+  function wrapText(str, maxChars) {
+    var out = [];
+    String(str).split("\n").forEach(function (para) {
+      var words = para.split(" "), line = "";
+      words.forEach(function (w) {
+        if (!line) line = w;
+        else if ((line + " " + w).length <= maxChars) line += " " + w;
+        else { out.push(line); line = w; }
+      });
+      out.push(line);
+    });
+    return out;
+  }
+
+  /* ---------- tooltip ---------- */
+  var tipEl = document.createElement("div");
+  tipEl.className = "viz-tip"; tipEl.setAttribute("aria-hidden", "true");
+  document.body.appendChild(tipEl);
+  function showTip(title, rows, x, y, note) {
+    tipEl.replaceChildren();
+    if (title) { var t = document.createElement("div"); t.className = "t"; t.textContent = title; tipEl.appendChild(t); }
+    (rows || []).forEach(function (r) {
+      var d = document.createElement("div"); d.className = "r";
+      if (r.color) { var k = document.createElement("i"); k.style.background = r.color; d.appendChild(k); }
+      var b = document.createElement("b"); b.textContent = r.value; d.appendChild(b);
+      if (r.label) { var s = document.createElement("span"); s.textContent = r.label; d.appendChild(s); }
+      tipEl.appendChild(d);
+    });
+    if (note) { var n = document.createElement("div"); n.className = "n"; n.textContent = note; tipEl.appendChild(n); }
+    tipEl.classList.add("on");
+    var w = tipEl.offsetWidth, h = tipEl.offsetHeight;
+    var left = x + 14, top = y - h - 12;
+    if (left + w > window.innerWidth - 8) left = x - w - 14;
+    if (left < 8) left = 8;
+    if (top < 8) top = y + 18;
+    tipEl.style.left = left + "px"; tipEl.style.top = top + "px";
+  }
+  function hideTip() { tipEl.classList.remove("on"); }
+  window.addEventListener("scroll", hideTip, { passive: true });
+
+  /* ---------- redibujo según el ancho ---------- */
+  function responsive(box, render) {
+    var last = 0;
+    function run(force) { var w = Math.round(box.clientWidth); if (w && (force || w !== last)) { last = w; render(w); } }
+    if (window.ResizeObserver) new ResizeObserver(function () { run(false); }).observe(box);
+    else window.addEventListener("resize", function () { run(false); });
+    run(true);
+    return { redraw: function () { run(true); } };
+  }
+
+  /* ---------- tabla gemela de cada gráfico ---------- */
+  function dataTable(fig, headers, rows, numericCols) {
+    if (!fig) return;
+    var d = fig.querySelector("details.data");
+    if (!d) {
+      d = document.createElement("details"); d.className = "data";
+      var s = document.createElement("summary"); s.textContent = "Ver los datos en tabla"; d.appendChild(s);
+      fig.appendChild(d);
+    }
+    var old = d.querySelector(".tbl-wrap"); if (old) old.remove();
+    var wrap = document.createElement("div"); wrap.className = "tbl-wrap";
+    var tb = document.createElement("table"), th = document.createElement("thead"), tr = document.createElement("tr");
+    headers.forEach(function (h, i) { var c = document.createElement("th"); c.textContent = h; if (numericCols && numericCols.indexOf(i) >= 0) c.className = "num"; tr.appendChild(c); });
+    th.appendChild(tr); tb.appendChild(th);
+    var body = document.createElement("tbody");
+    rows.forEach(function (r) {
+      var row = document.createElement("tr");
+      r.forEach(function (v, i) { var c = document.createElement("td"); c.textContent = v; if (numericCols && numericCols.indexOf(i) >= 0) c.className = "num"; row.appendChild(c); });
+      body.appendChild(row);
+    });
+    tb.appendChild(body); wrap.appendChild(tb); d.appendChild(wrap);
+  }
+
+  function svgRoot(box, W, H, label) {
+    box.replaceChildren();
+    var s = el("svg", { width: W, height: H, viewBox: "0 0 " + W + " " + H, role: "img", "aria-label": label || "", class: "viz" }, box);
+    return s;
+  }
+  function tipAtEl(node, title, rows, note) {
+    var r = node.getBoundingClientRect();
+    showTip(title, rows, r.left + r.width / 2, r.top, note);
+  }
+
+  /* ---------- barras horizontales (magnitud, divergentes, embudo) ---------- */
+  function hbar(box, cfg0) {
+    var cur = cfg0;
+    var rr = responsive(box, function (W) {
+      var cfg = cur, rows = cfg.rows, fmtv = cfg.fmt || function (v) { return fmt(v, 1); };
+      var narrow = W < (cfg.narrowAt || 560);
+      var barH = cfg.barH || 18, gap = cfg.gap || 14;
+      var labelW = narrow ? 0 : (cfg.labelW || 160);
+      var hasRef = rows.some(function (r) { return r.ref; });
+      var labelLine = narrow ? 20 : 0;
+      var rowH = labelLine + barH + gap + (hasRef ? 6 : 0);
+      var top = hasRef ? 16 : 4;
+      var H = top + rows.length * rowH;
+      var min = cfg.domain ? cfg.domain[0] : Math.min(0, d3min(rows)), max = cfg.domain ? cfg.domain[1] : Math.max(0, d3max(rows)) * 1.02;
+      var valW = cfg.valW || 70;
+      var x0 = labelW + (labelW ? 12 : 0) + (min < 0 ? valW : 0), x1 = W - (max > 0 ? valW : 6);
+      var x = lin(min, max, x0, x1);
+      var svg = svgRoot(box, W, H, cfg.aria);
+      var zero = x(0);
+      el("line", { x1: zero, x2: zero, y1: top - 4, y2: H - gap / 2, class: "base" }, svg);
+      rows.forEach(function (r, i) {
+        var y = top + i * rowH + labelLine + (hasRef ? 6 : 0);
+        var g = el("g", { class: "row" }, svg);
+        if (narrow) el("text", { x: 0, y: y - 6, class: r.strong ? "lbl-strong" : "lbl", text: r.label }, g);
+        else el("text", { x: 0, y: y + barH / 2 + 4, class: r.strong ? "lbl-strong" : "lbl", text: r.label }, g);
+        var col = r.color || (cfg.diverging ? (r.value >= 0 ? "var(--pos)" : "var(--neg)") : (cfg.color || "var(--accent)"));
+        var xv = x(r.value);
+        if (Math.abs(xv - zero) >= 1) el("path", { d: barPath(zero, xv, y, barH, 4), class: "mark", style: "fill:" + col }, g);
+        var lab = cfg.valueLabel ? cfg.valueLabel(r) : fmtv(r.value);
+        if (r.value >= 0) el("text", { x: xv + 6, y: y + barH / 2 + 4, class: "val", text: lab }, g);
+        else el("text", { x: xv - 6, y: y + barH / 2 + 4, class: "val", "text-anchor": "end", text: lab }, g);
+        if (r.ref) {
+          var xr = x(r.ref.value);
+          el("line", { x1: xr, x2: xr, y1: y - 5, y2: y + barH + 5, class: "ref" }, g);
+          if (narrow) el("text", { x: W, y: y - 6, "text-anchor": "end", class: "lbl", style: "font-size:11px", text: r.ref.label }, g);
+          else el("text", { x: xr + 4, y: y - 6, class: "lbl", style: "font-size:11px", text: r.ref.label }, g);
+        }
+        var hit = el("rect", { x: 0, y: y - (narrow ? labelLine : 4) - (hasRef ? 6 : 0), width: W, height: barH + (narrow ? labelLine : 8) + (hasRef ? 6 : 0), class: "hit", tabindex: 0, "aria-label": r.label + ": " + lab }, g);
+        var rowsTip = function () { var out = [{ value: lab, label: cfg.unitLabel || "", color: col }]; if (r.ref) out.push({ value: fmtv(r.ref.value), label: r.ref.tip || r.ref.label, color: "var(--ink)" }); return out; };
+        hit.addEventListener("pointermove", function (ev) { showTip(r.label, rowsTip(), ev.clientX, ev.clientY, r.note); });
+        hit.addEventListener("pointerdown", function (ev) { showTip(r.label, rowsTip(), ev.clientX, ev.clientY, r.note); });
+        hit.addEventListener("pointerleave", hideTip);
+        hit.addEventListener("focus", function () { tipAtEl(hit, r.label, rowsTip(), r.note); });
+        hit.addEventListener("blur", hideTip);
+      });
+    });
+    rr.update = function (c) { cur = c; rr.redraw(); };
+    return rr;
+    function d3min(rs) { return Math.min.apply(null, rs.map(function (r) { return r.value; })); }
+    function d3max(rs) { return Math.max.apply(null, rs.map(function (r) { return Math.max(r.value, r.ref ? r.ref.value : -Infinity); })); }
+  }
+
+  /* ---------- rangos en un eje (horizontes, latencias, sesiones) ---------- */
+  function range(box, cfg0) {
+    var cur = cfg0;
+    var rr = responsive(box, function (W) {
+      var cfg = cur, rows = cfg.rows;
+      var narrow = W < (cfg.narrowAt || 600);
+      var barH = cfg.barH || 14, gap = cfg.gap || 16;
+      var labelW = narrow ? 0 : (cfg.labelW || 170);
+      var labelLine = narrow ? 20 : 0;
+      var rowH = labelLine + barH + gap;
+      var lv = 0;
+      (cfg.bands || []).concat(cfg.markers || []).forEach(function (o) { lv = Math.max(lv, o.level || 0); });
+      var top = (cfg.bands || cfg.markers) ? 26 + 14 * lv : 6;
+      var bottom = 28;
+      var H = top + rows.length * rowH + bottom - gap / 2;
+      var x0 = labelW + (labelW ? 14 : 0), x1 = W - (cfg.padRight || 14);
+      var x = cfg.scale === "log" ? logs(cfg.domain[0], cfg.domain[1], x0, x1) : lin(cfg.domain[0], cfg.domain[1], x0, x1);
+      var svg = svgRoot(box, W, H, cfg.aria);
+      var plotTop = top - 6, plotBot = H - bottom + 4;
+      (cfg.bands || []).forEach(function (b) {
+        el("rect", { x: x(b.from), y: plotTop, width: Math.max(1, x(b.to) - x(b.from)), height: plotBot - plotTop, class: "band" }, svg);
+        el("text", { x: x(b.from) + 4, y: plotTop - 6 - 14 * (b.level || 0), class: "lbl", style: "font-size:11.5px", text: narrow && b.short ? b.short : b.label }, svg);
+      });
+      (cfg.ticks || []).forEach(function (t) {
+        var xx = x(t.v);
+        el("line", { x1: xx, x2: xx, y1: plotTop, y2: plotBot, class: "grid" }, svg);
+        if (!(narrow && t.minor)) el("text", { x: xx, y: H - 8, "text-anchor": "middle", text: t.label }, svg);
+      });
+      el("line", { x1: x0, x2: x1, y1: plotBot, y2: plotBot, class: "base" }, svg);
+      (cfg.markers || []).forEach(function (m) {
+        var xx = x(m.v);
+        el("line", { x1: xx, x2: xx, y1: plotTop, y2: plotBot, class: "ref", style: "stroke-width:1" }, svg);
+        if (!(narrow && m.hideNarrow)) el("text", { x: xx + (m.anchor === "end" ? -4 : 4), y: plotTop - 6 - 14 * (m.level || 0), "text-anchor": m.anchor || "start", class: "lbl", style: "font-size:11.5px", text: narrow && m.short ? m.short : m.label }, svg);
+      });
+      rows.forEach(function (r, i) {
+        var y = top + i * rowH + labelLine;
+        var g = el("g", { class: "row" }, svg);
+        if (narrow) el("text", { x: 0, y: y - 6, class: r.strong ? "lbl-strong" : "lbl", text: r.label }, g);
+        else el("text", { x: 0, y: y + barH / 2 + 4, class: r.strong ? "lbl-strong" : "lbl", text: r.label }, g);
+        var col = r.color || cfg.color || "var(--accent)";
+        (r.segs || []).forEach(function (s) {
+          el("path", { d: roundRect(x(s[0]), x(s[1]), y, barH, 4), class: "mark", style: "fill:" + col + (r.dim ? ";opacity:.45" : "") }, g);
+        });
+        if (r.dot !== undefined) el("circle", { cx: x(r.dot), cy: y + barH / 2, r: 5.5, class: "mark", style: "fill:" + col + ";stroke:var(--surface);stroke-width:2" }, g);
+        var txt = cfg.describe ? cfg.describe(r) : "";
+        var hit = el("rect", { x: 0, y: y - 6 - labelLine, width: W, height: barH + 12 + labelLine, class: "hit", tabindex: 0, "aria-label": r.label + (txt ? ": " + txt : "") }, g);
+        var rowsTip = function () { return [{ value: txt, color: col }]; };
+        hit.addEventListener("pointermove", function (ev) { showTip(r.label, rowsTip(), ev.clientX, ev.clientY, r.note); });
+        hit.addEventListener("pointerdown", function (ev) { showTip(r.label, rowsTip(), ev.clientX, ev.clientY, r.note); });
+        hit.addEventListener("pointerleave", hideTip);
+        hit.addEventListener("focus", function () { tipAtEl(hit, r.label, rowsTip(), r.note); });
+        hit.addEventListener("blur", hideTip);
+      });
+    });
+    rr.update = function (c) { cur = c; rr.redraw(); };
+    return rr;
+  }
+
+  /* ---------- líneas con cruz de lectura ---------- */
+  function line(box, cfg0) {
+    var state = { i: -1 }, cur = cfg0;
+    var rr = responsive(box, function (W) {
+      var cfg = cur, narrow = W < 560;
+      var H = narrow ? (cfg.hNarrow || 250) : (cfg.height || 320);
+      var xs = cfg.x, S = cfg.series, C = cfg.context || [];
+      var yFmt = cfg.yFmt || function (v) { return fmt(v, 0); };
+      var all = [];
+      S.concat(C).forEach(function (s) { s.values.forEach(function (v) { if (v !== null && v !== undefined && isFinite(v)) all.push(v); }); });
+      (cfg.hlines || []).forEach(function (h) { all.push(h.y); });
+      var lo = cfg.yDomain ? cfg.yDomain[0] : Math.min.apply(null, all), hi = cfg.yDomain ? cfg.yDomain[1] : Math.max.apply(null, all);
+      var nd = niceDomain(lo, hi, narrow ? 4 : 5);
+      if (cfg.yDomain) nd = [cfg.yDomain[0], cfg.yDomain[1], niceStep(cfg.yDomain[1] - cfg.yDomain[0], narrow ? 4 : 5)];
+      var yt = ticks(Math.ceil(nd[0] / nd[2]) * nd[2], nd[1], nd[2]);
+      var left = Math.max.apply(null, yt.map(function (v) { return yFmt(v).length; })) * 6.8 + 12;
+      var right = cfg.padRight || 14, top = (cfg.vlines && cfg.vlines.length) ? 24 : 10, bottom = 28;
+      var x = lin(xs[0], xs[xs.length - 1], left, W - right);
+      var y = lin(nd[0], nd[1], H - bottom, top);
+      var svg = svgRoot(box, W, H, cfg.aria);
+      yt.forEach(function (v) {
+        el("line", { x1: left, x2: W - right, y1: y(v), y2: y(v), class: Math.abs(v) < 1e-9 && cfg.zeroBase ? "base" : "grid" }, svg);
+        el("text", { x: left - 8, y: y(v) + 4, "text-anchor": "end", text: yFmt(v) }, svg);
+      });
+      (cfg.xTicks || []).forEach(function (t) {
+        if (narrow && t.minor) return;
+        el("text", { x: x(t.v), y: H - 8, "text-anchor": t.anchor || "middle", text: t.label }, svg);
+      });
+      el("line", { x1: left, x2: W - right, y1: H - bottom, y2: H - bottom, class: "base" }, svg);
+      (cfg.vlines || []).forEach(function (v) {
+        el("line", { x1: x(v.x), x2: x(v.x), y1: top - 4, y2: H - bottom, class: "ref", style: "stroke-width:1" }, svg);
+        el("text", { x: x(v.x) + (v.anchor === "end" ? -5 : 5), y: top - 10, "text-anchor": v.anchor || "start", class: "lbl", style: "font-size:11.5px", text: v.label }, svg);
+      });
+      function pathOf(vals) {
+        var d = "", pen = false;
+        for (var i = 0; i < vals.length; i++) {
+          var v = vals[i];
+          if (v === null || v === undefined || !isFinite(v)) { pen = false; continue; }
+          d += (pen ? "L" : "M") + x(xs[i]).toFixed(1) + "," + y(v).toFixed(1); pen = true;
+        }
+        return d;
+      }
+      C.forEach(function (c) { el("path", { d: pathOf(c.values), style: "fill:none;stroke:" + (c.color || "var(--deemph)") + ";stroke-width:" + (c.width || 1) + ";stroke-linejoin:round;opacity:" + (c.opacity || 0.9) }, svg); });
+      if (cfg.area) {
+        var s0 = S[0], dA = pathOf(s0.values);
+        if (dA) {
+          var firstI = s0.values.findIndex(function (v) { return v !== null && v !== undefined; });
+          var lastI = s0.values.length - 1; while (lastI > 0 && (s0.values[lastI] === null || s0.values[lastI] === undefined)) lastI--;
+          el("path", { d: dA + "L" + x(xs[lastI]) + "," + y(Math.max(nd[0], 0)) + "L" + x(xs[firstI]) + "," + y(Math.max(nd[0], 0)) + "Z", style: "fill:" + s0.color + ";opacity:.1;stroke:none" }, svg);
+        }
+      }
+      (cfg.hlines || []).forEach(function (h) {
+        el("line", { x1: left, x2: W - right, y1: y(h.y), y2: y(h.y), class: "ref", style: "stroke-width:1;stroke:" + (h.color || "var(--ink)") }, svg);
+        el("text", { x: h.anchor === "start" ? left + 6 : W - right - 4, y: y(h.y) + (h.below ? 15 : -6), "text-anchor": h.anchor === "start" ? "start" : "end", class: "lbl", style: "font-size:11.5px", text: h.label }, svg);
+      });
+      S.forEach(function (s) {
+        el("path", { d: pathOf(s.values), style: "fill:none;stroke:" + s.color + ";stroke-width:" + (s.width || 2) + ";stroke-linejoin:round;stroke-linecap:round" }, svg);
+        if (cfg.endDots !== false) {
+          var li = s.values.length - 1; while (li > 0 && (s.values[li] === null || s.values[li] === undefined)) li--;
+          el("circle", { cx: x(xs[li]), cy: y(s.values[li]), r: 4.5, style: "fill:" + s.color + ";stroke:var(--surface);stroke-width:2" }, svg);
+        }
+      });
+      if (cfg.noHover) return;
+      var cross = el("line", { x1: 0, x2: 0, y1: top, y2: H - bottom, class: "cross", style: "opacity:0" }, svg);
+      var dots = S.map(function (s) { return el("circle", { r: 4.5, style: "fill:" + s.color + ";stroke:var(--surface);stroke-width:2;opacity:0" }, svg); });
+      var ov = el("rect", { x: left, y: top, width: Math.max(1, W - left - right), height: Math.max(1, H - top - bottom), class: "hit", tabindex: 0, style: "cursor:crosshair", "aria-label": (cfg.aria || "Gráfico") + ". Usa las flechas para recorrer los valores." }, svg);
+      function nearest(px) { var v = x.invert(px), bi = 0, bd = Infinity; for (var i = 0; i < xs.length; i++) { var dd = Math.abs(xs[i] - v); if (dd < bd) { bd = dd; bi = i; } } return bi; }
+      function paint(i, cx, cy) {
+        state.i = i;
+        var px = x(xs[i]);
+        cross.setAttribute("x1", px); cross.setAttribute("x2", px); cross.style.opacity = 1;
+        var rows = [];
+        S.forEach(function (s, k) {
+          var v = s.values[i];
+          if (v === null || v === undefined || !isFinite(v)) { dots[k].style.opacity = 0; return; }
+          dots[k].setAttribute("cx", px); dots[k].setAttribute("cy", y(v)); dots[k].style.opacity = 1;
+          rows.push({ value: (cfg.tipFmt || yFmt)(v), label: s.name, color: s.color });
+        });
+        var extra = cfg.tipExtra ? cfg.tipExtra(i) : null;
+        if (extra) rows = rows.concat(extra);
+        var title = cfg.tipTitle ? cfg.tipTitle(i) : String(xs[i]);
+        if (cx === undefined) { var r = ov.getBoundingClientRect(); cx = r.left + (px - left); cy = r.top + 10; }
+        showTip(title, rows, cx, cy, cfg.tipNote ? cfg.tipNote(i) : null);
+      }
+      function clear() { cross.style.opacity = 0; dots.forEach(function (d) { d.style.opacity = 0; }); hideTip(); }
+      function fromEvent(ev) { var r = svg.getBoundingClientRect(); paint(nearest(ev.clientX - r.left), ev.clientX, ev.clientY); }
+      ov.addEventListener("pointermove", fromEvent);
+      ov.addEventListener("pointerdown", fromEvent);
+      ov.addEventListener("pointerleave", clear);
+      ov.addEventListener("blur", clear);
+      ov.addEventListener("focus", function () { paint(state.i >= 0 ? state.i : xs.length - 1); });
+      ov.addEventListener("keydown", function (ev) {
+        var step = ev.shiftKey ? Math.max(1, Math.round(xs.length / 20)) : 1;
+        if (ev.key === "ArrowRight") { paint(Math.min(xs.length - 1, (state.i < 0 ? 0 : state.i) + step)); ev.preventDefault(); }
+        if (ev.key === "ArrowLeft") { paint(Math.max(0, (state.i < 0 ? xs.length - 1 : state.i) - step)); ev.preventDefault(); }
+        if (ev.key === "Escape") clear();
+      });
+    });
+    rr.update = function (c) { cur = c; state.i = -1; rr.redraw(); };
+    return rr;
+  }
+
+  /* ---------- diagrama de flujo lineal (horizontal o vertical según ancho) ---------- */
+  function flow(box, cfg) {
+    return responsive(box, function (W) {
+      var n = cfg.nodes.length, horiz = W >= (cfg.breakAt || 720);
+      var hl = cfg.hl || [];
+      var svg, H;
+      if (horiz) {
+        var aw = cfg.arrowW || 70, nw = (W - (n - 1) * aw) / n;
+        var cpl = Math.max(10, Math.floor((nw - 22) / 6.5));
+        var lines = cfg.nodes.map(function (nd) { return wrapText(nd.d || "", cpl); });
+        var tl = cfg.nodes.map(function (nd) { return wrapText(nd.t, Math.floor((nw - 22) / 8)); });
+        var maxL = Math.max.apply(null, lines.map(function (l, i) { return l.length + tl[i].length; }));
+        var nh = 22 + maxL * 17 + 8;
+        var top = 4;
+        H = top + nh + 6;
+        svg = svgRoot(box, W, H, cfg.aria);
+        cfg.nodes.forEach(function (nd, i) {
+          var x0 = i * (nw + aw);
+          var g = el("g", { class: "fnode" + (hl.indexOf(i) >= 0 ? " hl" : "") }, svg);
+          el("rect", { x: x0 + 0.5, y: top + 0.5, width: nw - 1, height: nh - 1, rx: 8 }, g);
+          var yy = top + 22;
+          tl[i].forEach(function (t) { el("text", { x: x0 + 12, y: yy, class: "ft", text: t }, g); yy += 17; });
+          lines[i].forEach(function (t) { el("text", { x: x0 + 12, y: yy + 1, class: "fd", text: t }, g); yy += 17; });
+          if (i < n - 1) {
+            var ax0 = x0 + nw + 6, ax1 = x0 + nw + aw - 8, ay = top + nh / 2;
+            el("line", { x1: ax0, x2: ax1 - 6, y1: ay, y2: ay, class: "fedge" }, svg);
+            el("path", { d: "M" + ax1 + "," + ay + "l-7,-4.5v9z", class: "fhead" }, svg);
+            var lab = wrapText(cfg.edges[i] || "", Math.floor(aw / 6.4));
+            lab.forEach(function (t, k) { el("text", { x: (ax0 + ax1) / 2, y: ay - 8 - (lab.length - 1 - k) * 13, "text-anchor": "middle", class: "flabel", text: t }, svg); });
+          }
+        });
+      } else {
+        var cplV = Math.max(16, Math.floor((W - 26) / 6.6));
+        var blocks = cfg.nodes.map(function (nd) { return { t: wrapText(nd.t, Math.floor((W - 26) / 8)), d: wrapText(nd.d || "", cplV) }; });
+        var ah = 44, yy2 = 2; H = 0;
+        var heights = blocks.map(function (b) { return 20 + (b.t.length + b.d.length) * 17 + 6; });
+        H = heights.reduce(function (a, b) { return a + b; }, 0) + (n - 1) * ah + 4;
+        svg = svgRoot(box, W, H, cfg.aria);
+        blocks.forEach(function (b, i) {
+          var g = el("g", { class: "fnode" + (hl.indexOf(i) >= 0 ? " hl" : "") }, svg);
+          el("rect", { x: 0.5, y: yy2 + 0.5, width: W - 1, height: heights[i] - 1, rx: 8 }, g);
+          var ty = yy2 + 21;
+          b.t.forEach(function (t) { el("text", { x: 12, y: ty, class: "ft", text: t }, g); ty += 17; });
+          b.d.forEach(function (t) { el("text", { x: 12, y: ty + 1, class: "fd", text: t }, g); ty += 17; });
+          yy2 += heights[i];
+          if (i < n - 1) {
+            var ax = 26;
+            el("line", { x1: ax, x2: ax, y1: yy2 + 5, y2: yy2 + ah - 11, class: "fedge" }, svg);
+            el("path", { d: "M" + ax + "," + (yy2 + ah - 4) + "l-4.5,-7h9z", class: "fhead" }, svg);
+            el("text", { x: ax + 14, y: yy2 + ah / 2 + 4, class: "flabel", text: (cfg.edges[i] || "").replace(/\n/g, " ") }, svg);
+            yy2 += ah;
+          }
+        });
+      }
+    });
+  }
+
+  /* ---------- barras verticales (histogramas) ---------- */
+  function vbar(box, cfg0) {
+    var cur = cfg0, state = { i: -1 };
+    var rr = responsive(box, function (W) {
+      var cfg = cur, bins = cfg.bins, narrow = W < 560;
+      var H = narrow ? (cfg.hNarrow || 220) : (cfg.height || 260);
+      var yFmt = cfg.yFmt || function (v) { return fmt(v, 0); };
+      var maxV = Math.max.apply(null, bins.map(function (b) { return b.value; }).concat([cfg.yMin || 0]));
+      var nd = niceDomain(0, maxV || 1, narrow ? 3 : 4);
+      var yt = ticks(0, nd[1], nd[2]);
+      var left = Math.max.apply(null, yt.map(function (v) { return yFmt(v).length; })) * 6.8 + 12;
+      var lv = 0; (cfg.markers || []).forEach(function (m) { lv = Math.max(lv, m.level || 0); });
+      var right = cfg.padRight || 14, top = (cfg.markers && cfg.markers.length) ? 26 + 14 * lv : 10, bottom = 28;
+      var x = lin(cfg.domain[0], cfg.domain[1], left, W - right), y = lin(0, nd[1], H - bottom, top);
+      var svg = svgRoot(box, W, H, cfg.aria);
+      yt.forEach(function (v) {
+        el("line", { x1: left, x2: W - right, y1: y(v), y2: y(v), class: "grid" }, svg);
+        el("text", { x: left - 8, y: y(v) + 4, "text-anchor": "end", text: yFmt(v) }, svg);
+      });
+      (cfg.xTicks || []).forEach(function (t) {
+        if (narrow && t.minor) return;
+        el("text", { x: x(t.v), y: H - 8, "text-anchor": t.anchor || "middle", text: t.label }, svg);
+      });
+      var gap = (x(bins[0].x1) - x(bins[0].x0)) > 8 ? 2 : 1;
+      bins.forEach(function (b) {
+        if (!(b.value > 0)) return;
+        var x0 = x(b.x0) + gap / 2, x1 = x(b.x1) - gap / 2, yt0 = y(b.value), yb = H - bottom;
+        var r = Math.min(3, (x1 - x0) / 2, yb - yt0);
+        el("path", { d: "M" + x0 + "," + yb + "V" + (yt0 + r) + "Q" + x0 + "," + yt0 + " " + (x0 + r) + "," + yt0 + "H" + (x1 - r) + "Q" + x1 + "," + yt0 + " " + x1 + "," + (yt0 + r) + "V" + yb + "Z", class: "mark", style: "fill:" + (b.color || cfg.color || "var(--accent)") }, svg);
+      });
+      el("line", { x1: left, x2: W - right, y1: H - bottom, y2: H - bottom, class: "base" }, svg);
+      (cfg.markers || []).forEach(function (m) {
+        var xx = x(m.v);
+        el("line", { x1: xx, x2: xx, y1: top - 4, y2: H - bottom, class: "ref", style: "stroke-width:1" + (m.color ? ";stroke:" + m.color : "") }, svg);
+        if (!(narrow && m.hideNarrow)) el("text", { x: xx + (m.anchor === "end" ? -4 : 4), y: top - 10 - 14 * (m.level || 0), "text-anchor": m.anchor || "start", class: "lbl", style: "font-size:11.5px", text: narrow && m.short ? m.short : m.label }, svg);
+      });
+      if (cfg.noHover) return;
+      var hl = el("rect", { x: 0, y: 0, width: 0, height: 0, style: "fill:none;stroke:var(--ink);stroke-width:1.5;opacity:0", rx: 2 }, svg);
+      var ov = el("rect", { x: left, y: top, width: Math.max(1, W - left - right), height: Math.max(1, H - top - bottom), class: "hit", tabindex: 0, "aria-label": (cfg.aria || "Histograma") + ". Usa las flechas para recorrer las barras." }, svg);
+      function paint(i, cx, cy) {
+        state.i = i; var b = bins[i];
+        var x0 = x(b.x0) + gap / 2, x1 = x(b.x1) - gap / 2, yt0 = y(Math.max(b.value, 0));
+        hl.setAttribute("x", x0 - 1); hl.setAttribute("width", Math.max(2, x1 - x0 + 2)); hl.setAttribute("y", yt0 - 1); hl.setAttribute("height", Math.max(2, H - bottom - yt0 + 1)); hl.style.opacity = 1;
+        var rows = [{ value: yFmt(b.value), label: cfg.unitLabel || "", color: b.color || cfg.color || "var(--accent)" }];
+        if (cfg.tipExtra) rows = rows.concat(cfg.tipExtra(b, i) || []);
+        if (cx === undefined) { var r = ov.getBoundingClientRect(); cx = r.left + ((x0 + x1) / 2 - left); cy = r.top + (yt0 - top); }
+        showTip(cfg.tipTitle ? cfg.tipTitle(b, i) : "", rows, cx, cy, cfg.tipNote ? cfg.tipNote(b, i) : null);
+      }
+      function clear() { hl.style.opacity = 0; hideTip(); }
+      function fromEvent(ev) {
+        var r = svg.getBoundingClientRect(), v = x.invert(ev.clientX - r.left), bi = 0;
+        for (var i = 0; i < bins.length; i++) if (v >= bins[i].x0) bi = i;
+        paint(bi, ev.clientX, ev.clientY);
+      }
+      ov.addEventListener("pointermove", fromEvent);
+      ov.addEventListener("pointerdown", fromEvent);
+      ov.addEventListener("pointerleave", clear);
+      ov.addEventListener("blur", clear);
+      ov.addEventListener("focus", function () { var best = 0; bins.forEach(function (b, i) { if (b.value > bins[best].value) best = i; }); paint(state.i >= 0 ? state.i : best); });
+      ov.addEventListener("keydown", function (ev) {
+        if (ev.key === "ArrowRight") { paint(Math.min(bins.length - 1, (state.i < 0 ? 0 : state.i) + 1)); ev.preventDefault(); }
+        if (ev.key === "ArrowLeft") { paint(Math.max(0, (state.i < 0 ? bins.length - 1 : state.i) - 1)); ev.preventDefault(); }
+        if (ev.key === "Escape") clear();
+      });
+    });
+    rr.update = function (c) { cur = c; state.i = -1; rr.redraw(); };
+    return rr;
+  }
+
+  /* ---------- cascada horizontal: de un total a otro, paso a paso ---------- */
+  function waterfall(box, cfg0) {
+    var cur = cfg0;
+    var rr = responsive(box, function (W) {
+      var cfg = cur, fmtv = cfg.fmt || function (v) { return fmt(v, 0); };
+      var sfmt = function (v) { return (v > 0 ? "+" : "") + fmtv(v); };
+      var narrow = W < (cfg.narrowAt || 560);
+      var barH = cfg.barH || 18, gap = cfg.gap || 14;
+      var labelW = narrow ? 0 : (cfg.labelW || 200), labelLine = narrow ? 20 : 0;
+      var rowH = labelLine + barH + gap, top = 6, bottom = 28;
+      var run = 0;
+      var rows = cfg.steps.map(function (s) {
+        var total = s.kind === "total" || s.kind === "end", a, b;
+        if (total) { a = 0; b = s.kind === "end" ? run : s.value; run = b; }
+        else { a = run; b = run + s.value; run = b; }
+        return { s: s, a: a, b: b, total: total, v: total ? b : s.value, end: run };
+      });
+      var lo = 0, hi = 0;
+      rows.forEach(function (r) { lo = Math.min(lo, r.a, r.b); hi = Math.max(hi, r.a, r.b); });
+      var nd = niceDomain(lo, hi, narrow ? 3 : 5);
+      var valW = cfg.valW || 70;
+      var x0 = labelW + (labelW ? 12 : 0) + (nd[0] < 0 ? valW : 4), x1 = W - valW;
+      var x = lin(nd[0], nd[1], x0, x1);
+      var H = top + rows.length * rowH - gap + bottom + 8;
+      var svg = svgRoot(box, W, H, cfg.aria);
+      ticks(nd[0], nd[1], nd[2]).forEach(function (t) {
+        var xx = x(t);
+        el("line", { x1: xx, x2: xx, y1: top - 2, y2: H - bottom + 2, class: Math.abs(t) < 1e-9 ? "base" : "grid" }, svg);
+        el("text", { x: xx, y: H - 8, "text-anchor": "middle", text: (cfg.tickFmt || fmtv)(t) }, svg);
+      });
+      rows.forEach(function (r, i) {
+        var y = top + i * rowH + labelLine;
+        var g = el("g", { class: "row" }, svg);
+        var lab = r.s.label;
+        if (narrow) el("text", { x: 0, y: y - 6, class: r.total ? "lbl-strong" : "lbl", text: lab }, g);
+        else el("text", { x: 0, y: y + barH / 2 + 4, class: r.total ? "lbl-strong" : "lbl", text: lab }, g);
+        var col = r.s.color || (r.total ? (cfg.totalColor || "var(--accent)") : (r.s.value >= 0 ? "var(--pos)" : "var(--neg)"));
+        var xa = x(Math.min(r.a, r.b)), xb = x(Math.max(r.a, r.b));
+        if (!r.total && Math.abs(r.s.value) < 1e-9) { /* sin cambio: sin marca */ }
+        else if (xb - xa >= 1.5) {
+          if (r.total) el("path", { d: barPath(x(0), x(r.b), y, barH, 4), class: "mark", style: "fill:" + col }, g);
+          else el("path", { d: roundRect(xa, xb, y, barH, Math.min(3, (xb - xa) / 2)), class: "mark", style: "fill:" + col }, g);
+        } else el("line", { x1: xa, x2: xa, y1: y, y2: y + barH, class: "mark", style: "stroke:" + col + ";stroke-width:2" }, g);
+        if (!narrow && i < rows.length - 1) { var xe = x(r.end); el("line", { x1: xe, x2: xe, y1: y + barH, y2: y + rowH, class: "base" }, svg); }
+        var txt = r.total ? fmtv(r.v) : sfmt(r.v);
+        var toRight = r.total ? r.b >= 0 : r.s.value >= 0;
+        if (toRight) el("text", { x: xb + 6, y: y + barH / 2 + 4, class: "val", text: txt }, g);
+        else el("text", { x: xa - 6, y: y + barH / 2 + 4, class: "val", "text-anchor": "end", text: txt }, g);
+        var hit = el("rect", { x: 0, y: y - 4 - labelLine, width: W, height: barH + 8 + labelLine, class: "hit", tabindex: 0, "aria-label": lab + ": " + txt + (r.total ? "" : ", acumulado " + fmtv(r.end)) }, g);
+        var tip = function () {
+          var out = [{ value: txt, label: r.total ? (cfg.totalLabel || "total") : (cfg.deltaLabel || "cambio"), color: col }];
+          if (!r.total) out.push({ value: fmtv(r.end), label: cfg.runLabel || "acumulado", color: "var(--ink)" });
+          return out;
+        };
+        hit.addEventListener("pointermove", function (ev) { showTip(lab, tip(), ev.clientX, ev.clientY, r.s.note); });
+        hit.addEventListener("pointerdown", function (ev) { showTip(lab, tip(), ev.clientX, ev.clientY, r.s.note); });
+        hit.addEventListener("pointerleave", hideTip);
+        hit.addEventListener("focus", function () { tipAtEl(hit, lab, tip(), r.s.note); });
+        hit.addEventListener("blur", hideTip);
+      });
+    });
+    rr.update = function (c) { cur = c; rr.redraw(); };
+    return rr;
+  }
+
+  /* ---------- guilloche (roseta de billete) ---------- */
+  function guilloche(canvas) {
+    var gen = 0, lastW = 0, ready = false;
+    function draw(animate) {
+      var my = ++gen;
+      var S = canvas.clientWidth; if (!S) return;
+      lastW = S;
+      var dpr = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width = Math.round(S * dpr); canvas.height = Math.round(S * dpr);
+      var ctx = canvas.getContext("2d"); ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      var col = tokenColor("--accent"), ink = tokenColor("--accent-ink"), c = S / 2, R = S * 0.485;
+      var dark = root.getAttribute("data-theme") === "dark" || (!root.getAttribute("data-theme") && window.matchMedia && matchMedia("(prefers-color-scheme: dark)").matches);
+      var curves = [], i;
+      for (i = 0; i < 44; i++) (function (ph) { curves.push(function (t) { var r = R * (0.87 + 0.055 * Math.sin(18 * t + ph)); return [c + r * Math.cos(t), c + r * Math.sin(t)]; }); })(i / 44 * Math.PI * 2);
+      for (i = 0; i < 30; i++) (function (ph) { curves.push(function (t) { var r = R * (0.665 + 0.105 * Math.sin(7 * t + ph) * Math.cos(2 * t + ph / 3)); return [c + r * Math.cos(t), c + r * Math.sin(t)]; }); })(i / 30 * Math.PI * 2 / 7);
+      for (i = 0; i < 20; i++) (function (ph) { curves.push(function (t) { var r = R * (0.45 + 0.085 * Math.cos(11 * t + ph)); return [c + r * Math.cos(t), c + r * Math.sin(t)]; }); })(i / 20 * Math.PI * 2 / 11);
+      function batch(list) {
+        ctx.save();
+        ctx.beginPath(); ctx.arc(c, c, R, 0, Math.PI * 2); ctx.arc(c, c, R * 0.35, 0, Math.PI * 2, true); ctx.clip();
+        ctx.strokeStyle = col; ctx.lineWidth = Math.max(0.5, S / 820); ctx.globalAlpha = dark ? 0.46 : 0.36;
+        list.forEach(function (f) { ctx.beginPath(); for (var k = 0; k <= 900; k++) { var p = f(k / 900 * Math.PI * 2); if (k) ctx.lineTo(p[0], p[1]); else ctx.moveTo(p[0], p[1]); } ctx.stroke(); });
+        ctx.restore();
+      }
+      function rings() {
+        ctx.save(); ctx.globalAlpha = 0.85; ctx.strokeStyle = ink; ctx.lineWidth = 1;
+        [0.995, 0.965, 0.36].forEach(function (k) { ctx.beginPath(); ctx.arc(c, c, R * k, 0, Math.PI * 2); ctx.stroke(); });
+        ctx.restore();
+      }
+      if (animate && !reduceMotion) {
+        var idx = 0;
+        (function frame() {
+          if (my !== gen) return;
+          batch(curves.slice(idx, idx + 5)); idx += 5;
+          if (idx < curves.length) requestAnimationFrame(frame); else rings();
+        })();
+      } else { batch(curves); rings(); }
+    }
+    if (window.ResizeObserver) new ResizeObserver(function () { if (ready && canvas.clientWidth !== lastW) draw(false); }).observe(canvas);
+    onTheme(function () { draw(false); });
+    draw(true); ready = true;
+  }
+
+  /* ---------- índice lateral ---------- */
+  function buildToc() {
+    var toc = document.querySelector(".toc"); if (!toc) return;
+    var secs = $$(".content > .sec[id]");
+    var det = document.createElement("details"), sum = document.createElement("summary");
+    sum.textContent = "Índice del documento"; det.appendChild(sum);
+    var ol = document.createElement("ol");
+    var links = secs.map(function (s) {
+      var h = s.querySelector("h2"), li = document.createElement("li"), a = document.createElement("a");
+      a.href = "#" + s.id; a.textContent = (h && (h.getAttribute("data-short") || h.textContent)) || s.id;
+      li.appendChild(a); ol.appendChild(li); return a;
+    });
+    det.appendChild(ol); toc.appendChild(det);
+    if (window.matchMedia) {
+      var wide = matchMedia("(min-width:1080px)");
+      var sync = function () { det.open = wide.matches; };
+      sync(); if (wide.addEventListener) wide.addEventListener("change", sync);
+    }
+    if ("IntersectionObserver" in window) {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (en) {
+          if (en.isIntersecting) {
+            var id = en.target.id;
+            links.forEach(function (a) { if (a.getAttribute("href") === "#" + id) a.setAttribute("aria-current", "true"); else a.removeAttribute("aria-current"); });
+          }
+        });
+      }, { rootMargin: "-15% 0px -75% 0px" });
+      secs.forEach(function (s) { io.observe(s); });
+    }
+  }
+
+  /* ---------- microtexto de seguridad ---------- */
+  function microprint() {
+    $$(".microprint").forEach(function (m) {
+      var s = (m.getAttribute("data-text") || "MÁQUINAS Y MERCADOS") + " · ";
+      m.textContent = new Array(40).join(s);
+    });
+  }
+
+  /* ---------- código: resaltado mínimo y botón de copiar ---------- */
+  function highlight(codeEl) {
+    var src = codeEl.textContent;
+    var re = /(#[^\n]*)|("""[\s\S]*?"""|[rfbuRFBU]{0,2}"(?:\\.|[^"\\\n])*"|[rfbuRFBU]{0,2}'(?:\\.|[^'\\\n])*')|\b(def|return|import|from|as|if|elif|else|for|in|and|or|not|None|True|False|with|raise|class|while|lambda|try|except|pass|yield)\b|\b(\d+(?:\.\d+)?(?:e-?\d+)?)\b/g;
+    var frag = document.createDocumentFragment(), last = 0, m;
+    while ((m = re.exec(src))) {
+      if (m.index > last) frag.appendChild(document.createTextNode(src.slice(last, m.index)));
+      var sp = document.createElement("span");
+      sp.className = m[1] ? "c-com" : m[2] ? "c-str" : m[3] ? "c-kw" : "c-num";
+      sp.textContent = m[0]; frag.appendChild(sp); last = m.index + m[0].length;
+    }
+    if (last < src.length) frag.appendChild(document.createTextNode(src.slice(last)));
+    codeEl.replaceChildren(frag);
+  }
+  function codeBlocks() {
+    $$(".codeblock").forEach(function (cb) {
+      var code = cb.querySelector("code"); if (!code) return;
+      if (cb.getAttribute("data-lang") === "python") highlight(code);
+      var b = document.createElement("button"); b.type = "button"; b.className = "copy"; b.textContent = "Copiar";
+      b.addEventListener("click", function () {
+        var txt = code.textContent;
+        var fallback = function () { var r = document.createRange(); r.selectNodeContents(code); var s = window.getSelection(); s.removeAllRanges(); s.addRange(r); b.textContent = "Seleccionado"; };
+        try {
+          if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(function () { b.textContent = "Copiado"; setTimeout(function () { b.textContent = "Copiar"; }, 1600); }, fallback);
+          else fallback();
+        } catch (e) { fallback(); }
+      });
+      cb.appendChild(b);
+    });
+  }
+
+  window.MM = {
+    css: css, tokenColor: tokenColor, rng: rng, normal: normal, fmt: fmt, pct: pct, money: money, signed: signed,
+    el: el, lin: lin, logs: logs, niceDomain: niceDomain, ticks: ticks,
+    showTip: showTip, hideTip: hideTip, responsive: responsive, dataTable: dataTable,
+    hbar: hbar, range: range, line: line, vbar: vbar, flow: flow, waterfall: waterfall, onTheme: onTheme, reduceMotion: reduceMotion,
+    barPath: barPath, roundRect: roundRect, wrapText: wrapText, svgRoot: svgRoot, tipAtEl: tipAtEl
+  };
+
+  buildToc();
+  microprint();
+  codeBlocks();
+  $$(".emblem canvas").forEach(guilloche);
+})();
+
+</script>
+<script>
+(function () {
+  var M = window.MM;
+  function $(id) { return document.getElementById(id); }
+  function num(id, d) { var v = parseFloat($(id).value); return isFinite(v) ? v : d; }
+  function eur(v) { return M.fmt(v, 0) + " €"; }
+  function seur(v) { return (v > 0.5 ? "+" : "") + M.fmt(v, 0) + " €"; }
+  function pc(v) { return M.fmt(v, 0) + " %"; }
+  function day(iso) { return Math.round(Date.UTC(+iso.slice(0, 4), +iso.slice(5, 7) - 1, +iso.slice(8, 10)) / 864e5); }
+  function isoOf(d) { return new Date(d * 864e5).toISOString().slice(0, 10); }
+  var MES = ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"];
+  var MESL = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
+  function corta(iso) { var d = new Date(iso + "T12:00:00Z"); return d.getUTCDate() + " " + MES[d.getUTCMonth()]; }
+  function larga(iso) { var d = new Date(iso + "T12:00:00Z"); return d.getUTCDate() + " de " + MESL[d.getUTCMonth()] + " de " + d.getUTCFullYear(); }
+  function tramo(a, b) { return a === b ? corta(a) : corta(a) + " – " + corta(b); }
+
+  /* ---------- Calendario ---------- */
+  var G = {
+    from: "2026-09-28", to: "2027-01-03",
+    events: [
+      { p: 1, d: "2026-10-02", s: "Empleo", t: "Empleo de EE. UU.", n: "Dato de septiembre, a las 14:30 de Madrid. Mueve el dólar y los índices." },
+      { p: 2, d: "2026-10-25", s: "Hora UE", t: "Cambio de hora en Europa", n: "Hasta el 1 de noviembre, la diferencia con Nueva York es de cinco horas en lugar de seis: revisa lo que dependa de la sesión." },
+      { p: 1, d: "2026-10-28", s: "Fed", t: "Reserva Federal", n: "Decisión de tipos a las 19:00 de Madrid, por el desfase de esa semana." },
+      { p: 1, d: "2026-10-29", s: "BCE", t: "Banco Central Europeo", n: "Decisión de tipos a las 14:15." },
+      { p: 3, d: "2026-11-01", s: "Hora EE. UU.", t: "Cambio de hora en EE. UU.", n: "Vuelve la diferencia habitual de seis horas con Nueva York." },
+      { p: 1, d: "2026-11-03", s: "Elecciones", t: "Elecciones de mitad de mandato en EE. UU.", n: "Posible volatilidad en el dólar y los índices durante el recuento." },
+      { p: 1, d: "2026-11-05", s: "BoE", t: "Banco de Inglaterra", n: "Decisión de tipos con informe de política monetaria." },
+      { p: 1, d: "2026-11-06", s: "Empleo", t: "Empleo de EE. UU.", n: "Dato de octubre." },
+      { p: 2, d: "2026-11-26", s: "Acción de Gracias", t: "Acción de Gracias", n: "Bolsa de EE. UU. cerrada y poca liquidez también en divisas." },
+      { p: 1, d: "2026-12-04", s: "Empleo", t: "Empleo de EE. UU.", n: "Dato de noviembre." },
+      { p: 1, d: "2026-12-09", s: "Fed", t: "Reserva Federal", n: "Decisión de tipos con nuevas previsiones económicas." },
+      { p: 1, d: "2026-12-17", s: "BCE y BoE", t: "BCE y Banco de Inglaterra", n: "Los dos deciden tipos el mismo día." },
+      { p: 2, d: "2026-12-25", s: "Navidad", t: "Navidad", n: "Mercados cerrados. Las semanas de alrededor tienen poca liquidez y spreads más abiertos." },
+      { p: 3, d: "2027-01-01", s: "Año Nuevo", t: "Año Nuevo", n: "Mercados cerrados." }
+    ],
+    gates: [
+      { d: "2026-10-04", s: "P0", t: "Puerta 0 · Plan cerrado", n: "Carta del plan firmada, estrategias elegidas con su hipótesis y datos descargados." },
+      { d: "2026-11-01", s: "P1", t: "Puerta 1 · Sistema listo", n: "Todas las piezas terminadas y cinco días en demo sin fallos críticos." },
+      { d: "2026-11-15", s: "P2", t: "Puerta 2 · Demo validada", n: "El sistema hace en real lo que hace en el backtest, dentro de los umbrales." },
+      { d: "2026-12-31", s: "P3", t: "Puerta 3 · Revisión", n: "Informe del trimestre y decisión para 2027: continuar, ajustar o parar." }
+    ],
+    lanes: [
+      { name: "Construir", bars: [
+        { a: "2026-09-28", b: "2026-10-04", t: "Semana 0 · Cimientos", n: "Carta del plan, cuentas demo, Open API, repositorio, VPS y datos." },
+        { a: "2026-10-05", b: "2026-10-11", t: "Semana 1 · Datos y backtest", n: "Limpieza de datos y motor de backtest con costes reales." },
+        { a: "2026-10-12", b: "2026-10-18", t: "Semana 2 · Estrategias", n: "Tres estrategias con parámetros fijados antes de mirar y validación fuera de muestra." },
+        { a: "2026-10-19", b: "2026-10-25", t: "Semana 3 · Riesgo y ejecución", n: "Control de riesgo, ejecutor por Open API, reconciliación y botón de parada." },
+        { a: "2026-10-26", b: "2026-11-01", t: "Semana 4 · Despliegue", n: "VPS en Londres, avisos, panel y manual de incidentes." }] },
+      { name: "Probar en demo", bars: [{ a: "2026-11-02", b: "2026-11-15", t: "Incubación", n: "Demo 24 horas, prueba gratuita de la firma y comparación diaria con el backtest." }] },
+      { name: "Cuenta testigo", bars: [{ a: "2026-11-02", b: "2027-01-03", t: "Cuenta testigo", n: "1.000 € reales con el tamaño mínimo para medir la ejecución de verdad. Sigue en 2027.", more: true }] },
+      { name: "Prueba de fondeo", bars: [
+        { a: "2026-11-16", b: "2026-12-20", t: "Prueba de fondeo", n: "FTMO de dos fases, 100.000 $, tipo Swing, sin tocar parámetros." },
+        { a: "2026-12-21", b: "2027-01-01", t: "Pausa de Navidad", n: "Sin posiciones nuevas o con riesgo mínimo.", off: true },
+        { a: "2027-01-02", b: "2027-01-03", t: "La prueba sigue", n: "La prueba no tiene plazo y continúa en enero.", more: true }] },
+      { name: "Jev a la sombra", bars: [{ a: "2026-11-16", b: "2027-01-03", t: "Lectores y Jev a la sombra", n: "Los lectores escriben el parte y Jev decide sin aplicar nada, como en el documento 9.", more: true, soft: true }] },
+      { name: "Legal y fiscal", bars: [{ a: "2026-11-30", b: "2026-12-11", t: "Consulta con un asesor fiscal", n: "Preparar el alta antes del primer cobro, que llegaría en 2027." }] },
+      { name: "Revisión", bars: [{ a: "2026-12-28", b: "2026-12-31", t: "Revisión del trimestre", n: "Informe completo y plan de 2027." }],
+        dots: ["2026-11-06", "2026-11-13", "2026-11-20", "2026-11-27", "2026-12-04", "2026-12-11", "2026-12-18"], dotT: "Revisión semanal", dotN: "Una hora con el informe de la semana: operaciones, costes, incidentes y diferencias con el backtest." }
+    ]
+  };
+  function bindTip(node, title, rows, note) {
+    node.addEventListener("pointermove", function (ev) { M.showTip(title, rows, ev.clientX, ev.clientY, note); });
+    node.addEventListener("pointerdown", function (ev) { M.showTip(title, rows, ev.clientX, ev.clientY, note); });
+    node.addEventListener("pointerleave", M.hideTip);
+    node.addEventListener("focus", function () { M.tipAtEl(node, title, rows, note); });
+    node.addEventListener("blur", M.hideTip);
+  }
+  function gantt(box) {
+    return M.responsive(box, function (W) {
+      var narrow = W < 640, labelW = narrow ? 0 : 128, right = 10;
+      var t0 = day(G.from), t1 = day(G.to) + 1;
+      var x = M.lin(t0, t1, labelW, W - right);
+      var monY = 12, rows = narrow ? [53, 40] : [53, 40, 27], evY = 66, gateY = 96, laneTop = 114, laneH = narrow ? 44 : 34, barH = 16;
+      var H = laneTop + G.lanes.length * laneH + 4;
+      var svg = M.svgRoot(box, W, H, "Calendario del plan del 28 de septiembre de 2026 al 3 de enero de 2027: tramos de trabajo, puertas y eventos del mercado. Los datos están también en la tabla.");
+      for (var d = t0; d < t1; d += 7) M.el("line", { x1: x(d), x2: x(d), y1: 20, y2: H - 2, class: "grid" }, svg);
+      [["2026-10-01", "Octubre", "Oct."], ["2026-11-01", "Noviembre", "Nov."], ["2026-12-01", "Diciembre", "Dic."], ["2027-01-01", "Ene.", "Ene."]].forEach(function (m) {
+        var xm = x(day(m[0]));
+        M.el("line", { x1: xm, x2: xm, y1: 2, y2: H - 2, class: "base" }, svg);
+        M.el("text", { x: xm + 5, y: monY, class: "g-mon", text: narrow ? m[2] : m[1] }, svg);
+      });
+      if (!narrow) { M.el("text", { x: 0, y: evY + 4, class: "g-lane", text: "Mercado" }, svg); M.el("text", { x: 0, y: gateY + 4, class: "g-lane", text: "Puertas" }, svg); }
+      var groups = [];
+      G.events.forEach(function (e) {
+        var xe = x(day(e.d) + 0.5), g = groups[groups.length - 1];
+        if (narrow && g && xe - g.x0 < 12) g.items.push(e); else groups.push({ x0: xe, items: [e] });
+      });
+      groups.forEach(function (g) {
+        g.x = g.items.reduce(function (acc, e) { return acc + x(day(e.d) + 0.5); }, 0) / g.items.length;
+        g.p = Math.min.apply(null, g.items.map(function (e) { return e.p; }));
+        g.s = g.items.map(function (e) { return e.s; }).join(" · ");
+        g.row = -1;
+      });
+      var taken = rows.map(function () { return []; });
+      groups.map(function (g, i) { return i; }).sort(function (i, j) { return (groups[i].p - groups[j].p) || (i - j); }).forEach(function (i) {
+        var g = groups[i], w = g.s.length * 6.2 + 4, a0 = g.x - w / 2, a1 = g.x + w / 2;
+        if (a0 < labelW - 4 || a1 > W) return;
+        for (var k = 0; k < rows.length; k++) {
+          if (taken[k].every(function (iv) { return a1 + 5 < iv[0] || a0 > iv[1] + 5; })) { taken[k].push([a0, a1]); g.row = k; return; }
+        }
+      });
+      groups.forEach(function (gr) {
+        var gg = M.el("g", { class: "it" }, svg), one = gr.items.length === 1, e0 = gr.items[0], eN = gr.items[gr.items.length - 1];
+        if (gr.row >= 0) M.el("text", { x: gr.x, y: rows[gr.row], "text-anchor": "middle", class: "g-et", text: gr.s }, gg);
+        M.el("path", { d: "M" + gr.x + "," + (evY - 6) + "l6,6l-6,6l-6,-6z", class: "g-ev" }, gg);
+        var title = one ? e0.t : tramo(e0.d, eN.d);
+        var trows = one ? [{ value: larga(e0.d), label: "" }] : gr.items.map(function (e) { return { value: corta(e.d), label: e.t }; });
+        var hit = M.el("rect", { x: gr.x - 12, y: evY - 16, width: 24, height: 30, class: "hit", tabindex: 0, "aria-label": one ? e0.t + ", " + larga(e0.d) : gr.items.map(function (e) { return e.t + ", " + corta(e.d); }).join("; ") }, gg);
+        bindTip(hit, title, trows, one ? e0.n : null);
+      });
+      G.gates.forEach(function (gt) {
+        var xg = x(day(gt.d) + 1) - 1, left = xg - 34 > labelW;
+        M.el("line", { x1: xg, x2: xg, y1: gateY + 9, y2: H - 2, class: "g-gl" }, svg);
+        var g = M.el("g", { class: "it" }, svg);
+        M.el("path", { d: "M" + xg + "," + (gateY - 8) + "l8,8l-8,8l-8,-8z", class: "g-gate" }, g);
+        M.el("text", { x: left ? xg - 12 : xg + 12, y: gateY + 4, "text-anchor": left ? "end" : "start", class: "g-gt", text: gt.s }, g);
+        var hit = M.el("rect", { x: xg - 16, y: gateY - 14, width: 32, height: 28, class: "hit", tabindex: 0, "aria-label": gt.t + ", " + larga(gt.d) }, g);
+        bindTip(hit, gt.t, [{ value: larga(gt.d), label: "" }], gt.n);
+      });
+      G.lanes.forEach(function (ln, li) {
+        var top = laneTop + li * laneH, yc = narrow ? top + 30 : top + laneH / 2, y = yc - barH / 2;
+        M.el("text", { x: 0, y: narrow ? top + 13 : yc + 4, class: "g-lane", text: ln.name }, svg);
+        ln.bars.forEach(function (b) {
+          var xa = x(day(b.a)) + 1, xb = x(day(b.b) + 1) - 1;
+          var g = M.el("g", { class: "it" }, svg), cls = "g-bar" + (b.off ? " off" : b.soft ? " soft" : "");
+          if (b.more) M.el("path", { d: "M" + (xa + 3) + "," + y + "H" + (xb - 8) + "L" + xb + "," + yc + "L" + (xb - 8) + "," + (y + barH) + "H" + (xa + 3) + "Q" + xa + "," + (y + barH) + " " + xa + "," + (y + barH - 3) + "V" + (y + 3) + "Q" + xa + "," + y + " " + (xa + 3) + "," + y + "Z", class: cls }, g);
+          else M.el("path", { d: M.roundRect(xa, xb, y, barH, 3), class: cls }, g);
+          var hit = M.el("rect", { x: xa, y: y - 6, width: Math.max(14, xb - xa), height: barH + 12, class: "hit", tabindex: 0, "aria-label": b.t + ", " + tramo(b.a, b.b) }, g);
+          bindTip(hit, b.t, [{ value: tramo(b.a, b.b), label: "" }], b.n);
+        });
+        (ln.dots || []).forEach(function (dd) {
+          var xd = x(day(dd) + 0.5), g = M.el("g", { class: "it" }, svg);
+          M.el("circle", { cx: xd, cy: yc, r: 4.5, class: "g-dot" }, g);
+          var hit = M.el("rect", { x: xd - 11, y: yc - 12, width: 22, height: 24, class: "hit", tabindex: 0, "aria-label": ln.dotT + ", " + larga(dd) }, g);
+          bindTip(hit, ln.dotT, [{ value: larga(dd), label: "" }], ln.dotN);
+        });
+      });
+    });
+  }
+  gantt($("gantt"));
+  (function () {
+    var rows = [];
+    G.gates.forEach(function (g) { rows.push(["Puerta", g.t.split(" · ")[1], corta(g.d), g.n]); });
+    G.lanes.forEach(function (l) { l.bars.forEach(function (b) { rows.push([l.name, b.t, tramo(b.a, b.b), b.n]); }); });
+    G.events.forEach(function (e) { rows.push(["Mercado", e.t, corta(e.d), e.n]); });
+    M.dataTable($("fig-gantt"), ["Carril", "Qué", "Cuándo", "Detalle"], rows);
+  })();
+
+  /* ---------- Simulador del plan ---------- */
+  var S0 = day("2026-11-02"), S1 = day("2027-06-30"), I31 = day("2026-12-31") - S0, ND = S1 - S0 + 1;
+  function tdraw(r) { var z = M.normal(r), c = 0; for (var k = 0; k < 4; k++) { var q = M.normal(r); c += q * q; } return z / Math.sqrt(c / 4) * Math.SQRT1_2; }
+  function simPlan(o) {
+    var st0 = day(o.start) - S0, trade = new Uint8Array(ND);
+    for (var i = 0; i < ND; i++) {
+      var iso = isoOf(S0 + i), wd = new Date((S0 + i) * 864e5).getUTCDay(), md = iso.slice(5);
+      var off = md === "12-25" || md === "01-01" || (o.pause && iso >= "2026-12-21" && iso <= "2027-01-01");
+      trade[i] = i >= st0 && wd > 0 && wd < 6 && !off ? 1 : 0;
+    }
+    var two = o.prog === "2", L = two ? 0.05 : 0.03, fee = two ? 540 : 500, split = two ? 0.8 : 0.9, FX = 1.1;
+    var mu = o.sr * o.vol / Math.sqrt(252), v2 = o.vol * o.vol, N = 4000, r = M.rng(20261116);
+    var P1 = new Float64Array(ND), FU = new Float64Array(ND), PA = new Float64Array(ND), EX = new Float64Array(ND);
+    var A = { p1: 0, fu: 0, pa: 0, cash: 0 }, B = { p1: 0, fu: 0, pa: 0, cash: 0 };
+    for (var p = 0; p < N; p++) {
+      var stg = 1, bal = 1, hi = 1, nd = 0, tries = 1, fees = fee, pay = 0, wait = 0, lastPay = -1, fundT = -1, best = 0, pos = 0;
+      var e1 = false, eF = false, eP = false, dead = false, refunded = false;
+      for (var t = 0; t < ND; t++) {
+        if (wait > 0) wait--;
+        else if (!dead && trade[t]) {
+          var ret = mu + o.vol * tdraw(r);
+          var hit = ret <= -L || r() < Math.exp(-2 * L * (L + ret) / v2);
+          bal += ret; nd++;
+          if (ret > 0) { pos += ret; if (ret > best) best = ret; }
+          var floor = two ? 0.9 : Math.max(1, hi) - 0.1;
+          if (hit || bal <= floor) {
+            if (tries < o.tries) { tries++; fees += fee; stg = 1; bal = 1; hi = 1; nd = 0; best = 0; pos = 0; wait = 1; }
+            else dead = true;
+          } else {
+            if (bal > hi) hi = bal;
+            if (stg === 1) {
+              if (bal >= 1.1 && (two ? nd >= 4 : best <= 0.5 * pos)) {
+                e1 = true;
+                if (two) { stg = 2; bal = 1; hi = 1; nd = 0; best = 0; pos = 0; wait = 2; }
+                else { stg = 3; eF = true; bal = 1; hi = 1; wait = 5; fundT = t + 6; lastPay = -1; }
+              }
+            } else if (stg === 2) {
+              if (bal >= 1.05 && nd >= 4) { stg = 3; eF = true; bal = 1; hi = 1; wait = 5; fundT = t + 6; lastPay = -1; }
+            } else if (t - (lastPay < 0 ? fundT : lastPay) >= 14 && bal > 1) {
+              pay += (bal - 1) * 100000 * split / FX + (two && !refunded ? fee : 0);
+              refunded = true; eP = true; bal = 1; hi = 1; lastPay = t;
+            }
+          }
+        }
+        if (e1) P1[t]++; if (eF) FU[t]++; if (eP) PA[t]++; if (dead) EX[t]++;
+        if (t === I31) { A.p1 += e1; A.fu += eF; A.pa += eP; A.cash += pay - fees; }
+      }
+      B.p1 += e1; B.fu += eF; B.pa += eP; B.cash += pay - fees;
+    }
+    [P1, FU, PA, EX].forEach(function (a) { for (var k = 0; k < ND; k++) a[k] = a[k] / N * 100; });
+    [A, B].forEach(function (o2) { o2.p1 = o2.p1 / N * 100; o2.fu = o2.fu / N * 100; o2.pa = o2.pa / N * 100; o2.cash = o2.cash / N; });
+    return { P1: P1, FU: FU, PA: PA, EX: EX, A: A, B: B };
+  }
+  var PRE = [{ t: "Sin ventaja", sr: 0 }, { t: "Modesta", sr: 0.5 }, { t: "Buena", sr: 1 }, { t: "Excelente", sr: 1.5 }];
+  var planPre = $("plan-pre"), planChart = null, planPend = 0;
+  PRE.forEach(function (p) {
+    var b = document.createElement("button"); b.type = "button"; b.className = "btn"; b.textContent = p.t + " · Sharpe " + M.fmt(p.sr, 1);
+    b.setAttribute("aria-pressed", p.sr === 1 ? "true" : "false");
+    b.addEventListener("click", function () { $("pl-sr").value = p.sr; planPre.querySelectorAll("button").forEach(function (o) { o.setAttribute("aria-pressed", o === b ? "true" : "false"); }); plan(); });
+    planPre.appendChild(b);
+  });
+  function pctTxt(v) { return v < 0.5 && v > 0 ? "< 1 %" : pc(v); }
+  function plan() {
+    var o = { sr: num("pl-sr", 1), vol: num("pl-vol", 1) / 100, prog: $("pl-prog").value, tries: +$("pl-tries").value, start: $("pl-start").value, pause: $("pl-pause").checked };
+    $("pl-sr-out").textContent = M.fmt(o.sr, 1);
+    $("pl-vol-out").textContent = M.fmt(o.vol * 100, 2) + " %";
+    var R = simPlan(o), xs = [];
+    for (var i = 0; i < ND; i++) xs.push(i);
+    var ticks = [
+      { v: 0, label: "2 nov", anchor: "start" }, { v: day("2026-12-01") - S0, label: "dic", minor: true }, { v: day("2027-01-01") - S0, label: "ene" },
+      { v: day("2027-02-01") - S0, label: "feb", minor: true }, { v: day("2027-03-01") - S0, label: "mar" }, { v: day("2027-04-01") - S0, label: "abr", minor: true },
+      { v: day("2027-05-01") - S0, label: "may" }, { v: ND - 1, label: "30 jun", anchor: "end" }];
+    var cfg = {
+      aria: "Probabilidad acumulada de superar la fase 1, llegar a la cuenta financiada, cobrar y quedarse sin pruebas, del 2 de noviembre de 2026 al 30 de junio de 2027",
+      x: xs, series: [
+        { name: "Ha superado la fase 1", color: "var(--o1)", values: Array.prototype.slice.call(R.P1) },
+        { name: "Cuenta financiada", color: "var(--o3)", values: Array.prototype.slice.call(R.FU) },
+        { name: "Ha cobrado", color: "var(--o5)", values: Array.prototype.slice.call(R.PA) },
+        { name: "Sin pruebas", color: "var(--crit-mark)", values: Array.prototype.slice.call(R.EX) }],
+      yDomain: [0, 100], yFmt: function (v) { return M.fmt(v, 0) + " %"; }, tipFmt: function (v) { return pctTxt(v); },
+      xTicks: ticks, vlines: [{ x: I31, label: "31 de diciembre", anchor: "end" }], height: 300,
+      tipTitle: function (i) { return larga(isoOf(S0 + i)); }
+    };
+    if (planChart) planChart.update(cfg); else planChart = M.line($("plan"), cfg);
+    $("a-p1").textContent = pctTxt(R.A.p1); $("a-fu").textContent = pctTxt(R.A.fu); $("a-pa").textContent = pctTxt(R.A.pa); $("a-cash").textContent = seur(R.A.cash);
+    $("b-p1").textContent = pctTxt(R.B.p1); $("b-fu").textContent = pctTxt(R.B.fu); $("b-pa").textContent = pctTxt(R.B.pa); $("b-cash").textContent = seur(R.B.cash);
+    var monthly = o.sr * o.vol * Math.sqrt(252) / 12 * 100, txt;
+    txt = "Con un Sharpe de " + M.fmt(o.sr, 1) + " y un " + M.fmt(o.vol * 100, 2) + " % de volatilidad diaria, el sistema gana de media un " + M.fmt(monthly, 1) + " % al mes. ";
+    txt += "A 31 de diciembre, " + pctTxt(R.A.p1) + " ha superado la fase 1 y " + pctTxt(R.A.pa) + " ha cobrado algo. ";
+    txt += "A 30 de junio, " + pctTxt(R.B.fu) + " ha llegado a la cuenta financiada, " + pctTxt(R.B.pa) + " ha cobrado y el balance medio es de " + seur(R.B.cash) + ". ";
+    if (o.sr < 0.25) txt += "Sin ventaja, los cobros que veas son suerte: la firma asume las pérdidas de la cuenta financiada y tú solo arriesgas la cuota, como explica el documento 4.";
+    else if (R.B.fu - (R.EX[ND - 1]) < 10 && R.EX[ND - 1] > 15) txt += "Con este riesgo, muchas trayectorias gastan todas las pruebas: baja la volatilidad.";
+    else if (R.A.p1 < 10) txt += "El 31 de diciembre es pronto para este sistema: el plan tiene que contar con cobrar en 2027.";
+    else txt += "Más riesgo acelera la prueba, pero mira cuántas trayectorias se quedan sin pruebas.";
+    $("plan-read").textContent = txt;
+    var rows = [], marks = ["2026-11-30", "2026-12-31", "2027-01-31", "2027-02-28", "2027-03-31", "2027-04-30", "2027-05-31", "2027-06-30"];
+    marks.forEach(function (m) { var k = day(m) - S0; rows.push([larga(m), pctTxt(R.P1[k]), pctTxt(R.FU[k]), pctTxt(R.PA[k]), pctTxt(R.EX[k])]); });
+    M.dataTable($("fig-plan"), ["Fecha", "Fase 1 superada", "Cuenta financiada", "Ha cobrado", "Sin pruebas"], rows, [1, 2, 3, 4]);
+  }
+  function planSoon() { clearTimeout(planPend); planPend = setTimeout(plan, 120); }
+  $("pl-sr").addEventListener("input", function () { planPre.querySelectorAll("button").forEach(function (o) { o.setAttribute("aria-pressed", "false"); }); $("pl-sr-out").textContent = M.fmt(num("pl-sr", 1), 1); planSoon(); });
+  $("pl-vol").addEventListener("input", function () { $("pl-vol-out").textContent = M.fmt(num("pl-vol", 1), 2) + " %"; planSoon(); });
+  ["pl-prog", "pl-tries", "pl-start", "pl-pause"].forEach(function (id) { $(id).addEventListener("change", plan); });
+  plan();
+
+  /* ---------- Lo que te queda al mes ---------- */
+  var econChart = null;
+  function econ() {
+    var A = num("ec-a", 100000), s = +$("ec-s").value, C = num("ec-c", 10000), r = num("ec-r", 1) / 100, K = num("ec-k", 300), T = num("ec-t", 35) / 100;
+    $("ec-a-out").textContent = M.fmt(A, 0) + " $"; $("ec-c-out").textContent = eur(C); $("ec-r-out").textContent = M.fmt(r * 100, 1) + " %";
+    $("ec-k-out").textContent = eur(K); $("ec-t-out").textContent = M.fmt(T * 100, 0) + " %";
+    var gross = A * r / 1.1, firm = -(1 - s) * gross, own = C * r, sub = gross + firm + own - K, tax = -T * Math.max(0, sub), net = sub + tax;
+    var steps = [
+      { label: "Beneficio en fondeo", kind: "total", value: gross, note: "Rentabilidad mensual sobre el capital asignado, pasada a euros." },
+      { label: "Parte de la firma", value: firm, note: "Lo que se queda la firma según el reparto." },
+      { label: "Beneficio propio", value: own, note: "La misma rentabilidad sobre tu capital." },
+      { label: "Costes fijos", value: -K, note: "Claude, VPS, autónomo, gestoría y pruebas de reposición." },
+      { label: "Impuestos y cotizaciones", value: tax, note: "Tipo medio sobre lo que queda tras costes." },
+      { label: "Te queda al mes", kind: "end", note: "Valor esperado en un mes normal." }];
+    var cfg = { aria: "Cascada del beneficio mensual: de lo que gana el sistema a lo que te queda", steps: steps, fmt: function (v) { return M.fmt(v, 0) + " €"; }, labelW: 180, valW: 74 };
+    if (econChart) econChart.update(cfg); else econChart = M.waterfall($("econ"), cfg);
+    var eq = A * s / 1.1;
+    $("ec-net").textContent = eur(net); $("ec-year").textContent = eur(net * 12); $("ec-eq").textContent = eur(eq);
+    var txt = "Con " + M.fmt(A, 0) + " $ en fondeo y " + eur(C) + " propios, a un " + M.fmt(r * 100, 1) + " % al mes, te quedan unos " + eur(net) + " al mes. ";
+    if (A > 0) txt += "Para ganar lo mismo sin fondeo harían falta unos " + eur(eq + C) + " propios. ";
+    txt += net < 0 ? "Los costes fijos se comen el beneficio: con este tamaño, el sistema todavía no se paga." : (C >= eq && A > 0 ? "Tu capital propio ya rinde tanto como el fondeo: se cumple uno de los criterios para dar el paso." : "El fondeo sigue siendo la parte grande: el paso a capital propio puede esperar.");
+    $("ec-read").textContent = txt;
+    M.dataTable($("fig-econ"), ["Concepto", "€ al mes"], steps.map(function (st, i) { return [st.label, M.fmt(st.kind === "end" ? net : st.value, 0)]; }), [1]);
+  }
+  ["ec-a", "ec-c", "ec-r", "ec-k", "ec-t"].forEach(function (id) { $(id).addEventListener("input", econ); });
+  $("ec-s").addEventListener("change", econ);
+  econ();
+
+  /* ---------- Presupuesto ---------- */
+  var SCN = [
+    { t: "Austero", v: { "bu-cl": 22, "bu-in": 1, "bu-tr": 1, "bu-api": 0, "bu-ad": 100, "bu-bk": 0, "bu-wi": 0, "bu-ex": 15 } },
+    { t: "Recomendado", v: { "bu-cl": 105, "bu-in": 2, "bu-tr": 2, "bu-api": 10, "bu-ad": 150, "bu-bk": 80, "bu-wi": 1000, "bu-ex": 15 } },
+    { t: "Holgado", v: { "bu-cl": 210, "bu-in": 3, "bu-tr": 3, "bu-api": 30, "bu-ad": 250, "bu-bk": 200, "bu-wi": 3000, "bu-ex": 15 } }];
+  var buPre = $("bu-pre"), buChart = null;
+  SCN.forEach(function (sc, k) {
+    var b = document.createElement("button"); b.type = "button"; b.className = "btn"; b.textContent = sc.t;
+    b.setAttribute("aria-pressed", k === 1 ? "true" : "false");
+    b.addEventListener("click", function () {
+      Object.keys(sc.v).forEach(function (id) { $(id).value = sc.v[id]; });
+      buPre.querySelectorAll("button").forEach(function (o) { o.setAttribute("aria-pressed", o === b ? "true" : "false"); });
+      budget();
+    });
+    buPre.appendChild(b);
+  });
+  function budget() {
+    var cl = +$("bu-cl").value, lv = +$("bu-in").value, tr = +$("bu-tr").value, api = num("bu-api", 10), ad = num("bu-ad", 150), bk = num("bu-bk", 80), wi = num("bu-wi", 1000), ex = num("bu-ex", 15) / 100;
+    $("bu-api-out").textContent = eur(api) + "/mes"; $("bu-ad-out").textContent = eur(ad); $("bu-bk-out").textContent = eur(bk); $("bu-wi-out").textContent = eur(wi); $("bu-ex-out").textContent = M.fmt(ex * 100, 0) + " %";
+    var infM = [0, 0, 40, 140][lv], infO = lv === 3 ? 300 : 0;
+    var items = [
+      { label: "Pruebas de fondeo", value: tr * 540, note: tr + " × 540 € (FTMO, dos fases, 100.000 $)" },
+      { label: "Claude para desarrollar", value: cl * 3, note: "3 meses × " + eur(cl) },
+      { label: "Infraestructura", value: infM * 3 + infO, note: lv === 1 ? "Tu ordenador: sin coste, pero frágil (documento 7)" : "3 meses × " + eur(infM) + (infO ? " + " + eur(infO) + " de equipos" : "") },
+      { label: "Asesoría fiscal", value: ad, note: "Consulta inicial antes del primer cobro" },
+      { label: "Libros y formación", value: bk, note: "" },
+      { label: "API de Claude", value: api * 2, note: "Noviembre y diciembre × " + eur(api) }];
+    var base = items.reduce(function (a, it) { return a + it.value; }, 0);
+    items.push({ label: "Imprevistos", value: base * ex, note: M.fmt(ex * 100, 0) + " % de lo anterior" });
+    var tot = base * (1 + ex), mon = cl + api + infM + 88 + 75;
+    $("bu-tot").textContent = eur(tot); $("bu-risk").textContent = eur(wi); $("bu-max").textContent = eur(tot + wi); $("bu-mon").textContent = eur(mon);
+    var rows = items.slice().sort(function (a, b) { return b.value - a.value; }).map(function (it) { return { label: it.label, value: it.value, note: it.note || null }; });
+    var cfg = { aria: "Gasto presupuestado hasta el 31 de diciembre por partida, de mayor a menor", rows: rows, labelW: 170, valW: 80, fmt: function (v) { return M.fmt(v, 0) + " €"; }, unitLabel: "hasta el 31 de diciembre", color: "var(--accent)" };
+    if (buChart) buChart.update(cfg); else buChart = M.hbar($("budget"), cfg);
+    var top = rows[0];
+    $("bu-read").textContent = "Hasta el 31 de diciembre presupuestas " + eur(tot) + " de gasto y " + eur(wi) + " en la cuenta testigo. La partida mayor es «" + top.label.toLowerCase() + "», un " + M.fmt(top.value / tot * 100, 0) + " % del gasto. Desde enero, mantener el sistema cuesta unos " + eur(mon) + " al mes con autónomo y gestoría: con un reparto del 80 %, la cuenta financiada tiene que ganar unos " + M.fmt(mon * 1.1 / 0.8, 0) + " $ al mes solo para cubrirlo.";
+    M.dataTable($("fig-budget"), ["Partida", "Hasta el 31 de diciembre", "Detalle"], items.map(function (it) { return [it.label, eur(it.value), it.note || ""]; }).concat([["Total de gasto", eur(tot), ""], ["Cuenta testigo (capital en riesgo)", eur(wi), "No es gasto: puede recuperarse o perderse"], ["Coste mensual desde enero", eur(mon), "Claude, API, infraestructura, autónomo y gestoría"]]), [1]);
+  }
+  ["bu-api", "bu-ad", "bu-bk", "bu-wi", "bu-ex"].forEach(function (id) { $(id).addEventListener("input", function () { buPre.querySelectorAll("button").forEach(function (o) { o.setAttribute("aria-pressed", "false"); }); budget(); }); });
+  ["bu-cl", "bu-in", "bu-tr"].forEach(function (id) { $(id).addEventListener("change", function () { buPre.querySelectorAll("button").forEach(function (o) { o.setAttribute("aria-pressed", "false"); }); budget(); }); });
+  (function () { var sc = SCN[1].v; Object.keys(sc).forEach(function (id) { $(id).value = sc[id]; }); })();
+  budget();
+})();
+</script>
+</body>
+</html>
