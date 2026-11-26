@@ -38,19 +38,19 @@ struct JevView: View {
                         VStack(alignment: .leading, spacing: 0) {
                             Text("Jev propone").font(.system(size: 14, weight: .semibold))
                             Text("\(proposal.time) · parte diario de \(proposal.cellId)")
-                                .font(.system(size: 12.5)).foregroundStyle(Palette.ink2)
+                                .font(.system(size: 13)).foregroundStyle(Palette.ink2)
                         }
                         Spacer()
                         Pill(text: proposal.status == .pending ? "Caduca 12:00" : proposal.statusText, tone: proposal.status.tone)
                     }
 
                     Text(proposal.title).font(.system(size: 27, weight: .bold)).foregroundStyle(Palette.ink)
-                    Text(proposal.summary).font(.system(size: 14.5)).foregroundStyle(Palette.ink2)
+                    Text(proposal.summary).font(.system(size: 15)).foregroundStyle(Palette.ink2)
 
                     HStack(spacing: 10) {
                         ForEach(proposal.reads) { r in
                             VStack(alignment: .leading, spacing: 4) {
-                                Text(r.name).font(.system(size: 11.5)).foregroundStyle(Palette.ink2)
+                                Text(r.name).font(.system(size: 12)).foregroundStyle(Palette.ink2)
                                 HStack(alignment: .bottom) {
                                     Text(r.value).font(.system(size: 21, weight: .semibold)).monospacedDigit()
                                     Spacer()
@@ -69,7 +69,7 @@ struct JevView: View {
                             ForEach(proposal.votes) { v in
                                 HStack(alignment: .top, spacing: 10) {
                                     Pill(text: v.label, tone: v.positive ? .good : .neutral).frame(minWidth: 70)
-                                    Text(v.reason).font(.system(size: 12.5)).foregroundStyle(Palette.ink)
+                                    Text(v.reason).font(.system(size: 13)).foregroundStyle(Palette.ink)
                                     Spacer(minLength: 0)
                                 }
                                 .padding(9)
@@ -99,7 +99,7 @@ struct JevView: View {
                     HStack(spacing: 14) {
                         VStack(alignment: .leading, spacing: 2) {
                             Text("Si apruebas").font(.system(size: 13, weight: .bold))
-                            Text(proposal.effect).font(.system(size: 12.5)).foregroundStyle(Palette.ink2)
+                            Text(proposal.effect).font(.system(size: 13)).foregroundStyle(Palette.ink2)
                         }
                         Spacer()
                         if proposal.status == .pending {
@@ -134,7 +134,7 @@ struct JevView: View {
                     HStack {
                         Text(p.title).font(.system(size: 13, weight: .semibold)).lineLimit(1)
                         Spacer(minLength: 4)
-                        Text(p.time).font(.system(size: 11.5)).foregroundStyle(Palette.ink2)
+                        Text(p.time).font(.system(size: 12)).foregroundStyle(Palette.ink2)
                     }
                     Text(p.short).font(.system(size: 12)).foregroundStyle(Palette.ink2).lineLimit(1)
                     Pill(text: p.statusText, tone: p.status.tone).padding(.top, 2)

@@ -38,7 +38,7 @@ struct RiesgoView: View {
                     ForEach(d.cells.filter { $0.health != .paused }) { c in
                         Button(c.shortName) { store.selectedCellId = c.id }
                             .buttonStyle(.plain)
-                            .font(.system(size: 11.5, weight: .semibold))
+                            .font(.system(size: 12, weight: .semibold))
                             .foregroundStyle(c.id == store.selectedCellId ? Color.white : Palette.ink2)
                             .padding(.horizontal, 9)
                             .frame(height: 22)
@@ -57,7 +57,7 @@ struct RiesgoView: View {
                         Text("\(Int(avg))").font(.system(size: 22, weight: .bold)).foregroundStyle(Palette.ink)
                     }
                     .frame(width: 84, height: 84)
-                    Text("salud media").font(.system(size: 11.5)).foregroundStyle(Palette.ink2)
+                    Text("salud media").font(.system(size: 12)).foregroundStyle(Palette.ink2)
                     Text("Más débil").font(.system(size: 12, weight: .bold)).foregroundStyle(Palette.negText).padding(.top, 8)
                     Text(weakest).font(.system(size: 12)).foregroundStyle(Palette.ink)
                 }
@@ -103,7 +103,7 @@ struct RiesgoView: View {
             ForEach(store.log) { c in
                 HStack(spacing: 12) {
                     Text(c.time).font(.system(size: 12, design: .monospaced)).foregroundStyle(Palette.ink2).frame(width: 82, alignment: .leading)
-                    Text(c.name).font(.system(size: 12.5, weight: .semibold, design: .monospaced)).frame(width: 130, alignment: .leading)
+                    Text(c.name).font(.system(size: 13, weight: .semibold, design: .monospaced)).frame(width: 130, alignment: .leading)
                     Text(c.cell).font(.system(size: 12, design: .monospaced)).frame(width: 90, alignment: .leading)
                     Text(c.key).font(.system(size: 12, design: .monospaced)).foregroundStyle(Palette.ink2).frame(width: 64, alignment: .leading)
                     Pill(text: c.accepted ? "Aceptado" : "Rechazado", tone: c.accepted ? .good : .bad)

@@ -34,7 +34,7 @@ struct LayersCard: View {
                     .frame(height: 14)
                     Text(Fmt.pct(layer.used)).font(.system(size: 14, weight: .bold)).monospacedDigit().frame(width: 44, alignment: .trailing)
                     Text(delta == 0 ? "=" : (delta > 0 ? "▲ \(delta)" : "▼ \(abs(delta))"))
-                        .font(.system(size: 11.5, weight: .bold))
+                        .font(.system(size: 12, weight: .bold))
                         .foregroundStyle(delta > 10 ? Palette.warnText : Palette.ink2)
                         .frame(width: 40, alignment: .leading)
                 }
@@ -67,12 +67,12 @@ struct ExposureCard: View {
         VStack(alignment: .leading, spacing: 10) {
             Heading("Por divisa", info: "Largo a la derecha del eje, corto a la izquierda. El ancho es el peso de cada divisa o índice") {
                 Text("\(Fmt.comma(totalLots, 1)) lotes · \(Fmt.pct(pct)) del máximo")
-                    .font(.system(size: 12.5)).foregroundStyle(Palette.ink2)
+                    .font(.system(size: 13)).foregroundStyle(Palette.ink2)
             }
             HStack(spacing: 6) {
-                Text("◀ corto").font(.system(size: 11.5, weight: .semibold)).foregroundStyle(Palette.ink2)
+                Text("◀ corto").font(.system(size: 12, weight: .semibold)).foregroundStyle(Palette.ink2)
                     .frame(maxWidth: .infinity, alignment: .trailing)
-                Text("largo ▶").font(.system(size: 11.5, weight: .semibold)).foregroundStyle(Palette.infoText)
+                Text("largo ▶").font(.system(size: 12, weight: .semibold)).foregroundStyle(Palette.infoText)
                     .frame(maxWidth: .infinity, alignment: .leading)
             }
             .padding(.leading, 56)
@@ -92,7 +92,7 @@ struct ExposureCard: View {
                     }
                     .frame(height: 24)
                     Text("\(e.isLong ? "▲" : "▼") \(Fmt.comma(e.lots, 2))")
-                        .font(.system(size: 12.5, weight: .semibold)).monospacedDigit().frame(width: 60, alignment: .trailing)
+                        .font(.system(size: 13, weight: .semibold)).monospacedDigit().frame(width: 60, alignment: .trailing)
                 }
             }
         }

@@ -66,7 +66,7 @@ struct EquityWidgetView: View {
         VStack(alignment: .leading, spacing: 4) {
             HStack(spacing: 5) {
                 Image(systemName: "chart.bar.xaxis").font(.system(size: 11, weight: .bold)).foregroundStyle(Palette.graphiteDark)
-                Text("Equity").font(.system(size: 11.5, weight: .bold)).foregroundStyle(Palette.ink2)
+                Text("Equity").font(.system(size: 12, weight: .bold)).foregroundStyle(Palette.ink2)
                 Spacer()
                 if family == .systemMedium {
                     Pill(text: "\(s.criticalCount) crítico", tone: s.criticalCount > 0 ? .bad : .good)
@@ -146,7 +146,7 @@ struct FleetWidgetView: View {
         VStack(alignment: .leading, spacing: 6) {
             HStack(spacing: 5) {
                 Image(systemName: "server.rack").font(.system(size: 11, weight: .bold)).foregroundStyle(Palette.teal)
-                Text("Flota").font(.system(size: 11.5, weight: .bold)).foregroundStyle(Palette.ink2)
+                Text("Flota").font(.system(size: 12, weight: .bold)).foregroundStyle(Palette.ink2)
                 Spacer()
                 Pill(text: s.openAlerts.isEmpty ? "Todo bien" : "\(s.openAlerts.count) avisos",
                      tone: s.openAlerts.isEmpty ? .good : .warn)

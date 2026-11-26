@@ -108,7 +108,7 @@ struct CellCard: View {
                 IconTile(symbol: "server.rack", color: cell.health.color, size: 34, corner: 10)
                 VStack(alignment: .leading, spacing: 0) {
                     Text(cell.id).font(.system(size: 15, weight: .semibold, design: .monospaced)).foregroundStyle(Palette.ink)
-                    Text(cell.accountId).font(.system(size: 12.5)).foregroundStyle(Palette.ink2)
+                    Text(cell.accountId).font(.system(size: 13)).foregroundStyle(Palette.ink2)
                 }
                 Spacer()
                 Pill(text: cell.health.label, tone: cell.health.tone)
@@ -123,7 +123,7 @@ struct CellCard: View {
                         .font(.system(size: 20, weight: .semibold))
                         .foregroundStyle(cell.dayPct < 0 ? Palette.negText : Palette.ink)
                         .monospacedDigit()
-                    Text("hoy").font(.system(size: 11.5)).foregroundStyle(Palette.ink2)
+                    Text("hoy").font(.system(size: 12)).foregroundStyle(Palette.ink2)
                 }
                 .frame(maxWidth: .infinity, alignment: .trailing)
             }
@@ -137,8 +137,8 @@ struct CellCard: View {
 
             Divider()
             HStack {
-                Text("\(cell.site) → LD4").font(.system(size: 12.5, weight: .semibold))
-                Text("· \(cell.version)").font(.system(size: 12.5)).foregroundStyle(Palette.ink2)
+                Text("\(cell.site) → LD4").font(.system(size: 13, weight: .semibold))
+                Text("· \(cell.version)").font(.system(size: 13)).foregroundStyle(Palette.ink2)
                 Spacer()
                 if cell.health == .paused {
                     Button("Reanudar") { store.requestResume(cell.id) }

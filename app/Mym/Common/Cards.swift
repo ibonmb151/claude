@@ -16,7 +16,7 @@ struct KPICard: View {
         VStack(alignment: .leading, spacing: 6) {
             HStack(spacing: 3) {
                 Text(title)
-                    .font(.system(size: 12.5, weight: .semibold))
+                    .font(.system(size: 13, weight: .semibold))
                     .foregroundStyle(Palette.ink2)
                 InfoButton(text: info)
             }
@@ -167,7 +167,7 @@ struct TransitRow: View {
         VStack(alignment: .leading, spacing: 7) {
             HStack(spacing: 8) {
                 IconTile(symbol: strategy?.symbol ?? "arrow.up.right", color: strategy?.color ?? Palette.gray, size: 22, corner: 6)
-                Text(order.instrument).font(.system(size: 13.5, weight: .bold)).foregroundStyle(Palette.ink)
+                Text(order.instrument).font(.system(size: 14, weight: .bold)).foregroundStyle(Palette.ink)
                 Pill(text: order.side.label, tone: order.side == .buy ? .info : .neutral)
                 Spacer()
                 Text(order.time).font(.system(size: 12)).monospacedDigit().foregroundStyle(Palette.ink2)
@@ -201,9 +201,9 @@ struct FleetDonutCard: View {
                 ForEach(slices) { s in
                     HStack(spacing: 8) {
                         RoundedRectangle(cornerRadius: 3).fill(s.color).frame(width: 9, height: 9)
-                        Text(s.label).font(.system(size: 12.5)).foregroundStyle(Palette.ink)
+                        Text(s.label).font(.system(size: 13)).foregroundStyle(Palette.ink)
                         Spacer()
-                        Text("\(Int(s.value))").font(.system(size: 12.5)).foregroundStyle(Palette.ink2).monospacedDigit()
+                        Text("\(Int(s.value))").font(.system(size: 13)).foregroundStyle(Palette.ink2).monospacedDigit()
                     }
                 }
             }
@@ -226,10 +226,10 @@ struct IncidentRow: View {
             }
             VStack(alignment: .leading, spacing: 1) {
                 Text(alert.title).font(.system(size: 13, weight: .semibold)).foregroundStyle(Palette.ink)
-                Text(alert.subtitle).font(.system(size: 11.5)).foregroundStyle(Palette.ink2).lineLimit(1)
+                Text(alert.subtitle).font(.system(size: 12)).foregroundStyle(Palette.ink2).lineLimit(1)
             }
             Spacer(minLength: 6)
-            Text(alert.time).font(.system(size: 11.5)).foregroundStyle(Palette.ink2).monospacedDigit()
+            Text(alert.time).font(.system(size: 12)).foregroundStyle(Palette.ink2).monospacedDigit()
         }
         .padding(.vertical, 6)
     }

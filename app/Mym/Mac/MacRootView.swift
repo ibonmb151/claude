@@ -124,7 +124,7 @@ struct RailButton: View {
                     .foregroundStyle(active ? color : Palette.gray)
                 if badge > 0 {
                     Text("\(badge)")
-                        .font(.system(size: 10.5, weight: .bold))
+                        .font(.system(size: 11, weight: .bold))
                         .foregroundStyle(Color.white)
                         .padding(.horizontal, 4)
                         .frame(minWidth: 17, minHeight: 17)
@@ -218,7 +218,7 @@ struct SearchSheet: View {
                     .textFieldStyle(.plain)
                     .font(.system(size: 18))
                     .focused($focused)
-                Text("esc").font(.system(size: 11.5, weight: .semibold)).foregroundStyle(Palette.ink2)
+                Text("esc").font(.system(size: 12, weight: .semibold)).foregroundStyle(Palette.ink2)
                     .padding(.horizontal, 6).frame(height: 22)
                     .background(Palette.neutralBg, in: RoundedRectangle(cornerRadius: 6))
             }
@@ -229,7 +229,7 @@ struct SearchSheet: View {
                 VStack(alignment: .leading, spacing: 2) {
                     ForEach(groups, id: \.self) { group in
                         Text(group)
-                            .font(.system(size: 11.5, weight: .bold))
+                            .font(.system(size: 12, weight: .bold))
                             .foregroundStyle(Palette.ink2)
                             .padding(.horizontal, 22)
                             .padding(.top, 10)
@@ -280,9 +280,9 @@ struct MenuBarView: View {
                     .foregroundStyle(store.data.criticalCount > 0 ? Palette.neg : Palette.pos)
                 VStack(alignment: .leading, spacing: 1) {
                     Text(store.data.criticalCount > 0 ? "Hay una incidencia" : "Todo en marcha")
-                        .font(.system(size: 13.5, weight: .bold))
+                        .font(.system(size: 14, weight: .bold))
                     Text("\(store.data.openAlerts.count) avisos · Londres principal")
-                        .font(.system(size: 11.5)).foregroundStyle(Palette.ink2)
+                        .font(.system(size: 12)).foregroundStyle(Palette.ink2)
                 }
                 Spacer()
                 Text(Fmt.signedPct(store.data.dayPct, 2))

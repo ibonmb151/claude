@@ -31,7 +31,7 @@ struct AjustesView: View {
                             IconTile(symbol: s.symbol, color: s.color, size: 26, corner: 7)
                             VStack(alignment: .leading, spacing: 0) {
                                 Text(s.id).font(.system(size: 13, weight: .semibold, design: .monospaced))
-                                Text(s.name).font(.system(size: 11.5)).foregroundStyle(Palette.ink2)
+                                Text(s.name).font(.system(size: 12)).foregroundStyle(Palette.ink2)
                             }
                             Spacer()
                         }
@@ -48,7 +48,7 @@ struct AjustesView: View {
                     IconTile(symbol: "lock", color: Palette.gray, size: 26, corner: 7)
                     VStack(alignment: .leading, spacing: 0) {
                         Text("Reglas de riesgo").font(.system(size: 13, weight: .semibold))
-                        Text("22 comprobaciones · solo lectura").font(.system(size: 11.5)).foregroundStyle(Palette.ink2)
+                        Text("22 comprobaciones · solo lectura").font(.system(size: 12)).foregroundStyle(Palette.ink2)
                     }
                 }
                 .padding(8)
@@ -65,7 +65,7 @@ struct AjustesView: View {
                         VStack(alignment: .leading, spacing: 2) {
                             Text(strategy.name).font(.system(size: 24, weight: .bold)).foregroundStyle(Palette.ink)
                             Text("\(strategy.id) · versión \(strategy.version) vigente · borrador de la \(strategy.version + 1)")
-                                .font(.system(size: 12.5)).foregroundStyle(Palette.ink2)
+                                .font(.system(size: 13)).foregroundStyle(Palette.ink2)
                         }
                         Spacer()
                         if changes > 0 { Pill(text: "\(changes) cambios sin guardar", tone: .warn) }
@@ -102,7 +102,7 @@ struct AjustesView: View {
                                 Text(Fmt.comma(bound.wrappedValue, p.step < 1 ? 2 : 0) + p.unit)
                                     .font(.system(size: 13, weight: .semibold)).monospacedDigit().frame(width: 70, alignment: .trailing)
                                 Text(changed ? "antes " + Fmt.comma(p.previous, p.step < 1 ? 2 : 0) : "")
-                                    .font(.system(size: 11.5)).foregroundStyle(Palette.ink2).frame(width: 70, alignment: .trailing)
+                                    .font(.system(size: 12)).foregroundStyle(Palette.ink2).frame(width: 70, alignment: .trailing)
                             }
                             .padding(.vertical, 4)
                         }
@@ -113,7 +113,7 @@ struct AjustesView: View {
                                         if sessions.contains(name) { sessions.remove(name) } else { sessions.insert(name) }
                                     }
                                     .buttonStyle(.plain)
-                                    .font(.system(size: 12.5, weight: .medium))
+                                    .font(.system(size: 13, weight: .medium))
                                     .foregroundStyle(sessions.contains(name) ? Color.white : Palette.ink)
                                     .padding(.horizontal, 12)
                                     .frame(height: 28)
@@ -138,7 +138,7 @@ struct AjustesView: View {
                     HStack(spacing: 8) {
                         Image(systemName: "lock").foregroundStyle(Palette.ink2)
                         Text("Regla de riesgo · no se edita aquí: si el reloj del bróker se desfasa más de 2 s, no abrir órdenes.")
-                            .font(.system(size: 12.5)).foregroundStyle(Palette.ink2)
+                            .font(.system(size: 13)).foregroundStyle(Palette.ink2)
                     }
                     .padding(12)
                     .background(Palette.bg, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
@@ -190,7 +190,7 @@ struct AjustesView: View {
 
     private func group<Content: View>(_ title: String, @ViewBuilder content: () -> Content) -> some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text(title).font(.system(size: 12.5, weight: .semibold)).foregroundStyle(Palette.ink2)
+            Text(title).font(.system(size: 13, weight: .semibold)).foregroundStyle(Palette.ink2)
             VStack(spacing: 0) { content() }
                 .padding(.horizontal, 14)
                 .padding(.vertical, 6)
@@ -209,9 +209,9 @@ struct AjustesView: View {
 
     private func beforeAfter(_ name: String, _ before: String, _ after: String, better: Bool) -> some View {
         HStack {
-            Text(name).font(.system(size: 12.5)).foregroundStyle(Palette.ink2)
+            Text(name).font(.system(size: 13)).foregroundStyle(Palette.ink2)
             Spacer()
-            Text(before).font(.system(size: 12.5)).foregroundStyle(Palette.ink2).monospacedDigit()
+            Text(before).font(.system(size: 13)).foregroundStyle(Palette.ink2).monospacedDigit()
             Image(systemName: "arrow.right").font(.system(size: 10)).foregroundStyle(Palette.ink2)
             Text(after).font(.system(size: 13, weight: .bold)).monospacedDigit()
                 .foregroundStyle(better ? Palette.posText : Palette.ink)
@@ -226,7 +226,7 @@ struct AjustesView: View {
                 .frame(width: 16, height: 16)
             VStack(alignment: .leading, spacing: 0) {
                 Text(title).font(.system(size: 13, weight: .semibold))
-                Text(detail).font(.system(size: 11.5)).foregroundStyle(Palette.ink2)
+                Text(detail).font(.system(size: 12)).foregroundStyle(Palette.ink2)
             }
         }
     }
@@ -255,10 +255,10 @@ struct ConditionBlock: View {
         HStack(spacing: 8) {
             ForEach(0..<parts.count, id: \.self) { j in
                 if j == 0 {
-                    Text(parts[j]).font(.system(size: 12.5, weight: .bold)).foregroundStyle(Palette.ink2).frame(minWidth: 26, alignment: .leading)
+                    Text(parts[j]).font(.system(size: 13, weight: .bold)).foregroundStyle(Palette.ink2).frame(minWidth: 26, alignment: .leading)
                 } else {
                     Text(parts[j])
-                        .font(.system(size: 12.5, weight: j % 2 == 1 ? .semibold : .regular))
+                        .font(.system(size: 13, weight: j % 2 == 1 ? .semibold : .regular))
                         .foregroundStyle(Palette.ink)
                         .padding(.horizontal, 10)
                         .frame(height: 28)

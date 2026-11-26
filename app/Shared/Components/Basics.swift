@@ -33,7 +33,7 @@ struct Pill: View {
 
     var body: some View {
         Text(text)
-            .font(.system(size: 11.5, weight: .semibold))
+            .font(.system(size: 12, weight: .semibold))
             .foregroundStyle(tone.fg)
             .padding(.horizontal, 9)
             .frame(height: 22)

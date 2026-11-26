@@ -95,7 +95,7 @@ struct AccountCard: View {
                     Text(account.kind.letter).font(.system(size: 10, weight: .heavy)).foregroundStyle(Color.white)
                 }
                 Text(account.id)
-                    .font(.system(size: 12.5, weight: .bold, design: .monospaced))
+                    .font(.system(size: 13, weight: .bold, design: .monospaced))
                     .lineLimit(1)
                     .minimumScaleFactor(0.8)
                 Spacer(minLength: 2)
@@ -124,7 +124,7 @@ struct AccountCard: View {
     private func line(_ color: Color, _ text: String) -> some View {
         HStack(spacing: 5) {
             Circle().fill(color).frame(width: 7, height: 7)
-            Text(text).font(.system(size: 11.5)).foregroundStyle(Palette.ink).monospacedDigit()
+            Text(text).font(.system(size: 12)).foregroundStyle(Palette.ink).monospacedDigit()
         }
     }
 }

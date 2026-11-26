@@ -78,7 +78,7 @@ struct OrdenesView: View {
     private func funnelCell(_ value: String, _ label: String) -> some View {
         VStack(alignment: .leading, spacing: 0) {
             Text(value).font(.system(size: 17, weight: .bold)).monospacedDigit().foregroundStyle(Palette.ink)
-            Text(label).font(.system(size: 10.5, weight: .semibold)).foregroundStyle(Palette.ink2)
+            Text(label).font(.system(size: 11, weight: .semibold)).foregroundStyle(Palette.ink2)
         }
         .padding(.horizontal, 8)
         .padding(.vertical, 6)
@@ -96,8 +96,8 @@ struct OrdenesView: View {
                 IconTile(symbol: strategy?.symbol ?? "arrow.up.right", color: strategy?.color ?? Palette.gray, size: 30)
                 VStack(alignment: .leading, spacing: 1) {
                     HStack(spacing: 5) {
-                        Text(o.instrument).font(.system(size: 13.5, weight: .semibold))
-                        Text("\(o.side.label) \(Fmt.comma(o.lots, 2))").font(.system(size: 12.5)).foregroundStyle(Palette.ink2)
+                        Text(o.instrument).font(.system(size: 14, weight: .semibold))
+                        Text("\(o.side.label) \(Fmt.comma(o.lots, 2))").font(.system(size: 13)).foregroundStyle(Palette.ink2)
                     }
                     Text("\(o.id) · \(o.cellId.replacingOccurrences(of: "c-", with: ""))")
                         .font(.system(size: 11, design: .monospaced)).foregroundStyle(Palette.ink2)

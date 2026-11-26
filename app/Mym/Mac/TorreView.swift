@@ -37,7 +37,7 @@ struct TorreView: View {
                     Heading("En tránsito", info: "Órdenes de los últimos segundos y su parada actual") {
                         Button("Todo") { store.module = .ordenes }
                             .buttonStyle(.plain)
-                            .font(.system(size: 12.5, weight: .medium))
+                            .font(.system(size: 13, weight: .medium))
                             .foregroundStyle(Palette.infoText)
                     }
                     ForEach(d.orders.prefix(4)) { order in

@@ -42,7 +42,7 @@ struct SignSheet: View {
 
             if failed {
                 Text("No se pudo confirmar. Inténtalo de nuevo.")
-                    .font(.system(size: 12.5, weight: .semibold))
+                    .font(.system(size: 13, weight: .semibold))
                     .foregroundStyle(Palette.negText)
             }
 

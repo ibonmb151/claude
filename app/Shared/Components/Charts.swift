@@ -168,7 +168,7 @@ struct HourlyChart: View {
                 HStack {
                     ForEach([0, 4, 8, 12, 16, 20], id: \.self) { hour in
                         Text(String(format: "%02d", hour))
-                            .font(.system(size: 10.5))
+                            .font(.system(size: 11))
                             .foregroundStyle(Palette.ink2)
                             .frame(maxWidth: .infinity, alignment: .leading)
                     }
@@ -306,10 +306,10 @@ struct FanChart: View {
                     .overlay(Circle().stroke(Color.white, lineWidth: 2.5))
                     .position(x: 0, y: yp(start, g.size))
                 Text("Objetivo +5 %")
-                    .font(.system(size: 11.5, weight: .semibold)).foregroundStyle(Palette.posText)
+                    .font(.system(size: 12, weight: .semibold)).foregroundStyle(Palette.posText)
                     .position(x: g.size.width - 48, y: yp(target, g.size) - 10)
                 Text("Límite −8 %")
-                    .font(.system(size: 11.5, weight: .semibold)).foregroundStyle(Palette.negText)
+                    .font(.system(size: 12, weight: .semibold)).foregroundStyle(Palette.negText)
                     .position(x: g.size.width - 44, y: yp(floor, g.size) - 10)
             }
         }
@@ -401,7 +401,7 @@ struct PriceStrip: View {
             }
             .stroke(color, style: StrokeStyle(lineWidth: 1.4, dash: [5, 4]))
             Text(label)
-                .font(.system(size: 11.5, weight: .semibold))
+                .font(.system(size: 12, weight: .semibold))
                 .foregroundStyle(color)
                 .offset(x: 4, y: y - 17)
         }

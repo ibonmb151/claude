@@ -78,10 +78,10 @@ struct EstrategiasView: View {
                             Heading("Parámetros", info: "Los vigentes de esta versión. Se cambian en Ajustes")
                             ForEach(selected.params) { p in
                                 HStack {
-                                    Text(p.key).font(.system(size: 12.5, design: .monospaced)).foregroundStyle(Palette.ink2)
+                                    Text(p.key).font(.system(size: 13, design: .monospaced)).foregroundStyle(Palette.ink2)
                                     Spacer()
                                     Text(Fmt.comma(p.value, p.step < 1 ? 2 : 0) + p.unit)
-                                        .font(.system(size: 12.5, weight: .semibold)).monospacedDigit()
+                                        .font(.system(size: 13, weight: .semibold)).monospacedDigit()
                                 }
                             }
                         }
@@ -111,12 +111,12 @@ struct EstrategiasView: View {
                 IconTile(symbol: s.symbol, color: s.color, size: 30)
                 VStack(alignment: .leading, spacing: 0) {
                     Text(s.id).font(.system(size: 13, weight: .semibold, design: .monospaced))
-                    Text(s.name).font(.system(size: 11.5)).foregroundStyle(Palette.ink2)
+                    Text(s.name).font(.system(size: 12)).foregroundStyle(Palette.ink2)
                 }
                 Spacer()
                 Sparkline(values: s.series, color: Palette.pos, lineWidth: 1.8).frame(width: 56, height: 22)
                 Text(Fmt.signedPct(s.return30d, 1))
-                    .font(.system(size: 12.5, weight: .bold)).foregroundStyle(Palette.posText).monospacedDigit()
+                    .font(.system(size: 13, weight: .bold)).foregroundStyle(Palette.posText).monospacedDigit()
                     .frame(width: 58, alignment: .trailing)
             }
             .padding(.horizontal, 8)
@@ -133,13 +133,13 @@ struct EstrategiasView: View {
             HStack(spacing: 4) {
                 Text("").frame(width: 76)
                 ForEach(d.cells) { c in
-                    Text(c.shortName).font(.system(size: 9.5, design: .monospaced)).foregroundStyle(Palette.ink2)
+                    Text(c.shortName).font(.system(size: 10, design: .monospaced)).foregroundStyle(Palette.ink2)
                         .frame(maxWidth: .infinity)
                 }
             }
             ForEach(d.strategies) { s in
                 HStack(spacing: 4) {
-                    Text(s.id).font(.system(size: 10.5, weight: .semibold, design: .monospaced)).frame(width: 76, alignment: .leading)
+                    Text(s.id).font(.system(size: 11, weight: .semibold, design: .monospaced)).frame(width: 76, alignment: .leading)
                     ForEach(d.cells) { c in
                         let w = c.weights.first { $0.strategyId == s.id }
                         Text(w == nil ? "—" : (w!.mode == .active ? Fmt.comma(w!.weight, 1) : (w!.mode == .shadow ? "som" : "‖")))
@@ -155,7 +155,7 @@ struct EstrategiasView: View {
 
     private func stat(_ label: String, _ value: String) -> some View {
         VStack(alignment: .leading, spacing: 1) {
-            Text(label).font(.system(size: 11.5)).foregroundStyle(Palette.ink2)
+            Text(label).font(.system(size: 12)).foregroundStyle(Palette.ink2)
             Text(value).font(.system(size: 16, weight: .semibold)).foregroundStyle(Palette.ink).monospacedDigit()
         }
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -166,7 +166,7 @@ struct EstrategiasView: View {
     private func weightRow(_ cell: BotCell) -> some View {
         let w = cell.weights.first { $0.strategyId == selected.id }
         return HStack(spacing: 10) {
-            Text(cell.id).font(.system(size: 12.5, design: .monospaced))
+            Text(cell.id).font(.system(size: 13, design: .monospaced))
             Spacer()
             Pill(text: (w?.mode ?? .paused).label, tone: (w?.mode ?? .paused).tone)
             Text(Fmt.comma(w?.weight ?? 0, 2)).font(.system(size: 13, weight: .bold)).monospacedDigit().frame(width: 38, alignment: .trailing)

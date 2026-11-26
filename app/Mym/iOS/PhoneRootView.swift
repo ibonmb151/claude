@@ -116,7 +116,7 @@ struct HoyPhoneView: View {
                         StatusDot(color: cell.health.color)
                         VStack(alignment: .leading, spacing: 0) {
                             Text(cell.id).font(.system(size: 14, weight: .semibold, design: .monospaced))
-                            Text(cell.accountId).font(.system(size: 11.5)).foregroundStyle(Palette.ink2)
+                            Text(cell.accountId).font(.system(size: 12)).foregroundStyle(Palette.ink2)
                         }
                         Spacer()
                         Text(Fmt.signedPct(cell.dayPct, 1))
@@ -154,9 +154,9 @@ struct HoyPhoneView: View {
     private func ringLine(_ color: Color, _ label: String, _ value: String) -> some View {
         HStack(spacing: 8) {
             Circle().fill(color).frame(width: 9, height: 9)
-            Text(label).font(.system(size: 13.5)).foregroundStyle(Palette.ink)
+            Text(label).font(.system(size: 14)).foregroundStyle(Palette.ink)
             Spacer(minLength: 12)
-            Text(value).font(.system(size: 13.5, weight: .bold)).monospacedDigit().foregroundStyle(Palette.ink)
+            Text(value).font(.system(size: 14, weight: .bold)).monospacedDigit().foregroundStyle(Palette.ink)
         }
     }
 }
@@ -185,14 +185,14 @@ struct OrdenesPhoneView: View {
                                      color: d.strategy(order.strategyId)?.color ?? Palette.gray, size: 32)
                             VStack(alignment: .leading, spacing: 1) {
                                 Text("\(order.instrument) \(order.side.label) \(Fmt.comma(order.lots, 2))")
-                                    .font(.system(size: 14.5, weight: .semibold)).foregroundStyle(Palette.ink)
+                                    .font(.system(size: 15, weight: .semibold)).foregroundStyle(Palette.ink)
                                 Text("\(order.id) · \(order.cellId)")
-                                    .font(.system(size: 11.5, design: .monospaced)).foregroundStyle(Palette.ink2)
+                                    .font(.system(size: 12, design: .monospaced)).foregroundStyle(Palette.ink2)
                             }
                             Spacer(minLength: 4)
                             VStack(alignment: .trailing, spacing: 3) {
                                 Pill(text: order.status.label, tone: order.status.tone)
-                                Text(order.time).font(.system(size: 11.5)).foregroundStyle(Palette.ink2).monospacedDigit()
+                                Text(order.time).font(.system(size: 12)).foregroundStyle(Palette.ink2).monospacedDigit()
                             }
                         }
                         .padding(.vertical, 9)
@@ -210,7 +210,7 @@ struct OrdenesPhoneView: View {
     private func funnel(_ value: String, _ label: String) -> some View {
         VStack(alignment: .leading, spacing: 0) {
             Text(value).font(.system(size: 18, weight: .bold)).monospacedDigit().foregroundStyle(Palette.ink)
-            Text(label).font(.system(size: 10.5, weight: .semibold)).foregroundStyle(Palette.ink2)
+            Text(label).font(.system(size: 11, weight: .semibold)).foregroundStyle(Palette.ink2)
         }
         .padding(10)
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -242,7 +242,7 @@ struct OrderDetailPhoneView: View {
                 StepBar(done: order.status.steps, doneColor: Palette.graphiteDark)
                 HStack {
                     ForEach(["Riesgo", "Envío", "Aceptada", "Ejecutada"], id: \.self) { s in
-                        Text(s).font(.system(size: 10.5, weight: .semibold)).foregroundStyle(Palette.ink2)
+                        Text(s).font(.system(size: 11, weight: .semibold)).foregroundStyle(Palette.ink2)
                             .frame(maxWidth: .infinity)
                     }
                 }
@@ -310,7 +310,7 @@ struct AvisosPhoneView: View {
                 Heading("Comandos", info: "Lo que se ha firmado desde tus dispositivos")
                 ForEach(store.log.prefix(4)) { c in
                     HStack {
-                        Text(c.name).font(.system(size: 12.5, weight: .semibold, design: .monospaced))
+                        Text(c.name).font(.system(size: 13, weight: .semibold, design: .monospaced))
                         Spacer()
                         Pill(text: c.accepted ? "Aceptado" : "Rechazado", tone: c.accepted ? .good : .bad)
                     }
@@ -340,8 +340,8 @@ struct JevPhoneView: View {
                         HStack(alignment: .top, spacing: 10) {
                             Circle().fill(p.unread ? Palette.magenta : Color.clear).frame(width: 8, height: 8).padding(.top, 6)
                             VStack(alignment: .leading, spacing: 2) {
-                                Text(p.title).font(.system(size: 14.5, weight: .semibold)).foregroundStyle(Palette.ink)
-                                Text(p.short).font(.system(size: 12.5)).foregroundStyle(Palette.ink2)
+                                Text(p.title).font(.system(size: 15, weight: .semibold)).foregroundStyle(Palette.ink)
+                                Text(p.short).font(.system(size: 13)).foregroundStyle(Palette.ink2)
                                 Pill(text: p.statusText, tone: p.status.tone).padding(.top, 2)
                             }
                             Spacer()
@@ -386,7 +386,7 @@ struct ProposalPhoneView: View {
                 ForEach(proposal.checks, id: \.self) { c in
                     HStack(spacing: 9) {
                         Image(systemName: "checkmark.circle.fill").foregroundStyle(Palette.pos)
-                        Text(c).font(.system(size: 13.5)).foregroundStyle(Palette.ink)
+                        Text(c).font(.system(size: 14)).foregroundStyle(Palette.ink)
                     }
                 }
             }
