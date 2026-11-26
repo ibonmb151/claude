@@ -114,7 +114,7 @@ struct MymButtonStyle: ButtonStyle {
 
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .font(.system(size: compact ? 12.5 : 14, weight: .semibold))
+            .font(.system(size: compact ? 13 : 14, weight: .semibold))
             .foregroundStyle(foreground)
             .padding(.horizontal, compact ? 12 : 18)
             .frame(height: compact ? 28 : 38)
