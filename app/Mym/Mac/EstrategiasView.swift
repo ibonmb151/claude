@@ -117,7 +117,8 @@ struct EstrategiasView: View {
                 Sparkline(values: s.series, color: Palette.pos, lineWidth: 1.8).frame(width: 56, height: 22)
                 Text(Fmt.signedPct(s.return30d, 1))
                     .font(.system(size: 13, weight: .bold)).foregroundStyle(Palette.posText).monospacedDigit()
-                    .frame(width: 58, alignment: .trailing)
+                    .lineLimit(1)
+                    .frame(width: 66, alignment: .trailing)
             }
             .padding(.horizontal, 8)
             .padding(.vertical, 7)

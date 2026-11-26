@@ -100,9 +100,9 @@ struct AjustesView: View {
                                 .frame(width: 190, alignment: .leading)
                                 Slider(value: bound, in: p.min...p.max, step: p.step)
                                 Text(Fmt.comma(bound.wrappedValue, p.step < 1 ? 2 : 0) + p.unit)
-                                    .font(.system(size: 13, weight: .semibold)).monospacedDigit().frame(width: 70, alignment: .trailing)
+                                    .font(.system(size: 13, weight: .semibold)).monospacedDigit().lineLimit(1).frame(width: 78, alignment: .trailing)
                                 Text(changed ? "antes " + Fmt.comma(p.previous, p.step < 1 ? 2 : 0) : "")
-                                    .font(.system(size: 12)).foregroundStyle(Palette.ink2).frame(width: 70, alignment: .trailing)
+                                    .font(.system(size: 12)).foregroundStyle(Palette.ink2).lineLimit(1).frame(width: 78, alignment: .trailing)
                             }
                             .padding(.vertical, 4)
                         }

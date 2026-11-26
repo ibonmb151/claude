@@ -32,7 +32,7 @@ struct LayersCard: View {
                         }
                     }
                     .frame(height: 14)
-                    Text(Fmt.pct(layer.used)).font(.system(size: 14, weight: .bold)).monospacedDigit().frame(width: 44, alignment: .trailing)
+                    Text(Fmt.pct(layer.used)).font(.system(size: 14, weight: .bold)).monospacedDigit().lineLimit(1).frame(width: 50, alignment: .trailing)
                     Text(delta == 0 ? "=" : (delta > 0 ? "▲ \(delta)" : "▼ \(abs(delta))"))
                         .font(.system(size: 12, weight: .bold))
                         .foregroundStyle(delta > 10 ? Palette.warnText : Palette.ink2)
@@ -78,7 +78,7 @@ struct ExposureCard: View {
             .padding(.leading, 56)
             ForEach(exposures) { e in
                 HStack(spacing: 8) {
-                    Text(e.name).font(.system(size: 13, weight: .bold)).frame(width: 48, alignment: .leading)
+                    Text(e.name).font(.system(size: 13, weight: .bold)).lineLimit(1).frame(width: 56, alignment: .leading)
                     GeometryReader { g in
                         let half = g.size.width / 2
                         let w = half * CGFloat(e.pct) / 40
@@ -92,7 +92,7 @@ struct ExposureCard: View {
                     }
                     .frame(height: 24)
                     Text("\(e.isLong ? "▲" : "▼") \(Fmt.comma(e.lots, 2))")
-                        .font(.system(size: 13, weight: .semibold)).monospacedDigit().frame(width: 60, alignment: .trailing)
+                        .font(.system(size: 13, weight: .semibold)).monospacedDigit().lineLimit(1).frame(width: 68, alignment: .trailing)
                 }
             }
         }
