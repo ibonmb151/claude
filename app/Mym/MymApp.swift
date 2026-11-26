@@ -1,0 +1,43 @@
+import SwiftUI
+
+@main
+struct MymApp: App {
+    @StateObject private var store = AppStore()
+
+    var body: some Scene {
+        #if os(macOS)
+        WindowGroup {
+            MacRootView()
+                .environmentObject(store)
+                .frame(minWidth: 1180, minHeight: 760)
+        }
+        .windowStyle(.hiddenTitleBar)
+        .commands {
+            CommandMenu("Ir a") {
+                ForEach(Array(Module.allCases.enumerated()), id: \.element.id) { index, module in
+                    Button(module.title) { store.module = module }
+                        .keyboardShortcut(KeyEquivalent(Character("\(index + 1)")), modifiers: .command)
+                }
+            }
+            CommandGroup(after: .textEditing) {
+                Button("Buscar y actuar…") { store.showSearch = true }
+                    .keyboardShortcut("k", modifiers: .command)
+            }
+        }
+
+        MenuBarExtra {
+            MenuBarView()
+                .environmentObject(store)
+        } label: {
+            MenuBarLabel()
+                .environmentObject(store)
+        }
+        .menuBarExtraStyle(.window)
+        #else
+        WindowGroup {
+            PhoneRootView()
+                .environmentObject(store)
+        }
+        #endif
+    }
+}
