@@ -49,14 +49,16 @@ struct OrdenesView: View {
             VStack(alignment: .leading, spacing: 2) {
                 Heading("Detalle", info: "Todo lo que el diario sabe de esta orden")
                     .padding(.bottom, 6)
-                detailRow("Estrategia", "\(order.strategyId) · v\(d.strategy(order.strategyId)?.version ?? 1)")
-                detailRow("Célula", order.cellId)
-                detailRow("Cuenta", d.cell(order.cellId)?.accountId ?? "—")
-                detailRow("Volumen", Fmt.lots(order.lots))
-                detailRow("Entrada", Fmt.price(order.entry))
-                detailRow("Stop", order.stop == 0 ? "sin stop" : Fmt.price(order.stop))
-                detailRow("Objetivo", Fmt.price(order.target))
-                detailRow("Diario", "f20a…77c9")
+                Group {
+                    detailRow("Estrategia", "\(order.strategyId) · v\(d.strategy(order.strategyId)?.version ?? 1)")
+                    detailRow("Célula", order.cellId)
+                    detailRow("Cuenta", d.cell(order.cellId)?.accountId ?? "—")
+                    detailRow("Volumen", Fmt.lots(order.lots))
+                    detailRow("Entrada", Fmt.price(order.entry))
+                    detailRow("Stop", order.stop == 0 ? "sin stop" : Fmt.price(order.stop))
+                    detailRow("Objetivo", Fmt.price(order.target))
+                    detailRow("Diario", "f20a…77c9")
+                }
                 Spacer()
                 Button("Ver en el diario") {}
                     .buttonStyle(MymButtonStyle(kind: .secondary))
