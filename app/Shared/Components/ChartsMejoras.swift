@@ -5,9 +5,10 @@ import SwiftUI
 
 extension GraphicsContext {
     /// Texto con tamaño entero, anclado donde se pida.
-    func label(_ s: String, at p: CGPoint, size: CGFloat, weight: Font.Weight = .regular,
-               color: Color = Palette.ink2, anchor: UnitPoint = .center) {
-        let t = Text(s).font(.system(size: size, weight: weight)).foregroundColor(color)
+    mutating func label(_ s: String, at p: CGPoint, size: CGFloat, weight: Font.Weight = .regular,
+               color: Color = Palette.ink2, anchor: UnitPoint = .center, mono: Bool = false) {
+        let font: Font = .system(size: size, weight: weight, design: mono ? .monospaced : .default)
+        let t = Text(s).font(font).foregroundColor(color)
         draw(t, at: p, anchor: anchor)
     }
 }
@@ -209,7 +210,8 @@ struct ExposureGauge: View {
         ctx.stroke(Path(ellipseIn: dotRect), with: .color(zoneColor), lineWidth: 3)
 
         // marcas
-        for (p, t) in [(0.0, "0"), (0.5, "50"), (0.8, "80"), (1.0, "100")] {
+        let marks: [(Double, String)] = [(0.0, "0"), (0.5, "50"), (0.8, "80"), (1.0, "100")]
+        for (p, t) in marks {
             ctx.label(t, at: point(c, r * 1.46, p), size: 11)
         }
 

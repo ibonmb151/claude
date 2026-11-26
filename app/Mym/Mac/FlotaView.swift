@@ -56,6 +56,12 @@ struct FlotaView: View {
                 .card(16)
                 .frame(width: 360)
             }
+
+            VStack(alignment: .leading, spacing: 10) {
+                Heading("Latencias", info: "Un punto por orden. La caja es la mitad central, la raya azul la mediana. En rojo, las que pasan de 1 segundo")
+                LatencyChart(cells: ChartSamples.latencyCells)
+            }
+            .card(16)
         }
     }
 

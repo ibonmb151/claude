@@ -72,6 +72,23 @@ struct EstrategiasView: View {
                     }
 
                     Divider()
+                    VStack(alignment: .leading, spacing: 8) {
+                        Heading("Retorno y caída", info: "Cada burbuja es una estrategia en una célula; el tamaño, sus operaciones. Las rectas marcan cuánto retorno saca por cada punto de caída: 1× y 2×. Por encima de 2×, zona verde; por debajo de cero, zona roja")
+                        ReturnDrawdownChart(bubbles: ChartSamples.returnBubbles, colors: ChartSamples.strategyColors, names: ChartSamples.strategyNames)
+                    }
+                    VStack(alignment: .leading, spacing: 8) {
+                        Heading("Cambios", info: "La curva de 30 días con cada cambio clavado en su día. La zona azul es lo que pasó después del cambio C")
+                        ChangesChart(series: ChartSamples.changeSeries, events: ChartSamples.changeEvents, windowFrom: 23, windowText: "C · +0,5 % en 6 días")
+                        HStack(spacing: 14) {
+                            ForEach(0..<ChartSamples.changeLegend.count, id: \.self) { i in
+                                HStack(spacing: 5) {
+                                    RoundedRectangle(cornerRadius: 3).fill(ChartSamples.changeLegend[i].1).frame(width: 10, height: 10)
+                                    Text(ChartSamples.changeLegend[i].0).font(.system(size: 12)).foregroundStyle(Palette.ink2)
+                                }
+                            }
+                        }
+                    }
+                    Divider()
                     HStack(alignment: .top, spacing: 24) {
                         VStack(alignment: .leading, spacing: 8) {
                             Heading("Peso por célula", info: "Bajar se aplica con firma. Subir por encima de lo que fijó Jev queda pendiente de aprobación")

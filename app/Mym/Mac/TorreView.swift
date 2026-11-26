@@ -55,6 +55,25 @@ struct TorreView: View {
                 .frame(width: 340)
             }
 
+            // Flujo de una orden y turnos del día
+            HStack(alignment: .top, spacing: 14) {
+                VStack(alignment: .leading, spacing: 10) {
+                    Heading("Flujo", info: "La tubería de una orden. El caudal azul se estrecha en cada paso y cada salida baja a su destino: violeta, frenada por riesgo (es protección); gris, cancelada; rojo, rechazada por el bróker")
+                    FlowChart(counts: [d.funnel.signals, d.funnel.riskOk, d.funnel.sent, d.funnel.filled],
+                              exits: ChartSamples.flowExits)
+                }
+                .card(16)
+                .frame(maxWidth: .infinity)
+
+                VStack(alignment: .leading, spacing: 10) {
+                    Heading("Turnos", info: "Cuándo trabaja cada estrategia hoy. Macizo: hecho. Claro: lo que queda. Rayado: pausa por noticia")
+                    ShiftsChart(lanes: ChartSamples.shiftLanes, sessions: ChartSamples.shiftSessions, news: ChartSamples.shiftNews,
+                                now: 10.7, nowText: "10:42", nextNews: "Próxima noticia en 3 h 48 min")
+                }
+                .card(16)
+                .frame(maxWidth: .infinity)
+            }
+
             // Por hora, flota e incidencias
             HStack(alignment: .top, spacing: 14) {
                 HourlyCard(snapshot: d)
