@@ -153,7 +153,7 @@ enum MockData {
 
     private static func makeStrategies() -> [Strategy] {
         [
-            Strategy(id: "mom_us500", name: "Momentum US500", symbol: "chevron.up.2", color: Palette.violet,
+            Strategy(id: "mom_us500", name: "Momentum US500", symbol: "chevron.up", color: Palette.violet,
                      return30d: 1.8, trades: 64, hitRate: 0.55, profitFactor: 1.32, maxDrawdown: 1.1, version: 2,
                      params: [
                         Param(key: "ventana", value: 30, previous: 30, min: 10, max: 60, step: 1, unit: ""),
