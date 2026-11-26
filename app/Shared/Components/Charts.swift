@@ -88,17 +88,33 @@ struct DonutView: View {
     var lineWidth: CGFloat = 16
     var centerText: String = ""
 
+    private var total: Double {
+        let sum: Double = slices.reduce(0.0) { $0 + $1.value }
+        return max(sum, 0.0001)
+    }
+
+    private func startFraction(_ index: Int) -> Double {
+        var acc: Double = 0
+        for i in 0..<index { acc += slices[i].value }
+        return acc / total
+    }
+
+    private func sliceView(_ index: Int, _ slice: DonutSlice) -> some View {
+        let start: Double = startFraction(index)
+        let end: Double = start + slice.value / total
+        let from: CGFloat = CGFloat(start + 0.004)
+        let to: CGFloat = CGFloat(max(start + 0.004, end - 0.004))
+        return Circle()
+            .trim(from: from, to: to)
+            .stroke(slice.color, style: StrokeStyle(lineWidth: lineWidth, lineCap: .butt))
+            .rotationEffect(.degrees(-90))
+            .padding(lineWidth / 2)
+    }
+
     var body: some View {
-        let total = max(slices.reduce(0) { $0 + $1.value }, 0.0001)
         ZStack {
-            ForEach(Array(slices.enumerated()), id: \.element.id) { index, slice in
-                let start = slices.prefix(index).reduce(0) { $0 + $1.value } / total
-                let end = start + slice.value / total
-                Circle()
-                    .trim(from: CGFloat(start) + 0.004, to: CGFloat(max(start + 0.004, end - 0.004)))
-                    .stroke(slice.color, style: StrokeStyle(lineWidth: lineWidth, lineCap: .butt))
-                    .rotationEffect(.degrees(-90))
-                    .padding(lineWidth / 2)
+            ForEach(0..<slices.count, id: \.self) { index in
+                sliceView(index, slices[index])
             }
             if !centerText.isEmpty {
                 Text(centerText)
@@ -132,11 +148,13 @@ struct HourlyChart: View {
                 }
                 Rectangle().fill(Palette.line).frame(width: w, height: 1.5).offset(y: mid)
                 ForEach(bars) { bar in
-                    let bh = max(2, CGFloat(abs(bar.value)) * scale)
+                    let bh: CGFloat = max(2, CGFloat(abs(bar.value)) * scale)
+                    let bx: CGFloat = slot * (CGFloat(bar.id) + 8.2)
+                    let by: CGFloat = bar.value >= 0 ? mid - bh : mid
                     RoundedRectangle(cornerRadius: 3)
                         .fill(bar.value >= 0 ? Palette.pos : Palette.neg)
                         .frame(width: slot * 0.62, height: bh)
-                        .offset(x: slot * (CGFloat(bar.id) + 8.2), y: bar.value >= 0 ? mid - bh : mid)
+                        .offset(x: bx, y: by)
                 }
                 Path { p in
                     var acc = 0.0
@@ -170,28 +188,44 @@ struct LineAreaChart: View {
     var unit: String = " %"
     var showLast: Bool = true
 
+    private func lowest() -> Double { min(values.min() ?? 0, 0) }
+
+    private func highest() -> Double { max(values.max() ?? 1, 0.0001) }
+
+    private func yFor(_ v: Double, _ size: CGSize) -> CGFloat {
+        let mn: Double = lowest()
+        let range: Double = max(highest() - mn, 0.0001)
+        let t: Double = (v - mn) / range
+        let usable: CGFloat = size.height - 24
+        return 8 + usable * CGFloat(1 - t)
+    }
+
+    private func points(_ size: CGSize) -> [CGPoint] {
+        var out: [CGPoint] = []
+        let n: Int = max(values.count - 1, 1)
+        for i in 0..<values.count {
+            let x: CGFloat = size.width * CGFloat(i) / CGFloat(n)
+            out.append(CGPoint(x: x, y: yFor(values[i], size)))
+        }
+        return out
+    }
+
     var body: some View {
         GeometryReader { g in
-            let mn = min(values.min() ?? 0, 0)
-            let mx = max(values.max() ?? 1, 0.0001)
-            let range = max(mx - mn, 0.0001)
-            let n = max(values.count - 1, 1)
-            let pts = values.enumerated().map { i, v in
-                CGPoint(x: g.size.width * CGFloat(i) / CGFloat(n),
-                        y: 8 + (g.size.height - 24) * (1 - CGFloat((v - mn) / range)))
-            }
+            let pts: [CGPoint] = points(g.size)
+            let zero: CGFloat = yFor(0, g.size)
+            let baseY: CGFloat = g.size.height - 16
             ZStack {
                 Path { p in
-                    let zero = 8 + (g.size.height - 24) * (1 - CGFloat((0 - mn) / range))
                     p.move(to: CGPoint(x: 0, y: zero))
                     p.addLine(to: CGPoint(x: g.size.width, y: zero))
                 }
                 .stroke(Palette.line, lineWidth: 1)
                 if pts.count > 1 {
                     Path { p in
-                        p.move(to: CGPoint(x: pts[0].x, y: g.size.height - 16))
+                        p.move(to: CGPoint(x: pts[0].x, y: baseY))
                         for pt in pts { p.addLine(to: pt) }
-                        p.addLine(to: CGPoint(x: pts[pts.count - 1].x, y: g.size.height - 16))
+                        p.addLine(to: CGPoint(x: pts[pts.count - 1].x, y: baseY))
                         p.closeSubpath()
                     }
                     .fill(color.opacity(0.10))
