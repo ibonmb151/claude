@@ -12,17 +12,17 @@ Es una sola app en SwiftUI para **macOS 12+** e **iOS 16+**, con widgets, icono 
 Esta versión apunta a **macOS 12 e iOS 16**, para compilarse con **Xcode 14.2**, el último que funciona en Monterey.
 
 1. **Instala Xcode 14.2.** Descárgalo en `developer.apple.com/download/all` (necesitas tu Apple ID; busca «Xcode 14.2»), descomprime el `.xip` y arrastra Xcode a Aplicaciones. Ábrelo una vez y acepta la licencia.
-2. **Baja XcodeGen**, que genera el proyecto: en `github.com/yonaskolb/XcodeGen/releases` descarga `xcodegen.zip` de la última versión y descomprímelo. Si esa versión no se abre en Monterey, prueba con una anterior.
+2. **Baja XcodeGen 2.32.0**, que genera el proyecto. Las versiones nuevas no funcionan en Monterey (piden una librería que macOS 12 no tiene). Descarga `xcodegen.zip` desde `github.com/yonaskolb/XcodeGen/releases/tag/2.32.0` y descomprímelo en Descargas. Si esa versión tampoco arranca, prueba con la 2.30.0.
 3. **Genera y abre el proyecto** desde la Terminal, dentro de la carpeta `app`:
 
 ```bash
-./preparar-xcode.sh /ruta/a/xcodegen/bin/xcodegen
+./preparar-xcode.sh ~/Downloads/xcodegen/bin/xcodegen
 ```
 
-Si el sistema bloquea el script o XcodeGen por venir de internet, ejecútalo con clic derecho › Abrir, o con `xattr -dr com.apple.quarantine .` en la carpeta.
+Si el sistema bloquea el script o XcodeGen por venir de internet, ejecuta `xattr -dr com.apple.quarantine ~/Downloads/xcodegen .` y repite.
 
-4. En `project.yml` (antes del paso 3), cambia `com.tuempresa` por tu identificador. En Xcode, en **Signing & Capabilities** de los destinos `Mym` y `MymWidgets`, elige tu Apple ID como equipo.
-5. Elige el esquema `Mym`, el destino **My Mac** y pulsa ▶.
+4. En `project.yml` (antes del paso 3), cambia `com.tuempresa` por tu identificador. En Xcode, en **Signing & Capabilities** de los destinos `Mym` y `MymWidgets` (y `MymPhone` y `MymPhoneWidgets` si usas el iPhone), elige tu Apple ID como equipo.
+5. Elige el esquema `Mym` (Mac) o `MymPhone` (iPhone), el destino y pulsa ▶.
 
 > **iPhone:** Xcode 14.2 solo conoce iPhones con iOS 16.2 como máximo. Con un iPhone más nuevo puede negarse a instalar la app. El Mac es el destino principal de esta versión.
 
