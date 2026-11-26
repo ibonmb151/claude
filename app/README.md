@@ -1,29 +1,30 @@
 # Mym · app de Mac e iPhone (datos ficticios)
 
 Panel para vigilar y gobernar tus bots de trading: células, cuentas, estrategias, órdenes, riesgo y las propuestas de Jev.
-Es una sola app en SwiftUI para **macOS 14+** e **iOS 17+**, con widgets, icono en la barra de menús y firma con Face ID o Touch ID.
+Es una sola app en SwiftUI para **macOS 12+** e **iOS 16+**, con widgets, icono en la barra de menús y firma con Face ID o Touch ID.
 
 > **Estado:** todos los datos son ficticios y se generan en local. No hay conexión con ningún bróker ni con el plano de control.
 > **Importante:** este código se escribió en un entorno Linux sin Swift ni Xcode. **No se ha compilado nunca.**
 > Haz una primera compilación y arregla lo que salga; es lo esperable en una base de unas 4.500 líneas escritas sin compilador.
 
-## Cómo abrirla
+## Cómo abrirla (macOS Monterey + Xcode 14.2)
 
-Necesitas un Mac con Xcode 15 o superior.
+Esta versión apunta a **macOS 12 e iOS 16**, para compilarse con **Xcode 14.2**, el último que funciona en Monterey.
+
+1. **Instala Xcode 14.2.** Descárgalo en `developer.apple.com/download/all` (necesitas tu Apple ID; busca «Xcode 14.2»), descomprime el `.xip` y arrastra Xcode a Aplicaciones. Ábrelo una vez y acepta la licencia.
+2. **Baja XcodeGen**, que genera el proyecto: en `github.com/yonaskolb/XcodeGen/releases` descarga `xcodegen.zip` de la última versión y descomprímelo. Si esa versión no se abre en Monterey, prueba con una anterior.
+3. **Genera y abre el proyecto** desde la Terminal, dentro de la carpeta `app`:
 
 ```bash
-brew install xcodegen
-cd app
-xcodegen generate
-open Mym.xcodeproj
+./preparar-xcode.sh /ruta/a/xcodegen/bin/xcodegen
 ```
 
-1. En `project.yml`, cambia `bundleIdPrefix` y los dos `PRODUCT_BUNDLE_IDENTIFIER` (`com.tuempresa.mym` y `com.tuempresa.mym.widgets`) por los tuyos.
-2. En Xcode, en **Signing & Capabilities** de los dos destinos (`Mym` y `MymWidgets`), elige tu equipo. Sirve la cuenta de pago de 99 $/año; con la gratuita las apps caducan a los 7 días.
-3. Elige el esquema `Mym` y el destino **My Mac** o tu iPhone, y dale a Ejecutar.
-4. Widgets: en el Mac, clic derecho en el escritorio › Editar widgets › Mym. En el iPhone, mantén pulsado el inicio › + › Mym.
+Si el sistema bloquea el script o XcodeGen por venir de internet, ejecútalo con clic derecho › Abrir, o con `xattr -dr com.apple.quarantine .` en la carpeta.
 
-Si prefieres no usar XcodeGen, crea un proyecto multiplataforma a mano, arrastra las carpetas `Shared`, `Mym` y `MymWidgets`, y añade un destino de extensión de widgets.
+4. En `project.yml` (antes del paso 3), cambia `com.tuempresa` por tu identificador. En Xcode, en **Signing & Capabilities** de los destinos `Mym` y `MymWidgets`, elige tu Apple ID como equipo.
+5. Elige el esquema `Mym`, el destino **My Mac** y pulsa ▶.
+
+> **iPhone:** Xcode 14.2 solo conoce iPhones con iOS 16.2 como máximo. Con un iPhone más nuevo puede negarse a instalar la app. El Mac es el destino principal de esta versión.
 
 ## Estructura (de lo grande a lo pequeño)
 
@@ -51,7 +52,7 @@ app/
 
 ## Qué hace ya
 
-- **Mac:** ventana con riel de iconos (indicador del módulo activo y avisos), ocho pantallas, búsqueda y acciones con **⌘K**, atajos **⌘1…⌘8**, icono en la barra de menús con el resultado del día y «Parar todo».
+- **Mac:** ventana con riel de iconos (indicador del módulo activo y avisos), ocho pantallas, búsqueda y acciones con **⌘K**, atajos **⌘1…⌘8**, icono en la barra de menús (hecho con AppKit, porque MenuBarExtra pide macOS 13) con el resultado del día y «Parar todo».
 - **iPhone:** cuatro pestañas. Se ve y se para. Reanudar y aprobar se hacen en el Mac.
 - **Firma:** pausar, parar, aprobar o rechazar abre «Firmar y enviar», con cuenta atrás de 2 minutos y confirmación biométrica. El resultado queda en el registro de comandos de Riesgo.
 - **Datos vivos:** cada 4 segundos varían la latencia y el latido, para que se note que algo se mueve.
@@ -61,7 +62,7 @@ app/
 
 1. Compilar y arreglar errores. Probar en un Mac real y en el iPhone.
 2. Capturas y ajustes de maquetación frente a los diseños del lienzo.
-3. Modo oscuro (ahora solo hay claro).
+3. Modo oscuro (ahora solo hay claro). Widgets con el fondo nuevo de iOS 17 / macOS 14 cuando se pueda subir de versión.
 4. Conectar con el plano de control real: API de lectura, comandos firmados con Ed25519 (CryptoKit) y claves en el llavero.
 5. Actividades en directo y Dynamic Island (necesitan avisos desde tu servidor a través de Apple).
 6. Compartir datos entre app y widgets con un grupo de apps cuando haya datos reales.
