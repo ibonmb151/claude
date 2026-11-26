@@ -1,0 +1,79 @@
+name: Compilar la app (Mac e iPhone)
+
+on:
+  push:
+    paths:
+      - "app/**"
+      - ".github/workflows/build-app.yml"
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-14
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Instalar XcodeGen
+        run: brew install xcodegen
+
+      - name: Generar el proyecto de Xcode
+        working-directory: app
+        run: |
+          xcodegen generate
+          echo "--- formato del proyecto ---"
+          grep -n "objectVersion\|compatibilityVersion" Mym.xcodeproj/project.pbxproj || true
+
+      - name: Compilar para Mac (destino mínimo macOS 12)
+        working-directory: app
+        run: |
+          set -o pipefail
+          xcodebuild -project Mym.xcodeproj -scheme Mym \
+            -destination 'platform=macOS' \
+            -derivedDataPath build-mac \
+            CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO \
+            build 2>&1 | tee build-mac.log
+
+      - name: Compilar para iPhone (simulador, destino mínimo iOS 16)
+        working-directory: app
+        run: |
+          set -o pipefail
+          xcodebuild -project Mym.xcodeproj -scheme Mym \
+            -destination 'generic/platform=iOS Simulator' \
+            -derivedDataPath build-ios \
+            CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO \
+            build 2>&1 | tee build-ios.log
+
+      - name: Resumen de errores
+        if: always()
+        working-directory: app
+        run: |
+          for f in build-mac.log build-ios.log; do
+            if [ -f "$f" ]; then
+              echo "=== $f ==="
+              grep -E "error:|warning: .*(unavailable|deprecated)" "$f" | sort -u | head -80 || true
+            fi
+          done
+
+      - name: Preparar el proyecto para Xcode 14.2
+        if: success()
+        working-directory: app
+        run: |
+          # Xcode 14.2 entiende como máximo el formato 56 del proyecto.
+          sed -i '' -E 's/objectVersion = [0-9]+;/objectVersion = 56;/' Mym.xcodeproj/project.pbxproj
+          sed -i '' -E 's/compatibilityVersion = "Xcode [0-9.]+";/compatibilityVersion = "Xcode 14.0";/' Mym.xcodeproj/project.pbxproj || true
+          mkdir -p out
+          ditto -c -k --sequesterRsrc --keepParent Mym.xcodeproj out/Mym-proyecto-xcode.zip
+          APP=$(find build-mac -name "Mym.app" -maxdepth 6 | head -1)
+          if [ -n "$APP" ]; then ditto -c -k --sequesterRsrc --keepParent "$APP" out/Mym-mac-sin-firmar.zip; fi
+
+      - name: Guardar resultados
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mym
+          path: |
+            app/out/*.zip
+            app/build-mac.log
+            app/build-ios.log
+          if-no-files-found: ignore

@@ -25,7 +25,6 @@ struct PendingCommand: Identifiable {
 
 // MARK: - Almacén de datos de la app (todo ficticio)
 
-@MainActor
 final class AppStore: ObservableObject {
     @Published var data: Snapshot
     @Published var log: [SignedCommand] = []
@@ -37,6 +36,9 @@ final class AppStore: ObservableObject {
     @Published var selectedProposalId: String = "p1"
     @Published var selectedAccountId: String = "FND-B-50k"
     @Published var selectedCellId: String = "c-lon-02"
+
+    /// Instancia única: la comparten la ventana y el icono de la barra de menús.
+    static let shared = AppStore()
 
     private var timer: Timer?
     private var tickCount = 0
@@ -56,7 +58,7 @@ final class AppStore: ObservableObject {
 
     private func startLive() {
         timer = Timer.scheduledTimer(withTimeInterval: 4, repeats: true) { [weak self] _ in
-            Task { @MainActor in self?.tick() }
+            self?.tick()
         }
     }
 

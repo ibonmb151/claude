@@ -2,7 +2,10 @@ import SwiftUI
 
 @main
 struct MymApp: App {
-    @StateObject private var store = AppStore()
+    @StateObject private var store = AppStore.shared
+    #if os(macOS)
+    @NSApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
+    #endif
 
     var body: some Scene {
         #if os(macOS)
@@ -24,15 +27,6 @@ struct MymApp: App {
                     .keyboardShortcut("k", modifiers: .command)
             }
         }
-
-        MenuBarExtra {
-            MenuBarView()
-                .environmentObject(store)
-        } label: {
-            MenuBarLabel()
-                .environmentObject(store)
-        }
-        .menuBarExtraStyle(.window)
         #else
         WindowGroup {
             PhoneRootView()

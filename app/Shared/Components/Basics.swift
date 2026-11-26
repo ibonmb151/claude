@@ -65,7 +65,6 @@ struct InfoButton: View {
                 .foregroundStyle(Palette.ink)
                 .padding(12)
                 .frame(maxWidth: 260, alignment: .leading)
-                .presentationCompactAdaptation(.popover)
         }
     }
 }

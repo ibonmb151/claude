@@ -1,6 +1,28 @@
 import WidgetKit
 import SwiftUI
 
+
+// MARK: - Fondo del widget (iOS 17 / macOS 14 usan containerBackground; antes, un fondo normal)
+
+extension View {
+    @ViewBuilder
+    func widgetBackground(_ color: Color) -> some View {
+        #if compiler(>=5.9)
+        if #available(iOS 17.0, macOS 14.0, *) {
+            self.containerBackground(color, for: .widget)
+        } else {
+            self.padding(14)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .background(color)
+        }
+        #else
+        self.padding(14)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(color)
+        #endif
+    }
+}
+
 // MARK: - Datos del widget (ficticios)
 
 struct SnapshotEntry: TimelineEntry {
@@ -61,7 +83,7 @@ struct EquityWidgetView: View {
             Sparkline(values: s.equitySeries, color: Palette.pos, lineWidth: 2.4, fill: true)
                 .frame(height: family == .systemSmall ? 34 : 52)
         }
-        .containerBackground(Palette.card, for: .widget)
+        .widgetBackground(Palette.card)
     }
 }
 
@@ -97,7 +119,7 @@ struct RingsWidgetView: View {
                 .font(.system(size: 11, weight: .bold))
                 .foregroundStyle(Palette.ink2)
         }
-        .containerBackground(Palette.card, for: .widget)
+        .widgetBackground(Palette.card)
     }
 }
 
@@ -150,7 +172,7 @@ struct FleetWidgetView: View {
                     .frame(height: 90)
             }
         }
-        .containerBackground(Palette.card, for: .widget)
+        .widgetBackground(Palette.card)
     }
 }
 
@@ -182,7 +204,7 @@ struct LockWidgetView: View {
                 Text("\(Int(s.dayLimitUsed * 100))%")
             }
             .gaugeStyle(.accessoryCircular)
-            .containerBackground(.clear, for: .widget)
+            .widgetBackground(Color.clear)
         case .accessoryRectangular:
             VStack(alignment: .leading, spacing: 2) {
                 Text("Equity \(Fmt.eur(s.equity))").font(.system(size: 13, weight: .bold)).lineLimit(1)
@@ -190,10 +212,10 @@ struct LockWidgetView: View {
                 Gauge(value: s.dayLimitUsed) { EmptyView() }
                     .gaugeStyle(.accessoryLinear)
             }
-            .containerBackground(.clear, for: .widget)
+            .widgetBackground(Color.clear)
         default:
             Text("\(Fmt.signedPct(s.dayPct, 2)) · \(s.openAlerts.count) avisos")
-                .containerBackground(.clear, for: .widget)
+                .widgetBackground(Color.clear)
         }
     }
 }

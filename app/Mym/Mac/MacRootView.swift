@@ -269,18 +269,6 @@ struct SearchSheet: View {
 
 // MARK: - Barra de menús
 
-struct MenuBarLabel: View {
-    @EnvironmentObject var store: AppStore
-
-    var body: some View {
-        HStack(spacing: 4) {
-            Image(systemName: "chart.bar.xaxis")
-            Text(Fmt.signedPct(store.data.dayPct, 2))
-                .monospacedDigit()
-        }
-    }
-}
-
 struct MenuBarView: View {
     @EnvironmentObject var store: AppStore
 
