@@ -65,35 +65,15 @@ struct ExposureCard: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Heading("Por divisa", info: "Largo a la derecha del eje, corto a la izquierda. El ancho es el peso de cada divisa o índice") {
-                Text("\(Fmt.comma(totalLots, 1)) lotes · \(Fmt.pct(pct)) del máximo")
+            Heading("Exposición", info: "Arco: uso actual frente al máximo, con las zonas por fuera; la raya gris es ayer. Áreas: el peso de cada divisa o índice. Azul: largo. Grafito: corto") {
+                Text("\(Fmt.comma(totalLots, 1)) lotes")
                     .font(.system(size: 13)).foregroundStyle(Palette.ink2)
             }
-            HStack(spacing: 6) {
-                Text("◀ corto").font(.system(size: 12, weight: .semibold)).foregroundStyle(Palette.ink2)
-                    .frame(maxWidth: .infinity, alignment: .trailing)
-                Text("largo ▶").font(.system(size: 12, weight: .semibold)).foregroundStyle(Palette.infoText)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-            }
-            .padding(.leading, 56)
-            ForEach(exposures) { e in
-                HStack(spacing: 8) {
-                    Text(e.name).font(.system(size: 13, weight: .bold)).lineLimit(1).frame(width: 56, alignment: .leading)
-                    GeometryReader { g in
-                        let half = g.size.width / 2
-                        let w = half * CGFloat(e.pct) / 40
-                        ZStack {
-                            Rectangle().fill(Palette.line).frame(width: 1.5)
-                            RoundedRectangle(cornerRadius: 6, style: .continuous)
-                                .fill(e.isLong ? Palette.graphiteDark : Palette.graphiteSoft)
-                                .frame(width: w, height: 24)
-                                .offset(x: e.isLong ? w / 2 : -w / 2)
-                        }
-                    }
-                    .frame(height: 24)
-                    Text("\(e.isLong ? "▲" : "▼") \(Fmt.comma(e.lots, 2))")
-                        .font(.system(size: 13, weight: .semibold)).monospacedDigit().lineLimit(1).frame(width: 68, alignment: .trailing)
-                }
+            HStack(alignment: .center, spacing: 14) {
+                ExposureGauge(pct: pct, yesterday: ChartSamples.exposureYesterday, lots: totalLots)
+                    .frame(minWidth: 210, maxWidth: 260)
+                CurrencyTreemap(items: exposures)
+                    .frame(maxWidth: .infinity)
             }
         }
         .card(16)

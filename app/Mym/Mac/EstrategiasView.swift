@@ -27,6 +27,13 @@ struct EstrategiasView: View {
                         matrix(d)
                     }
                     .card(14)
+
+                    VStack(alignment: .leading, spacing: 6) {
+                        Heading("Contribución", info: "Lo que aporta cada estrategia cada semana. El número es el neto. La semana resaltada es la mejor")
+                        ContributionChart(weeks: ChartSamples.weeklyContribution, labels: ChartSamples.weekLabels,
+                                          names: ChartSamples.strategyNames, colors: ChartSamples.strategyColors, height: 190)
+                    }
+                    .card(14)
                 }
             }
             .frame(width: 340)
