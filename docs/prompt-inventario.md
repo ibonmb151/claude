@@ -29,7 +29,8 @@ español, con tablas cortas. Reglas:
    5 minutos y cada día. Propón el script o el cron y di qué coste tiene.
 9. PIEZAS Y APPS. Librerías, servicios, proveedores y versiones que usa, y cuáles son de pago.
 10. HUECOS. Datos que un panel necesitaría y hoy no existen o no se guardan.
-11. DUDAS Y CONTRADICCIONES con los documentos 01 a 14 del repositorio, si los has visto.
+11. DUDAS. Lo que no sabes o no has podido comprobar. Si conoces los documentos de estudio de la
+    carpeta trading/ del repositorio, di en qué se parece o se diferencia lo REAL de lo que cuentan.
 12. BLOQUE FINAL en JSON, con esta forma exacta:
 {
   "sistema": "", "estado": "",
@@ -45,6 +46,6 @@ español, con tablas cortas. Reglas:
 ```
 
 ## Cómo se usan las respuestas
-1. Se comparan los 6 bloques JSON con `docs/datos-y-kpis.md` y se rellenan los huecos de la tabla de KPIs.
+1. Se comparan los 6 bloques JSON con el modelo de referencia de `docs/datos-y-kpis.md` y se corrige la tabla de KPIs con lo real.
 2. Lo que salga como [HECHO] se conecta primero; lo de [DISEÑO] se queda como «n.d.» en el panel.
-3. Con los formatos reales se ajusta el exportador (SQLite → los cinco JSON que lee Mym).
+3. Con los formatos reales, cada sistema escribe su exportador con `docs/prompt-exportador.md`.

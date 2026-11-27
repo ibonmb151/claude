@@ -1,7 +1,9 @@
 # Datos, KPIs y gráficas del sistema
 
-Base: los documentos 12, 13 y 14 de `trading/`. Lo que sigue describe lo **diseñado** en ellos.
-Cuál de esas piezas existe ya lo dirán los inventarios (`docs/prompt-inventario.md`).
+> **Importante:** esto es un **modelo de referencia**, sacado de los documentos de estudio de `trading/`
+> (12, 13 y 14). Esos documentos son un estudio, **no** los sistemas reales. Sirve para saber qué preguntar y
+> cómo dibujarlo, no para dar nada por existente. La verdad la dan los 6 sistemas, con
+> `docs/prompt-inventario.md`; y para sacar sus datos, `docs/prompt-exportador.md`.
 
 ## 1. Principio
 Mym **no calcula** nada de trading: lee lo que el sistema ya produce. Solo lectura, sin llaves para operar
