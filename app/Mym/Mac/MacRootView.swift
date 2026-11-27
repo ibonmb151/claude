@@ -21,10 +21,14 @@ struct MacRootView: View {
             SignSheet(command: command)
                 .environmentObject(store)
         }
-        .sheet(isPresented: $store.showSearch) {
-            SearchSheet()
-                .environmentObject(store)
-        }
+        // La búsqueda cuelga de otra vista: en macOS 12, dos hojas en la misma vista se estorban.
+        .background(
+            Color.clear
+                .sheet(isPresented: $store.showSearch) {
+                    SearchSheet()
+                        .environmentObject(store)
+                }
+        )
     }
 
     @ViewBuilder
@@ -163,7 +167,6 @@ struct ScreenScroll<Content: View>: View {
 
 struct SearchSheet: View {
     @EnvironmentObject var store: AppStore
-    @Environment(\.dismiss) private var dismiss
     @State private var query = ""
     @FocusState private var focused: Bool
 
@@ -177,24 +180,31 @@ struct SearchSheet: View {
         let run: () -> Void
     }
 
+    /// Cierra la búsqueda y, si hay algo más que hacer (abrir la hoja de firma), espera a que termine de cerrarse.
+    /// En macOS 12, abrir una hoja mientras otra se cierra la deja atascada.
+    private func close(then action: (() -> Void)? = nil) {
+        store.showSearch = false
+        if let action = action {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) { action() }
+        }
+    }
+
     private var items: [Item] {
         var out: [Item] = []
         for cell in store.data.cells where cell.health != .paused {
             out.append(Item(group: "Acciones", title: "Pausar \(cell.id)", subtitle: "\(cell.accountId) · comando firmado",
                             symbol: "pause.circle", color: Palette.stop) {
-                dismiss()
-                store.requestPause(cell.id)
+                close { store.requestPause(cell.id) }
             })
         }
         out.append(Item(group: "Acciones", title: "Parar todo", subtitle: "halt_all · todas las células",
                         symbol: "stop.circle", color: Palette.stop) {
-            dismiss()
-            store.requestStopAll()
+            close { store.requestStopAll() }
         })
         for module in Module.allCases {
             out.append(Item(group: "Ir a", title: module.title, subtitle: "Sección", symbol: module.symbol, color: module.color) {
                 store.module = module
-                dismiss()
+                close()
             })
         }
         for order in store.data.orders {
@@ -202,7 +212,7 @@ struct SearchSheet: View {
                             subtitle: order.status.label, symbol: "shippingbox", color: Palette.info) {
                 store.selectedOrderId = order.id
                 store.module = .ordenes
-                dismiss()
+                close()
             })
         }
         let q = query.trimmingCharacters(in: .whitespaces).lowercased()
@@ -218,9 +228,15 @@ struct SearchSheet: View {
                     .textFieldStyle(.plain)
                     .font(.system(size: 18))
                     .focused($focused)
-                Text("esc").font(.system(size: 12, weight: .semibold)).foregroundStyle(Palette.ink2)
-                    .padding(.horizontal, 6).frame(height: 22)
-                    .background(Palette.neutralBg, in: RoundedRectangle(cornerRadius: 6))
+                    .onSubmit { items.first?.run() }
+                Button { close() } label: {
+                    Text("esc").font(.system(size: 12, weight: .semibold)).foregroundStyle(Palette.ink2)
+                        .padding(.horizontal, 6).frame(height: 22)
+                        .background(Palette.neutralBg, in: RoundedRectangle(cornerRadius: 6))
+                }
+                .buttonStyle(.plain)
+                .keyboardShortcut(.cancelAction)
+                .help("Cerrar")
             }
             .padding(.horizontal, 20)
             .frame(height: 60)
@@ -257,6 +273,7 @@ struct SearchSheet: View {
         }
         .frame(width: 640)
         .background(Palette.card)
+        .onExitCommand { close() }
         .onAppear { focused = true }
     }
 
