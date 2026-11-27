@@ -8,7 +8,7 @@ struct TorreView: View {
         let d = store.data
         ScreenScroll {
             // Cifras
-            HStack(spacing: 14) {
+            ResponsiveRow(breakpoint: 980) {
                 KPICard(title: "Equity", info: "Suma de todas las cuentas",
                         value: Fmt.eur(d.equity), pill: Fmt.signedPct(d.equityDeltaPct) + " hoy", tone: .good,
                         series: d.equitySeries, color: Palette.pos)
@@ -24,7 +24,7 @@ struct TorreView: View {
             }
 
             // Red y órdenes en tránsito
-            HStack(alignment: .top, spacing: 14) {
+            ResponsiveRow {
                 VStack(alignment: .leading, spacing: 10) {
                     Heading("Red", info: "Sedes, bróker, datos y Jev con la latencia de cada tramo. Continua: activo. Discontinua: en espera")
                     NetworkMap()
@@ -56,7 +56,7 @@ struct TorreView: View {
             }
 
             // Flujo de una orden y turnos del día
-            HStack(alignment: .top, spacing: 14) {
+            ResponsiveRow {
                 VStack(alignment: .leading, spacing: 10) {
                     Heading("Flujo", info: "La tubería de una orden. El caudal azul se estrecha en cada paso y cada salida baja a su destino: violeta, frenada por riesgo (es protección); gris, cancelada; rojo, rechazada por el bróker")
                     FlowChart(counts: [d.funnel.signals, d.funnel.riskOk, d.funnel.sent, d.funnel.filled],
@@ -75,7 +75,7 @@ struct TorreView: View {
             }
 
             // Por hora, flota e incidencias
-            HStack(alignment: .top, spacing: 14) {
+            ResponsiveRow {
                 HourlyCard(snapshot: d)
                     .frame(maxWidth: .infinity)
 

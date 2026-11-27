@@ -12,7 +12,7 @@ struct MymApp: App {
         WindowGroup {
             MacRootView()
                 .environmentObject(store)
-                .frame(minWidth: 1180, minHeight: 760)
+                .frame(minWidth: 1040, minHeight: 680)
         }
         .windowStyle(.hiddenTitleBar)
         .commands {

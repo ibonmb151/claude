@@ -34,7 +34,7 @@ struct JevView: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 18) {
                     HStack(spacing: 12) {
-                        IconTile(symbol: "sparkles", color: Palette.magenta, size: 42, corner: 21)
+                        IconTile(symbol: "safari", color: Palette.magenta, size: 42, corner: 21)
                         VStack(alignment: .leading, spacing: 0) {
                             Text("Jev propone").font(.system(size: 14, weight: .semibold))
                             Text("\(proposal.time) · parte diario de \(proposal.cellId)")

@@ -188,3 +188,34 @@ struct StepBar: View {
         }
     }
 }
+
+
+// MARK: - Escalado: ancho disponible y filas que se apilan
+
+private struct ContentWidthKey: EnvironmentKey {
+    static let defaultValue: CGFloat = 1400
+}
+
+extension EnvironmentValues {
+    /// Ancho del área de contenido (lo fija la ventana del Mac).
+    var contentWidth: CGFloat {
+        get { self[ContentWidthKey.self] }
+        set { self[ContentWidthKey.self] = newValue }
+    }
+}
+
+/// Fila de tarjetas que pasa a columna cuando la ventana es estrecha.
+struct ResponsiveRow<Content: View>: View {
+    @Environment(\.contentWidth) private var width
+    var breakpoint: CGFloat = 1080
+    var spacing: CGFloat = 14
+    @ViewBuilder var content: () -> Content
+
+    var body: some View {
+        if width < breakpoint {
+            VStack(alignment: .leading, spacing: spacing) { content() }
+        } else {
+            HStack(alignment: .top, spacing: spacing) { content() }
+        }
+    }
+}

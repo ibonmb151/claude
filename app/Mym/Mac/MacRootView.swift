@@ -13,8 +13,17 @@ struct MacRootView: View {
                     .padding(.leading, 12)
                     .padding(.top, 40)
                     .padding(.bottom, 14)
-                content
-                    .padding(.top, 14)
+                GeometryReader { g in
+                    ZStack(alignment: .topLeading) {
+                        content
+                            .id(store.module)
+                            .transition(.opacity.combined(with: .offset(y: 10)))
+                    }
+                    .frame(width: g.size.width, height: g.size.height, alignment: .topLeading)
+                    .environment(\.contentWidth, g.size.width)
+                    .animation(.easeOut(duration: 0.28), value: store.module)
+                }
+                .padding(.top, 14)
             }
         }
         .sheet(item: $store.pending) { command in
@@ -50,48 +59,53 @@ struct MacRootView: View {
 
 struct MacRail: View {
     @EnvironmentObject var store: AppStore
+    @Namespace private var selection
+    @State private var stopHover = false
 
     var body: some View {
-        VStack(spacing: 4) {
-            RailButton(symbol: "magnifyingglass", label: "Buscar ⌘K", color: Palette.graphite, active: false) {
+        VStack(spacing: 6) {
+            RailButton(symbol: "magnifyingglass", label: "Buscar ⌘K", active: false, namespace: selection) {
                 store.showSearch = true
             }
-            Rectangle().fill(Palette.line).frame(width: 28, height: 1).padding(.vertical, 6)
+            Rectangle().fill(Palette.line).frame(width: 28, height: 1).padding(.vertical, 4)
             ForEach(Module.allCases) { module in
                 RailButton(
                     symbol: module.symbol,
                     label: module.title,
-                    color: module.color,
                     active: store.module == module,
-                    badge: badge(for: module),
-                    badgeColor: module == .riesgo ? Palette.neg : Palette.info
+                    namespace: selection,
+                    badge: badge(for: module)
                 ) {
-                    store.module = module
+                    withAnimation(.spring(response: 0.35, dampingFraction: 0.82)) { store.module = module }
                 }
             }
-            Spacer(minLength: 12)
-            RailButton(symbol: "bell", label: "Avisos", color: Palette.graphite, active: false,
-                       badge: store.data.openAlerts.count, badgeColor: Palette.neg) {
-                store.module = .riesgo
+            Rectangle().fill(Palette.line).frame(width: 28, height: 1).padding(.vertical, 4)
+            RailButton(symbol: "bell", label: "Avisos", active: false, namespace: selection,
+                       badge: store.data.openAlerts.count) {
+                withAnimation(.spring(response: 0.35, dampingFraction: 0.82)) { store.module = .riesgo }
             }
-            RailButton(symbol: "person.crop.circle", label: "Perfil", color: Palette.graphite, active: false) {}
+            // Parar todo: fuera del foco, gris; se pone rojo solo al pasar por encima.
             Button {
                 store.requestStopAll()
             } label: {
-                Image(systemName: "stop.fill")
-                    .font(.system(size: 16, weight: .bold))
-                    .foregroundStyle(Color.white)
+                Image(systemName: "stop.circle")
+                    .font(.system(size: 18, weight: .medium))
+                    .foregroundStyle(stopHover ? Palette.stop : Palette.gray)
                     .frame(width: 44, height: 44)
-                    .background(Palette.stop, in: RoundedRectangle(cornerRadius: 13, style: .continuous))
+                    .background(stopHover ? Palette.negBg : Color.clear, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+                    .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
+            .onHover { h in withAnimation(.easeOut(duration: 0.15)) { stopHover = h } }
             .help("Parar todo")
             .accessibilityLabel("Parar todo")
         }
-        .padding(.vertical, 12)
+        .padding(.vertical, 10)
         .frame(width: 64)
-        .background(Palette.card, in: RoundedRectangle(cornerRadius: 30, style: .continuous))
-        .shadow(color: Color.black.opacity(0.10), radius: 14, x: 0, y: 8)
+        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 24, style: .continuous))
+        .overlay(RoundedRectangle(cornerRadius: 24, style: .continuous).stroke(Color.black.opacity(0.06), lineWidth: 1))
+        .shadow(color: Color.black.opacity(0.12), radius: 18, x: 0, y: 10)
+        .frame(maxHeight: .infinity, alignment: .center)
     }
 
     private func badge(for module: Module) -> Int {
@@ -103,36 +117,39 @@ struct MacRail: View {
     }
 }
 
+/// Botón del riel. La sección activa va rellena en grafito y el relleno se desliza al cambiar.
 struct RailButton: View {
     let symbol: String
     let label: String
-    let color: Color
     let active: Bool
+    let namespace: Namespace.ID
     var badge: Int = 0
-    var badgeColor: Color = Palette.neg
     let action: () -> Void
+    @State private var hover = false
 
     var body: some View {
         Button(action: action) {
             ZStack {
-                RoundedRectangle(cornerRadius: 13, style: .continuous)
-                    .fill(active ? Palette.bg : Color.clear)
                 if active {
-                    Capsule()
-                        .fill(color)
-                        .frame(width: 4, height: 24)
-                        .offset(x: -26)
+                    RoundedRectangle(cornerRadius: 14, style: .continuous)
+                        .fill(Palette.graphiteDark)
+                        .shadow(color: Palette.graphiteDark.opacity(0.28), radius: 7, x: 0, y: 4)
+                        .matchedGeometryEffect(id: "seleccion", in: namespace)
+                } else if hover {
+                    RoundedRectangle(cornerRadius: 14, style: .continuous)
+                        .fill(Palette.bg)
                 }
                 Image(systemName: symbol)
                     .font(.system(size: 18, weight: .medium))
-                    .foregroundStyle(active ? color : Palette.gray)
+                    .foregroundStyle(active ? Color.white : Palette.ink2)
                 if badge > 0 {
+                    // Mismo azul para Asesor y Avisos: el rojo queda para pérdidas y peligro.
                     Text("\(badge)")
                         .font(.system(size: 11, weight: .bold))
                         .foregroundStyle(Color.white)
                         .padding(.horizontal, 4)
                         .frame(minWidth: 17, minHeight: 17)
-                        .background(badgeColor, in: Capsule())
+                        .background(Palette.info, in: Capsule())
                         .overlay(Capsule().stroke(Palette.card, lineWidth: 2))
                         .offset(x: 14, y: -14)
                 }
@@ -141,25 +158,9 @@ struct RailButton: View {
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
+        .onHover { h in withAnimation(.easeOut(duration: 0.15)) { hover = h } }
         .help(label)
         .accessibilityLabel(label)
-    }
-}
-
-// MARK: - Contenedor de pantalla con desplazamiento
-
-struct ScreenScroll<Content: View>: View {
-    @ViewBuilder var content: () -> Content
-
-    var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 14) {
-                content()
-            }
-            .padding(.horizontal, 18)
-            .padding(.bottom, 20)
-            .frame(maxWidth: .infinity, alignment: .leading)
-        }
     }
 }
 
@@ -197,7 +198,7 @@ struct SearchSheet: View {
                 close { store.requestPause(cell.id) }
             })
         }
-        out.append(Item(group: "Acciones", title: "Parar todo", subtitle: "halt_all · todas las células",
+        out.append(Item(group: "Acciones", title: "Parar todo", subtitle: "todas las células",
                         symbol: "stop.circle", color: Palette.stop) {
             close { store.requestStopAll() }
         })

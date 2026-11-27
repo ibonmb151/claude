@@ -17,12 +17,12 @@ struct RiesgoView: View {
                     .buttonStyle(MymButtonStyle(kind: .secondary, compact: true))
             }
 
-            HStack(alignment: .top, spacing: 14) {
+            ResponsiveRow {
                 LayersCard(layers: d.layers).frame(maxWidth: .infinity)
                 healthCard(d).frame(maxWidth: .infinity)
             }
 
-            HStack(alignment: .top, spacing: 14) {
+            ResponsiveRow {
                 ExposureCard(exposures: d.exposures, totalLots: d.exposureLots, pct: d.exposurePct).frame(maxWidth: .infinity)
                 alertsCard(d).frame(maxWidth: .infinity)
             }

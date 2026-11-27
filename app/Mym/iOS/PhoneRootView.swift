@@ -1,27 +1,30 @@
 #if os(iOS)
 import SwiftUI
 
-/// iPhone: cuatro pestañas. Se ve y se para; reanudar y aprobar se hacen en el Mac.
+/// iPhone: cuatro pestañas con un dock flotante de cristal. Se ve y se para; reanudar y aprobar se hacen en el Mac.
 struct PhoneRootView: View {
     @EnvironmentObject var store: AppStore
     @State private var tab = 0
 
     var body: some View {
-        TabView(selection: $tab) {
-            NavigationStack { HoyPhoneView() }
-                .tabItem { Label("Hoy", systemImage: "square.grid.2x2") }
-                .tag(0)
-            NavigationStack { OrdenesPhoneView() }
-                .tabItem { Label("Órdenes", systemImage: "shippingbox") }
-                .tag(1)
-            NavigationStack { AvisosPhoneView() }
-                .tabItem { Label("Avisos", systemImage: "bell") }
-                .badge(store.data.openAlerts.count)
-                .tag(2)
-            NavigationStack { JevPhoneView() }
-                .tabItem { Label("Jev", systemImage: "sparkles") }
-                .badge(store.data.pendingProposals)
-                .tag(3)
+        ZStack(alignment: .bottom) {
+            TabView(selection: $tab) {
+                NavigationStack { HoyPhoneView() }
+                    .toolbar(.hidden, for: .tabBar)
+                    .tag(0)
+                NavigationStack { OrdenesPhoneView() }
+                    .toolbar(.hidden, for: .tabBar)
+                    .tag(1)
+                NavigationStack { AvisosPhoneView() }
+                    .toolbar(.hidden, for: .tabBar)
+                    .tag(2)
+                NavigationStack { JevPhoneView() }
+                    .toolbar(.hidden, for: .tabBar)
+                    .tag(3)
+            }
+            FloatingDock(tab: $tab, alerts: store.data.openAlerts.count, proposals: store.data.pendingProposals)
+                .padding(.horizontal, 16)
+                .padding(.bottom, 6)
         }
         .tint(Palette.graphiteDark)
         .sheet(item: $store.pending) { command in
@@ -29,6 +32,70 @@ struct PhoneRootView: View {
                 .environmentObject(store)
                 .presentationDetents([.large])
                 .presentationDragIndicator(.visible)
+        }
+    }
+}
+
+/// Dock flotante: cápsula de cristal; la pestaña activa va rellena en grafito y el relleno se desliza.
+struct FloatingDock: View {
+    @Binding var tab: Int
+    let alerts: Int
+    let proposals: Int
+    @Namespace private var selection
+
+    private let items: [(String, String)] = [
+        ("Hoy", "square.grid.2x2"), ("Órdenes", "shippingbox"), ("Avisos", "bell"), ("Asesor", "safari")
+    ]
+
+    var body: some View {
+        HStack(spacing: 4) {
+            ForEach(0..<items.count, id: \.self) { i in
+                Button {
+                    withAnimation(.spring(response: 0.35, dampingFraction: 0.82)) { tab = i }
+                } label: {
+                    VStack(spacing: 2) {
+                        Image(systemName: items[i].1)
+                            .font(.system(size: 18, weight: .semibold))
+                        Text(items[i].0)
+                            .font(.system(size: 11, weight: .semibold))
+                    }
+                    .foregroundStyle(tab == i ? Color.white : Palette.ink2)
+                    .frame(maxWidth: .infinity, minHeight: 52)
+                    .background {
+                        if tab == i {
+                            Capsule()
+                                .fill(Palette.graphiteDark)
+                                .matchedGeometryEffect(id: "seleccion", in: selection)
+                        }
+                    }
+                    .overlay(alignment: .topTrailing) {
+                        dockBadge(i)
+                    }
+                    .contentShape(Capsule())
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel(items[i].0)
+            }
+        }
+        .padding(6)
+        .background(.ultraThinMaterial, in: Capsule())
+        .overlay(Capsule().stroke(Color.black.opacity(0.06), lineWidth: 1))
+        .shadow(color: Color.black.opacity(0.15), radius: 18, x: 0, y: 10)
+    }
+
+    @ViewBuilder
+    private func dockBadge(_ i: Int) -> some View {
+        let n: Int = i == 2 ? alerts : (i == 3 ? proposals : 0)
+        if n > 0 {
+            // Mismo azul en Avisos y Asesor.
+            Text("\(n)")
+                .font(.system(size: 11, weight: .bold))
+                .foregroundStyle(Color.white)
+                .padding(.horizontal, 5)
+                .frame(minWidth: 18, minHeight: 18)
+                .background(Palette.info, in: Capsule())
+                .overlay(Capsule().stroke(Color.white, lineWidth: 2))
+                .offset(x: -12, y: 2)
         }
     }
 }
@@ -56,7 +123,7 @@ struct PhoneScreen<Content: View>: View {
                 content()
             }
             .padding(.horizontal, 16)
-            .padding(.bottom, 24)
+            .padding(.bottom, 96)
         }
         .background(Palette.bg.ignoresSafeArea())
         .toolbar(.hidden, for: .navigationBar)
@@ -70,7 +137,7 @@ struct HoyPhoneView: View {
 
     var body: some View {
         let d = store.data
-        PhoneScreen(title: "Hoy", subtitle: "jue 26 nov · 10:42") {
+        PhoneScreen(title: "Hoy") {
             if d.criticalCount > 0 {
                 HStack(spacing: 10) {
                     Image(systemName: "exclamationmark.triangle.fill").foregroundStyle(Palette.neg)
@@ -135,15 +202,18 @@ struct HoyPhoneView: View {
             Button {
                 store.requestStopAll()
             } label: {
-                HStack(spacing: 8) {
-                    Image(systemName: "stop.fill")
+                HStack(spacing: 6) {
+                    Image(systemName: "stop.circle")
                     Text("Parar todo")
                 }
-                .font(.system(size: 17, weight: .bold))
-                .foregroundStyle(Color.white)
-                .frame(maxWidth: .infinity, minHeight: 54)
-                .background(Palette.stop, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+                .font(.system(size: 15, weight: .semibold))
+                .foregroundStyle(Palette.ink2)
+                .padding(.horizontal, 18)
+                .frame(minHeight: 40)
+                .overlay(Capsule().stroke(Palette.graphiteSoft, lineWidth: 1))
             }
+            .buttonStyle(.plain)
+            .frame(maxWidth: .infinity)
             Text("Desde el móvil se puede ver y parar. Reanudar y aprobar se hacen en el Mac.")
                 .font(.system(size: 12)).foregroundStyle(Palette.ink2)
                 .frame(maxWidth: .infinity, alignment: .center)
@@ -225,7 +295,7 @@ struct OrderDetailPhoneView: View {
     var body: some View {
         let d = store.data
         let total = d.hops.reduce(0) { $0 + $1.ms }
-        PhoneScreen(title: order.instrument, subtitle: order.id) {
+        PhoneScreen(title: order.instrument) {
             HStack {
                 Pill(text: order.status.label, tone: order.status.tone)
                 Pill(text: order.strategyId)
@@ -331,7 +401,7 @@ struct JevPhoneView: View {
 
     var body: some View {
         let d = store.data
-        PhoneScreen(title: "Jev", subtitle: "Fase 2 · aprobar se hace en el Mac") {
+        PhoneScreen(title: "Asesor") {
             VStack(spacing: 0) {
                 ForEach(d.proposals) { p in
                     NavigationLink {
@@ -364,7 +434,7 @@ struct ProposalPhoneView: View {
     let proposal: Proposal
 
     var body: some View {
-        PhoneScreen(title: proposal.title, subtitle: "Jev propone · \(proposal.time)") {
+        PhoneScreen(title: proposal.title) {
             Text(proposal.summary).font(.system(size: 15)).foregroundStyle(Palette.ink)
                 .frame(maxWidth: .infinity, alignment: .leading).card(16)
 

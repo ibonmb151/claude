@@ -15,7 +15,7 @@ enum Module: String, CaseIterable, Identifiable {
         case .cuentas: return "Cuentas"
         case .estrategias: return "Estrategias"
         case .ajustes: return "Ajustes"
-        case .jev: return "Jev"
+        case .jev: return "Asesor"
         case .riesgo: return "Riesgo"
         }
     }
@@ -29,7 +29,7 @@ enum Module: String, CaseIterable, Identifiable {
         case .cuentas: return "creditcard"
         case .estrategias: return "chart.line.uptrend.xyaxis"
         case .ajustes: return "slider.horizontal.3"
-        case .jev: return "sparkles"
+        case .jev: return "safari"
         case .riesgo: return "checkmark.shield"
         }
     }

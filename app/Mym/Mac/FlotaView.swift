@@ -12,7 +12,7 @@ struct FlotaView: View {
                 Button("Relevo manual") { store.requestRelay(store.selectedCellId) }
                     .buttonStyle(MymButtonStyle(kind: .secondary, compact: true))
                 Button("Parar todo") { store.requestStopAll() }
-                    .buttonStyle(MymButtonStyle(kind: .danger, compact: true))
+                    .buttonStyle(MymButtonStyle(kind: .secondary, compact: true))
             }
 
             LazyVGrid(columns: [GridItem(.adaptive(minimum: 320), spacing: 14)], spacing: 14) {
@@ -23,7 +23,7 @@ struct FlotaView: View {
                 }
             }
 
-            HStack(alignment: .top, spacing: 14) {
+            ResponsiveRow {
                 VStack(alignment: .leading, spacing: 12) {
                     Heading("Disponibilidad · 60 días", info: "Un día por barra. Ámbar: incidencia menor. Rojo: parada. Gris: pausada")
                     ForEach(d.cells) { cell in
