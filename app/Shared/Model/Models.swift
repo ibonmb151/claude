@@ -14,7 +14,7 @@ enum Module: String, CaseIterable, Identifiable {
         case .flota: return "Flota"
         case .cuentas: return "Cuentas"
         case .estrategias: return "Estrategias"
-        case .ajustes: return "Ajustes"
+        case .ajustes: return "Parámetros"
         case .jev: return "Asesor"
         case .riesgo: return "Riesgo"
         }

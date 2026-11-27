@@ -1,7 +1,9 @@
 #if os(macOS)
 import SwiftUI
 
-struct CuentasView: View {
+/// Reglas de cada firma (objetivo, pérdida del día y caída) y probabilidad de llegar al objetivo.
+/// Va dentro de la pestaña «Reglas» del panel de cuenta.
+struct ReglasView: View {
     @EnvironmentObject var store: AppStore
 
     private var selected: Account {
@@ -10,9 +12,7 @@ struct CuentasView: View {
 
     var body: some View {
         let d = store.data
-        ScreenScroll {
-            Heading("Cuentas", info: "Cada cuenta con las reglas de su firma en tres anillos: objetivo, pérdida del día y drawdown", size: 20)
-
+        VStack(alignment: .leading, spacing: 14) {
             HStack(spacing: 14) {
                 ForEach(d.accounts) { account in
                     AccountCard(account: account, selected: account.id == store.selectedAccountId)

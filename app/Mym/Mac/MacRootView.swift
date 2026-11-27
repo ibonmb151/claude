@@ -84,6 +84,12 @@ struct MacRail: View {
                        badge: store.data.openAlerts.count) {
                 withAnimation(.spring(response: 0.35, dampingFraction: 0.82)) { store.module = .riesgo }
             }
+            RailButton(symbol: "gearshape", label: "Configuración ⌘,", active: false, namespace: selection) {
+                // macOS 13 la llama «Settings»; macOS 12, «Preferences».
+                if !NSApp.sendAction(Selector(("showSettingsWindow:")), to: nil, from: nil) {
+                    NSApp.sendAction(Selector(("showPreferencesWindow:")), to: nil, from: nil)
+                }
+            }
             // Parar todo: fuera del foco, gris; se pone rojo solo al pasar por encima.
             Button {
                 store.requestStopAll()

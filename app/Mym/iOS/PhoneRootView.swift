@@ -161,6 +161,8 @@ struct HoyPhoneView: View {
             .frame(maxWidth: .infinity, alignment: .leading)
             .card(16)
 
+            CuentaPhoneCard()
+
             HStack(spacing: 18) {
                 RingsView(rings: [
                     RingSpec(progress: d.dayLimitUsed, color: Palette.warn),

@@ -58,6 +58,17 @@ app/
 - **Datos vivos:** cada 4 segundos varían la latencia y el latido, para que se note que algo se mueve.
 - **Widgets:** Equity (pequeño y mediano), Hoy con anillos (pequeño), Flota (mediano y grande) y, en iPhone, tres de pantalla de bloqueo.
 
+## Cuentas, datos y claves
+
+- **Panel de cuenta (Mac):** Cuentas muestra cabecera, 6 cifras y las pestañas Ahora, Rendimiento, Módulos, Reglas y Sistema. En el iPhone, la pantalla Hoy lleva un resumen de solo lectura.
+- **Datos:** por defecto, demostración. En Configuración (⌘,) › Datos se desactiva y se elige la carpeta `06_CONFIG`. La app solo lee, y refresca cada 5 minutos. Lee estos ficheros (arrays JSON con campos en snake_case; si falta un campo, la app muestra «n.d.»):
+  `cuentas_metricas.json`, `modulos_metricas.json`, `metricas_diarias.json`, `curva_equity.json` y `seq_labels.json` (trades).
+  El contrato está en `Shared/Model/AccountModels.swift`. **El formato de `seq_labels.json` está por confirmar con los ficheros reales.**
+- **Configuración de cuentas (⌘,):** cada cuenta se asocia a un bróker o banco, y cada uno tiene su formulario (`Mym/Mac/Config/ConfigStore.swift`).
+  Las claves van al Llavero de Apple (`Mym/Common/Keychain.swift`), solo en este equipo; mostrarlas pide Touch ID. Nunca se guardan en ficheros ni en los ajustes.
+- **Todavía no hay conexión real con ningún bróker ni banco.** Los proveedores con autorización web (cTrader y los bancos) salen como «Próximamente»; el resto solo guarda y comprueba que los datos están completos.
+- Las cuentas solo se enseñan como «···1234».
+
 ## Qué falta (en este orden)
 
 1. Compilar y arreglar errores. Probar en un Mac real y en el iPhone.

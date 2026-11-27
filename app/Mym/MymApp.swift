@@ -3,7 +3,9 @@ import SwiftUI
 @main
 struct MymApp: App {
     @StateObject private var store = AppStore.shared
+    @StateObject private var accountStore = AccountStore.shared
     #if os(macOS)
+    @StateObject private var config = ConfigStore()
     @NSApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
     #endif
 
@@ -12,6 +14,7 @@ struct MymApp: App {
         WindowGroup {
             MacRootView()
                 .environmentObject(store)
+                .environmentObject(accountStore)
                 .frame(minWidth: 1040, minHeight: 680)
         }
         .windowStyle(.hiddenTitleBar)
@@ -27,10 +30,17 @@ struct MymApp: App {
                     .keyboardShortcut("k", modifiers: .command)
             }
         }
+        // ⌘,: configuración de cuentas, datos y seguridad.
+        Settings {
+            ConfigView()
+                .environmentObject(config)
+                .environmentObject(accountStore)
+        }
         #else
         WindowGroup {
             PhoneRootView()
                 .environmentObject(store)
+                .environmentObject(accountStore)
         }
         #endif
     }
