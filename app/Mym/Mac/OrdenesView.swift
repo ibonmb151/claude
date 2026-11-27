@@ -13,13 +13,7 @@ struct OrdenesView: View {
         HStack(alignment: .top, spacing: 14) {
             // Lista
             VStack(alignment: .leading, spacing: 10) {
-                Heading("Órdenes", info: "Las de hoy, de la más reciente a la más antigua. El embudo resume cuántas llegan a ejecutarse")
-                HStack(spacing: 6) {
-                    funnelCell("\(d.funnel.signals)", "señales")
-                    funnelCell("\(d.funnel.riskOk)", "riesgo ✓")
-                    funnelCell("\(d.funnel.sent)", "enviadas")
-                    funnelCell("\(d.funnel.filled)", "ejecutadas")
-                }
+                Heading("Órdenes", info: "Todas las de hoy con su seguimiento. Cuántas llegan a ejecutarse, en En vivo")
                 ScrollView {
                     VStack(spacing: 2) {
                         ForEach(d.orders) { o in

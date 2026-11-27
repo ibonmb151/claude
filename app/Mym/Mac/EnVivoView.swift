@@ -4,91 +4,9 @@ import SwiftUI
 // En vivo: lo que está pasando ahora. Con datos de demostración se mueve solo;
 // con datos reales enseña lo que hay en los ficheros y se actualiza cuando se recargan (cada 5 minutos).
 
-final class LiveFeed: ObservableObject {
-    enum Kind { case open, close, reject, warn, stop, signal }
-
-    struct Event: Identifiable {
-        let id = UUID()
-        let time: String
-        let kind: Kind
-        let title: String
-        let detail: String
-    }
-
-    @Published var events: [Event] = []
-    @Published var jitter: [String: Double] = [:]      // lo que se ha movido cada trade desde su valor base
-    @Published var activity: [Double] = []
-    @Published var latency: [Double] = []
-    @Published var signals = 142
-    @Published var executed = 121
-    @Published var rejected = 7
-    @Published var lastUpdate = Date()
-
-    private var timer: Timer?
-    private let clock: DateFormatter = {
-        let f = DateFormatter()
-        f.dateFormat = "HH:mm:ss"
-        f.timeZone = TimeZone(identifier: "UTC")
-        return f
-    }()
-
-    private let pool: [(Kind, String, String)] = [
-        (.open, "Apertura · Compra GBPJPY 0,10", "···2511 · Ruptura"),
-        (.close, "Cierre · EURUSD · +8,60 €", "···4152 · Rebote"),
-        (.stop, "Stop movido a breakeven · US500", "···4152 · Impulso"),
-        (.signal, "Señal nueva · AUDUSD · confianza 0,66", "Rebote"),
-        (.reject, "Rechazada por el bróker · USDJPY", "···2511 · Tendencia"),
-        (.close, "Cierre · XAUUSD · −9,40 €", "···4152 · Ruptura"),
-        (.warn, "Hora del bróker desfasada 1,4 s", "···4152")
-    ]
-
-    init() {
-        activity = (0..<24).map { Double(2 + Int(5 * abs(sin(Double($0) * 1.3)))) }
-        latency = [380, 410, 395, 430, 412, 405, 398, 420, 412]
-        events = [
-            Event(time: "10:41:58", kind: .open, title: "Apertura · Venta US500 0,20", detail: "···4152 · Impulso"),
-            Event(time: "10:41:07", kind: .reject, title: "Rechazada por el bróker · EURUSD", detail: "···2511 · Rebote"),
-            Event(time: "10:30:00", kind: .close, title: "Cierre · GBPUSD · +4,10 €", detail: "···2511 · Tendencia"),
-            Event(time: "10:12:31", kind: .warn, title: "Hora del bróker desfasada 1,4 s", detail: "···4152")
-        ]
-    }
-
-    func start(labels: [String]) {
-        stop()
-        var seeded: [String: Double] = [:]
-        for l in labels { seeded[l] = jitter[l] ?? 0 }
-        jitter = seeded
-        timer = Timer.scheduledTimer(withTimeInterval: 2.3, repeats: true) { [weak self] _ in
-            self?.tick()
-        }
-    }
-
-    func stop() {
-        timer?.invalidate()
-        timer = nil
-    }
-
-    private func tick() {
-        lastUpdate = Date()
-        var next: [String: Double] = jitter
-        for k in jitter.keys { next[k] = (jitter[k] ?? 0) + Double.random(in: -1.6...1.4) }
-        jitter = next
-        activity = Array(activity.dropFirst()) + [Double(1 + Int.random(in: 0...6))]
-        latency = Array(latency.dropFirst()) + [Double(380 + Int.random(in: 0...90))]
-        if Double.random(in: 0...1) < 0.7, let p = pool.randomElement() {
-            events.insert(Event(time: clock.string(from: Date()), kind: p.0, title: p.1, detail: p.2), at: 0)
-            if events.count > 9 { events.removeLast() }
-            if p.0 == .signal { signals += 1 }
-            if p.0 == .close { executed += 1 }
-            if p.0 == .reject { rejected += 1 }
-        }
-    }
-
-    func movement(_ label: String) -> Double { jitter[label] ?? 0 }
-}
-
 struct EnVivoView: View {
     @EnvironmentObject var accounts: AccountStore
+    @EnvironmentObject var store: AppStore
     @StateObject private var feed = LiveFeed()
 
     private var demo: Bool { accounts.bundle.source == .demo }
@@ -127,8 +45,9 @@ struct EnVivoView: View {
                 }
                 .frame(maxWidth: .infinity)
             }
+            flowCard
             ResponsiveRow {
-                countersCard.frame(maxWidth: .infinity)
+                metersCard.frame(maxWidth: .infinity)
                 minuteCard.frame(maxWidth: .infinity)
                 latencyCard.frame(maxWidth: .infinity)
             }
@@ -198,22 +117,36 @@ struct EnVivoView: View {
         .card(Layout.card)
     }
 
-    private var countersCard: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            Heading("Hoy", info: "Cuántas señales llegan y cuántas acaban en operación")
-            HStack(spacing: 18) {
-                counter("Señales", feed.signals, Palette.ink)
-                counter("Ejecutadas", feed.executed, Palette.posText)
-                counter("Rechazadas", feed.rejected, Palette.negText)
-            }
+    /// Cuántas señales llegan y cuántas acaban en operación. Es lo único que cuenta el embudo: Órdenes ya no lo repite.
+    private var flowCard: some View {
+        let f = store.data.funnel
+        return VStack(alignment: .leading, spacing: 8) {
+            Heading("Flujo de una orden", info: "El caudal azul se estrecha en cada paso y cada salida baja a su destino: violeta, frenada por riesgo (es protección); gris, cancelada; rojo, rechazada por el bróker")
+            FlowChart(counts: [f.signals, f.riskOk, f.sent, f.filled], exits: ChartSamples.flowExits)
         }
         .card(Layout.card)
     }
 
-    private func counter(_ label: String, _ value: Int, _ color: Color) -> some View {
-        VStack(alignment: .leading, spacing: 2) {
-            Text(label).font(.system(size: 12, weight: .semibold)).foregroundStyle(Palette.ink2)
-            Text("\(value)").font(.system(size: 26, weight: .bold)).foregroundStyle(color).monospacedDigit()
+    private var metersCard: some View {
+        let summary: AccountSummary = accounts.bundle.summary(for: accounts.scope)
+        let risk: Double = summary.riskUsed ?? 0
+        let free: Double = summary.freeMarginPct ?? 0
+        return VStack(alignment: .leading, spacing: 14) {
+            Heading("Riesgo y margen", info: "Lo que queda antes de los límites. Riesgo: máximo 5 %")
+            meter("Riesgo usado", Fmt.opt(summary.riskUsed) { Fmt.comma($0, 1) + " de 5 %" }, risk / 5, risk < 3 ? Palette.pos : Palette.warn, 0.6)
+            meter("Margen libre", Fmt.opt(summary.freeMarginPct) { Fmt.pct($0, 0) }, free / 100, Palette.info, nil)
+        }
+        .card(Layout.card)
+    }
+
+    private func meter(_ title: String, _ text: String, _ fraction: Double, _ color: Color, _ warn: Double?) -> some View {
+        VStack(alignment: .leading, spacing: 6) {
+            HStack {
+                Text(title).font(.system(size: 13))
+                Spacer()
+                Text(text).font(.system(size: 13, weight: .bold)).monospacedDigit()
+            }
+            ProgressTrack(fraction: fraction, color: color, warnAt: warn, height: 10)
         }
     }
 

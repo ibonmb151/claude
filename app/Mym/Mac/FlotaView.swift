@@ -58,6 +58,20 @@ struct FlotaView: View {
             }
 
             VStack(alignment: .leading, spacing: 10) {
+                Heading("Red", info: "Sedes, bróker, datos y asesor con la latencia de cada tramo. Continua: activo. Discontinua: en espera")
+                NetworkMap()
+                    .frame(height: 290)
+            }
+            .card(Layout.card)
+
+            VStack(alignment: .leading, spacing: 10) {
+                Heading("Turnos", info: "Cuándo trabaja cada método hoy. Macizo: hecho. Claro: lo que queda. Rayado: pausa por noticia")
+                ShiftsChart(lanes: ChartSamples.shiftLanes, sessions: ChartSamples.shiftSessions, news: ChartSamples.shiftNews,
+                            now: 10.7, nowText: "10:42", nextNews: "Próxima noticia en 3 h 48 min")
+            }
+            .card(Layout.card)
+
+            VStack(alignment: .leading, spacing: 10) {
                 Heading("Latencias", info: "Un punto por orden. La caja es la mitad central, la raya azul la mediana. En rojo, las que pasan de 1 segundo")
                 LatencyChart(cells: ChartSamples.latencyCells)
             }

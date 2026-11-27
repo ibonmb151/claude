@@ -76,6 +76,22 @@ app/
 - **Widgets nuevos** (`MymWidgets/MymWidgetsCuentas.swift`): Cuentas, En vivo, Avisos, Resultados y, en el iPhone, Riesgo y resultado para la pantalla de bloqueo. Se refrescan unas pocas veces por hora: sirven para ver, no para operar. Isla dinámica y Actividad en vivo están solo en el diseño.
 - **Retícula:** huecos, relleno y dock salen de `Shared/Theme/Layout.swift` (rejilla de 8 puntos).
 
+## Dónde vive cada dato (una sola vez)
+
+| Dato | Sitio |
+|---|---|
+| Un número por área, con enlace | Inicio |
+| Flotante, trades abiertos, actividad, riesgo, margen y flujo de órdenes | En vivo |
+| Todas las órdenes de hoy con su seguimiento | Órdenes |
+| Saldo, margen, reglas de la firma, conciliación y datos | Cuentas |
+| Resultado, curva, caída, hoy por horas y por cuenta | Resultados |
+| Salud de los robots, red, turnos y latencias | Flota |
+| Rendimiento por método y por módulo | Estrategias |
+| Lo que hay que resolver y los límites | Riesgo |
+| Cuentas, claves y carpeta de datos | Configuración (⌘,) |
+
+En el iPhone: Hoy, En vivo, Avisos, Resultados y Asesor, con un dock flotante de cristal solo con iconos; la sección activa se expande con su nombre.
+
 ## Qué falta (en este orden)
 
 1. Compilar y arreglar errores. Probar en un Mac real y en el iPhone.

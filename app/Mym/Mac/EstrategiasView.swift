@@ -3,6 +3,7 @@ import SwiftUI
 
 struct EstrategiasView: View {
     @EnvironmentObject var store: AppStore
+    @EnvironmentObject var accounts: AccountStore
 
     private var selected: Strategy {
         store.data.strategies.first { $0.id == store.selectedStrategyId } ?? store.data.strategies[0]
@@ -88,6 +89,7 @@ struct EstrategiasView: View {
                             }
                         }
                     }
+                    CuentaModulos(bundle: accounts.bundle, scope: accounts.scope)
                     Divider()
                     HStack(alignment: .top, spacing: 24) {
                         VStack(alignment: .leading, spacing: 8) {

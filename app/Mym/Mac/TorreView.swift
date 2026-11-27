@@ -1,108 +1,69 @@
 #if os(macOS)
 import SwiftUI
 
+/// Inicio: un número por área y un enlace a su sitio. Sin listas ni gráficas completas.
+///  Dinero → Cuentas · Hoy → Resultados · Órdenes y respuesta → En vivo · Robots → Flota · Avisos → Riesgo
 struct TorreView: View {
     @EnvironmentObject var store: AppStore
 
     var body: some View {
         let d = store.data
         ScreenScroll {
-            // Cifras
             ResponsiveRow(breakpoint: 980) {
-                KPICard(title: "Equity", info: "Suma de todas las cuentas",
-                        value: Fmt.eur(d.equity), pill: Fmt.signedPct(d.equityDeltaPct) + " hoy", tone: .good,
-                        series: d.equitySeries, color: Palette.pos)
-                KPICard(title: "Hoy", info: "Resultado del día. Límite global: −2 %",
-                        value: Fmt.signedPct(d.dayPct, 2), pill: Fmt.pct(d.dayLimitUsed * 100) + " del límite", tone: .warn,
-                        series: d.dayPctSeries, color: Palette.neg)
-                KPICard(title: "Órdenes", info: "Órdenes enviadas hoy y rechazadas por el bróker",
-                        value: "\(d.ordersToday)", pill: "\(d.rejectedToday) rechazadas", tone: .neutral,
-                        series: d.ordersSeries, color: Palette.info)
-                KPICard(title: "Latencia", info: "Mediana hasta ACCEPTED. Percentil 99: \(d.latencyP99) ms",
-                        value: Fmt.ms(d.latencyMs), pill: "p99 \(d.latencyP99)", tone: .info,
-                        series: d.latencySeries, color: Palette.violet)
+                link(.cuentas) {
+                    KPICard(title: "Dinero total", info: "Suma de todas las cuentas. El detalle, en Cuentas",
+                            value: Fmt.eur(d.equity), pill: Fmt.signedPct(d.equityDeltaPct) + " semana", tone: .good,
+                            series: d.equitySeries, color: Palette.pos)
+                }
+                link(.resultados) {
+                    KPICard(title: "Hoy", info: "Resultado del día. El detalle, en Resultados",
+                            value: Fmt.signedPct(d.dayPct, 2), pill: Fmt.pct(d.dayLimitUsed * 100) + " del límite", tone: .warn,
+                            series: d.dayPctSeries, color: Palette.neg)
+                }
+                link(.envivo) {
+                    KPICard(title: "Órdenes", info: "Enviadas hoy y rechazadas. Lo que pasa ahora, en En vivo",
+                            value: "\(d.ordersToday)", pill: "\(d.rejectedToday) rechazadas", tone: .neutral,
+                            series: d.ordersSeries, color: Palette.info)
+                }
+                link(.envivo) {
+                    KPICard(title: "Respuesta del bróker", info: "Mediana hasta que acepta la orden",
+                            value: Fmt.ms(d.latencyMs), pill: "p99 \(d.latencyP99)", tone: .info,
+                            series: d.latencySeries, color: Palette.violet)
+                }
             }
 
-            // Red y órdenes en tránsito
             ResponsiveRow {
-                VStack(alignment: .leading, spacing: 10) {
-                    Heading("Red", info: "Sedes, bróker, datos y Jev con la latencia de cada tramo. Continua: activo. Discontinua: en espera")
-                    NetworkMap()
-                        .frame(height: 290)
-                }
-                .card(Layout.card)
-                .frame(maxWidth: .infinity)
+                link(.flota) { FleetDonutCard(cells: d.cells) }
+                    .frame(maxWidth: .infinity)
 
                 VStack(alignment: .leading, spacing: 2) {
-                    Heading("En tránsito", info: "Órdenes de los últimos segundos y su parada actual") {
-                        Button("Todo") { store.module = .ordenes }
+                    Heading("Avisos", info: "Lo que necesita a una persona, de más a menos grave") {
+                        Button("Ver todos") { store.module = .riesgo }
                             .buttonStyle(.plain)
                             .font(.system(size: 13, weight: .medium))
                             .foregroundStyle(Palette.infoText)
                     }
-                    ForEach(d.orders.prefix(4)) { order in
-                        Button {
-                            store.selectedOrderId = order.id
-                            store.module = .ordenes
-                        } label: {
-                            TransitRow(order: order, strategy: d.strategy(order.strategyId))
+                    ForEach(d.openAlerts.prefix(3)) { alert in
+                        Button { store.module = .riesgo } label: {
+                            IncidentRow(alert: alert)
                         }
                         .buttonStyle(.plain)
-                        Divider()
+                    }
+                    if d.openAlerts.isEmpty {
+                        Text("Nada pendiente").font(.system(size: 13)).foregroundStyle(Palette.ink2).padding(.vertical, 8)
                     }
                 }
-                .card(Layout.card)
-                .frame(width: 340)
-            }
-
-            // Flujo de una orden y turnos del día
-            ResponsiveRow {
-                VStack(alignment: .leading, spacing: 10) {
-                    Heading("Flujo", info: "La tubería de una orden. El caudal azul se estrecha en cada paso y cada salida baja a su destino: violeta, frenada por riesgo (es protección); gris, cancelada; rojo, rechazada por el bróker")
-                    FlowChart(counts: [d.funnel.signals, d.funnel.riskOk, d.funnel.sent, d.funnel.filled],
-                              exits: ChartSamples.flowExits)
-                }
+                .frame(maxWidth: .infinity, alignment: .leading)
                 .card(Layout.card)
                 .frame(maxWidth: .infinity)
-
-                VStack(alignment: .leading, spacing: 10) {
-                    Heading("Turnos", info: "Cuándo trabaja cada estrategia hoy. Macizo: hecho. Claro: lo que queda. Rayado: pausa por noticia")
-                    ShiftsChart(lanes: ChartSamples.shiftLanes, sessions: ChartSamples.shiftSessions, news: ChartSamples.shiftNews,
-                                now: 10.7, nowText: "10:42", nextNews: "Próxima noticia en 3 h 48 min")
-                }
-                .card(Layout.card)
-                .frame(maxWidth: .infinity)
-            }
-
-            // Por hora, flota e incidencias
-            ResponsiveRow {
-                HourlyCard(snapshot: d)
-                    .frame(maxWidth: .infinity)
-
-                VStack(spacing: 14) {
-                    Button { store.module = .flota } label: {
-                        FleetDonutCard(cells: d.cells)
-                    }
-                    .buttonStyle(.plain)
-
-                    VStack(alignment: .leading, spacing: 2) {
-                        Heading("Incidencias", info: "Lo que necesita a una persona, de más a menos grave")
-                        ForEach(d.openAlerts) { alert in
-                            Button { store.module = .riesgo } label: {
-                                IncidentRow(alert: alert)
-                            }
-                            .buttonStyle(.plain)
-                        }
-                        if d.openAlerts.isEmpty {
-                            Text("Nada pendiente").font(.system(size: 13)).foregroundStyle(Palette.ink2).padding(.vertical, 8)
-                        }
-                    }
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .card(Layout.cardSmall)
-                }
-                .frame(width: 340)
             }
         }
+    }
+
+    private func link<Content: View>(_ module: Module, @ViewBuilder content: () -> Content) -> some View {
+        Button { store.module = module } label: { content() }
+            .buttonStyle(.plain)
+            .frame(maxWidth: .infinity)
     }
 }
 #endif

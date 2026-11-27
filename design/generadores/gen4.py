@@ -28,16 +28,16 @@ EXTRA = r'''
 .hstat{display:flex;flex-direction:column;gap:2px;padding:0 18px;border-left:1px solid #EFEFEA}
 .hstat:first-child{border-left:0;padding-left:0}
 .hstat .l{font-size:12px;font-weight:600;color:#6B7078}
-.kgrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
-.kpi{background:#fff;border-radius:18px;border:1px solid rgba(16,17,19,.05);box-shadow:0 1px 1px rgba(16,17,19,.03),0 4px 14px rgba(16,17,19,.04);padding:14px 16px;display:flex;flex-direction:column;gap:4px;animation:rise .55s var(--ease) both}
+.kgrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px}
+.kpi{background:#fff;border-radius:18px;border:1px solid rgba(16,17,19,.05);box-shadow:0 1px 1px rgba(16,17,19,.03),0 4px 14px rgba(16,17,19,.04);padding:18px 20px;display:flex;flex-direction:column;gap:6px;animation:rise .55s var(--ease) both}
 .kpi .l{font-size:12px;font-weight:600;color:#6B7078}
 .kpi .v{font-size:26px;font-weight:700;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
 .kpi .r{font-size:12px;color:#8A8A84}
 .kgrid .kpi:nth-child(2){animation-delay:.03s}.kgrid .kpi:nth-child(3){animation-delay:.06s}.kgrid .kpi:nth-child(4){animation-delay:.09s}
 .kgrid .kpi:nth-child(5){animation-delay:.12s}.kgrid .kpi:nth-child(6){animation-delay:.15s}.kgrid .kpi:nth-child(7){animation-delay:.18s}.kgrid .kpi:nth-child(8){animation-delay:.21s}
-.g2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
-.g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
-.tabpane{display:flex;flex-direction:column;gap:14px;animation:rise .45s var(--ease) both}
+.g2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}
+.g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}
+.tabpane{display:flex;flex-direction:column;gap:24px;animation:rise .45s var(--ease) both}
 .sep2{font-size:12px;font-weight:700;color:#8A8A84;letter-spacing:.04em;text-transform:uppercase;margin-top:4px}
 .banner{display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:14px;background:#FDE4E8;color:#C21A36;font-weight:600;font-size:14px}
 .sdot{width:10px;height:10px;border-radius:50%;flex:none}

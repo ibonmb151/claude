@@ -1,7 +1,9 @@
 #if os(iOS)
 import SwiftUI
 
-/// iPhone: cuatro pestañas con un dock flotante de cristal. Se ve y se para; reanudar y aprobar se hacen en el Mac.
+/// iPhone: cinco secciones con un dock flotante de cristal.
+/// Cada dato vive en un sitio: Hoy (resumen y cuentas), En vivo (lo de ahora), Avisos, Resultados y Asesor.
+/// Se ve y se para; reanudar y aprobar se hacen en el Mac.
 struct PhoneRootView: View {
     @EnvironmentObject var store: AppStore
     @State private var tab = 0
@@ -12,19 +14,21 @@ struct PhoneRootView: View {
                 NavigationStack { HoyPhoneView() }
                     .toolbar(.hidden, for: .tabBar)
                     .tag(0)
-                NavigationStack { OrdenesPhoneView() }
+                NavigationStack { EnVivoPhoneView() }
                     .toolbar(.hidden, for: .tabBar)
                     .tag(1)
                 NavigationStack { AvisosPhoneView() }
                     .toolbar(.hidden, for: .tabBar)
                     .tag(2)
-                NavigationStack { JevPhoneView() }
+                NavigationStack { ResultadosPhoneView() }
                     .toolbar(.hidden, for: .tabBar)
                     .tag(3)
+                NavigationStack { JevPhoneView() }
+                    .toolbar(.hidden, for: .tabBar)
+                    .tag(4)
             }
             FloatingDock(tab: $tab, alerts: store.data.openAlerts.count, proposals: store.data.pendingProposals)
-                .padding(.horizontal, 16)
-                .padding(.bottom, 6)
+                .padding(.bottom, 8)
         }
         .tint(Palette.graphiteDark)
         .sheet(item: $store.pending) { command in
@@ -36,66 +40,70 @@ struct PhoneRootView: View {
     }
 }
 
-/// Dock flotante: cápsula de cristal; la pestaña activa va rellena en grafito y el relleno se desliza.
+/// Dock flotante: cápsula de cristal solo con iconos. La sección activa se expande y enseña su nombre.
 struct FloatingDock: View {
     @Binding var tab: Int
     let alerts: Int
     let proposals: Int
     @Namespace private var selection
 
-    private let items: [(String, String)] = [
-        ("Hoy", "square.grid.2x2"), ("Órdenes", "shippingbox"), ("Avisos", "bell"), ("Asesor", "safari")
+    private let items: [(title: String, symbol: String)] = [
+        ("Hoy", "square.grid.2x2"), ("En vivo", "waveform.path.ecg"), ("Avisos", "bell"), ("Resultados", "chart.bar"), ("Asesor", "safari")
     ]
 
     var body: some View {
         HStack(spacing: 4) {
             ForEach(0..<items.count, id: \.self) { i in
+                let on: Bool = tab == i
                 Button {
-                    withAnimation(.spring(response: 0.35, dampingFraction: 0.82)) { tab = i }
+                    withAnimation(.spring(response: 0.38, dampingFraction: 0.84)) { tab = i }
                 } label: {
-                    VStack(spacing: 2) {
-                        Image(systemName: items[i].1)
-                            .font(.system(size: 18, weight: .semibold))
-                        Text(items[i].0)
-                            .font(.system(size: 11, weight: .semibold))
+                    HStack(spacing: 8) {
+                        Image(systemName: items[i].symbol)
+                            .font(.system(size: 20, weight: .semibold))
+                        if on {
+                            Text(items[i].title)
+                                .font(.system(size: 13, weight: .semibold))
+                                .lineLimit(1)
+                                .fixedSize()
+                        }
                     }
-                    .foregroundStyle(tab == i ? Color.white : Palette.ink2)
-                    .frame(maxWidth: .infinity, minHeight: 52)
+                    .foregroundStyle(on ? Color.white : Palette.ink2)
+                    .padding(.horizontal, on ? 16 : 0)
+                    .frame(minWidth: 48, minHeight: 48)
                     .background {
-                        if tab == i {
+                        if on {
                             Capsule()
                                 .fill(Palette.graphiteDark)
+                                .shadow(color: Palette.graphiteDark.opacity(0.3), radius: 7, x: 0, y: 4)
                                 .matchedGeometryEffect(id: "seleccion", in: selection)
                         }
                     }
                     .overlay(alignment: .topTrailing) {
-                        dockBadge(i)
+                        dockDot(i, on: on)
                     }
                     .contentShape(Capsule())
                 }
                 .buttonStyle(.plain)
-                .accessibilityLabel(items[i].0)
+                .accessibilityLabel(items[i].title)
             }
         }
-        .padding(6)
+        .padding(8)
         .background(.ultraThinMaterial, in: Capsule())
-        .overlay(Capsule().stroke(Color.black.opacity(0.06), lineWidth: 1))
-        .shadow(color: Color.black.opacity(0.15), radius: 18, x: 0, y: 10)
+        .overlay(Capsule().stroke(Color.white.opacity(0.7), lineWidth: 1))
+        .shadow(color: Color.black.opacity(0.16), radius: 20, x: 0, y: 12)
     }
 
+    /// Un punto azul (el mismo en Avisos y en Asesor) cuando hay algo pendiente.
     @ViewBuilder
-    private func dockBadge(_ i: Int) -> some View {
-        let n: Int = i == 2 ? alerts : (i == 3 ? proposals : 0)
-        if n > 0 {
-            // Mismo azul en Avisos y Asesor.
-            Text("\(n)")
-                .font(.system(size: 11, weight: .bold))
-                .foregroundStyle(Color.white)
-                .padding(.horizontal, 5)
-                .frame(minWidth: 18, minHeight: 18)
-                .background(Palette.info, in: Capsule())
-                .overlay(Capsule().stroke(Color.white, lineWidth: 2))
-                .offset(x: -12, y: 2)
+    private func dockDot(_ i: Int, on: Bool) -> some View {
+        let pending: Int = i == 2 ? alerts : (i == 4 ? proposals : 0)
+        if pending > 0 {
+            Circle()
+                .fill(Palette.info)
+                .frame(width: 10, height: 10)
+                .overlay(Circle().stroke(on ? Palette.graphiteDark : Color.white, lineWidth: 2))
+                .offset(x: -7, y: 7)
         }
     }
 }

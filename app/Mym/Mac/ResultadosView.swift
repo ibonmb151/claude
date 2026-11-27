@@ -14,6 +14,7 @@ struct ResultadosView: View {
     }
 
     @EnvironmentObject var accounts: AccountStore
+    @EnvironmentObject var store: AppStore
     @State private var period: Period = .mes
 
     private var bundle: AccountBundle { accounts.bundle }
@@ -23,6 +24,7 @@ struct ResultadosView: View {
         let total: Double? = daily.isEmpty ? nil : daily.reduce(0, +)
         let equity: [Double] = Array(bundle.equitySeries(accounts.scope).suffix(period.days + 1))
         let summary: AccountSummary = bundle.summary(for: accounts.scope)
+        let drawdown: [Double] = AccountBundle.drawdown(of: equity)
         ScreenScroll {
             HStack(alignment: .top, spacing: 16) {
                 VStack(alignment: .leading, spacing: 4) {
@@ -75,9 +77,19 @@ struct ResultadosView: View {
             }
 
             ResponsiveRow(breakpoint: 1080) {
-                modulesCard.frame(maxWidth: .infinity)
+                VStack(alignment: .leading, spacing: 8) {
+                    Heading("Caída desde el máximo", info: "Cuánto estás por debajo del mejor punto de la curva")
+                    if drawdown.count > 1 {
+                        CurveChart(values: drawdown, color: Palette.neg, baseline: 0, yText: { Fmt.comma($0, 1) + " %" }, height: 190)
+                    } else {
+                        Text("n.d.").font(.system(size: 13)).foregroundStyle(Palette.ink2).frame(maxWidth: .infinity, minHeight: 80)
+                    }
+                }
+                .card(Layout.card)
+                .frame(maxWidth: .infinity)
                 accountsCard.frame(maxWidth: .infinity)
             }
+            HourlyCard(snapshot: store.data)
         }
     }
 
@@ -88,27 +100,6 @@ struct ResultadosView: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .card(Layout.cardSmall)
-    }
-
-    private var modulesCard: some View {
-        let mods: [ModuleMetrics] = bundle.modules.filter { bundle.inScope($0.cuenta, accounts.scope) }
-        let mx: Double = max(mods.compactMap { $0.pnlRealizado }.map { abs($0) }.max() ?? 1, 1)
-        return VStack(alignment: .leading, spacing: 10) {
-            Heading("Por módulo", info: "Cuánto ha aportado cada módulo")
-            if mods.isEmpty {
-                Text("n.d.").font(.system(size: 13)).foregroundStyle(Palette.ink2)
-            }
-            ForEach(mods) { m in
-                HStack(spacing: 10) {
-                    Text(m.modulo).font(.system(size: 13, weight: .semibold)).frame(width: 84, alignment: .leading)
-                    ProgressTrack(fraction: abs(m.pnlRealizado ?? 0) / mx, color: (m.pnlRealizado ?? 0) >= 0 ? Palette.pos : Palette.neg, height: 12)
-                    Text(Fmt.opt(m.pnlRealizado) { Fmt.signedEur2($0) })
-                        .font(.system(size: 13, weight: .bold)).foregroundStyle(resultColor(m.pnlRealizado)).monospacedDigit()
-                        .frame(width: 96, alignment: .trailing)
-                }
-            }
-        }
-        .card(Layout.card)
     }
 
     private var accountsCard: some View {

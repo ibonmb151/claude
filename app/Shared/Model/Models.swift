@@ -9,7 +9,7 @@ enum Module: String, CaseIterable, Identifiable {
 
     var title: String {
         switch self {
-        case .torre: return "Torre"
+        case .torre: return "Inicio"
         case .envivo: return "En vivo"
         case .ordenes: return "Órdenes"
         case .flota: return "Flota"
