@@ -3,17 +3,19 @@ import SwiftUI
 // MARK: - Módulos de la app
 
 enum Module: String, CaseIterable, Identifiable {
-    case torre, ordenes, flota, cuentas, estrategias, ajustes, jev, riesgo
+    case torre, envivo, ordenes, flota, cuentas, estrategias, resultados, ajustes, jev, riesgo
 
     var id: String { rawValue }
 
     var title: String {
         switch self {
         case .torre: return "Torre"
+        case .envivo: return "En vivo"
         case .ordenes: return "Órdenes"
         case .flota: return "Flota"
         case .cuentas: return "Cuentas"
         case .estrategias: return "Estrategias"
+        case .resultados: return "Resultados"
         case .ajustes: return "Parámetros"
         case .jev: return "Asesor"
         case .riesgo: return "Riesgo"
@@ -24,10 +26,12 @@ enum Module: String, CaseIterable, Identifiable {
     var symbol: String {
         switch self {
         case .torre: return "square.grid.2x2"
+        case .envivo: return "waveform.path.ecg"
         case .ordenes: return "shippingbox"
         case .flota: return "server.rack"
         case .cuentas: return "creditcard"
         case .estrategias: return "chart.line.uptrend.xyaxis"
+        case .resultados: return "chart.bar"
         case .ajustes: return "slider.horizontal.3"
         case .jev: return "safari"
         case .riesgo: return "checkmark.shield"
@@ -37,10 +41,12 @@ enum Module: String, CaseIterable, Identifiable {
     var color: Color {
         switch self {
         case .torre: return Palette.graphite
+        case .envivo: return Palette.pos
         case .ordenes: return Palette.info
         case .flota: return Palette.teal
         case .cuentas: return Palette.gold
         case .estrategias: return Palette.violet
+        case .resultados: return Palette.info
         case .ajustes: return Palette.gray
         case .jev: return Palette.magenta
         case .riesgo: return Palette.neg

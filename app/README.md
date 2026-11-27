@@ -69,6 +69,13 @@ app/
 - **Todavía no hay conexión real con ningún bróker ni banco.** Los proveedores con autorización web (cTrader y los bancos) salen como «Próximamente»; el resto solo guarda y comprueba que los datos están completos.
 - Las cuentas solo se enseñan como «···1234».
 
+## Secciones y widgets nuevos
+
+- **En vivo** (Mac): actividad, flotante y trades abiertos. Con datos de demostración se mueve sola; con datos reales se actualiza al recargar los ficheros (cada 5 minutos).
+- **Resultados** (Mac): resultado por día, curva, y reparto por módulo y por cuenta. Con los ficheros de hoy solo hay semana y mes; «Hoy» por horas y «Año» necesitan ficheros por hora y por mes.
+- **Widgets nuevos** (`MymWidgets/MymWidgetsCuentas.swift`): Cuentas, En vivo, Avisos, Resultados y, en el iPhone, Riesgo y resultado para la pantalla de bloqueo. Se refrescan unas pocas veces por hora: sirven para ver, no para operar. Isla dinámica y Actividad en vivo están solo en el diseño.
+- **Retícula:** huecos, relleno y dock salen de `Shared/Theme/Layout.swift` (rejilla de 8 puntos).
+
 ## Qué falta (en este orden)
 
 1. Compilar y arreglar errores. Probar en un Mac real y en el iPhone.

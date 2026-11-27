@@ -99,7 +99,7 @@ struct CuentaHeader: View {
                 Spacer(minLength: 0)
             }
         }
-        .card(16)
+        .card(Layout.card)
     }
 
     private var dayText: String {
@@ -234,7 +234,7 @@ struct CuentaAhora: View {
                     }
                 }
             }
-            .card(16)
+            .card(Layout.card)
             HStack(alignment: .top, spacing: 14) {
                 meter("Riesgo usado", info: "Suma del riesgo de las posiciones abiertas. Límite: 5 %",
                       text: Fmt.opt(summary.riskUsed) { Fmt.comma($0, 1) + " de 5 %" },
@@ -291,7 +291,7 @@ struct CuentaAhora: View {
             }
             ProgressTrack(fraction: fraction, color: color, warnAt: warn, height: 12)
         }
-        .card(16)
+        .card(Layout.card)
         .frame(maxWidth: .infinity)
     }
 }
@@ -320,7 +320,7 @@ struct CuentaRendimiento: View {
                     empty
                 }
             }
-            .card(16)
+            .card(Layout.card)
             HStack(alignment: .top, spacing: 14) {
                 VStack(alignment: .leading, spacing: 8) {
                     Heading("Caída desde el máximo", info: "Cuánto estás por debajo del mejor punto de la curva")
@@ -328,7 +328,7 @@ struct CuentaRendimiento: View {
                         CurveChart(values: dd, color: Palette.neg, baseline: 0, yText: { Fmt.comma($0, 1) + " %" }, height: 190)
                     } else { empty }
                 }
-                .card(16)
+                .card(Layout.card)
                 .frame(maxWidth: .infinity)
                 VStack(alignment: .leading, spacing: 8) {
                     Heading("Resultado por día", info: "Verde gana, rojo pierde")
@@ -336,7 +336,7 @@ struct CuentaRendimiento: View {
                         DailyBarsChart(values: daily, yText: { Fmt.comma($0, 0) }, height: 190)
                     } else { empty }
                 }
-                .card(16)
+                .card(Layout.card)
                 .frame(maxWidth: .infinity)
             }
             VStack(alignment: .leading, spacing: 4) {
@@ -348,7 +348,7 @@ struct CuentaRendimiento: View {
                 LabeledValue(label: "Duración media", value: Fmt.opt(weighted { $0.avgDuracionMin }) { duration($0) })
                 LabeledValue(label: "Costes", value: Fmt.opt(sum { $0.costes }) { Fmt.eur2(-$0) })
             }
-            .card(16)
+            .card(Layout.card)
         }
     }
 
@@ -415,7 +415,7 @@ struct CuentaModulos: View {
                 Text("n.d.").font(.system(size: 13)).foregroundStyle(Palette.ink2).padding(.vertical, 8)
             }
         }
-        .card(16)
+        .card(Layout.card)
     }
 
     private func head(_ t: String, _ w: CGFloat?, _ a: Alignment = .leading) -> some View {
@@ -456,7 +456,7 @@ struct CuentaSistema: View {
                 Text(headline).font(.system(size: 17, weight: .semibold))
                 Spacer()
             }
-            .card(16)
+            .card(Layout.card)
             if !summary.alerts.isEmpty {
                 VStack(alignment: .leading, spacing: 6) {
                     Heading("Alertas", info: "Problemas que siguen abiertos")
@@ -473,7 +473,7 @@ struct CuentaSistema: View {
                         Divider()
                     }
                 }
-                .card(16)
+                .card(Layout.card)
             }
             HStack(alignment: .top, spacing: 14) {
                 VStack(alignment: .leading, spacing: 6) {
@@ -489,7 +489,7 @@ struct CuentaSistema: View {
                         .padding(.vertical, 3)
                     }
                 }
-                .card(16)
+                .card(Layout.card)
                 .frame(maxWidth: .infinity)
                 VStack(alignment: .leading, spacing: 6) {
                     Heading("Datos", info: "Ficheros de los que sale todo lo que ves")
@@ -506,7 +506,7 @@ struct CuentaSistema: View {
                         Text("Sin ficheros").font(.system(size: 13)).foregroundStyle(Palette.ink2)
                     }
                 }
-                .card(16)
+                .card(Layout.card)
                 .frame(maxWidth: .infinity)
             }
         }

@@ -20,9 +20,12 @@ struct MymApp: App {
         .windowStyle(.hiddenTitleBar)
         .commands {
             CommandMenu("Ir a") {
-                ForEach(Array(Module.allCases.enumerated()), id: \.element.id) { index, module in
+                ForEach(Array(Module.allCases.prefix(9).enumerated()), id: \.element.id) { index, module in
                     Button(module.title) { store.module = module }
                         .keyboardShortcut(KeyEquivalent(Character("\(index + 1)")), modifiers: .command)
+                }
+                ForEach(Array(Module.allCases.dropFirst(9))) { module in
+                    Button(module.title) { store.module = module }
                 }
             }
             CommandGroup(after: .textEditing) {

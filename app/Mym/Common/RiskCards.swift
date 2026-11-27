@@ -41,7 +41,7 @@ struct LayersCard: View {
                 .padding(.vertical, 3)
             }
         }
-        .card(16)
+        .card(Layout.card)
     }
 }
 
@@ -76,6 +76,6 @@ struct ExposureCard: View {
                     .frame(maxWidth: .infinity)
             }
         }
-        .card(16)
+        .card(Layout.card)
     }
 }

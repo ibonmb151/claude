@@ -45,7 +45,7 @@ struct ReglasView: View {
                         Text("+30 d").font(.system(size: 11)).foregroundStyle(Palette.ink2)
                     }
                 }
-                .card(16)
+                .card(Layout.card)
                 .frame(maxWidth: .infinity)
 
                 VStack(alignment: .leading, spacing: 4) {
@@ -69,7 +69,7 @@ struct ReglasView: View {
                             .buttonStyle(MymButtonStyle(kind: .danger, compact: true))
                     }
                 }
-                .card(16)
+                .card(Layout.card)
                 .frame(width: 340)
             }
         }
@@ -118,7 +118,7 @@ struct AccountCard: View {
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .card(14, selected: selected)
+        .card(Layout.cardSmall, selected: selected)
     }
 
     private func line(_ color: Color, _ text: String) -> some View {

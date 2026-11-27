@@ -64,7 +64,7 @@ struct RiesgoView: View {
                 .frame(width: 110)
             }
         }
-        .card(16)
+        .card(Layout.card)
     }
 
     private var avg: Double {
@@ -94,7 +94,7 @@ struct RiesgoView: View {
                 Divider()
             }
         }
-        .card(16)
+        .card(Layout.card)
     }
 
     private func commandsCard() -> some View {
@@ -114,7 +114,7 @@ struct RiesgoView: View {
                 Divider()
             }
         }
-        .card(16)
+        .card(Layout.card)
     }
 }
 #endif

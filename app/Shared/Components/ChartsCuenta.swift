@@ -112,13 +112,15 @@ struct DailyBarsChart: View {
     let values: [Double]
     var height: CGFloat = 200
     var yText: (Double) -> String = { Fmt.comma($0, 0) }
+    var leftLabel: String? = nil
+    var rightLabel: String = "hoy"
 
     var body: some View {
         Canvas { ctx, size in
             draw(&ctx, size)
         }
         .frame(height: height)
-        .accessibilityLabel("Resultado de cada uno de los últimos \(values.count) días")
+        .accessibilityLabel("Gráfica de barras de \(values.count) valores")
     }
 
     private func draw(_ ctx: inout GraphicsContext, _ size: CGSize) {
@@ -145,7 +147,7 @@ struct DailyBarsChart: View {
             let r = CGRect(x: left + CGFloat(i) * slot + slot * 0.15, y: v >= 0 ? mid - h : mid, width: slot * 0.7, height: h)
             ctx.fill(Path(roundedRect: r, cornerRadius: 2.5), with: .color(v >= 0 ? Palette.pos : Palette.neg))
         }
-        ctx.label("hace \(values.count) días", at: CGPoint(x: left, y: size.height - 7), size: 11, anchor: .leading)
-        ctx.label("hoy", at: CGPoint(x: size.width - 10, y: size.height - 7), size: 11, anchor: .trailing)
+        ctx.label(leftLabel ?? "hace \(values.count) días", at: CGPoint(x: left, y: size.height - 7), size: 11, anchor: .leading)
+        ctx.label(rightLabel, at: CGPoint(x: size.width - 10, y: size.height - 7), size: 11, anchor: .trailing)
     }
 }

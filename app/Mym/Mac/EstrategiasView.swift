@@ -20,20 +20,20 @@ struct EstrategiasView: View {
                             strategyRow(s)
                         }
                     }
-                    .card(14)
+                    .card(Layout.cardSmall)
 
                     VStack(alignment: .leading, spacing: 6) {
                         Heading("Matriz", info: "Qué estrategia corre en qué célula y con qué peso")
                         matrix(d)
                     }
-                    .card(14)
+                    .card(Layout.cardSmall)
 
                     VStack(alignment: .leading, spacing: 6) {
                         Heading("Contribución", info: "Lo que aporta cada estrategia cada semana. El número es el neto. La semana resaltada es la mejor")
                         ContributionChart(weeks: ChartSamples.weeklyContribution, labels: ChartSamples.weekLabels,
                                           names: ChartSamples.strategyNames, colors: ChartSamples.strategyColors, height: 190)
                     }
-                    .card(14)
+                    .card(Layout.cardSmall)
                 }
             }
             .frame(width: 340)

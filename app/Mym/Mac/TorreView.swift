@@ -30,7 +30,7 @@ struct TorreView: View {
                     NetworkMap()
                         .frame(height: 290)
                 }
-                .card(16)
+                .card(Layout.card)
                 .frame(maxWidth: .infinity)
 
                 VStack(alignment: .leading, spacing: 2) {
@@ -51,7 +51,7 @@ struct TorreView: View {
                         Divider()
                     }
                 }
-                .card(16)
+                .card(Layout.card)
                 .frame(width: 340)
             }
 
@@ -62,7 +62,7 @@ struct TorreView: View {
                     FlowChart(counts: [d.funnel.signals, d.funnel.riskOk, d.funnel.sent, d.funnel.filled],
                               exits: ChartSamples.flowExits)
                 }
-                .card(16)
+                .card(Layout.card)
                 .frame(maxWidth: .infinity)
 
                 VStack(alignment: .leading, spacing: 10) {
@@ -70,7 +70,7 @@ struct TorreView: View {
                     ShiftsChart(lanes: ChartSamples.shiftLanes, sessions: ChartSamples.shiftSessions, news: ChartSamples.shiftNews,
                                 now: 10.7, nowText: "10:42", nextNews: "Próxima noticia en 3 h 48 min")
                 }
-                .card(16)
+                .card(Layout.card)
                 .frame(maxWidth: .infinity)
             }
 
@@ -98,7 +98,7 @@ struct TorreView: View {
                         }
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
-                    .card(14)
+                    .card(Layout.cardSmall)
                 }
                 .frame(width: 340)
             }

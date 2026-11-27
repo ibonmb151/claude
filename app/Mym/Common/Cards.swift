@@ -36,7 +36,7 @@ struct KPICard: View {
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .card(14)
+        .card(Layout.cardSmall)
     }
 }
 
@@ -208,7 +208,7 @@ struct FleetDonutCard: View {
                 }
             }
         }
-        .card(14)
+        .card(Layout.cardSmall)
     }
 }
 
@@ -250,6 +250,6 @@ struct HourlyCard: View {
             HourlyChart(bars: snapshot.hourly)
                 .frame(minHeight: 150)
         }
-        .card(16)
+        .card(Layout.card)
     }
 }

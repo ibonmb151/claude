@@ -10,9 +10,10 @@ struct MacRootView: View {
             Palette.bg.ignoresSafeArea()
             HStack(alignment: .top, spacing: 0) {
                 MacRail()
-                    .padding(.leading, 12)
+                    .padding(.leading, 20)
+                    .padding(.trailing, 4)
                     .padding(.top, 40)
-                    .padding(.bottom, 14)
+                    .padding(.bottom, 20)
                 GeometryReader { g in
                     ZStack(alignment: .topLeading) {
                         content
@@ -44,10 +45,12 @@ struct MacRootView: View {
     private var content: some View {
         switch store.module {
         case .torre: TorreView()
+        case .envivo: EnVivoView()
         case .ordenes: OrdenesView()
         case .flota: FlotaView()
         case .cuentas: CuentasView()
         case .estrategias: EstrategiasView()
+        case .resultados: ResultadosView()
         case .ajustes: AjustesView()
         case .jev: JevView()
         case .riesgo: RiesgoView()
@@ -63,27 +66,28 @@ struct MacRail: View {
     @State private var stopHover = false
 
     var body: some View {
-        VStack(spacing: 6) {
+        VStack(spacing: Layout.railGap) {
             RailButton(symbol: "magnifyingglass", label: "Buscar ⌘K", active: false, namespace: selection) {
                 store.showSearch = true
             }
-            Rectangle().fill(Palette.line).frame(width: 28, height: 1).padding(.vertical, 4)
-            ForEach(Module.allCases) { module in
-                RailButton(
-                    symbol: module.symbol,
-                    label: module.title,
-                    active: store.module == module,
-                    namespace: selection,
-                    badge: badge(for: module)
-                ) {
-                    withAnimation(.spring(response: 0.35, dampingFraction: 0.82)) { store.module = module }
+            Rectangle().fill(Palette.line).frame(width: 28, height: 1)
+            // Las secciones se desplazan si la ventana es baja; la búsqueda, el engranaje y Parar todo siempre se ven.
+            ScrollView(.vertical, showsIndicators: false) {
+                VStack(spacing: Layout.railGap) {
+                    ForEach(Module.allCases) { module in
+                        RailButton(
+                            symbol: module.symbol,
+                            label: module.title,
+                            active: store.module == module,
+                            namespace: selection,
+                            badge: badge(for: module)
+                        ) {
+                            withAnimation(.spring(response: 0.35, dampingFraction: 0.82)) { store.module = module }
+                        }
+                    }
                 }
             }
-            Rectangle().fill(Palette.line).frame(width: 28, height: 1).padding(.vertical, 4)
-            RailButton(symbol: "bell", label: "Avisos", active: false, namespace: selection,
-                       badge: store.data.openAlerts.count) {
-                withAnimation(.spring(response: 0.35, dampingFraction: 0.82)) { store.module = .riesgo }
-            }
+            Rectangle().fill(Palette.line).frame(width: 28, height: 1)
             RailButton(symbol: "gearshape", label: "Configuración ⌘,", active: false, namespace: selection) {
                 // macOS 13 la llama «Settings»; macOS 12, «Preferences».
                 if !NSApp.sendAction(Selector(("showSettingsWindow:")), to: nil, from: nil) {
@@ -97,7 +101,7 @@ struct MacRail: View {
                 Image(systemName: "stop.circle")
                     .font(.system(size: 18, weight: .medium))
                     .foregroundStyle(stopHover ? Palette.stop : Palette.gray)
-                    .frame(width: 44, height: 44)
+                    .frame(width: Layout.railItem, height: Layout.railItem)
                     .background(stopHover ? Palette.negBg : Color.clear, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
                     .contentShape(Rectangle())
             }
@@ -106,8 +110,8 @@ struct MacRail: View {
             .help("Parar todo")
             .accessibilityLabel("Parar todo")
         }
-        .padding(.vertical, 10)
-        .frame(width: 64)
+        .padding(.vertical, 12)
+        .frame(width: Layout.railWidth)
         .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 24, style: .continuous))
         .overlay(RoundedRectangle(cornerRadius: 24, style: .continuous).stroke(Color.black.opacity(0.06), lineWidth: 1))
         .shadow(color: Color.black.opacity(0.12), radius: 18, x: 0, y: 10)
@@ -160,13 +164,32 @@ struct RailButton: View {
                         .offset(x: 14, y: -14)
                 }
             }
-            .frame(width: 44, height: 44)
+            .frame(width: Layout.railItem, height: Layout.railItem)
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
         .onHover { h in withAnimation(.easeOut(duration: 0.15)) { hover = h } }
         .help(label)
         .accessibilityLabel(label)
+    }
+}
+
+// MARK: - Contenedor de pantalla
+
+/// Pantalla con desplazamiento: márgenes y huecos de la retícula de 8 puntos.
+struct ScreenScroll<Content: View>: View {
+    @ViewBuilder var content: () -> Content
+
+    var body: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: Layout.gap) {
+                content()
+            }
+            .padding(.horizontal, Layout.page)
+            .padding(.top, 8)
+            .padding(.bottom, Layout.page)
+            .frame(maxWidth: .infinity, alignment: .leading)
+        }
     }
 }
 

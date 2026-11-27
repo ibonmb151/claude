@@ -240,8 +240,13 @@ struct MymWidgetBundle: WidgetBundle {
         EquityWidget()
         RingsWidget()
         FleetWidget()
+        CuentasWidget()
+        EnVivoWidget()
+        AvisosWidget()
+        ResultadosWidget()
         #if os(iOS)
         LockWidget()
+        RiesgoLockWidget()
         #endif
     }
 }

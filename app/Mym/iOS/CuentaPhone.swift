@@ -48,7 +48,7 @@ struct CuentaPhoneCard: View {
                 }
             }
         }
-        .card(16)
+        .card(Layout.card)
     }
 
     private func dayText(_ s: AccountSummary) -> String {

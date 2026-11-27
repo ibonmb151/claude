@@ -208,7 +208,7 @@ extension EnvironmentValues {
 struct ResponsiveRow<Content: View>: View {
     @Environment(\.contentWidth) private var width
     var breakpoint: CGFloat = 1080
-    var spacing: CGFloat = 14
+    var spacing: CGFloat = Layout.gap
     @ViewBuilder var content: () -> Content
 
     var body: some View {

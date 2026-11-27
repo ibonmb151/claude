@@ -159,7 +159,7 @@ struct HoyPhoneView: View {
                     .frame(height: 56)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-            .card(16)
+            .card(Layout.card)
 
             CuentaPhoneCard()
 
@@ -177,7 +177,7 @@ struct HoyPhoneView: View {
                 }
                 Spacer(minLength: 0)
             }
-            .card(16)
+            .card(Layout.card)
 
             VStack(spacing: 0) {
                 ForEach(d.cells) { cell in
@@ -319,7 +319,7 @@ struct OrderDetailPhoneView: View {
                     }
                 }
             }
-            .card(16)
+            .card(Layout.card)
 
             VStack(alignment: .leading, spacing: 8) {
                 Heading("Tiempo · \(total) ms", info: "A escala: cuánto tarda cada tramo")
@@ -341,14 +341,14 @@ struct OrderDetailPhoneView: View {
                     }
                 }
             }
-            .card(16)
+            .card(Layout.card)
 
             VStack(alignment: .leading, spacing: 6) {
                 Heading("Precio", info: "Desde la entrada, con el objetivo arriba y el stop abajo")
                 PriceStrip(entry: order.entry, stop: order.stop, target: order.target, last: order.last)
                     .frame(height: 180)
             }
-            .card(16)
+            .card(Layout.card)
         }
     }
 }
@@ -389,7 +389,7 @@ struct AvisosPhoneView: View {
                     .padding(.vertical, 3)
                 }
             }
-            .card(16)
+            .card(Layout.card)
 
             LayersCard(layers: d.layers)
         }
@@ -438,7 +438,7 @@ struct ProposalPhoneView: View {
     var body: some View {
         PhoneScreen(title: proposal.title) {
             Text(proposal.summary).font(.system(size: 15)).foregroundStyle(Palette.ink)
-                .frame(maxWidth: .infinity, alignment: .leading).card(16)
+                .frame(maxWidth: .infinity, alignment: .leading).card(Layout.card)
 
             VStack(alignment: .leading, spacing: 8) {
                 Heading("Tres respuestas", info: "Jev pregunta tres veces y se queda con la mayoría")
@@ -451,7 +451,7 @@ struct ProposalPhoneView: View {
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-            .card(16)
+            .card(Layout.card)
 
             VStack(alignment: .leading, spacing: 8) {
                 Heading("Validador", info: "Reglas fijas que la propuesta cumple antes de llegarte")
@@ -463,7 +463,7 @@ struct ProposalPhoneView: View {
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-            .card(16)
+            .card(Layout.card)
 
             HStack(spacing: 8) {
                 Image(systemName: "desktopcomputer").foregroundStyle(Palette.ink2)

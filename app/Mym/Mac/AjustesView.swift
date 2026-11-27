@@ -162,14 +162,14 @@ struct AjustesView: View {
                     beforeAfter("Caída máxima", "−1,4 %", "−1,1 %", better: true)
                     beforeAfter("Operaciones", "142", "131", better: false)
                 }
-                .card(14)
+                .card(Layout.cardSmall)
 
                 VStack(alignment: .leading, spacing: 6) {
                     Heading("Lo que cuesta probar", info: "Cada cambio de parámetros cuenta como un intento")
                     LabeledValue(label: "Intento nº", value: "15")
                     LabeledValue(label: "Sharpe deflactado", value: "0,62 → 0,58", valueColor: Palette.warnText)
                 }
-                .card(14)
+                .card(Layout.cardSmall)
 
                 VStack(alignment: .leading, spacing: 8) {
                     Heading("Camino del cambio", info: "Un cambio no pasa a la siguiente etapa sin superar la anterior")
@@ -179,7 +179,7 @@ struct AjustesView: View {
                     pathStep("Demo · 5 días", "En c-dem-01", done: false)
                     pathStep("Producción", "Célula a célula", done: false)
                 }
-                .card(14)
+                .card(Layout.cardSmall)
 
                 Button("Solicitar aprobación") { store.requestSubmitConfig(strategy) }
                     .buttonStyle(MymButtonStyle(kind: .primary))

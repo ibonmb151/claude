@@ -41,7 +41,7 @@ struct FlotaView: View {
                         }
                     }
                 }
-                .card(16)
+                .card(Layout.card)
                 .frame(maxWidth: .infinity)
 
                 VStack(alignment: .leading, spacing: 10) {
@@ -53,7 +53,7 @@ struct FlotaView: View {
                     step("c-lon-02 · fondeo", "", state: .todo)
                     step("c-lon-03 · cuenta real", "Siempre la última", state: .todo)
                 }
-                .card(16)
+                .card(Layout.card)
                 .frame(width: 360)
             }
 
@@ -61,7 +61,7 @@ struct FlotaView: View {
                 Heading("Latencias", info: "Un punto por orden. La caja es la mitad central, la raya azul la mediana. En rojo, las que pasan de 1 segundo")
                 LatencyChart(cells: ChartSamples.latencyCells)
             }
-            .card(16)
+            .card(Layout.card)
         }
     }
 
@@ -155,7 +155,7 @@ struct CellCard: View {
                 }
             }
         }
-        .card(16, selected: selected)
+        .card(Layout.card, selected: selected)
     }
 
     private func metric(_ title: String, _ value: String, _ score: Double) -> some View {
