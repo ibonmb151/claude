@@ -130,39 +130,61 @@ struct OrdenesView: View {
         }
     }
 
+    private static let stepNames: [String] = ["Revisada", "Enviada", "Abierta", "Cerrada"]
+
+    private func stepsReached(_ o: Order) -> Int {
+        switch o.status {
+        case .riskOk: return 1
+        case .sent, .rejected: return 2
+        case .accepted, .filled, .noStop: return 3
+        case .closed: return 4
+        }
+    }
+
     /// Cuatro pasos, sin tiempos: revisada, enviada, abierta y cerrada.
     private func steps(_ o: Order) -> some View {
-        let names: [String] = ["Revisada", "Enviada", "Abierta", "Cerrada"]
-        let reached: Int
-        switch o.status {
-        case .riskOk: reached = 1
-        case .sent, .rejected: reached = 2
-        case .accepted, .filled, .noStop: reached = 3
-        case .closed: reached = 4
-        }
+        let reached: Int = stepsReached(o)
+        let count: Int = Self.stepNames.count
         return HStack(spacing: 0) {
-            ForEach(0..<names.count, id: \.self) { i in
-                HStack(spacing: 0) {
-                    VStack(spacing: 6) {
-                        ZStack {
-                            Circle().fill(i < reached ? Palette.graphiteDark : Palette.card)
-                                .frame(width: 24, height: 24)
-                                .overlay(Circle().stroke(i < reached ? Palette.graphiteDark : Palette.graphiteSoft, lineWidth: 2.5))
-                            if i < reached {
-                                Image(systemName: "checkmark").font(.system(size: 11, weight: .bold)).foregroundStyle(Color.white)
-                            }
-                        }
-                        Text(names[i]).font(.system(size: 12, weight: .semibold)).foregroundStyle(i < reached ? Palette.ink : Palette.ink2)
-                    }
-                    if i < names.count - 1 {
-                        Rectangle().fill(i < reached - 1 ? Palette.graphiteDark : Palette.track)
-                            .frame(height: 3)
-                            .frame(maxWidth: .infinity)
-                            .padding(.bottom, 22)
-                    }
-                }
+            ForEach(0..<count, id: \.self) { i in
+                stepView(i, reached: reached, last: i == count - 1)
             }
         }
+    }
+
+    private func stepView(_ i: Int, reached: Int, last: Bool) -> some View {
+        let done: Bool = i < reached
+        return HStack(spacing: 0) {
+            VStack(spacing: 6) {
+                stepDot(done)
+                Text(Self.stepNames[i])
+                    .font(.system(size: 12, weight: .semibold))
+                    .foregroundStyle(done ? Palette.ink : Palette.ink2)
+            }
+            if !last {
+                stepLine(i < reached - 1)
+            }
+        }
+    }
+
+    private func stepDot(_ done: Bool) -> some View {
+        let edge: Color = done ? Palette.graphiteDark : Palette.graphiteSoft
+        let fill: Color = done ? Palette.graphiteDark : Palette.card
+        return ZStack {
+            Circle().fill(fill).frame(width: 24, height: 24)
+            Circle().stroke(edge, lineWidth: 2.5).frame(width: 24, height: 24)
+            if done {
+                Image(systemName: "checkmark").font(.system(size: 11, weight: .bold)).foregroundStyle(Color.white)
+            }
+        }
+    }
+
+    private func stepLine(_ done: Bool) -> some View {
+        let color: Color = done ? Palette.graphiteDark : Palette.track
+        return Rectangle().fill(color)
+            .frame(height: 3)
+            .frame(maxWidth: .infinity)
+            .padding(.bottom, 22)
     }
 }
 #endif
