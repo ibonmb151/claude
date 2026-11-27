@@ -24,6 +24,12 @@ struct EnVivoView: View {
         return v.isEmpty ? nil : v.reduce(0, +)
     }
 
+    private var statusText: String {
+        if demo { return "Demostración" }
+        let time: String = utc.string(from: accounts.bundle.loadedAt)
+        return "Actualizado \(time) UTC"
+    }
+
     private let utc: DateFormatter = {
         let f = DateFormatter()
         f.dateFormat = "HH:mm:ss"
@@ -35,7 +41,7 @@ struct EnVivoView: View {
         ScreenScroll {
             HStack(spacing: 12) {
                 Heading("En vivo", info: "Lo que está pasando ahora: trades abiertos, avisos y respuesta del bróker", size: 22)
-                Pill(text: demo ? "Demostración" : "Actualizado " + utc.string(from: accounts.bundle.loadedAt) + " UTC", tone: demo ? .info : .good)
+                Pill(text: statusText, tone: demo ? Tone.info : Tone.good)
             }
             ResponsiveRow {
                 activityCard.frame(maxWidth: .infinity)

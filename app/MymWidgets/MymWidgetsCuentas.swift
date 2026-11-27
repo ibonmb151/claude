@@ -26,6 +26,26 @@ struct AccountProvider: TimelineProvider {
     }
 }
 
+private func stateTone(_ state: SystemState) -> Tone {
+    switch state {
+    case .error: return .bad
+    case .demo: return .info
+    default: return .good
+    }
+}
+
+/// Color y píldora del resumen de avisos: urgente, atención o todo en orden.
+private func alertColor(urgent: Int, total: Int) -> Color {
+    if urgent > 0 { return Palette.negText }
+    return total == 0 ? Palette.posText : Palette.warnText
+}
+
+private func alertPill(urgent: Int, total: Int) -> (text: String, tone: Tone) {
+    if urgent > 0 { return ("\(urgent) urgente", .bad) }
+    if total == 0 { return ("Todo en orden", .good) }
+    return ("Atención", .warn)
+}
+
 private func dayLine(_ s: AccountSummary) -> String {
     guard let d = s.dayChange else { return "n.d. hoy" }
     let pct: String = s.dayChangePct.map { " · " + Fmt.signedPct($0, 2) } ?? ""
@@ -44,7 +64,7 @@ struct CuentasWidgetView: View {
             HStack {
                 Text("Cuentas").font(.system(size: 12, weight: .bold)).foregroundStyle(Palette.ink2)
                 Spacer()
-                Pill(text: s.state.label, tone: s.state == .error ? .bad : (s.state == .demo ? .info : .good))
+                Pill(text: s.state.label, tone: stateTone(s.state))
             }
             Text(Fmt.opt(s.balance) { Fmt.eur($0) })
                 .font(.system(size: family == .systemSmall ? 22 : 28, weight: .bold))
@@ -150,9 +170,9 @@ struct AvisosWidgetView: View {
                     Text("Avisos").font(.system(size: 12, weight: .bold)).foregroundStyle(Palette.ink2)
                     Text("\(s.alerts.count)")
                         .font(.system(size: 40, weight: .bold))
-                        .foregroundStyle(urgent > 0 ? Palette.negText : (s.alerts.isEmpty ? Palette.posText : Palette.warnText))
-                    Pill(text: urgent > 0 ? "\(urgent) urgente" : (s.alerts.isEmpty ? "Todo en orden" : "Atención"),
-                         tone: urgent > 0 ? .bad : (s.alerts.isEmpty ? .good : .warn))
+                        .foregroundStyle(alertColor(urgent: urgent, total: s.alerts.count))
+                    Pill(text: alertPill(urgent: urgent, total: s.alerts.count).text,
+                         tone: alertPill(urgent: urgent, total: s.alerts.count).tone)
                 }
                 VStack(alignment: .leading, spacing: 8) {
                     if s.alerts.isEmpty {
@@ -174,12 +194,9 @@ struct AvisosWidgetView: View {
                 Text("Avisos").font(.system(size: 12, weight: .bold)).foregroundStyle(Palette.ink2)
                 Text("\(s.alerts.count)")
                     .font(.system(size: 40, weight: .bold))
-                    .foregroundStyle(urgent > 0 ? Palette.negText : (s.alerts.isEmpty ? Palette.posText : Palette.warnText))
-                if urgent > 0 {
-                    Pill(text: "\(urgent) urgente", tone: .bad)
-                } else {
-                    Pill(text: s.alerts.isEmpty ? "Todo en orden" : "Atención", tone: s.alerts.isEmpty ? .good : .warn)
-                }
+                    .foregroundStyle(alertColor(urgent: urgent, total: s.alerts.count))
+                Pill(text: alertPill(urgent: urgent, total: s.alerts.count).text,
+                     tone: alertPill(urgent: urgent, total: s.alerts.count).tone)
                 Spacer(minLength: 2)
                 Text(s.alerts.first?.title ?? "Sin avisos")
                     .font(.system(size: 12, weight: .semibold)).foregroundStyle(Palette.ink).lineLimit(2)

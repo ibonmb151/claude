@@ -104,6 +104,20 @@ struct CellCard: View {
         }
     }
 
+    private var dotColor: Color {
+        switch problem.level {
+        case 3: return Palette.pos
+        case 2: return Palette.warn
+        case 1: return Palette.neg
+        default: return Palette.paused
+        }
+    }
+
+    private var dayColor: Color {
+        if cell.health == .paused { return Palette.ink2 }
+        return cell.dayPct < 0 ? Palette.negText : Palette.posText
+    }
+
     private var methods: String {
         let active: [String] = cell.weights.filter { $0.mode == .active }.map { $0.strategyId }
         return active.isEmpty ? "Sin métodos activos" : active.joined(separator: " · ")
@@ -120,13 +134,13 @@ struct CellCard: View {
             HStack(alignment: .firstTextBaseline, spacing: 8) {
                 Text(cell.health == .paused ? "—" : Fmt.signedPct(cell.dayPct, 1))
                     .font(.system(size: 34, weight: .bold))
-                    .foregroundStyle(cell.health == .paused ? Palette.ink2 : (cell.dayPct < 0 ? Palette.negText : Palette.posText))
+                    .foregroundStyle(dayColor)
                     .monospacedDigit()
                 Text("hoy").font(.system(size: 14)).foregroundStyle(Palette.ink2)
             }
 
             HStack(spacing: 8) {
-                Circle().fill(problem.level == 3 ? Palette.pos : (problem.level == 2 ? Palette.warn : (problem.level == 1 ? Palette.neg : Palette.paused)))
+                Circle().fill(dotColor)
                     .frame(width: 8, height: 8)
                 Text(problem.text).font(.system(size: 14)).foregroundStyle(healthColor)
                     .lineLimit(1)
