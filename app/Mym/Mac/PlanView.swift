@@ -94,7 +94,6 @@ struct PlanView: View {
                 TextField("Título", text: titleBinding)
                     .textFieldStyle(.plain)
                     .font(.system(size: 14, weight: .semibold))
-                    .strikethrough(item.state == .done)
                     .foregroundColor(item.state == .done ? Palette.ink2 : Palette.ink)
                 TextField("Añadir nota", text: noteBinding)
                     .textFieldStyle(.plain)
