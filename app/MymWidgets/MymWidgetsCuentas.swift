@@ -51,11 +51,17 @@ struct CuentasWidgetView: View {
                 .foregroundStyle(Palette.ink).monospacedDigit().minimumScaleFactor(0.7).lineLimit(1)
             Text(dayLine(s) + " hoy")
                 .font(.system(size: 12, weight: .semibold)).foregroundStyle(resultColor(s.dayChange)).monospacedDigit().lineLimit(1)
+            if family == .systemLarge {
+                Sparkline(values: Array(entry.bundle.dailySeries(.all).suffix(30)).reduce(into: [Double]()) { acc, v in acc.append((acc.last ?? 0) + v) },
+                          color: Palette.info, lineWidth: 2.4, fill: true)
+                    .frame(height: 90)
+                    .padding(.vertical, 4)
+            }
             if family != .systemSmall {
                 Spacer(minLength: 2)
                 ForEach(entry.bundle.accounts) { a in
                     HStack {
-                        Text(maskedAccount(a.cuenta)).font(.system(size: 12, design: .monospaced)).foregroundStyle(Palette.ink2)
+                        Text(maskedAccount(a.cuenta)).font(.system(size: 12)).foregroundStyle(Palette.ink2)
                         Spacer()
                         Text(Fmt.opt(a.balance) { Fmt.eur($0) }).font(.system(size: 13, weight: .semibold)).monospacedDigit()
                         Text(Fmt.opt(a.pnlRealizadoHoy) { Fmt.signedEur2($0) })
@@ -76,7 +82,7 @@ struct CuentasWidget: Widget {
         }
         .configurationDisplayName("Cuentas")
         .description("Balance total y el de cada cuenta, con el resultado de hoy.")
-        .supportedFamilies([.systemSmall, .systemMedium])
+        .supportedFamilies([.systemSmall, .systemMedium, .systemLarge])
     }
 }
 
@@ -94,17 +100,17 @@ struct EnVivoWidgetView: View {
                 Circle().fill(Palette.pos).frame(width: 8, height: 8)
                 Text("En vivo").font(.system(size: 12, weight: .bold)).foregroundStyle(Palette.ink2)
                 Spacer()
-                Text("\(s.openCount) abiertos").font(.system(size: 12)).foregroundStyle(Palette.ink2)
+                Text(s.openCount == 1 ? "1 abierta" : "\(s.openCount) abiertas").font(.system(size: 12)).foregroundStyle(Palette.ink2)
             }
             Text(Fmt.opt(s.floating) { Fmt.signedEur2($0) })
                 .font(.system(size: family == .systemSmall ? 24 : 30, weight: .bold))
                 .foregroundStyle(resultColor(s.floating)).monospacedDigit().minimumScaleFactor(0.7).lineLimit(1)
-            Text("flotante").font(.system(size: 12)).foregroundStyle(Palette.ink2)
+            Text("ahora mismo").font(.system(size: 12)).foregroundStyle(Palette.ink2)
             if family != .systemSmall {
                 Spacer(minLength: 2)
-                ForEach(open.prefix(3)) { t in
+                ForEach(open.prefix(family == .systemLarge ? 7 : 3)) { t in
                     HStack(spacing: 8) {
-                        Text(t.par ?? "?").font(.system(size: 12, weight: .bold, design: .monospaced))
+                        Text(t.par ?? "?").font(.system(size: 13, weight: .bold))
                         Pill(text: t.lado == "venta" ? "Venta" : "Compra", tone: t.lado == "venta" ? .bad : .good)
                         if t.isUnprotected { Pill(text: "Sin stop", tone: .bad) }
                         Spacer()
@@ -124,34 +130,62 @@ struct EnVivoWidget: Widget {
             EnVivoWidgetView(entry: entry)
         }
         .configurationDisplayName("En vivo")
-        .description("Resultado flotante y trades abiertos.")
-        .supportedFamilies([.systemSmall, .systemMedium])
+        .description("Lo que ganas o pierdes ahora y las operaciones abiertas.")
+        .supportedFamilies([.systemSmall, .systemMedium, .systemLarge])
     }
 }
 
 // MARK: - Avisos
 
 struct AvisosWidgetView: View {
+    @Environment(\.widgetFamily) private var family
     let entry: AccountEntry
 
     var body: some View {
         let s: AccountSummary = entry.bundle.summary(for: .all)
         let urgent: Int = s.alerts.filter { $0.level == .urgent }.count
-        VStack(alignment: .leading, spacing: 6) {
-            Text("Avisos").font(.system(size: 12, weight: .bold)).foregroundStyle(Palette.ink2)
-            Text("\(s.alerts.count)")
-                .font(.system(size: 40, weight: .bold))
-                .foregroundStyle(urgent > 0 ? Palette.negText : (s.alerts.isEmpty ? Palette.posText : Palette.warnText))
-            if urgent > 0 {
-                Pill(text: "\(urgent) urgente", tone: .bad)
-            } else {
-                Pill(text: s.alerts.isEmpty ? "Todo en orden" : "Atención", tone: s.alerts.isEmpty ? .good : .warn)
+        if family == .systemMedium {
+            HStack(alignment: .top, spacing: 16) {
+                VStack(alignment: .leading, spacing: 6) {
+                    Text("Avisos").font(.system(size: 12, weight: .bold)).foregroundStyle(Palette.ink2)
+                    Text("\(s.alerts.count)")
+                        .font(.system(size: 40, weight: .bold))
+                        .foregroundStyle(urgent > 0 ? Palette.negText : (s.alerts.isEmpty ? Palette.posText : Palette.warnText))
+                    Pill(text: urgent > 0 ? "\(urgent) urgente" : (s.alerts.isEmpty ? "Todo en orden" : "Atención"),
+                         tone: urgent > 0 ? .bad : (s.alerts.isEmpty ? .good : .warn))
+                }
+                VStack(alignment: .leading, spacing: 8) {
+                    if s.alerts.isEmpty {
+                        Text("Sin avisos").font(.system(size: 13)).foregroundStyle(Palette.ink2)
+                    }
+                    ForEach(s.alerts.prefix(3)) { a in
+                        HStack(alignment: .top, spacing: 6) {
+                            Circle().fill(a.level == .urgent ? Palette.neg : Palette.warn).frame(width: 8, height: 8).padding(.top, 4)
+                            Text(a.title).font(.system(size: 12, weight: .semibold)).foregroundStyle(Palette.ink).lineLimit(2)
+                        }
+                    }
+                    Spacer(minLength: 0)
+                }
+                Spacer(minLength: 0)
             }
-            Spacer(minLength: 2)
-            Text(s.alerts.first?.title ?? "Sin avisos")
-                .font(.system(size: 12, weight: .semibold)).foregroundStyle(Palette.ink).lineLimit(2)
+            .widgetBackground(Palette.card)
+        } else {
+            VStack(alignment: .leading, spacing: 6) {
+                Text("Avisos").font(.system(size: 12, weight: .bold)).foregroundStyle(Palette.ink2)
+                Text("\(s.alerts.count)")
+                    .font(.system(size: 40, weight: .bold))
+                    .foregroundStyle(urgent > 0 ? Palette.negText : (s.alerts.isEmpty ? Palette.posText : Palette.warnText))
+                if urgent > 0 {
+                    Pill(text: "\(urgent) urgente", tone: .bad)
+                } else {
+                    Pill(text: s.alerts.isEmpty ? "Todo en orden" : "Atención", tone: s.alerts.isEmpty ? .good : .warn)
+                }
+                Spacer(minLength: 2)
+                Text(s.alerts.first?.title ?? "Sin avisos")
+                    .font(.system(size: 12, weight: .semibold)).foregroundStyle(Palette.ink).lineLimit(2)
+            }
+            .widgetBackground(Palette.card)
         }
-        .widgetBackground(Palette.card)
     }
 }
 
@@ -161,8 +195,8 @@ struct AvisosWidget: Widget {
             AvisosWidgetView(entry: entry)
         }
         .configurationDisplayName("Avisos")
-        .description("Cuántos avisos hay y el más importante.")
-        .supportedFamilies([.systemSmall])
+        .description("Cuántos avisos hay y cuáles son.")
+        .supportedFamilies([.systemSmall, .systemMedium])
     }
 }
 
@@ -182,20 +216,35 @@ struct ResultadosWidgetView: View {
         return out
     }
 
+    /// Un cuadrado por día: verde si ganó, rojo si perdió. Sin Canvas, para que lo dibuje el widget.
+    private func dayStrip(_ values: [Double]) -> some View {
+        HStack(spacing: 4) {
+            ForEach(0..<values.count, id: \.self) { i in
+                RoundedRectangle(cornerRadius: 4, style: .continuous)
+                    .fill(values[i] >= 0 ? Palette.pos : Palette.neg)
+                    .frame(height: 28)
+            }
+        }
+    }
+
     var body: some View {
         let daily: [Double] = Array(entry.bundle.dailySeries(.all).suffix(30))
         let cumulative: [Double] = Self.runningTotal(daily)
         let total: Double? = cumulative.last
         VStack(alignment: .leading, spacing: 6) {
             HStack {
-                Text("Resultado · 30 días").font(.system(size: 12, weight: .bold)).foregroundStyle(Palette.ink2)
+                Text(family == .systemSmall ? "30 días" : "Resultado · 30 días").font(.system(size: 12, weight: .bold)).foregroundStyle(Palette.ink2)
                 Spacer()
             }
             Text(Fmt.opt(total) { Fmt.signedEur2($0) })
-                .font(.system(size: 26, weight: .bold)).foregroundStyle(resultColor(total)).monospacedDigit().minimumScaleFactor(0.7).lineLimit(1)
+                .font(.system(size: family == .systemSmall ? 22 : 26, weight: .bold)).foregroundStyle(resultColor(total)).monospacedDigit().minimumScaleFactor(0.7).lineLimit(1)
             Spacer(minLength: 2)
             Sparkline(values: cumulative, color: Palette.info, lineWidth: 2.4, fill: true)
                 .frame(height: family == .systemLarge ? 120 : 48)
+            if family == .systemLarge {
+                Text("Últimos 14 días").font(.system(size: 12, weight: .bold)).foregroundStyle(Palette.ink2).padding(.top, 6)
+                dayStrip(Array(daily.suffix(14)))
+            }
         }
         .widgetBackground(Palette.card)
     }
@@ -208,7 +257,7 @@ struct ResultadosWidget: Widget {
         }
         .configurationDisplayName("Resultados")
         .description("Resultado acumulado de los últimos 30 días.")
-        .supportedFamilies([.systemMedium, .systemLarge])
+        .supportedFamilies([.systemSmall, .systemMedium, .systemLarge])
     }
 }
 

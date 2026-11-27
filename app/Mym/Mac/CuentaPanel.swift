@@ -137,24 +137,20 @@ struct CuentaModulos: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Heading("Módulos", info: "Cómo va cada módulo en cada cuenta. «Vigilar» = pierde ventaja: su rendimiento reciente está al menos un 10 % por debajo de su media")
+            Heading("Cada método en cada cuenta", info: "«Vigilar» quiere decir que su rendimiento reciente está al menos un 10 % por debajo de su media")
             HStack(spacing: 8) {
-                head("Módulo", nil); head("Cuenta", 70); head("Trades", 60, .trailing); head("Acierto", 70, .trailing)
-                head("PF", 56, .trailing); head("Resultado", 92, .trailing); head("Caída", 70, .trailing); head("Estado", 84)
+                head("Método", nil); head("Cuenta", 80); head("Acierto", 80, .trailing); head("Resultado", 110, .trailing); head("Estado", 90)
             }
             ForEach(mods) { m in
                 HStack(spacing: 8) {
                     Text(m.modulo).font(.system(size: 14, weight: .semibold)).frame(maxWidth: .infinity, alignment: .leading)
-                    Text(maskedAccount(m.cuenta)).font(.system(size: 12, design: .monospaced)).foregroundStyle(Palette.ink2).frame(width: 70, alignment: .leading)
-                    Text(Fmt.opt(m.nTrades.map { Double($0) }) { Fmt.comma($0, 0) }).monospacedDigit().frame(width: 60, alignment: .trailing)
-                    Text(Fmt.opt(m.wr) { Fmt.pct($0, 1) }).monospacedDigit().frame(width: 70, alignment: .trailing)
-                    Text(Fmt.opt(m.profitFactor) { Fmt.comma($0, 2) }).monospacedDigit().frame(width: 56, alignment: .trailing)
-                    Text(Fmt.opt(m.pnlRealizado) { Fmt.signedEur2($0) }).font(.system(size: 13, weight: .bold)).foregroundStyle(resultColor(m.pnlRealizado))
-                        .monospacedDigit().frame(width: 92, alignment: .trailing)
-                    Text(Fmt.opt(m.maxDd) { Fmt.signedPct($0, 1) }).foregroundStyle(Palette.negText).monospacedDigit().frame(width: 70, alignment: .trailing)
-                    state(m).frame(width: 84, alignment: .leading)
+                    Text(maskedAccount(m.cuenta)).font(.system(size: 13)).foregroundStyle(Palette.ink2).frame(width: 80, alignment: .leading)
+                    Text(Fmt.opt(m.wr) { Fmt.pct($0, 0) }).monospacedDigit().frame(width: 80, alignment: .trailing)
+                    Text(Fmt.opt(m.pnlRealizado) { Fmt.signedEur2($0) }).font(.system(size: 14, weight: .bold)).foregroundStyle(resultColor(m.pnlRealizado))
+                        .monospacedDigit().frame(width: 110, alignment: .trailing)
+                    state(m).frame(width: 90, alignment: .leading)
                 }
-                .font(.system(size: 13))
+                .font(.system(size: 14))
                 .padding(.vertical, 4)
                 Divider()
             }
@@ -175,53 +171,34 @@ struct CuentaModulos: View {
     @ViewBuilder
     private func state(_ m: ModuleMetrics) -> some View {
         if let d = m.decayPct {
-            if d <= -10 { Pill(text: "Vigilar", tone: .warn) } else { Pill(text: "Activo", tone: .good) }
+            if d <= -10 { Pill(text: "Vigilar", tone: .warn) } else { Pill(text: "Bien", tone: .good) }
         } else {
             Pill(text: "n.d.", tone: .neutral)
         }
     }
 }
 
-// MARK: - Conciliación y datos
+// MARK: - Conciliación
 
 struct CuentaSistema: View {
     let bundle: AccountBundle
 
     var body: some View {
-        ResponsiveRow {
-            VStack(alignment: .leading, spacing: 6) {
-                Heading("Conciliación", info: "Saldo según el bróker frente al del sistema")
-                ForEach(bundle.accounts) { a in
-                    HStack {
-                        Text(maskedAccount(a.cuenta)).font(.system(size: 13, design: .monospaced))
-                        Spacer()
-                        Text(Fmt.opt(a.gapConciliacion) { abs($0) < 0.005 ? "cuadra" : Fmt.signedEur2($0) })
-                            .font(.system(size: 13, weight: .semibold))
-                            .foregroundStyle((a.gapConciliacion ?? 0) == 0 ? Palette.posText : Palette.warnText)
-                    }
-                    .padding(.vertical, 3)
+        VStack(alignment: .leading, spacing: 6) {
+            Heading("Conciliación", info: "Saldo según el bróker frente al del sistema")
+            ForEach(bundle.accounts) { a in
+                HStack {
+                    Text(maskedAccount(a.cuenta)).font(.system(size: 14))
+                    Spacer()
+                    Text(Fmt.opt(a.gapConciliacion) { abs($0) < 0.005 ? "Cuadra" : "Diferencia de " + Fmt.eur2(abs($0)) })
+                        .font(.system(size: 14, weight: .semibold))
+                        .foregroundStyle((a.gapConciliacion ?? 0) == 0 ? Palette.posText : Palette.warnText)
                 }
+                .padding(.vertical, 4)
             }
-            .card(Layout.card)
-            .frame(maxWidth: .infinity)
-            VStack(alignment: .leading, spacing: 6) {
-                Heading("Datos", info: "Ficheros de los que sale todo lo que ves")
-                ForEach(bundle.files) { f in
-                    HStack {
-                        Text(f.name).font(.system(size: 12, design: .monospaced))
-                        Spacer()
-                        Pill(text: f.state == .ok ? "Al día" : (f.state == .missing ? "Falta" : "No se lee"),
-                             tone: f.state == .ok ? .good : .bad)
-                    }
-                    .padding(.vertical, 2)
-                }
-                if bundle.files.isEmpty {
-                    Text("Sin ficheros").font(.system(size: 13)).foregroundStyle(Palette.ink2)
-                }
-            }
-            .card(Layout.card)
-            .frame(maxWidth: .infinity)
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .card(Layout.card)
     }
 }
 #endif

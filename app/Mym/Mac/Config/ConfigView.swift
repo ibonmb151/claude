@@ -2,10 +2,12 @@
 import SwiftUI
 import AppKit
 
-/// Ventana de configuración (⌘,). Cuentas, datos y seguridad.
+/// Ventana de configuración (⌘,). General, cuentas, datos y seguridad.
 struct ConfigView: View {
     var body: some View {
         TabView {
+            GeneralConfig()
+                .tabItem { Label("General", systemImage: "gearshape") }
             CuentasConfig()
                 .tabItem { Label("Cuentas", systemImage: "creditcard") }
             DatosConfig()
@@ -14,6 +16,52 @@ struct ConfigView: View {
                 .tabItem { Label("Seguridad", systemImage: "lock") }
         }
         .frame(width: 780, height: 620)
+    }
+}
+
+// MARK: - General
+
+/// Cómo se ve la lista de cuentas. Con muchas cuentas conviene la vista compacta.
+struct GeneralConfig: View {
+    @EnvironmentObject var config: ConfigStore
+    @AppStorage("mym.vistaCompacta") private var compact = false
+    @AppStorage("mym.agruparPorBroker") private var grouped = true
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 20) {
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Lista de cuentas").font(.system(size: 15, weight: .semibold))
+                Picker("", selection: $compact) {
+                    Text("Detallada").tag(false)
+                    Text("Compacta").tag(true)
+                }
+                .pickerStyle(.segmented)
+                .labelsHidden()
+                .frame(width: 260)
+                Text(compact ? "Filas más bajas y solo lo esencial. Útil con muchas cuentas." : "Filas amplias con el nombre del bróker o del banco.")
+                    .font(.system(size: 12)).foregroundStyle(Palette.ink2)
+            }
+
+            Toggle(isOn: $grouped) {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Agrupar por bróker o banco").font(.system(size: 14, weight: .semibold))
+                    Text("Si lo quitas, las cuentas salen en una sola lista.").font(.system(size: 12)).foregroundStyle(Palette.ink2)
+                }
+            }
+
+            Divider()
+
+            VStack(alignment: .leading, spacing: 4) {
+                Text("Resumen").font(.system(size: 15, weight: .semibold))
+                Text("\(config.accounts.count) cuentas configuradas · \(config.savedSecretsCount) claves en el Llavero")
+                    .font(.system(size: 13)).foregroundStyle(Palette.ink2)
+                Text("Los datos se actualizan solos cada 5 minutos.")
+                    .font(.system(size: 13)).foregroundStyle(Palette.ink2)
+            }
+            Spacer()
+        }
+        .padding(20)
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
 
@@ -40,6 +88,8 @@ struct CuentasConfig: View {
     @State private var query = ""
     @State private var filter: ConfigFilter = .todas
     @State private var open: UUID?
+    @AppStorage("mym.vistaCompacta") private var compact = false
+    @AppStorage("mym.agruparPorBroker") private var grouped = true
 
     private func matches(_ a: ConfiguredAccount, _ f: ConfigFilter) -> Bool {
         switch f {
@@ -62,6 +112,7 @@ struct CuentasConfig: View {
     }
 
     private var groups: [AccountGroup] {
+        if !grouped { return [AccountGroup(id: "todas", title: "Todas", items: visible)] }
         var out: [AccountGroup] = []
         for p in ProviderCatalog.all {
             let items: [ConfiguredAccount] = visible.filter { $0.providerId == p.id }
@@ -157,11 +208,11 @@ struct CuentasConfig: View {
                     Text(p?.mono ?? "?")
                         .font(.system(size: 11, weight: .heavy))
                         .foregroundStyle(p?.tint ?? Palette.ink2)
-                        .frame(width: 28, height: 28)
+                        .frame(width: compact ? 22 : 28, height: compact ? 22 : 28)
                         .background((p?.tint ?? Palette.gray).opacity(0.14), in: RoundedRectangle(cornerRadius: 8, style: .continuous))
                     Text(a.name).font(.system(size: 14, weight: .semibold)).lineLimit(1)
                     Spacer()
-                    Text(p?.name ?? "—").font(.system(size: 13)).foregroundStyle(Palette.ink2)
+                    if !compact { Text(p?.name ?? "—").font(.system(size: 13)).foregroundStyle(Palette.ink2) }
                     Pill(text: state.label, tone: state.tone)
                     Image(systemName: "chevron.down")
                         .font(.system(size: 12, weight: .semibold))
@@ -169,7 +220,7 @@ struct CuentasConfig: View {
                         .rotationEffect(.degrees(isOpen ? 180 : 0))
                 }
                 .padding(.horizontal, 14)
-                .frame(height: 46)
+                .frame(height: compact ? 34 : 46)
                 .contentShape(Rectangle())
             }
             .buttonStyle(.plain)

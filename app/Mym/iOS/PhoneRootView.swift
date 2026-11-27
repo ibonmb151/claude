@@ -2,7 +2,7 @@
 import SwiftUI
 
 /// iPhone: cinco secciones con un dock flotante de cristal.
-/// Cada dato vive en un sitio: Hoy (resumen y cuentas), En vivo (lo de ahora), Avisos, Resultados y Asesor.
+/// Cada dato vive en un sitio: Hoy (resumen y cuentas), En vivo (lo de ahora), Avisos, Resultados y Plan.
 /// Se ve y se para; reanudar y aprobar se hacen en el Mac.
 struct PhoneRootView: View {
     @EnvironmentObject var store: AppStore
@@ -23,7 +23,7 @@ struct PhoneRootView: View {
                 NavigationStack { ResultadosPhoneView() }
                     .toolbar(.hidden, for: .tabBar)
                     .tag(3)
-                NavigationStack { JevPhoneView() }
+                NavigationStack { PlanPhoneView() }
                     .toolbar(.hidden, for: .tabBar)
                     .tag(4)
             }
@@ -32,7 +32,7 @@ struct PhoneRootView: View {
                 .frame(height: 120)
                 .allowsHitTesting(false)
                 .ignoresSafeArea(edges: .bottom)
-            FloatingDock(tab: $tab, alerts: store.data.openAlerts.count, proposals: store.data.pendingProposals)
+            FloatingDock(tab: $tab, alerts: store.data.openAlerts.count)
                 .padding(.bottom, 8)
         }
         .tint(Palette.graphiteDark)
@@ -49,11 +49,10 @@ struct PhoneRootView: View {
 struct FloatingDock: View {
     @Binding var tab: Int
     let alerts: Int
-    let proposals: Int
     @Namespace private var selection
 
     private let items: [(title: String, symbol: String)] = [
-        ("Hoy", "square.grid.2x2"), ("En vivo", "waveform.path.ecg"), ("Avisos", "bell"), ("Resultados", "chart.bar"), ("Asesor", "safari")
+        ("Hoy", "square.grid.2x2"), ("En vivo", "waveform.path.ecg"), ("Avisos", "bell"), ("Resultados", "chart.bar"), ("Plan", "list.bullet.rectangle")
     ]
 
     var body: some View {
@@ -99,10 +98,10 @@ struct FloatingDock: View {
         .shadow(color: Color.black.opacity(0.16), radius: 20, x: 0, y: 12)
     }
 
-    /// Un punto azul (el mismo en Avisos y en Asesor) cuando hay algo pendiente.
+    /// Un punto azul (en Avisos) cuando hay algo pendiente.
     @ViewBuilder
     private func dockDot(_ i: Int, on: Bool) -> some View {
-        let pending: Int = i == 2 ? alerts : (i == 4 ? proposals : 0)
+        let pending: Int = i == 2 ? alerts : 0
         if pending > 0 {
             Circle()
                 .fill(Palette.info)
@@ -376,83 +375,104 @@ struct AvisosPhoneView: View {
     }
 }
 
-// MARK: - Jev (solo lectura en el móvil)
+// MARK: - Plan
 
-struct JevPhoneView: View {
-    @EnvironmentObject var store: AppStore
+/// Plan: lo que queremos hacer más adelante. Tres listas que se ordenan, se mueven y se borran.
+struct PlanPhoneView: View {
+    @EnvironmentObject var plan: PlanStore
+    @State private var state: PlanState = .next
+    @State private var title = ""
 
     var body: some View {
-        let d = store.data
-        PhoneScreen(title: "Asesor") {
+        let list: [PlanItem] = plan.items(state)
+        PhoneScreen(title: "Plan") {
+            Picker("", selection: $state) {
+                ForEach(PlanState.allCases) { s in
+                    Text("\(s.title) \(plan.count(s))").tag(s)
+                }
+            }
+            .pickerStyle(.segmented)
+
+            HStack(spacing: 8) {
+                TextField("Añadir a \(state.title)", text: $title)
+                    .font(.system(size: 15))
+                    .padding(.horizontal, 12)
+                    .frame(height: 40)
+                    .background(Palette.card, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+                    .submitLabel(.done)
+                    .onSubmit(add)
+                Button(action: add) {
+                    Image(systemName: "plus")
+                        .font(.system(size: 15, weight: .bold))
+                        .foregroundStyle(Color.white)
+                        .frame(width: 40, height: 40)
+                        .background(Palette.graphiteDark, in: Circle())
+                }
+                .buttonStyle(.plain)
+            }
+
             VStack(spacing: 0) {
-                ForEach(d.proposals) { p in
-                    NavigationLink {
-                        ProposalPhoneView(proposal: p)
-                    } label: {
-                        HStack(alignment: .top, spacing: 10) {
-                            Circle().fill(p.unread ? Palette.magenta : Color.clear).frame(width: 8, height: 8).padding(.top, 6)
-                            VStack(alignment: .leading, spacing: 2) {
-                                Text(p.title).font(.system(size: 15, weight: .semibold)).foregroundStyle(Palette.ink)
-                                Text(p.short).font(.system(size: 13)).foregroundStyle(Palette.ink2)
-                                Pill(text: p.statusText, tone: p.status.tone).padding(.top, 2)
-                            }
-                            Spacer()
-                            Text(p.time).font(.system(size: 12)).foregroundStyle(Palette.ink2)
-                        }
-                        .padding(.vertical, 9)
-                    }
-                    .buttonStyle(.plain)
-                    if p.id != d.proposals.last?.id { Divider() }
+                if list.isEmpty {
+                    Text(state == .done ? "Aún no hay nada terminado." : "Nada por aquí.")
+                        .font(.system(size: 14)).foregroundStyle(Palette.ink2)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.vertical, 14)
+                }
+                ForEach(list) { item in
+                    row(item)
+                    if item.id != list.last?.id { Divider() }
                 }
             }
             .padding(.horizontal, 16)
             .padding(.vertical, 4)
             .background(Palette.card, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
+
+            Text("Este plan se guarda solo en este iPhone.")
+                .font(.system(size: 12)).foregroundStyle(Palette.ink2)
         }
     }
-}
 
-struct ProposalPhoneView: View {
-    let proposal: Proposal
+    private func add() {
+        plan.add(title: title, note: "", kind: .idea, state: state)
+        title = ""
+    }
 
-    var body: some View {
-        PhoneScreen(title: proposal.title) {
-            Text(proposal.summary).font(.system(size: 15)).foregroundStyle(Palette.ink)
-                .frame(maxWidth: .infinity, alignment: .leading).card(Layout.card)
-
-            VStack(alignment: .leading, spacing: 8) {
-                Heading("Tres respuestas", info: "Jev pregunta tres veces y se queda con la mayoría")
-                ForEach(proposal.votes) { v in
-                    HStack(alignment: .top, spacing: 10) {
-                        Pill(text: v.label, tone: v.positive ? .good : .neutral)
-                        Text(v.reason).font(.system(size: 13)).foregroundStyle(Palette.ink)
-                        Spacer(minLength: 0)
-                    }
+    private func row(_ item: PlanItem) -> some View {
+        HStack(alignment: .top, spacing: 12) {
+            Image(systemName: item.kind.symbol)
+                .font(.system(size: 14, weight: .bold))
+                .foregroundStyle(Palette.ink)
+                .frame(width: 32, height: 32)
+                .background(Palette.neutralBg, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
+            VStack(alignment: .leading, spacing: 2) {
+                Text(item.title)
+                    .font(.system(size: 15, weight: .semibold))
+                    .foregroundColor(item.state == .done ? Palette.ink2 : Palette.ink)
+                    .strikethrough(item.state == .done)
+                if !item.note.isEmpty {
+                    Text(item.note).font(.system(size: 13)).foregroundStyle(Palette.ink2)
                 }
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .card(Layout.card)
-
-            VStack(alignment: .leading, spacing: 8) {
-                Heading("Validador", info: "Reglas fijas que la propuesta cumple antes de llegarte")
-                ForEach(proposal.checks, id: \.self) { c in
-                    HStack(spacing: 9) {
-                        Image(systemName: "checkmark.circle.fill").foregroundStyle(Palette.pos)
-                        Text(c).font(.system(size: 14)).foregroundStyle(Palette.ink)
-                    }
+            Spacer(minLength: 4)
+            Menu {
+                if plan.canShift(item.id, by: -1) {
+                    Button("Subir") { withAnimation { plan.shift(item.id, by: -1) } }
                 }
+                if plan.canShift(item.id, by: 1) {
+                    Button("Bajar") { withAnimation { plan.shift(item.id, by: 1) } }
+                }
+                ForEach(PlanState.allCases.filter { $0 != item.state }) { s in
+                    Button("Pasar a \(s.title)") { withAnimation { plan.move(item.id, to: s) } }
+                }
+                Button("Borrar") { withAnimation { plan.remove(item.id) } }
+            } label: {
+                Image(systemName: "ellipsis")
+                    .font(.system(size: 15, weight: .bold))
+                    .foregroundStyle(Palette.ink2)
+                    .frame(width: 36, height: 36)
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .card(Layout.card)
-
-            HStack(spacing: 8) {
-                Image(systemName: "desktopcomputer").foregroundStyle(Palette.ink2)
-                Text("Para aprobar, abre Jev en el Mac.").font(.system(size: 13)).foregroundStyle(Palette.ink2)
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(14)
-            .background(Palette.neutralBg, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
         }
+        .padding(.vertical, 10)
     }
 }
 #endif

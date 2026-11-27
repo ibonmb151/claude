@@ -1,6 +1,6 @@
 # Mym · app de Mac e iPhone (datos ficticios)
 
-Panel para vigilar y gobernar tus bots de trading: células, cuentas, estrategias, órdenes, riesgo y las propuestas de Jev.
+Panel para vigilar y gobernar tus bots de trading: robots, cuentas, métodos, órdenes, avisos y un plan de lo que queda por hacer.
 Es una sola app en SwiftUI para **macOS 12+** e **iOS 16+**, con widgets, icono en la barra de menús y firma con Face ID o Touch ID.
 
 > **Estado:** todos los datos son ficticios y se generan en local. No hay conexión con ningún bróker ni con el plano de control.
@@ -33,7 +33,7 @@ app/
   project.yml            Proyecto de Xcode (XcodeGen): app + extensión de widgets
   Shared/                Lo que comparten la app y los widgets
     Theme/Palette.swift      Paleta Grafito: sin negro puro ni verde lima
-    Model/Models.swift       Módulos, cuentas, células, estrategias, órdenes, avisos, Jev, riesgo
+    Model/Models.swift       Módulos, cuentas, robots, métodos, órdenes, avisos, plan
     Data/MockData.swift      Datos ficticios deterministas (cuadran entre pantallas)
     Data/Format.swift        Formato a la española (coma decimal, − tipográfico)
     Components/Basics.swift  Tarjeta, píldora, botón ⓘ, títulos cortos, barras
@@ -45,8 +45,8 @@ app/
     Common/Cards.swift       Cifras, mapa de red, fila de órdenes, flota en donut
     Common/RiskCards.swift   Capas de límites y exposición por divisa
     Mac/                     Riel en cápsula + Torre, Órdenes, Flota, Cuentas, Estrategias,
-                             Ajustes, Jev, Riesgo, búsqueda ⌘K y menú de la barra superior
-    iOS/PhoneRootView.swift  Hoy, Órdenes, Avisos y Jev (se ve y se para)
+                             Parámetros, Plan, Avisos, búsqueda ⌘K y menú de la barra superior
+    iOS/PhoneRootView.swift  Hoy, En vivo, Avisos, Resultados y Plan (se ve y se para)
   MymWidgets/            Equity, Hoy, Flota y pantalla de bloqueo
 ```
 

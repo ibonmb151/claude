@@ -3,7 +3,7 @@ import SwiftUI
 // MARK: - Módulos de la app
 
 enum Module: String, CaseIterable, Identifiable {
-    case torre, envivo, ordenes, flota, cuentas, estrategias, resultados, ajustes, jev, riesgo
+    case torre, envivo, ordenes, flota, cuentas, estrategias, resultados, ajustes, plan, riesgo
 
     var id: String { rawValue }
 
@@ -17,7 +17,7 @@ enum Module: String, CaseIterable, Identifiable {
         case .estrategias: return "Métodos"
         case .resultados: return "Resultados"
         case .ajustes: return "Parámetros"
-        case .jev: return "Asesor"
+        case .plan: return "Plan"
         case .riesgo: return "Avisos"
         }
     }
@@ -33,7 +33,7 @@ enum Module: String, CaseIterable, Identifiable {
         case .estrategias: return "chart.line.uptrend.xyaxis"
         case .resultados: return "chart.bar"
         case .ajustes: return "slider.horizontal.3"
-        case .jev: return "safari"
+        case .plan: return "list.bullet.rectangle"
         case .riesgo: return "checkmark.shield"
         }
     }
@@ -48,7 +48,7 @@ enum Module: String, CaseIterable, Identifiable {
         case .estrategias: return Palette.violet
         case .resultados: return Palette.info
         case .ajustes: return Palette.gray
-        case .jev: return Palette.magenta
+        case .plan: return Palette.magenta
         case .riesgo: return Palette.neg
         }
     }
@@ -142,9 +142,9 @@ enum StrategyMode: String {
 
     var label: String {
         switch self {
-        case .active: return "Activa"
-        case .shadow: return "Sombra"
-        case .paused: return "Pausada"
+        case .active: return "Trabajando"
+        case .shadow: return "Observando"
+        case .paused: return "Parado"
         }
     }
 

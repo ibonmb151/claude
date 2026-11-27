@@ -67,7 +67,7 @@ struct NetworkMap: View {
         Node(name: "Bróker", symbol: "building.columns", color: Palette.graphite, x: 0.82, y: 0.24),
         Node(name: "Datos", symbol: "waveform.path.ecg", color: Palette.info, x: 0.82, y: 0.68),
         Node(name: "Control", symbol: "lock", color: Palette.gray, x: 0.14, y: 0.22),
-        Node(name: "Jev", symbol: "safari", color: Palette.magenta, x: 0.48, y: 0.86)
+        Node(name: "Asesor", symbol: "safari", color: Palette.magenta, x: 0.48, y: 0.86)
     ]
 
     private let edges: [Edge] = [

@@ -52,7 +52,7 @@ struct MacRootView: View {
         case .estrategias: EstrategiasView()
         case .resultados: ResultadosView()
         case .ajustes: AjustesView()
-        case .jev: JevView()
+        case .plan: PlanView()
         case .riesgo: RiesgoView()
         }
     }
@@ -120,7 +120,7 @@ struct MacRail: View {
 
     private func badge(for module: Module) -> Int {
         switch module {
-        case .jev: return store.data.pendingProposals
+        case .plan: return 0
         case .riesgo: return store.data.openAlerts.count
         default: return 0
         }
@@ -153,7 +153,7 @@ struct RailButton: View {
                     .font(.system(size: 18, weight: .medium))
                     .foregroundStyle(active ? Color.white : Palette.ink2)
                 if badge > 0 {
-                    // Mismo azul para Asesor y Avisos: el rojo queda para pérdidas y peligro.
+                    // Mismo azul para Plan y Avisos: el rojo queda para pérdidas y peligro.
                     Text("\(badge)")
                         .font(.system(size: 11, weight: .bold))
                         .foregroundStyle(Color.white)
@@ -354,7 +354,7 @@ struct MenuBarView: View {
             }
             Divider().padding(.top, 6)
             menuRow("Abrir Torre") { store.module = .torre; NSApp.activate(ignoringOtherApps: true) }
-            menuRow("Revisar propuesta de Jev (\(store.data.pendingProposals))") { store.module = .jev; NSApp.activate(ignoringOtherApps: true) }
+            menuRow("Abrir el plan") { store.module = .plan; NSApp.activate(ignoringOtherApps: true) }
             menuRow("Buscar y actuar…") { store.showSearch = true; NSApp.activate(ignoringOtherApps: true) }
             Divider()
             Button {

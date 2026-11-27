@@ -69,7 +69,7 @@ struct EquityWidgetView: View {
                 Text("Equity").font(.system(size: 12, weight: .bold)).foregroundStyle(Palette.ink2)
                 Spacer()
                 if family == .systemMedium {
-                    Pill(text: "\(s.criticalCount) crítico", tone: s.criticalCount > 0 ? .bad : .good)
+                    Pill(text: s.criticalCount > 0 ? "\(s.criticalCount) avisos" : "Todo bien", tone: s.criticalCount > 0 ? .bad : .good)
                 }
             }
             Text(Fmt.eur(s.equity))
@@ -115,7 +115,7 @@ struct RingsWidgetView: View {
                     .font(.system(size: 17, weight: .bold))
                     .foregroundStyle(Palette.ink)
             )
-            Text("Hoy · exp. \(Fmt.pct(s.exposurePct))")
+            Text("Hoy · en juego \(Fmt.pct(s.exposurePct))")
                 .font(.system(size: 11, weight: .bold))
                 .foregroundStyle(Palette.ink2)
         }
@@ -134,7 +134,7 @@ struct RingsWidget: Widget {
     }
 }
 
-// MARK: - Flota
+// MARK: - Robots
 
 struct FleetWidgetView: View {
     @Environment(\.widgetFamily) private var family
@@ -146,7 +146,7 @@ struct FleetWidgetView: View {
         VStack(alignment: .leading, spacing: 6) {
             HStack(spacing: 5) {
                 Image(systemName: "server.rack").font(.system(size: 11, weight: .bold)).foregroundStyle(Palette.teal)
-                Text("Flota").font(.system(size: 12, weight: .bold)).foregroundStyle(Palette.ink2)
+                Text("Robots").font(.system(size: 12, weight: .bold)).foregroundStyle(Palette.ink2)
                 Spacer()
                 Pill(text: s.openAlerts.isEmpty ? "Todo bien" : "\(s.openAlerts.count) avisos",
                      tone: s.openAlerts.isEmpty ? .good : .warn)
@@ -154,11 +154,9 @@ struct FleetWidgetView: View {
             ForEach(shown) { cell in
                 HStack(spacing: 8) {
                     StatusDot(color: cell.health.color)
-                    Text(cell.id).font(.system(size: 12, weight: .semibold, design: .monospaced)).foregroundStyle(Palette.ink)
+                    Text(cell.id).font(.system(size: 13, weight: .semibold)).foregroundStyle(Palette.ink)
                     Spacer()
-                    if family != .systemMedium {
-                        Text(cell.accountId).font(.system(size: 11)).foregroundStyle(Palette.ink2)
-                    }
+                    Text(cell.health.label).font(.system(size: 12)).foregroundStyle(Palette.ink2)
                     Text(Fmt.signedPct(cell.dayPct, 1))
                         .font(.system(size: 12, weight: .bold))
                         .foregroundStyle(cell.dayPct < 0 ? Palette.negText : Palette.ink)
@@ -181,8 +179,8 @@ struct FleetWidget: Widget {
         StaticConfiguration(kind: "MymFleet", provider: SnapshotProvider()) { entry in
             FleetWidgetView(entry: entry)
         }
-        .configurationDisplayName("Flota")
-        .description("Estado y resultado del día de cada célula.")
+        .configurationDisplayName("Robots")
+        .description("Estado y resultado de hoy de cada robot.")
         .supportedFamilies([.systemMedium, .systemLarge])
     }
 }

@@ -4,6 +4,7 @@ import SwiftUI
 struct MymApp: App {
     @StateObject private var store = AppStore.shared
     @StateObject private var accountStore = AccountStore.shared
+    @StateObject private var plan = PlanStore.shared
     #if os(macOS)
     @StateObject private var config = ConfigStore()
     @NSApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
@@ -15,6 +16,7 @@ struct MymApp: App {
             MacRootView()
                 .environmentObject(store)
                 .environmentObject(accountStore)
+                .environmentObject(plan)
                 .frame(minWidth: 1040, minHeight: 680)
         }
         .windowStyle(.hiddenTitleBar)
@@ -44,6 +46,7 @@ struct MymApp: App {
             PhoneRootView()
                 .environmentObject(store)
                 .environmentObject(accountStore)
+                .environmentObject(plan)
         }
         #endif
     }
