@@ -17,7 +17,7 @@ from gen5 import page, write, POS, NEG, WARN, INFO, INK, INK2, GR, a_cuentas, a_
 
 # ───── dock del iPhone: cápsula de cristal, solo iconos; la sección activa se expande con su nombre ─────
 DOCK = r'''
-.scr .tabs{position:absolute;left:50%;transform:translateX(-50%);bottom:22px;width:auto;max-width:calc(100% - 24px);height:64px;padding:8px;gap:4px;border-radius:32px;
+.scr .tabs{position:absolute;left:0;right:0;margin:0 auto;width:max-content;max-width:calc(100% - 24px);bottom:22px;height:64px;padding:8px;gap:4px;border-radius:32px;
   background:rgba(255,255,255,.74);-webkit-backdrop-filter:blur(30px) saturate(1.8);backdrop-filter:blur(30px) saturate(1.8);
   border:1px solid rgba(255,255,255,.75);box-shadow:0 12px 32px rgba(16,17,19,.16),0 1px 0 rgba(255,255,255,.9) inset;display:flex;align-items:center;justify-content:center;z-index:6;animation:dockin .6s var(--ease) .15s both}
 .scr .tab{flex:none;position:relative;height:48px;min-width:48px;padding:0 12px;border-radius:24px;flex-direction:row;align-items:center;justify-content:center;gap:0;font-size:13px;font-weight:600;color:#6B7078;
@@ -29,6 +29,12 @@ DOCK = r'''
 .scr .tab.on::before{display:none}
 .scr .tb{top:6px;right:6px;left:auto;width:10px;min-width:10px;height:10px;padding:0;border-radius:50%;font-size:0;border:2px solid #fff;box-sizing:content-box}
 .scr .tab.on .tb{border-color:#2B2E33}
+.scr .tabs{background:rgba(255,255,255,.88)}
+.scr::after{content:"";position:absolute;left:0;right:0;bottom:0;height:128px;background:linear-gradient(to top,#F2F2EE 38%,rgba(242,242,238,0));pointer-events:none;z-index:5}
+.pc .ev,.pc .hov{border-radius:0;margin:0}
+.pc .hov:first-child{border-top:0}
+.pc .hov{padding-left:0;padding-right:0}
+.pc .ev:first-child{border-top:0}
 .agenda{display:flex;align-items:center;gap:14px;padding:12px 0;border-top:1px solid #EFEFEA}
 .agenda:first-of-type{border-top:0}
 .tile{text-decoration:none;color:inherit;cursor:pointer}

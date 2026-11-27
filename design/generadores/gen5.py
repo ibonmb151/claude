@@ -289,7 +289,7 @@ def m_envivo():
 def m_resultados():
     body = (ptitle('Resultados') + '<div style="display:flex;justify-content:center"><div class="seg2"><button class="" type="button">Hoy</button><button class="" type="button">Semana</button><button class="on" type="button">Mes</button><button class="" type="button">Año</button></div></div>' +
             pc('<div class="t2" style="font-size:12px;font-weight:600">Este mes</div><span class="d tn" style="font-size:38px;font-weight:700;color:#3F7300;line-height:1.05">+3.412 €</span><div class="t2" style="font-size:13px">+1,60 % sobre el capital total</div>') +
-            pc(ch('Día a día', 'Resultado de cada día') + calendar(360, 46, 6, False)) +
+            pc(ch('Día a día', 'Resultado de cada día') + calendar(340, 58, 6, False)) +
             '<div style="display:flex;gap:12px"><div class="pc" style="flex:1"><div class="t2" style="font-size:12px;font-weight:600">Acierto</div><b class="tn" style="font-size:22px">57,4 %</b></div><div class="pc" style="flex:1"><div class="t2" style="font-size:12px;font-weight:600">Profit factor</div><b class="tn" style="font-size:22px">1,38</b></div></div>')
     return phone2(body, 4)
 

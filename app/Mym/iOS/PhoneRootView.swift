@@ -27,6 +27,11 @@ struct PhoneRootView: View {
                     .toolbar(.hidden, for: .tabBar)
                     .tag(4)
             }
+            // Difumina lo que pasa por debajo del dock para que no se mezcle con los iconos.
+            LinearGradient(gradient: Gradient(colors: [Palette.bg.opacity(0), Palette.bg]), startPoint: .top, endPoint: .bottom)
+                .frame(height: 120)
+                .allowsHitTesting(false)
+                .ignoresSafeArea(edges: .bottom)
             FloatingDock(tab: $tab, alerts: store.data.openAlerts.count, proposals: store.data.pendingProposals)
                 .padding(.bottom, 8)
         }
@@ -89,7 +94,7 @@ struct FloatingDock: View {
             }
         }
         .padding(8)
-        .background(.ultraThinMaterial, in: Capsule())
+        .background(.regularMaterial, in: Capsule())
         .overlay(Capsule().stroke(Color.white.opacity(0.7), lineWidth: 1))
         .shadow(color: Color.black.opacity(0.16), radius: 20, x: 0, y: 12)
     }
