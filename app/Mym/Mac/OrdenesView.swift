@@ -1,6 +1,8 @@
 #if os(macOS)
 import SwiftUI
 
+/// Órdenes de hoy. A la izquierda, la lista; a la derecha, lo que importa de la elegida:
+/// qué ha pasado, cuánto lleva ganado o perdido, y el precio frente a su objetivo y su stop.
 struct OrdenesView: View {
     @EnvironmentObject var store: AppStore
 
@@ -10,10 +12,9 @@ struct OrdenesView: View {
 
     var body: some View {
         let d = store.data
-        HStack(alignment: .top, spacing: 14) {
-            // Lista
+        HStack(alignment: .top, spacing: Layout.gap) {
             VStack(alignment: .leading, spacing: 10) {
-                Heading("Órdenes", info: "Todas las de hoy con su seguimiento. Cuántas llegan a ejecutarse, en En vivo")
+                Heading("Órdenes de hoy", info: "Cuántas llegan a ejecutarse, en En vivo")
                 ScrollView {
                     VStack(spacing: 2) {
                         ForEach(d.orders) { o in
@@ -22,85 +23,41 @@ struct OrdenesView: View {
                     }
                 }
             }
-            .padding(14)
-            .frame(width: 330)
+            .padding(Layout.cardSmall)
+            .frame(width: 340)
+            .frame(maxHeight: .infinity, alignment: .top)
             .background(Palette.card, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
             .shadow(color: Color.black.opacity(0.05), radius: 10, x: 0, y: 4)
 
-            // Seguimiento
             ScrollView {
-                VStack(alignment: .leading, spacing: 18) {
-                    header(order)
-                    milestones(order)
-                    timeBar(d)
-                    priceCard(order)
-                }
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .card(20)
+                detail(order, d)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .card(Layout.card)
             }
-
-            // Detalle
-            VStack(alignment: .leading, spacing: 2) {
-                Heading("Detalle", info: "Todo lo que el diario sabe de esta orden")
-                    .padding(.bottom, 6)
-                Group {
-                    detailRow("Estrategia", "\(order.strategyId) · v\(d.strategy(order.strategyId)?.version ?? 1)")
-                    detailRow("Célula", order.cellId)
-                    detailRow("Cuenta", d.cell(order.cellId)?.accountId ?? "—")
-                    detailRow("Volumen", Fmt.lots(order.lots))
-                    detailRow("Entrada", Fmt.price(order.entry))
-                    detailRow("Stop", order.stop == 0 ? "sin stop" : Fmt.price(order.stop))
-                    detailRow("Objetivo", Fmt.price(order.target))
-                    detailRow("Diario", "f20a…77c9")
-                }
-                Spacer()
-                Button("Ver en el diario") {}
-                    .buttonStyle(MymButtonStyle(kind: .secondary))
-                Button("Cerrar posición") { store.requestPause(order.cellId) }
-                    .buttonStyle(MymButtonStyle(kind: .primary))
-                    .padding(.top, 6)
-            }
-            .padding(18)
-            .frame(width: 280)
-            .background(Palette.card, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
-            .shadow(color: Color.black.opacity(0.05), radius: 10, x: 0, y: 4)
         }
-        .padding(.horizontal, 18)
-        .padding(.bottom, 18)
+        .padding(.horizontal, Layout.page)
+        .padding(.bottom, Layout.page)
     }
 
-    private func funnelCell(_ value: String, _ label: String) -> some View {
-        VStack(alignment: .leading, spacing: 0) {
-            Text(value).font(.system(size: 17, weight: .bold)).monospacedDigit().foregroundStyle(Palette.ink)
-            Text(label).font(.system(size: 11, weight: .semibold)).foregroundStyle(Palette.ink2)
-        }
-        .padding(.horizontal, 8)
-        .padding(.vertical, 6)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Palette.bg, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
-    }
+    // MARK: Lista
 
     private func orderRow(_ o: Order) -> some View {
-        let selected = o.id == store.selectedOrderId
-        let strategy = store.data.strategy(o.strategyId)
+        let selected: Bool = o.id == store.selectedOrderId
         return Button {
             store.selectedOrderId = o.id
         } label: {
-            HStack(spacing: 11) {
-                IconTile(symbol: strategy?.symbol ?? "arrow.up.right", color: strategy?.color ?? Palette.gray, size: 30)
+            HStack(spacing: 12) {
+                Image(systemName: o.side == .buy ? "arrow.up.right" : "arrow.down.right")
+                    .font(.system(size: 13, weight: .bold))
+                    .foregroundStyle(Palette.ink)
+                    .frame(width: 32, height: 32)
+                    .background(Palette.neutralBg, in: Circle())
                 VStack(alignment: .leading, spacing: 1) {
-                    HStack(spacing: 5) {
-                        Text(o.instrument).font(.system(size: 14, weight: .semibold))
-                        Text("\(o.side.label) \(Fmt.comma(o.lots, 2))").font(.system(size: 13)).foregroundStyle(Palette.ink2)
-                    }
-                    Text("\(o.id) · \(o.cellId.replacingOccurrences(of: "c-", with: ""))")
-                        .font(.system(size: 11, design: .monospaced)).foregroundStyle(Palette.ink2)
+                    Text("\(o.side.label) \(o.instrument)").font(.system(size: 14, weight: .semibold))
+                    Text(o.time).font(.system(size: 12)).foregroundStyle(Palette.ink2).monospacedDigit()
                 }
                 Spacer(minLength: 4)
-                VStack(alignment: .trailing, spacing: 3) {
-                    Pill(text: o.status.label, tone: o.status.tone)
-                    Text(o.time).font(.system(size: 11)).foregroundStyle(Palette.ink2).monospacedDigit()
-                }
+                Pill(text: o.status.label, tone: o.status.tone)
             }
             .padding(.horizontal, 10)
             .padding(.vertical, 8)
@@ -111,96 +68,101 @@ struct OrdenesView: View {
         .foregroundStyle(Palette.ink)
     }
 
-    private func header(_ o: Order) -> some View {
-        HStack(alignment: .top) {
-            VStack(alignment: .leading, spacing: 6) {
-                Text(o.id).font(.system(size: 12, design: .monospaced)).foregroundStyle(Palette.ink2)
-                Text("\(o.instrument) · \(o.side.label) \(Fmt.comma(o.lots, 2))")
-                    .font(.system(size: 26, weight: .bold)).foregroundStyle(Palette.ink)
-                HStack(spacing: 6) {
-                    Pill(text: o.status.label, tone: o.status.tone)
-                    Pill(text: o.strategyId)
-                    Pill(text: o.cellId)
+    // MARK: Detalle
+
+    private func isOpen(_ o: Order) -> Bool {
+        o.status == .accepted || o.status == .filled || o.status == .noStop
+    }
+
+    /// Qué ha pasado, en una frase.
+    private func sentence(_ o: Order) -> String {
+        let result: String = o.pnl.map { Fmt.comma(abs($0), 2) + " €" } ?? ""
+        switch o.status {
+        case .riskOk: return "Revisada. A punto de enviarse al bróker."
+        case .sent: return "Enviada al bróker. Esperando su respuesta."
+        case .accepted, .filled: return (o.pnl ?? 0) >= 0 ? "Abierta. Ahora mismo va ganando \(result)." : "Abierta. Ahora mismo va perdiendo \(result)."
+        case .noStop: return "Abierta, pero sin protección: no tiene stop."
+        case .rejected: return "El bróker la rechazó. No se abrió."
+        case .closed: return (o.pnl ?? 0) >= 0 ? "Cerrada con una ganancia de \(result)." : "Cerrada con una pérdida de \(result)."
+        }
+    }
+
+    private func detail(_ o: Order, _ d: Snapshot) -> some View {
+        let strategyName: String = d.strategy(o.strategyId)?.id ?? o.strategyId
+        let total: Int = d.hops.reduce(0) { $0 + $1.ms }
+        return VStack(alignment: .leading, spacing: Layout.gap) {
+            HStack(alignment: .top) {
+                VStack(alignment: .leading, spacing: 6) {
+                    Text("\(o.side.label) \(o.instrument)")
+                        .font(.system(size: 28, weight: .bold)).foregroundStyle(Palette.ink)
+                    Text(sentence(o)).font(.system(size: 15)).foregroundStyle(Palette.ink2)
                 }
-            }
-            Spacer()
-            if let pnl = o.pnl {
-                VStack(alignment: .trailing, spacing: 2) {
+                Spacer()
+                if let pnl = o.pnl {
                     Text(Fmt.eurDecimals(pnl))
-                        .font(.system(size: 28, weight: .bold))
+                        .font(.system(size: 32, weight: .bold))
                         .foregroundStyle(pnl >= 0 ? Palette.posText : Palette.negText)
                         .monospacedDigit()
-                    Text(Fmt.price(o.last)).font(.system(size: 12)).foregroundStyle(Palette.ink2).monospacedDigit()
+                }
+            }
+
+            steps(o)
+
+            VStack(alignment: .leading, spacing: 8) {
+                Heading("Precio", info: "Desde la entrada, con el objetivo arriba y el stop abajo")
+                PriceStrip(entry: o.entry, stop: o.stop, target: o.target, last: o.last)
+                    .frame(height: 220)
+            }
+
+            HStack(alignment: .center) {
+                Text("\(o.cellId) · \(strategyName) · \(Fmt.comma(o.lots, 2)) lotes")
+                    .font(.system(size: 13)).foregroundStyle(Palette.ink2)
+                if o.status == .accepted || o.status == .filled || o.status == .closed {
+                    Text("· tardó \(Fmt.comma(Double(total) / 1000, 1)) s en abrirse")
+                        .font(.system(size: 13)).foregroundStyle(Palette.ink2)
+                }
+                Spacer()
+                if isOpen(o) {
+                    Button("Cerrar posición") { store.requestPause(o.cellId) }
+                        .buttonStyle(MymButtonStyle(kind: .primary))
                 }
             }
         }
     }
 
-    private func milestones(_ o: Order) -> some View {
-        let names = ["Señal", "Riesgo", "Enviada", "Aceptada", "Ejecutada", "Stop", "Cierre"]
-        let times = ["\(o.time).012", "+7 ms", "+12 ms", "+609 ms", "+62 ms", "+33 ms", "pendiente"]
-        let reached = o.status == .closed ? 7 : min(6, o.status.steps + 2)
-        return HStack(alignment: .top, spacing: 0) {
+    /// Cuatro pasos, sin tiempos: revisada, enviada, abierta y cerrada.
+    private func steps(_ o: Order) -> some View {
+        let names: [String] = ["Revisada", "Enviada", "Abierta", "Cerrada"]
+        let reached: Int
+        switch o.status {
+        case .riskOk: reached = 1
+        case .sent, .rejected: reached = 2
+        case .accepted, .filled, .noStop: reached = 3
+        case .closed: reached = 4
+        }
+        return HStack(spacing: 0) {
             ForEach(0..<names.count, id: \.self) { i in
-                VStack(spacing: 6) {
-                    ZStack {
-                        Circle().fill(i < reached ? Palette.graphiteDark : Palette.card)
-                            .frame(width: 26, height: 26)
-                            .overlay(Circle().stroke(Palette.graphiteDark, lineWidth: 3))
-                        if i < reached {
-                            Image(systemName: "checkmark").font(.system(size: 11, weight: .bold)).foregroundStyle(Color.white)
+                HStack(spacing: 0) {
+                    VStack(spacing: 6) {
+                        ZStack {
+                            Circle().fill(i < reached ? Palette.graphiteDark : Palette.card)
+                                .frame(width: 24, height: 24)
+                                .overlay(Circle().stroke(i < reached ? Palette.graphiteDark : Palette.graphiteSoft, lineWidth: 2.5))
+                            if i < reached {
+                                Image(systemName: "checkmark").font(.system(size: 11, weight: .bold)).foregroundStyle(Color.white)
+                            }
                         }
+                        Text(names[i]).font(.system(size: 12, weight: .semibold)).foregroundStyle(i < reached ? Palette.ink : Palette.ink2)
                     }
-                    Text(names[i]).font(.system(size: 12, weight: .semibold)).foregroundStyle(Palette.ink)
-                    Text(times[i]).font(.system(size: 11)).foregroundStyle(Palette.ink2).monospacedDigit()
-                }
-                .frame(maxWidth: .infinity)
-            }
-        }
-    }
-
-    private func timeBar(_ d: Snapshot) -> some View {
-        let total = d.hops.reduce(0) { $0 + $1.ms }
-        return VStack(alignment: .leading, spacing: 8) {
-            Heading("Tiempo · \(total) ms", info: "A escala: cuánto tarda cada tramo. El bróker se lleva la mayor parte; nuestro código, 52 ms")
-            GeometryReader { g in
-                HStack(spacing: 2) {
-                    ForEach(d.hops) { hop in
-                        RoundedRectangle(cornerRadius: 4)
-                            .fill(hop.color)
-                            .frame(width: max(4, (g.size.width - 8) * CGFloat(hop.ms) / CGFloat(total)))
-                    }
-                }
-            }
-            .frame(height: 30)
-            HStack(spacing: 14) {
-                ForEach(d.hops) { hop in
-                    HStack(spacing: 5) {
-                        RoundedRectangle(cornerRadius: 3).fill(hop.color).frame(width: 9, height: 9)
-                        Text("\(hop.name) \(hop.ms) ms").font(.system(size: 12)).foregroundStyle(Palette.ink2)
+                    if i < names.count - 1 {
+                        Rectangle().fill(i < reached - 1 ? Palette.graphiteDark : Palette.track)
+                            .frame(height: 3)
+                            .frame(maxWidth: .infinity)
+                            .padding(.bottom, 22)
                     }
                 }
             }
         }
-    }
-
-    private func priceCard(_ o: Order) -> some View {
-        VStack(alignment: .leading, spacing: 6) {
-            Heading("Precio", info: "Desde la entrada, con el objetivo arriba y el stop abajo")
-            PriceStrip(entry: o.entry, stop: o.stop, target: o.target, last: o.last)
-                .frame(height: 190)
-        }
-    }
-
-    private func detailRow(_ label: String, _ value: String) -> some View {
-        HStack {
-            Text(label).foregroundStyle(Palette.ink2)
-            Spacer()
-            Text(value).fontWeight(.semibold).foregroundStyle(Palette.ink).monospacedDigit()
-        }
-        .font(.system(size: 13))
-        .padding(.vertical, 8)
-        .overlay(Rectangle().fill(Palette.line).frame(height: 1), alignment: .bottom)
     }
 }
 #endif

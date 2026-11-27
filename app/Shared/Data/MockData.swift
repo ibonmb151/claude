@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// Datos ficticios, deterministas. Las cuentas, firmas y cifras son inventadas.
-/// Las estrategias (mom_us500, rev_m5, tend_d1) vienen de los documentos 13 y 14.
+/// Las estrategias (Impulso, Rebote, Tendencia) vienen de los documentos 13 y 14.
 enum MockData {
 
     // MARK: Series deterministas
@@ -61,10 +61,10 @@ enum MockData {
             proposals: makeProposals(),
             layers: [
                 RiskLayer(name: "Orden", detail: "0,25 de 0,8 %", used: 30, yesterday: 28),
-                RiskLayer(name: "Estrategia", detail: "0,4 de 1,0 %", used: 40, yesterday: 35),
-                RiskLayer(name: "Célula", detail: "1,9 de 4 %", used: 47, yesterday: 22),
+                RiskLayer(name: "Método", detail: "0,4 de 1,0 %", used: 40, yesterday: 35),
+                RiskLayer(name: "Robot", detail: "1,9 de 4 %", used: 47, yesterday: 22),
                 RiskLayer(name: "Cuenta", detail: "1,2 de 8 %", used: 15, yesterday: 15),
-                RiskLayer(name: "Global", detail: "0,3 de 2,0 %", used: 16, yesterday: 9)
+                RiskLayer(name: "Total", detail: "0,3 de 2,0 %", used: 16, yesterday: 9)
             ],
             exposures: [
                 ExposureItem(name: "USD", lots: 1.22, pct: 38, isLong: true),
@@ -96,21 +96,21 @@ enum MockData {
 
     private static func makeAccounts() -> [Account] {
         [
-            Account(id: "FND-A-100k", firm: "Firma A", kind: .funded, phase: "Fase 1", equity: 101842,
+            Account(id: "Fondeo A · 100k", firm: "Firma A", kind: .funded, phase: "Fase 1", equity: 101842,
                     dayPct: -0.6, dayLimitPct: 5, drawdownPct: 1.9, drawdownLimitPct: 10,
-                    targetPct: 1.8, targetGoalPct: 8, health: .ok, cellId: "c-lon-01"),
-            Account(id: "FND-B-50k", firm: "Firma B", kind: .funded, phase: "Fase 2", equity: 51600,
+                    targetPct: 1.8, targetGoalPct: 8, health: .ok, cellId: "Londres 1"),
+            Account(id: "Fondeo B · 50k", firm: "Firma B", kind: .funded, phase: "Fase 2", equity: 51600,
                     dayPct: -1.9, dayLimitPct: 4, drawdownPct: 1.2, drawdownLimitPct: 8,
-                    targetPct: 3.2, targetGoalPct: 5, health: .warning, cellId: "c-lon-02"),
-            Account(id: "FND-A-25k", firm: "Firma A", kind: .funded, phase: "Fase 1", equity: 25090,
+                    targetPct: 3.2, targetGoalPct: 5, health: .warning, cellId: "Londres 2"),
+            Account(id: "Fondeo A · 25k", firm: "Firma A", kind: .funded, phase: "Fase 1", equity: 25090,
                     dayPct: 0.0, dayLimitPct: 5, drawdownPct: 0.4, drawdownLimitPct: 10,
-                    targetPct: 0.4, targetGoalPct: 8, health: .paused, cellId: "c-lon-04"),
-            Account(id: "REAL-01", firm: "Cuenta propia", kind: .real, phase: "Meta del mes", equity: 12340,
+                    targetPct: 0.4, targetGoalPct: 8, health: .paused, cellId: "Londres 4"),
+            Account(id: "Cuenta real", firm: "Cuenta propia", kind: .real, phase: "Meta del mes", equity: 12340,
                     dayPct: 0.3, dayLimitPct: 2, drawdownPct: 3.0, drawdownLimitPct: 10,
-                    targetPct: 0.6, targetGoalPct: 1, health: .critical, cellId: "c-lon-03"),
-            Account(id: "DEMO-01", firm: "Bróker cTrader", kind: .demo, phase: "Incubación", equity: 22342,
+                    targetPct: 0.6, targetGoalPct: 1, health: .critical, cellId: "Londres 3"),
+            Account(id: "Cuenta demo", firm: "Bróker cTrader", kind: .demo, phase: "Incubación", equity: 22342,
                     dayPct: 0.5, dayLimitPct: 5, drawdownPct: 1.2, drawdownLimitPct: 10,
-                    targetPct: 18, targetGoalPct: 30, health: .ok, cellId: "c-dem-01")
+                    targetPct: 18, targetGoalPct: 30, health: .ok, cellId: "Demo")
         ]
     }
 
@@ -121,29 +121,29 @@ enum MockData {
             StrategyWeight(strategyId: id, weight: weight, mode: mode)
         }
         return [
-            BotCell(id: "c-lon-01", accountId: "FND-A-100k", health: .ok, site: "Londres", backupSite: "Bilbao",
+            BotCell(id: "Londres 1", accountId: "Fondeo A · 100k", health: .ok, site: "Londres", backupSite: "Bilbao",
                     version: "v0.9.3", p99: 640, rejects24h: 2, heartbeat: 0.8, dayPct: -0.6,
-                    weights: [w("mom_us500", 1.0), w("rev_m5", 1.0), w("tend_d1", 0.5)],
+                    weights: [w("Impulso", 1.0), w("Rebote", 1.0), w("Tendencia", 0.5)],
                     healthScores: [96, 88, 92, 70, 97, 100],
                     uptime: uptime(seed: 1, incidents: [41: 0.5])),
-            BotCell(id: "c-lon-02", accountId: "FND-B-50k", health: .warning, site: "Londres", backupSite: "Bilbao",
+            BotCell(id: "Londres 2", accountId: "Fondeo B · 50k", health: .warning, site: "Londres", backupSite: "Bilbao",
                     version: "v0.9.3", p99: 910, rejects24h: 5, heartbeat: 1.1, dayPct: -1.9,
-                    weights: [w("rev_m5", 0.5), w("tend_d1", 0.5)],
+                    weights: [w("Rebote", 0.5), w("Tendencia", 0.5)],
                     healthScores: [82, 72, 64, 90, 95, 100],
                     uptime: uptime(seed: 2, incidents: [12: 0.5, 33: 0, 58: 0.5, 59: 0.5])),
-            BotCell(id: "c-lon-03", accountId: "REAL-01", health: .critical, site: "Londres", backupSite: "Bilbao",
+            BotCell(id: "Londres 3", accountId: "Cuenta real", health: .critical, site: "Londres", backupSite: "Bilbao",
                     version: "v0.9.2", p99: 580, rejects24h: 0, heartbeat: 0.7, dayPct: 0.3,
-                    weights: [w("rev_m5", 0.5), w("tend_d1", 0.5)],
+                    weights: [w("Rebote", 0.5), w("Tendencia", 0.5)],
                     healthScores: [97, 91, 99, 88, 96, 55],
                     uptime: uptime(seed: 3, incidents: [22: 0.5, 59: 0])),
-            BotCell(id: "c-dem-01", accountId: "DEMO-01", health: .ok, site: "Bilbao", backupSite: "Londres",
+            BotCell(id: "Demo", accountId: "Cuenta demo", health: .ok, site: "Bilbao", backupSite: "Londres",
                     version: "v0.9.4 · candidata", p99: 720, rejects24h: 1, heartbeat: 0.9, dayPct: 0.5,
-                    weights: [w("mom_us500", 0, .shadow), w("rev_m5", 1.0), w("tend_d1", 1.0)],
+                    weights: [w("Impulso", 0, .shadow), w("Rebote", 1.0), w("Tendencia", 1.0)],
                     healthScores: [93, 84, 95, 92, 98, 100],
                     uptime: uptime(seed: 4, incidents: [54: 0.5])),
-            BotCell(id: "c-lon-04", accountId: "FND-A-25k", health: .paused, site: "Londres", backupSite: "Bilbao",
+            BotCell(id: "Londres 4", accountId: "Fondeo A · 25k", health: .paused, site: "Londres", backupSite: "Bilbao",
                     version: "v0.9.3", p99: 0, rejects24h: 0, heartbeat: 0, dayPct: 0,
-                    weights: [w("mom_us500", 0, .paused), w("rev_m5", 0, .paused), w("tend_d1", 0, .paused)],
+                    weights: [w("Impulso", 0, .paused), w("Rebote", 0, .paused), w("Tendencia", 0, .paused)],
                     healthScores: [0, 0, 0, 0, 0, 0],
                     uptime: uptime(seed: 5, incidents: [:], pausedLast: 9))
         ]
@@ -153,7 +153,7 @@ enum MockData {
 
     private static func makeStrategies() -> [Strategy] {
         [
-            Strategy(id: "mom_us500", name: "Momentum US500", symbol: "chevron.up", color: Palette.violet,
+            Strategy(id: "Impulso", name: "Aprovecha arranques", symbol: "chevron.up", color: Palette.violet,
                      return30d: 1.8, trades: 64, hitRate: 0.55, profitFactor: 1.32, maxDrawdown: 1.1, version: 2,
                      params: [
                         Param(key: "ventana", value: 30, previous: 30, min: 10, max: 60, step: 1, unit: ""),
@@ -163,7 +163,7 @@ enum MockData {
                      series: series(seed: 1.2, count: 30, start: 0, end: 1.8, noise: 0.12),
                      weeklyRank: [1, 1, 1, 2, 3, 1, 2, 2],
                      note: "Impulso en el índice."),
-            Strategy(id: "rev_m5", name: "Reversión M5", symbol: "waveform.path", color: Palette.teal,
+            Strategy(id: "Rebote", name: "Compra caídas rápidas", symbol: "waveform.path", color: Palette.teal,
                      return30d: 0.9, trades: 142, hitRate: 0.57, profitFactor: 1.21, maxDrawdown: 1.4, version: 3,
                      params: [
                         Param(key: "ventana", value: 20, previous: 20, min: 10, max: 40, step: 1, unit: ""),
@@ -174,7 +174,7 @@ enum MockData {
                      series: series(seed: 0.4, count: 30, start: 0, end: 0.9, noise: 0.10),
                      weeklyRank: [3, 2, 3, 3, 2, 3, 3, 3],
                      note: "Vuelta a la media en cinco minutos."),
-            Strategy(id: "tend_d1", name: "Tendencia D1", symbol: "arrow.up.right", color: Palette.magenta,
+            Strategy(id: "Tendencia", name: "Sigue subidas largas", symbol: "arrow.up.right", color: Palette.magenta,
                      return30d: 2.4, trades: 18, hitRate: 0.61, profitFactor: 1.48, maxDrawdown: 0.9, version: 2,
                      params: [
                         Param(key: "ventana", value: 50, previous: 50, min: 20, max: 100, step: 1, unit: ""),
@@ -195,32 +195,33 @@ enum MockData {
                   status: st, time: time, pnl: pnl, entry: e, stop: s, target: t, last: last)
         }
         return [
-            o("#A7F3-21", "EURUSD", .buy, 0.10, "rev_m5", "c-lon-01", .accepted, "10:30:00", 12.40, 1.17003, 1.16853, 1.17283, 1.17127),
-            o("#A7F3-20", "US500", .sell, 0.20, "mom_us500", "c-lon-01", .sent, "10:41:58", nil, 6012.5, 6034.0, 5960.0, 6012.5),
-            o("#B210-07", "GBPUSD", .buy, 0.10, "tend_d1", "c-lon-02", .filled, "10:30:00", 4.10, 1.3052, 1.3010, 1.3140, 1.3068),
-            o("#B210-06", "EURUSD", .buy, 0.05, "rev_m5", "c-lon-02", .rejected, "10:41:07", nil, 1.1701, 1.1686, 1.1730, 1.1701),
-            o("#C051-12", "EURUSD", .sell, 0.05, "rev_m5", "c-dem-01", .riskOk, "10:42:11", nil, 1.1703, 1.1718, 1.1676, 1.1703),
-            o("#D400-03", "EURUSD", .buy, 0.02, "rev_m5", "c-lon-03", .noStop, "09:58:20", -1.20, 1.1690, 0.0, 1.1730, 1.1684),
-            o("#A7F3-19", "US500", .buy, 0.20, "mom_us500", "c-lon-01", .closed, "09:15:44", 38.60, 5988.0, 5960.0, 6040.0, 6018.0),
-            o("#B210-05", "GBPUSD", .sell, 0.10, "tend_d1", "c-lon-02", .closed, "08:02:10", -9.80, 1.3101, 1.3140, 1.3030, 1.3115),
-            o("#C051-11", "EURUSD", .buy, 0.05, "rev_m5", "c-dem-01", .closed, "07:40:03", 6.20, 1.1672, 1.1655, 1.1705, 1.1690)
+            o("#A7F3-21", "EURUSD", .buy, 0.10, "Rebote", "Londres 1", .accepted, "10:30:00", 12.40, 1.17003, 1.16853, 1.17283, 1.17127),
+            o("#A7F3-20", "US500", .sell, 0.20, "Impulso", "Londres 1", .sent, "10:41:58", nil, 6012.5, 6034.0, 5960.0, 6012.5),
+            o("#B210-07", "GBPUSD", .buy, 0.10, "Tendencia", "Londres 2", .filled, "10:30:00", 4.10, 1.3052, 1.3010, 1.3140, 1.3068),
+            o("#B210-06", "EURUSD", .buy, 0.05, "Rebote", "Londres 2", .rejected, "10:41:07", nil, 1.1701, 1.1686, 1.1730, 1.1701),
+            o("#C051-12", "EURUSD", .sell, 0.05, "Rebote", "Demo", .riskOk, "10:42:11", nil, 1.1703, 1.1718, 1.1676, 1.1703),
+            o("#D400-03", "EURUSD", .buy, 0.02, "Rebote", "Londres 3", .noStop, "09:58:20", -1.20, 1.1690, 0.0, 1.1730, 1.1684),
+            o("#A7F3-19", "US500", .buy, 0.20, "Impulso", "Londres 1", .closed, "09:15:44", 38.60, 5988.0, 5960.0, 6040.0, 6018.0),
+            o("#B210-05", "GBPUSD", .sell, 0.10, "Tendencia", "Londres 2", .closed, "08:02:10", -9.80, 1.3101, 1.3140, 1.3030, 1.3115),
+            o("#C051-11", "EURUSD", .buy, 0.05, "Rebote", "Demo", .closed, "07:40:03", 6.20, 1.1672, 1.1655, 1.1705, 1.1690)
         ]
     }
 
     // MARK: Avisos
 
     private static func makeAlerts() -> [AlertItem] {
+        // Frases normales y completas: el aviso dice qué pasa y dónde, sin subtítulo.
         [
-            AlertItem(id: "a1", level: .critical, title: "Posición sin stop",
-                      subtitle: "c-lon-03 · REAL-01 · manual paso 2 de 4", time: "09:58", action: "Manual", acknowledged: false),
-            AlertItem(id: "a2", level: .warning, title: "Pérdida del día al 47 %",
-                      subtitle: "FND-B-50k · límite 4 %", time: "10:31", action: "Reconocer", acknowledged: false),
-            AlertItem(id: "a3", level: .warning, title: "Reloj del bróker 1,4 s",
-                      subtitle: "c-lon-01 · DQ-09", time: "10:12", action: "Reconocer", acknowledged: false),
-            AlertItem(id: "a4", level: .info, title: "Jev bajó rev_m5 a 0,5",
-                      subtitle: "c-lon-02 · comando firmado", time: "08:00", action: nil, acknowledged: true),
-            AlertItem(id: "a5", level: .info, title: "Simulacro de aviso",
-                      subtitle: "llegó al móvil en 41 s", time: "ayer", action: nil, acknowledged: true)
+            AlertItem(id: "a1", level: .critical, title: "Londres 3 tiene una operación sin protección",
+                      subtitle: "", time: "09:58", action: "Revisar", acknowledged: false),
+            AlertItem(id: "a2", level: .warning, title: "Londres 2 ya ha gastado el 47 % de la pérdida permitida hoy",
+                      subtitle: "", time: "10:31", action: "Entendido", acknowledged: false),
+            AlertItem(id: "a3", level: .warning, title: "La hora del bróker va desfasada en Londres 1",
+                      subtitle: "", time: "10:12", action: "Entendido", acknowledged: false),
+            AlertItem(id: "a4", level: .info, title: "El asesor bajó el peso de Rebote en Londres 2",
+                      subtitle: "", time: "08:00", action: nil, acknowledged: true),
+            AlertItem(id: "a5", level: .info, title: "Prueba de aviso: llegó al móvil en 41 segundos",
+                      subtitle: "", time: "ayer", action: nil, acknowledged: true)
         ]
     }
 
@@ -236,7 +237,7 @@ enum MockData {
         ]
         let votes = [
             Vote(label: "Subir", reason: "Tendencia limpia y volatilidad baja.", positive: true),
-            Vote(label: "Subir", reason: "Poca correlación con rev_m5.", positive: true),
+            Vote(label: "Subir", reason: "Poca correlación con Rebote.", positive: true),
             Vote(label: "Mantener", reason: "Solo 4 operaciones en el mes.", positive: false)
         ]
         let checks = ["Lecturas presentes en el parte", "11 de 7 días en el estado", "2 de 3 cambios esta semana", "No la paró el riesgo"]
@@ -247,24 +248,24 @@ enum MockData {
                      effect: "Riesgo por operación de 0,12 % a 0,25 % · exposición del 18 % al 21 %", unread: unread)
         }
         return [
-            p("p1", "Subir tend_d1 a 1,0 · lon-01", "Tendencia limpia, poca correlación",
+            p("p1", "Subir Tendencia a 1,0 · Londres 1", "Tendencia limpia, poca correlación",
               "Tendencia limpia, volatilidad baja y casi sin relación con la otra estrategia de la célula. Lleva 11 días en el peso actual.",
-              "c-lon-01", "tend_d1", 1.0, "10:05", .pending, "Pendiente", true),
-            p("p2", "Bajar rev_m5 a 0,5 · lon-02", "Pérdida del día al 47 %",
+              "Londres 1", "Tendencia", 1.0, "10:05", .pending, "Pendiente", true),
+            p("p2", "Bajar Rebote a 0,5 · Londres 2", "Pérdida del día al 47 %",
               "La cuenta se acerca a su regla diaria. Se baja el peso para frenar la exposición.",
-              "c-lon-02", "rev_m5", 0.5, "08:00", .applied, "Aplicada", false),
-            p("p3", "Activar mom_us500 · lon-03", "Volatilidad favorable",
+              "Londres 2", "Rebote", 0.5, "08:00", .applied, "Aplicada", false),
+            p("p3", "Activar Impulso · Londres 3", "Volatilidad favorable",
               "Condiciones favorables en US500, pero la célula está parada por el riesgo.",
-              "c-lon-03", "mom_us500", 0.5, "Ayer", .rejected, "Rechazada · riesgo", false),
-            p("p4", "Bajar tend_d1 a 0,5 · lon-02", "Cerca de la regla diaria",
+              "Londres 3", "Impulso", 0.5, "Ayer", .rejected, "Rechazada · riesgo", false),
+            p("p4", "Bajar Tendencia a 0,5 · Londres 2", "Cerca de la regla diaria",
               "Menos peso para proteger la regla de pérdida diaria.",
-              "c-lon-02", "tend_d1", 0.5, "24 nov", .applied, "Aplicada · +0,2 %", false),
-            p("p5", "Subir rev_m5 a 1,0 · dem-01", "Buena racha en demo",
+              "Londres 2", "Tendencia", 0.5, "24 nov", .applied, "Aplicada · +0,2 %", false),
+            p("p5", "Subir Rebote a 1,0 · Demo", "Buena racha en demo",
               "Buena racha en demo, pero no se cumple el tiempo mínimo en el estado.",
-              "c-dem-01", "rev_m5", 1.0, "21 nov", .rejected, "Rechazada · tiempo", false),
-            p("p6", "mom_us500 a sombra · dem-01", "Tres semanas flojas",
+              "Demo", "Rebote", 1.0, "21 nov", .rejected, "Rechazada · tiempo", false),
+            p("p6", "Impulso a sombra · Demo", "Tres semanas flojas",
               "Tres semanas por debajo de su media: pasa a sombra, se registra pero no opera.",
-              "c-dem-01", "mom_us500", 0, "17 nov", .applied, "Aplicada · −0,2 %", false)
+              "Demo", "Impulso", 0, "17 nov", .applied, "Aplicada · −0,2 %", false)
         ]
     }
 }

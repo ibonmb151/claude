@@ -32,10 +32,10 @@ final class AppStore: ObservableObject {
     @Published var showSearch = false
     @Published var pending: PendingCommand?
     @Published var selectedOrderId: String = "#A7F3-21"
-    @Published var selectedStrategyId: String = "rev_m5"
+    @Published var selectedStrategyId: String = "Rebote"
     @Published var selectedProposalId: String = "p1"
-    @Published var selectedAccountId: String = "FND-B-50k"
-    @Published var selectedCellId: String = "c-lon-02"
+    @Published var selectedAccountId: String = "Fondeo B · 50k"
+    @Published var selectedCellId: String = "Londres 2"
 
     /// Instancia única: la comparten la ventana y el icono de la barra de menús.
     static let shared = AppStore()
@@ -46,10 +46,10 @@ final class AppStore: ObservableObject {
     init() {
         data = MockData.make()
         log = [
-            SignedCommand(time: "08:00:03", name: "weights", cell: "c-lon-02", key: "jev-01", result: "Aceptado · rev_m5 a 0,5", accepted: true),
-            SignedCommand(time: "07:58:40", name: "resume_confirm", cell: "c-lon-01", key: "op-03", result: "Aceptado", accepted: true),
-            SignedCommand(time: "07:57:12", name: "resume_request", cell: "c-lon-01", key: "op-03", result: "Aceptado", accepted: true),
-            SignedCommand(time: "ayer 22:40", name: "resume_request", cell: "c-lon-04", key: "mov-02", result: "Rechazado · el móvil no puede reanudar", accepted: false)
+            SignedCommand(time: "08:00:03", name: "weights", cell: "Londres 2", key: "jev-01", result: "Aceptado · Rebote a 0,5", accepted: true),
+            SignedCommand(time: "07:58:40", name: "resume_confirm", cell: "Londres 1", key: "op-03", result: "Aceptado", accepted: true),
+            SignedCommand(time: "07:57:12", name: "resume_request", cell: "Londres 1", key: "op-03", result: "Aceptado", accepted: true),
+            SignedCommand(time: "ayer 22:40", name: "resume_request", cell: "Londres 4", key: "mov-02", result: "Rechazado · el móvil no puede reanudar", accepted: false)
         ]
         startLive()
     }

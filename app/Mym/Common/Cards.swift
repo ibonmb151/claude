@@ -217,21 +217,21 @@ struct FleetDonutCard: View {
 struct IncidentRow: View {
     let alert: AlertItem
     var body: some View {
-        HStack(spacing: 10) {
+        HStack(spacing: 12) {
             ZStack {
                 Circle().fill(alert.level.color).frame(width: 26, height: 26)
                 Image(systemName: alert.acknowledged ? "checkmark" : "exclamationmark")
                     .font(.system(size: 12, weight: .bold))
                     .foregroundStyle(Color.white)
             }
-            VStack(alignment: .leading, spacing: 1) {
-                Text(alert.title).font(.system(size: 13, weight: .semibold)).foregroundStyle(Palette.ink)
-                Text(alert.subtitle).font(.system(size: 12)).foregroundStyle(Palette.ink2).lineLimit(1)
-            }
-            Spacer(minLength: 6)
+            Text(alert.title)
+                .font(.system(size: 14, weight: alert.acknowledged ? .regular : .semibold))
+                .foregroundStyle(alert.acknowledged ? Palette.ink2 : Palette.ink)
+                .lineLimit(2)
+            Spacer(minLength: 8)
             Text(alert.time).font(.system(size: 12)).foregroundStyle(Palette.ink2).monospacedDigit()
         }
-        .padding(.vertical, 6)
+        .padding(.vertical, 8)
     }
 }
 

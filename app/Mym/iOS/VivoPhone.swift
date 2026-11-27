@@ -49,10 +49,7 @@ struct EnVivoPhoneView: View {
                 Heading("Actividad", info: "Lo más nuevo, arriba")
                 ForEach(feed.events.prefix(5)) { e in
                     HStack(spacing: 10) {
-                        VStack(alignment: .leading, spacing: 0) {
-                            Text(e.title).font(.system(size: 14, weight: .semibold)).lineLimit(1)
-                            Text(e.detail).font(.system(size: 12)).foregroundStyle(Palette.ink2)
-                        }
+                        Text(e.title).font(.system(size: 14, weight: .semibold)).lineLimit(2)
                         Spacer()
                         Text(e.time).font(.system(size: 12)).foregroundStyle(Palette.ink2).monospacedDigit()
                     }

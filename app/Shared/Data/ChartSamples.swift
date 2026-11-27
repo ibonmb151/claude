@@ -3,8 +3,8 @@ import Foundation
 
 /// Datos ficticios de las gráficas nuevas. Cuando haya datos reales, salen de la foto (Snapshot).
 enum ChartSamples {
-    // #06 · aporte semanal de mom_us500, rev_m5 y tend_d1
-    static let strategyNames: [String] = ["mom_us500", "rev_m5", "tend_d1"]
+    // #06 · aporte semanal de Impulso, Rebote y Tendencia
+    static let strategyNames: [String] = ["Impulso", "Rebote", "Tendencia"]
     static let strategyColors: [Color] = [Palette.violet, Palette.teal, Palette.magenta]
     static let weekLabels: [String] = ["6 oct", "13 oct", "20 oct", "27 oct", "3 nov", "10 nov", "17 nov", "24 nov"]
     static let weeklyContribution: [[Double]] = [
@@ -28,16 +28,16 @@ extension ChartSamples {
 
     // #14 · turnos de hoy
     static let shiftLanes: [ShiftLane] = [
-        ShiftLane(name: "rev_m5", color: Palette.teal, segments: [
+        ShiftLane(name: "Rebote", color: Palette.teal, segments: [
             ShiftSegment(from: 8, to: 10.7, kind: .done),
             ShiftSegment(from: 10.7, to: 14.33, kind: .todo),
             ShiftSegment(from: 14.33, to: 14.67, kind: .pause),
             ShiftSegment(from: 14.67, to: 17, kind: .todo)
         ]),
-        ShiftLane(name: "mom_us500", color: Palette.violet, segments: [
+        ShiftLane(name: "Impulso", color: Palette.violet, segments: [
             ShiftSegment(from: 15.5, to: 22, kind: .todo)
         ]),
-        ShiftLane(name: "tend_d1", color: Palette.magenta, segments: [
+        ShiftLane(name: "Tendencia", color: Palette.magenta, segments: [
             ShiftSegment(from: 22.85, to: 23.15, kind: .todo)
         ])
     ]
@@ -50,27 +50,27 @@ extension ChartSamples {
 
     // #15 · latencia hasta ACCEPTED por célula
     static let latencyCells: [LatencyCell] = [
-        LatencyCell(name: "c-lon-01", p50: 400, p99: 640),
-        LatencyCell(name: "c-lon-02", p50: 520, p99: 910),
-        LatencyCell(name: "c-lon-03", p50: 360, p99: 580),
-        LatencyCell(name: "c-dem-01", p50: 430, p99: 720)
+        LatencyCell(name: "Londres 1", p50: 400, p99: 640),
+        LatencyCell(name: "Londres 2", p50: 520, p99: 910),
+        LatencyCell(name: "Londres 3", p50: 360, p99: 580),
+        LatencyCell(name: "Demo", p50: 430, p99: 720)
     ]
 
-    // #19 · retorno frente a caída (estrategia 0 = mom_us500, 1 = rev_m5, 2 = tend_d1)
+    // #19 · retorno frente a caída (estrategia 0 = Impulso, 1 = Rebote, 2 = Tendencia)
     static let returnBubbles: [ReturnBubble] = [
-        ReturnBubble(strategy: 0, cell: "lon-01", drawdown: 0.9, result: 1.8, trades: 40),
-        ReturnBubble(strategy: 0, cell: "dem-01", drawdown: 1.1, result: 0.6, trades: 22),
-        ReturnBubble(strategy: 1, cell: "lon-01", drawdown: 1.0, result: 1.1, trades: 60),
-        ReturnBubble(strategy: 1, cell: "lon-02", drawdown: 1.6, result: -0.6, trades: 48),
-        ReturnBubble(strategy: 1, cell: "lon-03", drawdown: 0.7, result: 0.4, trades: 30),
-        ReturnBubble(strategy: 1, cell: "dem-01", drawdown: 1.2, result: 1.3, trades: 55),
-        ReturnBubble(strategy: 2, cell: "lon-01", drawdown: 0.5, result: 1.4, trades: 8),
-        ReturnBubble(strategy: 2, cell: "lon-02", drawdown: 0.8, result: 0.2, trades: 6),
-        ReturnBubble(strategy: 2, cell: "lon-03", drawdown: 0.4, result: 0.9, trades: 5),
-        ReturnBubble(strategy: 2, cell: "dem-01", drawdown: 0.6, result: 2.4, trades: 9)
+        ReturnBubble(strategy: 0, cell: "Londres 1", drawdown: 0.9, result: 1.8, trades: 40),
+        ReturnBubble(strategy: 0, cell: "Demo", drawdown: 1.1, result: 0.6, trades: 22),
+        ReturnBubble(strategy: 1, cell: "Londres 1", drawdown: 1.0, result: 1.1, trades: 60),
+        ReturnBubble(strategy: 1, cell: "Londres 2", drawdown: 1.6, result: -0.6, trades: 48),
+        ReturnBubble(strategy: 1, cell: "Londres 3", drawdown: 0.7, result: 0.4, trades: 30),
+        ReturnBubble(strategy: 1, cell: "Demo", drawdown: 1.2, result: 1.3, trades: 55),
+        ReturnBubble(strategy: 2, cell: "Londres 1", drawdown: 0.5, result: 1.4, trades: 8),
+        ReturnBubble(strategy: 2, cell: "Londres 2", drawdown: 0.8, result: 0.2, trades: 6),
+        ReturnBubble(strategy: 2, cell: "Londres 3", drawdown: 0.4, result: 0.9, trades: 5),
+        ReturnBubble(strategy: 2, cell: "Demo", drawdown: 0.6, result: 2.4, trades: 9)
     ]
 
-    // #21 · rev_m5 de v2 a v3, todo con base 100
+    // #21 · Rebote de v2 a v3, todo con base 100
     static let slopeMeasures: [SlopeMeasure] = [
         SlopeMeasure(name: "Retorno", detail: "0,6 → 0,9 %", index: 150, change: "+50 %", better: true),
         SlopeMeasure(name: "Acierto", detail: "54 → 57 %", index: 105.6, change: "+5,6 %", better: true),

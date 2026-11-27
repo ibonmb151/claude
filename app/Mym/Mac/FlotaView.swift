@@ -1,6 +1,8 @@
 #if os(macOS)
 import SwiftUI
 
+/// Robots: cuántos hay, cómo está cada uno y qué hace. Una tarjeta por robot, con lo justo:
+/// su estado en una palabra, lo que ha ganado hoy y, si algo va mal, una frase que lo dice.
 struct FlotaView: View {
     @EnvironmentObject var store: AppStore
 
@@ -8,72 +10,54 @@ struct FlotaView: View {
         let d = store.data
         ScreenScroll {
             HStack {
-                Heading("Flota", info: "Una célula por cuenta: su motor, su ruta y su estado. Principal y reserva con un cerrojo que decide quién opera", size: 20)
-                Button("Relevo manual") { store.requestRelay(store.selectedCellId) }
-                    .buttonStyle(MymButtonStyle(kind: .secondary, compact: true))
+                Heading("Robots", info: "Cada robot opera una cuenta con uno o varios métodos", size: 22)
                 Button("Parar todo") { store.requestStopAll() }
                     .buttonStyle(MymButtonStyle(kind: .secondary, compact: true))
             }
 
-            LazyVGrid(columns: [GridItem(.adaptive(minimum: 320), spacing: 14)], spacing: 14) {
+            LazyVGrid(columns: [GridItem(.adaptive(minimum: 300), spacing: Layout.gap)], spacing: Layout.gap) {
                 ForEach(d.cells) { cell in
-                    CellCard(cell: cell, snapshot: d,
-                             selected: store.selectedCellId == cell.id)
+                    CellCard(cell: cell, selected: store.selectedCellId == cell.id)
                         .onTapGesture { store.selectedCellId = cell.id }
                 }
             }
 
-            ResponsiveRow {
-                VStack(alignment: .leading, spacing: 12) {
-                    Heading("Disponibilidad · 60 días", info: "Un día por barra. Ámbar: incidencia menor. Rojo: parada. Gris: pausada")
-                    ForEach(d.cells) { cell in
-                        HStack(spacing: 12) {
-                            Text(cell.id)
-                                .font(.system(size: 12, weight: .semibold, design: .monospaced))
-                                .frame(width: 78, alignment: .leading)
-                            HStack(spacing: 2) {
-                                ForEach(0..<cell.uptime.count, id: \.self) { i in
-                                    RoundedRectangle(cornerRadius: 2)
-                                        .fill(color(for: cell.uptime[i]))
-                                        .frame(height: 24)
-                                }
+            VStack(alignment: .leading, spacing: 12) {
+                Heading("Días sin problemas", info: "Una barra por día, 60 días. Ámbar: aviso. Rojo: parada. Gris: parado")
+                ForEach(d.cells) { cell in
+                    HStack(spacing: 12) {
+                        Text(cell.id)
+                            .font(.system(size: 13, weight: .semibold))
+                            .frame(width: 84, alignment: .leading)
+                        HStack(spacing: 2) {
+                            ForEach(0..<cell.uptime.count, id: \.self) { i in
+                                RoundedRectangle(cornerRadius: 2)
+                                    .fill(color(for: cell.uptime[i]))
+                                    .frame(height: 22)
                             }
                         }
                     }
                 }
-                .card(Layout.card)
-                .frame(maxWidth: .infinity)
-
-                VStack(alignment: .leading, spacing: 10) {
-                    Heading("Despliegue v0.9.4", info: "Como una ruta: no pasa a la siguiente parada sin superar la anterior")
-                    step("Gemelo", "Repetición de 30 días sin diferencias", state: .done)
-                    step("c-dem-01 · demo", "6 de 5 días sin incidencias", state: .done)
-                    step("c-lon-04 · fondeo pausado", "Siguiente parada", state: .current)
-                    step("c-lon-01 · fondeo", "Después de 3 días en c-lon-04", state: .todo)
-                    step("c-lon-02 · fondeo", "", state: .todo)
-                    step("c-lon-03 · cuenta real", "Siempre la última", state: .todo)
-                }
-                .card(Layout.card)
-                .frame(width: 360)
-            }
-
-            VStack(alignment: .leading, spacing: 10) {
-                Heading("Red", info: "Sedes, bróker, datos y asesor con la latencia de cada tramo. Continua: activo. Discontinua: en espera")
-                NetworkMap()
-                    .frame(height: 290)
             }
             .card(Layout.card)
 
             VStack(alignment: .leading, spacing: 10) {
-                Heading("Turnos", info: "Cuándo trabaja cada método hoy. Macizo: hecho. Claro: lo que queda. Rayado: pausa por noticia")
+                Heading("Turnos de hoy", info: "Cuándo trabaja cada método. Macizo: hecho. Claro: lo que queda. Rayado: pausa por noticia")
                 ShiftsChart(lanes: ChartSamples.shiftLanes, sessions: ChartSamples.shiftSessions, news: ChartSamples.shiftNews,
                             now: 10.7, nowText: "10:42", nextNews: "Próxima noticia en 3 h 48 min")
             }
             .card(Layout.card)
 
             VStack(alignment: .leading, spacing: 10) {
-                Heading("Latencias", info: "Un punto por orden. La caja es la mitad central, la raya azul la mediana. En rojo, las que pasan de 1 segundo")
+                Heading("Rapidez del bróker", info: "Un punto por orden. La caja es la mitad central, la raya azul la mediana. En rojo, las que pasan de 1 segundo")
                 LatencyChart(cells: ChartSamples.latencyCells)
+            }
+            .card(Layout.card)
+
+            VStack(alignment: .leading, spacing: 10) {
+                Heading("Conexiones", info: "Cómo se comunican los robots, el bróker y el asesor. Continua: activo. Discontinua: en espera")
+                NetworkMap()
+                    .frame(height: 290)
             }
             .card(Layout.card)
         }
@@ -85,80 +69,73 @@ struct FlotaView: View {
         if value > 0 { return Palette.warn }
         return Palette.neg
     }
-
-    private enum StepState { case done, current, todo }
-
-    private func step(_ title: String, _ subtitle: String, state: StepState) -> some View {
-        HStack(alignment: .top, spacing: 12) {
-            ZStack {
-                Circle().fill(state == .done ? Palette.graphiteDark : Palette.card)
-                    .frame(width: 22, height: 22)
-                    .overlay(Circle().stroke(state == .todo ? Palette.graphiteSoft : Palette.graphiteDark, lineWidth: 3))
-                if state == .done {
-                    Image(systemName: "checkmark").font(.system(size: 10, weight: .bold)).foregroundStyle(Color.white)
-                }
-            }
-            VStack(alignment: .leading, spacing: 1) {
-                Text(title).font(.system(size: 13, weight: .semibold)).foregroundStyle(Palette.ink)
-                if !subtitle.isEmpty {
-                    Text(subtitle).font(.system(size: 12)).foregroundStyle(Palette.ink2)
-                }
-            }
-            Spacer()
-            Pill(text: state == .done ? "Superado" : state == .current ? "Listo" : "Pendiente",
-                 tone: state == .done ? .good : state == .current ? .info : .neutral)
-        }
-    }
 }
 
-/// Tarjeta de una célula con anillos de salud.
+/// Tarjeta de un robot: nombre y estado, lo de hoy, una frase de salud y con qué métodos trabaja.
 struct CellCard: View {
     let cell: BotCell
-    let snapshot: Snapshot
     var selected: Bool = false
     @EnvironmentObject var store: AppStore
 
-    private func ringColor(_ v: Double) -> Color {
-        v >= 90 ? Palette.pos : v >= 70 ? Palette.warn : Palette.neg
+    /// La peor de las seis medidas técnicas, dicha con palabras normales.
+    private var problem: (text: String, level: Int) {
+        if cell.health == .paused { return ("Está parado y no abre operaciones", 0) }
+        let scores: [Double] = cell.healthScores
+        let worst: Double = scores.min() ?? 100
+        let index: Int = scores.firstIndex(of: worst) ?? 0
+        let messages: [String] = [
+            "Tarda en responder",
+            "Envía las órdenes con lentitud",
+            "El bróker rechaza varias órdenes",
+            "La hora va algo desfasada",
+            "Faltan datos de precio",
+            "El saldo no cuadra con el bróker"
+        ]
+        if worst >= 90 { return ("Funciona con normalidad", 3) }
+        return (messages[index], worst >= 70 ? 2 : 1)
+    }
+
+    private var healthColor: Color {
+        switch problem.level {
+        case 3: return Palette.posText
+        case 2: return Palette.warnText
+        case 1: return Palette.negText
+        default: return Palette.ink2
+        }
+    }
+
+    private var methods: String {
+        let active: [String] = cell.weights.filter { $0.mode == .active }.map { $0.strategyId }
+        return active.isEmpty ? "Sin métodos activos" : active.joined(separator: " · ")
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            HStack(spacing: 12) {
-                IconTile(symbol: "server.rack", color: cell.health.color, size: 34, corner: 10)
-                VStack(alignment: .leading, spacing: 0) {
-                    Text(cell.id).font(.system(size: 15, weight: .semibold, design: .monospaced)).foregroundStyle(Palette.ink)
-                    Text(cell.accountId).font(.system(size: 13)).foregroundStyle(Palette.ink2)
-                }
+        VStack(alignment: .leading, spacing: 14) {
+            HStack {
+                Text(cell.id).font(.system(size: 17, weight: .bold)).foregroundStyle(Palette.ink)
                 Spacer()
                 Pill(text: cell.health.label, tone: cell.health.tone)
             }
 
-            HStack(alignment: .center, spacing: 8) {
-                metric("Latido", cell.health == .paused ? "—" : Fmt.comma(cell.heartbeat, 1) + " s", cell.healthScores[0])
-                metric("Latencia", cell.health == .paused ? "—" : "\(cell.p99) ms", cell.healthScores[1])
-                metric("Concil.", cell.healthScores[5] < 70 ? "1 dif." : "ok", cell.healthScores[5])
-                VStack(alignment: .trailing, spacing: 2) {
-                    Text(Fmt.signedPct(cell.dayPct, 1))
-                        .font(.system(size: 20, weight: .semibold))
-                        .foregroundStyle(cell.dayPct < 0 ? Palette.negText : Palette.ink)
-                        .monospacedDigit()
-                    Text("hoy").font(.system(size: 12)).foregroundStyle(Palette.ink2)
-                }
-                .frame(maxWidth: .infinity, alignment: .trailing)
+            HStack(alignment: .firstTextBaseline, spacing: 8) {
+                Text(cell.health == .paused ? "—" : Fmt.signedPct(cell.dayPct, 1))
+                    .font(.system(size: 34, weight: .bold))
+                    .foregroundStyle(cell.health == .paused ? Palette.ink2 : (cell.dayPct < 0 ? Palette.negText : Palette.posText))
+                    .monospacedDigit()
+                Text("hoy").font(.system(size: 14)).foregroundStyle(Palette.ink2)
             }
 
-            HStack(spacing: 6) {
-                ForEach(cell.weights) { w in
-                    Pill(text: "\(w.strategyId) · \(w.mode == .active ? Fmt.comma(w.weight, 1) : w.mode.label.lowercased())",
-                         tone: w.mode.tone)
-                }
+            HStack(spacing: 8) {
+                Circle().fill(problem.level == 3 ? Palette.pos : (problem.level == 2 ? Palette.warn : (problem.level == 1 ? Palette.neg : Palette.paused)))
+                    .frame(width: 8, height: 8)
+                Text(problem.text).font(.system(size: 14)).foregroundStyle(healthColor)
+                    .lineLimit(1)
             }
+
+            Text(methods).font(.system(size: 13)).foregroundStyle(Palette.ink2).lineLimit(1)
 
             Divider()
             HStack {
-                Text("\(cell.site) → LD4").font(.system(size: 13, weight: .semibold))
-                Text("· \(cell.version)").font(.system(size: 13)).foregroundStyle(Palette.ink2)
                 Spacer()
                 if cell.health == .paused {
                     Button("Reanudar") { store.requestResume(cell.id) }
@@ -169,19 +146,8 @@ struct CellCard: View {
                 }
             }
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
         .card(Layout.card, selected: selected)
-    }
-
-    private func metric(_ title: String, _ value: String, _ score: Double) -> some View {
-        VStack(spacing: 3) {
-            ZStack {
-                RingsView(rings: [RingSpec(progress: cell.health == .paused ? 0.01 : score / 100, color: cell.health == .paused ? Palette.graphiteSoft : ringColor(score))],
-                          lineWidth: 6, gap: 0)
-            }
-            .frame(width: 44, height: 44)
-            Text(value).font(.system(size: 12, weight: .semibold)).foregroundStyle(Palette.ink).monospacedDigit()
-            Text(title).font(.system(size: 11)).foregroundStyle(Palette.ink2)
-        }
     }
 }
 #endif

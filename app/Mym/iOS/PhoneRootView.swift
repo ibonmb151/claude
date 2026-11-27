@@ -180,13 +180,13 @@ struct HoyPhoneView: View {
                 RingsView(rings: [
                     RingSpec(progress: d.dayLimitUsed, color: Palette.warn),
                     RingSpec(progress: d.exposurePct / 100, color: Palette.graphiteDark),
-                    RingSpec(progress: store.data.accounts.first { $0.id == "FND-B-50k" }?.targetUsed ?? 0, color: Palette.info)
+                    RingSpec(progress: store.data.accounts.first { $0.id == "Fondeo B · 50k" }?.targetUsed ?? 0, color: Palette.info)
                 ], lineWidth: 10, gap: 3)
                 .frame(width: 96, height: 96)
                 VStack(alignment: .leading, spacing: 8) {
                     ringLine(Palette.warn, "Día", Fmt.pct(d.dayLimitUsed * 100))
                     ringLine(Palette.graphiteDark, "Exposición", Fmt.pct(d.exposurePct))
-                    ringLine(Palette.info, "Objetivo B", Fmt.pct((store.data.accounts.first { $0.id == "FND-B-50k" }?.targetUsed ?? 0) * 100))
+                    ringLine(Palette.info, "Objetivo B", Fmt.pct((store.data.accounts.first { $0.id == "Fondeo B · 50k" }?.targetUsed ?? 0) * 100))
                 }
                 Spacer(minLength: 0)
             }
@@ -254,33 +254,26 @@ struct OrdenesPhoneView: View {
     var body: some View {
         let d = store.data
         PhoneScreen(title: "Órdenes") {
-            HStack(spacing: 8) {
-                funnel("\(d.funnel.signals)", "señales")
-                funnel("\(d.funnel.riskOk)", "riesgo ✓")
-                funnel("\(d.funnel.sent)", "enviadas")
-                funnel("\(d.funnel.filled)", "ejecutadas")
-            }
             VStack(spacing: 0) {
                 ForEach(d.orders) { order in
                     NavigationLink {
                         OrderDetailPhoneView(order: order)
                     } label: {
-                        HStack(spacing: 11) {
-                            IconTile(symbol: d.strategy(order.strategyId)?.symbol ?? "arrow.up.right",
-                                     color: d.strategy(order.strategyId)?.color ?? Palette.gray, size: 32)
+                        HStack(spacing: 12) {
+                            Image(systemName: order.side == .buy ? "arrow.up.right" : "arrow.down.right")
+                                .font(.system(size: 14, weight: .bold))
+                                .foregroundStyle(Palette.ink)
+                                .frame(width: 34, height: 34)
+                                .background(Palette.neutralBg, in: Circle())
                             VStack(alignment: .leading, spacing: 1) {
-                                Text("\(order.instrument) \(order.side.label) \(Fmt.comma(order.lots, 2))")
+                                Text("\(order.side.label) \(order.instrument)")
                                     .font(.system(size: 15, weight: .semibold)).foregroundStyle(Palette.ink)
-                                Text("\(order.id) · \(order.cellId)")
-                                    .font(.system(size: 12, design: .monospaced)).foregroundStyle(Palette.ink2)
-                            }
-                            Spacer(minLength: 4)
-                            VStack(alignment: .trailing, spacing: 3) {
-                                Pill(text: order.status.label, tone: order.status.tone)
                                 Text(order.time).font(.system(size: 12)).foregroundStyle(Palette.ink2).monospacedDigit()
                             }
+                            Spacer(minLength: 4)
+                            Pill(text: order.status.label, tone: order.status.tone)
                         }
-                        .padding(.vertical, 9)
+                        .padding(.vertical, 10)
                     }
                     .buttonStyle(.plain)
                     if order.id != d.orders.last?.id { Divider() }
@@ -308,49 +301,23 @@ struct OrderDetailPhoneView: View {
     let order: Order
 
     var body: some View {
-        let d = store.data
-        let total = d.hops.reduce(0) { $0 + $1.ms }
-        PhoneScreen(title: order.instrument) {
+        PhoneScreen(title: "\(order.side.label) \(order.instrument)") {
             HStack {
                 Pill(text: order.status.label, tone: order.status.tone)
-                Pill(text: order.strategyId)
                 Spacer()
                 if let pnl = order.pnl {
                     Text(Fmt.eurDecimals(pnl))
-                        .font(.system(size: 22, weight: .bold)).monospacedDigit()
+                        .font(.system(size: 26, weight: .bold)).monospacedDigit()
                         .foregroundStyle(pnl >= 0 ? Palette.posText : Palette.negText)
                 }
             }
 
             VStack(alignment: .leading, spacing: 10) {
-                Heading("Seguimiento", info: "Las paradas de la orden, de la señal al cierre")
                 StepBar(done: order.status.steps, doneColor: Palette.graphiteDark)
                 HStack {
-                    ForEach(["Riesgo", "Envío", "Aceptada", "Ejecutada"], id: \.self) { s in
-                        Text(s).font(.system(size: 11, weight: .semibold)).foregroundStyle(Palette.ink2)
+                    ForEach(["Revisada", "Enviada", "Abierta", "Cerrada"], id: \.self) { s in
+                        Text(s).font(.system(size: 12, weight: .semibold)).foregroundStyle(Palette.ink2)
                             .frame(maxWidth: .infinity)
-                    }
-                }
-            }
-            .card(Layout.card)
-
-            VStack(alignment: .leading, spacing: 8) {
-                Heading("Tiempo · \(total) ms", info: "A escala: cuánto tarda cada tramo")
-                GeometryReader { g in
-                    HStack(spacing: 2) {
-                        ForEach(d.hops) { hop in
-                            RoundedRectangle(cornerRadius: 4).fill(hop.color)
-                                .frame(width: max(4, (g.size.width - 8) * CGFloat(hop.ms) / CGFloat(total)))
-                        }
-                    }
-                }
-                .frame(height: 26)
-                ForEach(d.hops) { hop in
-                    HStack(spacing: 8) {
-                        RoundedRectangle(cornerRadius: 3).fill(hop.color).frame(width: 9, height: 9)
-                        Text(hop.name).font(.system(size: 13)).foregroundStyle(Palette.ink)
-                        Spacer()
-                        Text("\(hop.ms) ms").font(.system(size: 13, weight: .semibold)).monospacedDigit()
                     }
                 }
             }
@@ -359,7 +326,7 @@ struct OrderDetailPhoneView: View {
             VStack(alignment: .leading, spacing: 6) {
                 Heading("Precio", info: "Desde la entrada, con el objetivo arriba y el stop abajo")
                 PriceStrip(entry: order.entry, stop: order.stop, target: order.target, last: order.last)
-                    .frame(height: 180)
+                    .frame(height: 200)
             }
             .card(Layout.card)
         }

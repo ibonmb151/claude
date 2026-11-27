@@ -68,10 +68,7 @@ struct EnVivoView: View {
                         .foregroundStyle(color(e.kind).fg)
                         .frame(width: 32, height: 32)
                         .background(color(e.kind).bg, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
-                    VStack(alignment: .leading, spacing: 1) {
-                        Text(e.title).font(.system(size: 14, weight: .semibold)).lineLimit(1)
-                        Text(e.detail).font(.system(size: 12)).foregroundStyle(Palette.ink2)
-                    }
+                    Text(e.title).font(.system(size: 14, weight: .semibold)).lineLimit(1)
                     Spacer()
                     Text(e.time).font(.system(size: 12)).foregroundStyle(Palette.ink2).monospacedDigit()
                 }

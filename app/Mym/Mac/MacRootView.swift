@@ -222,12 +222,12 @@ struct SearchSheet: View {
     private var items: [Item] {
         var out: [Item] = []
         for cell in store.data.cells where cell.health != .paused {
-            out.append(Item(group: "Acciones", title: "Pausar \(cell.id)", subtitle: "\(cell.accountId) · comando firmado",
+            out.append(Item(group: "Acciones", title: "Pausar \(cell.id)", subtitle: cell.accountId,
                             symbol: "pause.circle", color: Palette.stop) {
                 close { store.requestPause(cell.id) }
             })
         }
-        out.append(Item(group: "Acciones", title: "Parar todo", subtitle: "todas las células",
+        out.append(Item(group: "Acciones", title: "Parar todo", subtitle: "Todos los robots",
                         symbol: "stop.circle", color: Palette.stop) {
             close { store.requestStopAll() }
         })

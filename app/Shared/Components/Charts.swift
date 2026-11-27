@@ -393,7 +393,7 @@ struct PriceStrip: View {
             .offset(y: min(a, b))
     }
 
-    private func line(at y: CGFloat, color: Color, label: String, width: CGFloat) -> some View {
+    private func line(at y: CGFloat, color: Color, label: String, width: CGFloat, below: Bool = false) -> some View {
         ZStack(alignment: .topLeading) {
             Path { p in
                 p.move(to: CGPoint(x: 0, y: y))
@@ -403,7 +403,10 @@ struct PriceStrip: View {
             Text(label)
                 .font(.system(size: 12, weight: .semibold))
                 .foregroundStyle(color)
-                .offset(x: 4, y: y - 17)
+                .padding(.horizontal, 6)
+                .background(Palette.card.opacity(0.9), in: Capsule())
+                .frame(width: width, alignment: .trailing)
+                .offset(y: below ? y + 3 : y - 21)
         }
     }
 
@@ -421,7 +424,7 @@ struct PriceStrip: View {
                 zone(from: yOf(entry, h), to: yOf(target, h), width: w, color: Palette.posBg.opacity(0.55))
                 zone(from: yOf(entry, h), to: yOf(stopRef, h), width: w, color: Palette.negBg.opacity(0.65))
                 line(at: yOf(target, h), color: Palette.pos, label: "Objetivo \(Fmt.price(target))", width: w)
-                line(at: yOf(entry, h), color: Palette.gray, label: "Entrada \(Fmt.price(entry))", width: w)
+                line(at: yOf(entry, h), color: Palette.gray, label: "Entrada \(Fmt.price(entry))", width: w, below: last >= entry)
                 line(at: yOf(stopRef, h), color: Palette.neg, label: stop == 0 ? "Sin stop" : "Stop \(Fmt.price(stop))", width: w)
                 Path { p in
                     for (i, pt) in pts.enumerated() {

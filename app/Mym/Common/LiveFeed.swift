@@ -30,23 +30,23 @@ final class LiveFeed: ObservableObject {
     }()
 
     private let pool: [(Kind, String, String)] = [
-        (.open, "Apertura · Compra GBPJPY 0,10", "···2511 · Ruptura"),
-        (.close, "Cierre · EURUSD · +8,60 €", "···4152 · Rebote"),
-        (.stop, "Stop movido a breakeven · US500", "···4152 · Impulso"),
-        (.signal, "Señal nueva · AUDUSD · confianza 0,66", "Rebote"),
-        (.reject, "Rechazada por el bróker · USDJPY", "···2511 · Tendencia"),
-        (.close, "Cierre · XAUUSD · −9,40 €", "···4152 · Ruptura"),
-        (.warn, "Hora del bróker desfasada 1,4 s", "···4152")
+        (.open, "Se abrió una compra de GBPJPY", ""),
+        (.close, "Cerró EURUSD con +8,60 €", ""),
+        (.stop, "US500 ya está protegida en el precio de entrada", ""),
+        (.signal, "Posible compra de AUDUSD detectada", ""),
+        (.reject, "El bróker rechazó una orden de USDJPY", ""),
+        (.close, "Cerró XAUUSD con −9,40 €", ""),
+        (.warn, "La hora del bróker va 1,4 s desfasada", "")
     ]
 
     init() {
         activity = (0..<24).map { Double(2 + Int(5 * abs(sin(Double($0) * 1.3)))) }
         latency = [380, 410, 395, 430, 412, 405, 398, 420, 412]
         events = [
-            Event(time: "10:41:58", kind: .open, title: "Apertura · Venta US500 0,20", detail: "···4152 · Impulso"),
-            Event(time: "10:41:07", kind: .reject, title: "Rechazada por el bróker · EURUSD", detail: "···2511 · Rebote"),
-            Event(time: "10:30:00", kind: .close, title: "Cierre · GBPUSD · +4,10 €", detail: "···2511 · Tendencia"),
-            Event(time: "10:12:31", kind: .warn, title: "Hora del bróker desfasada 1,4 s", detail: "···4152")
+            Event(time: "10:41:58", kind: .open, title: "Se abrió una venta de US500", detail: ""),
+            Event(time: "10:41:07", kind: .reject, title: "El bróker rechazó una orden de EURUSD", detail: ""),
+            Event(time: "10:30:00", kind: .close, title: "Cerró GBPUSD con +4,10 €", detail: ""),
+            Event(time: "10:12:31", kind: .warn, title: "La hora del bróker va 1,4 s desfasada", detail: "")
         ]
     }
 

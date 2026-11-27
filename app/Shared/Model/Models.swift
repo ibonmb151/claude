@@ -12,13 +12,13 @@ enum Module: String, CaseIterable, Identifiable {
         case .torre: return "Inicio"
         case .envivo: return "En vivo"
         case .ordenes: return "Órdenes"
-        case .flota: return "Flota"
+        case .flota: return "Robots"
         case .cuentas: return "Cuentas"
-        case .estrategias: return "Estrategias"
+        case .estrategias: return "Métodos"
         case .resultados: return "Resultados"
         case .ajustes: return "Parámetros"
         case .jev: return "Asesor"
-        case .riesgo: return "Riesgo"
+        case .riesgo: return "Avisos"
         }
     }
 
@@ -180,7 +180,7 @@ struct BotCell: Identifiable {
     var healthScores: [Double]
     var uptime: [Double]   // 60 días: 1 = sin incidencias, 0.5 = incidencia menor, 0 = parada
 
-    var shortName: String { id.replacingOccurrences(of: "c-", with: "") }
+    var shortName: String { id.replacingOccurrences(of: "Londres ", with: "L") }
 }
 
 // MARK: - Estrategias
@@ -226,7 +226,7 @@ enum OrderStatus: String {
 
     var label: String {
         switch self {
-        case .riskOk: return "Riesgo ✓"
+        case .riskOk: return "Revisada"
         case .sent: return "Enviada"
         case .accepted: return "En curso"
         case .filled: return "Ejecutada"

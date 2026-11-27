@@ -136,7 +136,7 @@ struct AjustesView: View {
                         ["Si", "resultado de 5 días", "es menor que", "−1,0 %"]
                     ], thenText: ["Entonces", "pausar y avisarme al móvil"], thenColor: Palette.warn)
                     VStack(alignment: .leading, spacing: 8) {
-                        Heading("Antes y después", info: "rev_m5 de v2 a v3. Todas las medidas parten de 100 en v2 para compararlas en la misma escala. Verde: mejora. Gris: neutro")
+                        Heading("Antes y después", info: "Rebote de v2 a v3. Todas las medidas parten de 100 en v2 para compararlas en la misma escala. Verde: mejora. Gris: neutro")
                         Pill(text: "Muestra corta · 142 operaciones", tone: .warn)
                         SlopeChart(measures: ChartSamples.slopeMeasures)
                     }
@@ -176,7 +176,7 @@ struct AjustesView: View {
                     pathStep("Borrador", "Guardado hoy 10:20 · op-03", done: true)
                     pathStep("Gemelo", "Repitiendo 30 días · 62 %", done: false)
                     pathStep("Aprobación", "La firma ap-01", done: false)
-                    pathStep("Demo · 5 días", "En c-dem-01", done: false)
+                    pathStep("Demo · 5 días", "En Demo", done: false)
                     pathStep("Producción", "Célula a célula", done: false)
                 }
                 .card(Layout.cardSmall)

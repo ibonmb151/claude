@@ -88,9 +88,7 @@ struct Heading<Trailing: View>: View {
             Text(title)
                 .font(.system(size: size, weight: .semibold))
                 .foregroundStyle(Palette.ink)
-            if let info {
-                InfoButton(text: info)
-            }
+                .help(info ?? "")
             Spacer(minLength: 8)
             trailing()
         }
