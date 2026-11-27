@@ -306,6 +306,7 @@ struct AccountForm: View {
                 Text("Elige si es un bróker o un banco.").font(.system(size: 13)).foregroundStyle(Palette.ink2)
             }
             if let p = provider {
+                if p.id == "ctrader" { CTraderGuide() }
                 ForEach(p.fields) { f in
                     fieldView(f, p)
                 }
@@ -394,6 +395,12 @@ struct AccountForm: View {
             .frame(maxWidth: .infinity, alignment: .leading)
             .background(Palette.bg, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
         case .link(let title):
+            if p.id == "ctrader" {
+                labeled(f.label) {
+                    CTraderAuthorizeView(accountId: id)
+                    if !f.hint.isEmpty { Text(f.hint).font(.system(size: 12)).foregroundStyle(Palette.ink2) }
+                }
+            } else {
             labeled(f.label) {
                 HStack(spacing: 10) {
                     Button(title) {}
@@ -403,6 +410,7 @@ struct AccountForm: View {
                 }
                 Text("Se activa cuando Mym esté registrada en \(p.name). Todavía no se puede conectar.")
                     .font(.system(size: 12)).foregroundStyle(Palette.ink2)
+            }
             }
         }
     }

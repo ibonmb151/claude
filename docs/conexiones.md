@@ -1,7 +1,7 @@
 # Conexiones reales: cTrader y bancos
 
 Plan para pasar de datos de ejemplo a datos reales sin guardar nada que no haga falta.
-Estado: **solo diseño**. Nada de esto está programado todavía.
+Estado: la autorización de cTrader (guía, Client ID, Secret, permiso en el Llavero) ya está en Configuración > Cuentas. Falta la conexión en directo, la renovación automática del permiso y todo lo de los bancos.
 
 ## Reglas de privacidad (valen para todo)
 

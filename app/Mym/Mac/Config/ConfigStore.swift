@@ -64,7 +64,9 @@ enum ProviderCatalog {
 
     static let all: [Provider] = [
         Provider(id: "ctrader", name: "cTrader", mono: "cT", kind: .broker, tint: Palette.violet, fields: [
-            FieldSpec(id: "acceso", label: "Acceso", kind: .link("Conectar con cTrader"), hint: "Entras con tu usuario de cTrader. Mym guarda un permiso, no tu contraseña."),
+            FieldSpec(id: "clientId", label: "Client ID", kind: .text, placeholder: "Pégalo desde el portal de cTrader"),
+            FieldSpec(id: "clientSecret", label: "Secret", kind: .secret, placeholder: "Pégalo desde el portal de cTrader", hint: "Se guarda cifrado en el Llavero."),
+            FieldSpec(id: "acceso", label: "Permiso", kind: .link("Autorizar con cTrader"), hint: "Entras con tu usuario de cTrader. Mym guarda un permiso, no tu contraseña."),
             FieldSpec(id: "numero", label: "Número de cuenta", kind: .text, placeholder: "Ej. 4410 2378")
         ]),
         Provider(id: "mt5", name: "MetaTrader 5", mono: "M5", kind: .broker, tint: Palette.infoText, fields: [
@@ -185,7 +187,22 @@ final class ConfigStore: ObservableObject {
         id.uuidString + "." + field
     }
 
+    /// Permisos que se guardan en el Llavero sin ser un campo del formulario.
+    static let tokenFields: [String] = ["accessToken", "refreshToken"]
+
+    func isAuthorized(_ id: UUID) -> Bool {
+        for f in ConfigStore.tokenFields where Keychain.exists(account: secretKey(id, f)) { return true }
+        return false
+    }
+
+    func clearTokens(_ id: UUID) {
+        for f in ConfigStore.tokenFields { Keychain.delete(account: secretKey(id, f)) }
+        update(id) { $0.values["caduca"] = nil }
+        objectWillChange.send()
+    }
+
     func deleteSecrets(of a: ConfiguredAccount) {
+        for f in ConfigStore.tokenFields { Keychain.delete(account: secretKey(a.id, f)) }
         for p in ProviderCatalog.all {
             for f in p.fields {
                 if case .secret = f.kind { Keychain.delete(account: secretKey(a.id, f.id)) }
@@ -201,6 +218,7 @@ final class ConfigStore: ObservableObject {
     var savedSecretsCount: Int {
         var n = 0
         for a in accounts {
+            for f in ConfigStore.tokenFields where Keychain.exists(account: secretKey(a.id, f)) { n += 1 }
             for p in ProviderCatalog.all {
                 for f in p.fields {
                     if case .secret = f.kind, Keychain.exists(account: secretKey(a.id, f.id)) { n += 1 }
@@ -231,7 +249,7 @@ final class ConfigStore: ObservableObject {
     func state(_ a: ConfiguredAccount) -> AccountConfigState {
         if a.paused { return .paused }
         if !missingFields(a).isEmpty { return .incomplete }
-        if let p = ProviderCatalog.provider(a.providerId), p.needsAuthorization { return .needsAuthorization }
+        if let p = ProviderCatalog.provider(a.providerId), p.needsAuthorization, !isAuthorized(a.id) { return .needsAuthorization }
         return .ready
     }
 }
